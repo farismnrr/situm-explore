@@ -1,6 +1,50 @@
 <script setup lang="ts">
+import { homeBuilding } from '~/data/prototype/home'
+
 const { user, clear } = useUserSession()
 const mobileOpen = ref(false)
+const searchOpen = ref(false)
+const searchQuery = ref('')
+
+const searchDestinations = [
+  { label: 'Home', detail: 'Workspace', to: '/app', icon: '⌂' },
+  { label: 'Dashboard', detail: 'Workspace', to: '/app/dashboard', icon: '▦' },
+  { label: 'Map Viewer', detail: 'Workspace', to: '/app/map', icon: '⌖' },
+  { label: 'Buildings & floors', detail: 'Cartography', to: '/app/buildings', icon: '▤' },
+  { label: 'Points of interest', detail: 'Cartography', to: '/app/pois', icon: '◇' },
+  { label: 'Realtime', detail: 'Operations', to: '/app/realtime', icon: '●' },
+  { label: 'Analytics & reports', detail: 'Operations', to: '/app/analytics', icon: '▥' },
+  { label: 'Settings', detail: 'Organization', to: '/app/settings', icon: '⚙' }
+]
+
+const searchResults = computed(() => {
+  const records = [
+    ...searchDestinations,
+    { label: homeBuilding.name, detail: `Building · ${homeBuilding.floor}`, to: '/app/buildings', icon: '◇' }
+  ]
+  const query = searchQuery.value.trim().toLowerCase()
+  return query ? records.filter((record) => `${record.label} ${record.detail}`.toLowerCase().includes(query)) : records
+})
+
+function openSearch() {
+  searchOpen.value = true
+}
+
+function closeSearch() {
+  searchOpen.value = false
+  searchQuery.value = ''
+}
+
+function handleGlobalShortcut(event: KeyboardEvent) {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault()
+    openSearch()
+  }
+  if (event.key === 'Escape' && searchOpen.value) closeSearch()
+}
+
+onMounted(() => window.addEventListener('keydown', handleGlobalShortcut))
+onBeforeUnmount(() => window.removeEventListener('keydown', handleGlobalShortcut))
 
 const navigation = [
   { group: 'Workspace', items: [{ label: 'Home', to: '/app', icon: '⌂' }, { label: 'Dashboard', to: '/app/dashboard', icon: '▦' }, { label: 'Map', to: '/app/map', icon: '⌖' }] },
@@ -16,7 +60,8 @@ async function logout() {
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-default text-default">
+  <div>
+    <div class="flex min-h-screen bg-default text-default">
     <button v-if="mobileOpen" class="fixed inset-0 z-30 bg-gray-950/25 lg:hidden" aria-label="Close navigation" @click="mobileOpen = false" />
     <aside class="fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col border-r border-default bg-default transition-transform lg:translate-x-0" :class="{ 'translate-x-0': mobileOpen }">
       <div class="flex h-16 items-center border-b border-default px-5">
@@ -48,12 +93,26 @@ async function logout() {
           <p class="truncate text-xs text-muted">Workspace <span class="px-1">/</span> <span class="text-highlighted">{{ $route.meta.title || 'Home' }}</span></p>
         </div>
         <div class="flex items-center gap-2">
-          <UButton icon="i-lucide-search" label="Search" color="neutral" variant="ghost" size="sm" class="hidden sm:inline-flex" />
+          <UButton icon="i-lucide-search" label="Search" color="neutral" variant="ghost" size="sm" class="hidden sm:inline-flex" aria-haspopup="dialog" @click="openSearch" />
           <UButton icon="i-lucide-refresh-cw" aria-label="Sync" color="neutral" variant="ghost" size="sm" />
           <UBadge color="success" variant="soft" class="hidden sm:inline-flex"><span class="mr-1.5 size-1.5 rounded-full bg-success" />Connected</UBadge>
         </div>
       </header>
       <main class="min-h-[calc(100vh-4rem)] p-4 sm:p-6 lg:p-8"><slot /></main>
     </div>
+    </div>
+
+    <UModal v-model:open="searchOpen" title="Search Situm Explore" description="Search local workspace destinations and prototype records." :ui="{ content: 'sm:max-w-xl' }" @after:leave="searchQuery = ''">
+    <template #body>
+      <UInput v-model="searchQuery" autofocus icon="i-lucide-search" placeholder="Search buildings, POIs, users, reports…" aria-label="Search workspace" class="w-full" />
+      <div class="mt-3 max-h-80 overflow-y-auto">
+        <NuxtLink v-for="result in searchResults" :key="`${result.to}-${result.label}`" :to="result.to" class="flex items-center gap-3 rounded-lg px-3 py-2.5 transition hover:bg-elevated" @click="closeSearch">
+          <span class="grid size-8 shrink-0 place-items-center rounded-md bg-elevated text-sm text-highlighted" aria-hidden="true">{{ result.icon }}</span>
+          <span class="min-w-0"><strong class="block truncate text-sm text-highlighted">{{ result.label }}</strong><span class="block truncate text-xs text-muted">{{ result.detail }}</span></span>
+        </NuxtLink>
+        <p v-if="searchResults.length === 0" class="px-3 py-6 text-center text-sm text-muted">No local results found.</p>
+      </div>
+    </template>
+    </UModal>
   </div>
 </template>

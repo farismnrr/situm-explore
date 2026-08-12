@@ -142,12 +142,12 @@ Dummy values may include visitors, device count, average stay, Viewer sessions, 
 
 Before implementation, inspect current search/command interaction intent.
 
-- [ ] Add approved search/command trigger.
-- [ ] Search only local app destinations and canonical typed prototype fixture records.
-- [ ] Implement `Cmd/Ctrl + K` and Escape when straightforward.
-- [ ] Navigation uses Nuxt routing.
-- [ ] No backend/global indexing.
-- [ ] Do not duplicate building/POI fixture objects.
+- [x] Add approved search/command trigger.
+- [x] Search only local app destinations and canonical typed prototype fixture records.
+- [x] Implement `Cmd/Ctrl + K` and Escape when straightforward.
+- [x] Navigation uses Nuxt routing.
+- [x] No backend/global indexing.
+- [x] Do not duplicate building/POI fixture objects.
 
 ## Phase 6 — Validation and documentation
 
