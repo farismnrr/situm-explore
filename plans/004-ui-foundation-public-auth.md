@@ -2,13 +2,76 @@
 
 Status: planned
 Branch: `plan/004-ui-foundation-public-auth`
-Depends on: merged foundation + populated `design/reference/situm-explore-interactive-prototype.html`
+Depends on: merged foundation; populated `design/reference/situm-explore-interactive-prototype.html` required before visual Phase 1+
 
 ## Goal
 
-Establish the approved visual foundation and implement the public/auth entry flow using the existing Nuxt/Vue/Nuxt UI stack without changing the existing authentication backend.
+First align the small existing application with the repository's Nuxt 4 architecture contract, then establish the approved visual foundation and implement the public/auth entry flow using the existing Nuxt/Vue/Nuxt UI stack without changing the existing authentication backend.
 
-## Mandatory reference-first protocol
+## Architecture contract
+
+Read `ARCHITECTURE.md` before changing code.
+
+The architecture phase is intentionally early because the application still has very few pages/components. Do the one-time Nuxt 4 directory migration before the UI roadmap multiplies files.
+
+Architecture principles for this plan:
+
+- Nuxt 4 conventions first;
+- KISS over ceremonial layers;
+- SOLID responsibility boundaries where they are real;
+- DRY only after meaningful repetition;
+- no speculative service/repository/store architecture;
+- preserve behavior while moving files.
+
+## Phase 0 — Nuxt 4 architecture alignment
+
+**This phase may execute while the canonical HTML still contains `Hello World`.** It is architecture-only and must not make visual/design decisions from the missing reference.
+
+Target migration:
+
+```text
+app.vue                         -> app/app.vue
+app.config.ts                   -> app/app.config.ts
+assets/css/main.css             -> app/assets/css/main.css
+pages/index.vue                 -> app/pages/index.vue
+pages/dashboard.vue             -> app/pages/dashboard.vue
+middleware/auth.ts              -> app/middleware/auth.ts
+components/SitumViewer.vue      -> app/components/situm/SitumViewer.vue
+components/AppShell.vue         -> app/components/app/AppShell.vue temporarily
+server/utils/db.ts              -> server/db/client.ts
+server/db/schema.ts             -> unchanged
+server/api/**                   -> unchanged routes
+```
+
+Tasks:
+
+- [ ] Read `ARCHITECTURE.md` and inspect the current tree before moving files.
+- [ ] Migrate the Vue application files into Nuxt 4's `app/` structure using file moves/renames rather than duplicate copies.
+- [ ] Keep `server/`, `shared/`, `public/`, `drizzle/`, `nuxt.config.ts`, and `drizzle.config.ts` at repository root as appropriate.
+- [ ] Move the real Situm viewer into `app/components/situm/SitumViewer.vue` without changing its SDK lifecycle.
+- [ ] Move the current shell into `app/components/app/AppShell.vue` only as an interim location; later authenticated-shell work may replace it with `app/layouts/app.vue`. Do not keep both architectures once the real app layout exists.
+- [ ] Move DB initialization from `server/utils/db.ts` to `server/db/client.ts` and update server imports. Keep `server/db/schema.ts` and the Drizzle tooling path stable.
+- [ ] Keep existing API URLs unchanged: `/api/auth/login`, `/api/me`, `/api/situm/status`.
+- [ ] Do not add `server/services/`, `server/repositories/`, `shared/`, Pinia, a generic API client, or Nuxt layers unless this migration discovers a concrete current need. Empty architecture folders are not required.
+- [ ] Ensure `nuxt.config.ts` continues to resolve the global CSS correctly after `~` points to the Nuxt 4 `app/` source directory.
+- [ ] Preserve the current `/` and `/dashboard` routes during this architecture-only phase; route expansion happens in later UI phases/plans.
+- [ ] Verify auth middleware, login, `/api/me`, and Situm Viewer imports still resolve after moves.
+- [ ] `git diff --check`.
+- [ ] `npm run lint`.
+- [ ] `npm run typecheck`.
+- [ ] `npm run build`.
+
+Acceptance:
+
+- the current application behaves the same;
+- Vue app code lives under Nuxt 4 `app/`;
+- server/database code remains root `server/`;
+- there are no old duplicate root `pages/`, `components/`, `middleware/`, or `assets/` application trees;
+- no speculative architecture was introduced.
+
+After Phase 0, stop before Phase 1 if the canonical HTML is still placeholder-only.
+
+## Mandatory reference-first protocol for Phase 1+
 
 Canonical visual/interaction reference:
 
@@ -16,13 +79,13 @@ Canonical visual/interaction reference:
 
 ### Hard stop when placeholder is present
 
-Before any UI implementation, open the canonical HTML.
+Before any **visual UI implementation**, open the canonical HTML.
 
-If it still contains only placeholder content such as `Hello World`, **stop this plan before changing UI code**. Do not infer the missing design from Plan 003, memory, generic SaaS patterns, deleted design docs, or agent taste.
+If it still contains only placeholder content such as `Hello World`, **stop after architecture work and do not change visual UI code**. Do not infer the missing design from Plan 003, memory, generic SaaS patterns, deleted design docs, or agent taste.
 
 ### When the HTML is populated
 
-For every phase:
+For every visual phase:
 
 1. Open the exact relevant section of the canonical HTML first.
 2. Understand its rendered hierarchy, proportions, spacing, typography, responsive behavior, interaction states, and action priority.
@@ -45,6 +108,7 @@ Do not paste prototype CSS, recreate its `.btn`/`.card`/`.pill` system, or copy 
 ## Required reading
 
 - `AGENTS.md`
+- `ARCHITECTURE.md`
 - `DESIGN.md`
 - `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
@@ -67,7 +131,7 @@ Selector/class names in the user's HTML may change when they replace the placeho
 ## Phase 1 — Visual tokens and brand
 
 - [ ] Confirm the canonical HTML is populated; stop if it is still placeholder-only.
-- [ ] Audit current Nuxt UI app config and global CSS from the existing app.
+- [ ] Audit current Nuxt UI `app/app.config.ts` and `app/assets/css/main.css` after Phase 0.
 - [ ] Preserve light-only behavior.
 - [ ] Identify the populated reference's neutral hierarchy, semantic accents, border treatment, radii, typography scale, spacing rhythm, and shadow restraint.
 - [ ] Express those decisions primarily through Nuxt UI semantic configuration/app config and existing utility classes.
@@ -152,6 +216,7 @@ There is no registration/account backend in current scope.
 - [ ] Keyboard/focus behavior works.
 - [ ] CTA links use real Nuxt navigation.
 - [ ] Nuxt implementation materially matches the populated HTML without copying its code architecture.
+- [ ] Architecture still follows `ARCHITECTURE.md`; do not let UI implementation create feature-specific folder conventions ad hoc.
 - [ ] Document any deliberate deviation caused by accessibility/framework constraints.
 - [ ] `git diff --check`.
 - [ ] `npm run lint`.
@@ -168,4 +233,5 @@ There is no registration/account backend in current scope.
 - registration backend;
 - Situm API expansion;
 - analytics backend;
-- copying the reference HTML/CSS/JS into production.
+- copying the reference HTML/CSS/JS into production;
+- speculative services/repositories/global state/layers.
