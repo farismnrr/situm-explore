@@ -212,6 +212,10 @@ The broader Read & Write POC key does not authorize adding new remote features i
 
 ## Completion boundary
 
+### Execution blocker
+
+Phase 4 cannot start in this run because the configured worker could not be spawned: the agent service reported that its thread limit was reached, and the previously used worker IDs were unavailable. Remaining phases are intentionally left incomplete rather than implemented by the parent agent.
+
 Plan 009 is complete only when the user can review the **entire UI roadmap as one coherent product**.
 
 Do not start Plan 010 or any later Situm backend/integration work until:

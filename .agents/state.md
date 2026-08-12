@@ -117,9 +117,7 @@ Later plans also execute sequentially through integrated `main`. Any Nitro/serve
 
 ## Current open loop
 
-The canonical HTML still contains only `Hello World`. The user intends to replace it manually with the approved interactive prototype.
-
-Plan 004 Phase 0 may run before replacement, but visual work stops at the reference guard if placeholder remains. Prefer populating the HTML before full sequential execution so the Plan 004 branch does not need to pause mid-plan.
+Plan 009 is active on the explicitly authorized stacked branch. Phase 3 is complete and pushed; Phase 4 is blocked because the configured worker cannot currently be spawned (the agent service reports its thread limit is reached and prior worker IDs are unavailable). Do not implement the remaining phases directly in the parent agent.
 
 ## Audit status
 
@@ -142,4 +140,4 @@ The only intentional visual blocker is the user-populated canonical HTML.
 
 ## Next action
 
-Create Plan 009 from the completed Plan 008 HEAD, then finish the authorized stacked run without merging or opening PRs.
+Resume Plan 009 Phase 4 with the configured worker when worker capacity is available, then continue Phases 5–7 sequentially without merging or opening PRs.
