@@ -1,0 +1,186 @@
+# Plan 002 — Foundation Hardening
+
+Status: planned
+Scope: harden the completed web foundation before starting product/self-improvement features
+Principle: fix concrete foundation risks without expanding architecture.
+
+## Goal
+
+Close the small security, reproducibility, and configuration gaps found during the post-foundation review so the next plan can focus on product behavior instead of infrastructure cleanup.
+
+This plan must stay narrow. Do not add self-improvement domain models, native/mobile work, CI, unit-test infrastructure, or unrelated refactors.
+
+## Git execution
+
+Follow `AGENTS.md` and `.agents/protocols/git-workflow.md`.
+
+Use branch:
+
+```text
+plan/002-foundation-hardening
+```
+
+Use the normal repository working directory. Do **not** create a linked Git worktree for this plan.
+
+Start from the latest fetched `origin/main`:
+
+```bash
+git status --short
+git fetch origin
+git switch main
+git pull --ff-only origin main
+git switch -c plan/002-foundation-hardening origin/main
+```
+
+If the branch already exists, reuse it safely instead of recreating/forcing it.
+
+No pull request may be created until the user explicitly asks for one.
+
+---
+
+# Phase 1 — Public repository / resource exposure decision
+
+The repository is currently public and contains committed building floorplan JPEGs plus metadata that maps the local assets to Situm building/floor identifiers.
+
+Do not silently assume this exposure is acceptable.
+
+- [ ] Confirm current repository visibility before changing anything.
+- [ ] Inventory committed building resources and metadata that are publicly reachable.
+- [ ] Confirm the intended policy: intentionally public, or must be protected/removed.
+- [ ] If public exposure is approved, persist the decision and avoid unnecessary file churn.
+- [ ] If public exposure is not approved, stop product work and prepare the smallest safe remediation path.
+- [ ] Remember: deleting a file in a new commit does not remove its historical Git blob.
+- [ ] Do not rewrite Git history or change repository visibility without explicit user authorization.
+
+Acceptance:
+
+- [ ] Resource visibility policy is explicit and persisted.
+- [ ] No destructive history rewrite or visibility change happened implicitly.
+
+---
+
+# Phase 2 — Situm browser credential boundary
+
+The browser Map Viewer requires a client-visible credential, but the browser should not receive a broad discovery/admin key if a least-privilege viewer key is available.
+
+- [ ] Inspect local Situm credential usage without printing or persisting credential values.
+- [ ] Verify current official Situm Map Viewer/browser key guidance.
+- [ ] Determine whether the configured browser key is dedicated/least-privilege for Map Viewer use.
+- [ ] Prefer a dedicated read-only/browser-safe viewer credential for `NUXT_PUBLIC_SITUM_API_KEY`.
+- [ ] Keep discovery/admin/server credentials out of `runtimeConfig.public`.
+- [ ] If a new viewer key requires a manual user action, document exactly what is needed; do not expose the existing secret.
+- [ ] Update `.env.example`, README, and `.agents/knowledge/` only if the credential model changes.
+
+Acceptance:
+
+- [ ] Browser credential exposure is intentional and least-privilege.
+- [ ] No broad server/admin credential is exposed to the browser.
+
+---
+
+# Phase 3 — Make Nuxt ESLint reproducible from a clean clone
+
+The foundation uses `@nuxt/eslint` and imports generated `.nuxt/eslint.config.mjs`. Make sure the Nuxt module actually generates that config reliably.
+
+- [ ] Register `@nuxt/eslint` in `nuxt.config.ts` using the current recommended Nuxt setup.
+- [ ] Keep one flat-config ESLint setup; do not introduce a parallel legacy config.
+- [ ] Verify a clean generated state can produce the expected Nuxt ESLint config.
+- [ ] Run `npm run lint` and require zero lint errors.
+
+Acceptance:
+
+- [ ] Fresh clone/install does not rely on stale local `.nuxt` output for lint configuration.
+- [ ] `npm run lint` passes.
+
+---
+
+# Phase 4 — Make Situm viewer readiness truthful
+
+Do not mark the viewer ready just because `viewer.create(...)` returned without a synchronous exception.
+
+- [ ] Inspect the current Situm SDK viewer lifecycle/events.
+- [ ] Wait for the current supported viewer/map-ready event before setting UI state to `ready`.
+- [ ] Keep a clear loading state until the viewer is actually ready.
+- [ ] Surface initialization/runtime errors clearly with Nuxt UI.
+- [ ] Avoid adding a generalized event bus or abstraction layer.
+- [ ] If `/api/situm/status` remains, make its semantics explicit: configuration-present is not viewer-ready.
+
+Acceptance:
+
+- [ ] Dashboard reports Situm ready only after the SDK signals real readiness.
+- [ ] Missing config, initialization failure, and ready states are distinguishable.
+
+---
+
+# Phase 5 — Remove fake PostgreSQL schema configurability
+
+The committed migration owns the fixed `situm_explore` schema. Runtime config should not pretend a different schema can be selected when committed migrations do not follow that choice.
+
+Preferred direction: keep the application-owned schema fixed as `situm_explore` until a real multi-schema requirement exists.
+
+- [ ] Remove `DB_SCHEMA` from `.env.example` and setup docs.
+- [ ] Define the Drizzle schema with the fixed `situm_explore` name.
+- [ ] Remove `runtimeConfig.dbSchema` if unused.
+- [ ] Scope `drizzle.config.ts` explicitly to `situm_explore` instead of environment-driven schema selection.
+- [ ] Do not generate a destructive migration merely because config was simplified.
+- [ ] Inspect the existing migration and confirm it still matches the intended fixed schema.
+- [ ] Keep `DATABASE_URL` configurable.
+
+Acceptance:
+
+- [ ] Runtime queries and migrations agree on the same fixed application schema.
+- [ ] No unrelated PostgreSQL object is touched.
+
+---
+
+# Phase 6 — Reconcile completed plan history
+
+Plans 000 and 001 are marked complete but contain stale unchecked items. Plans are persistent execution history, so status and checkboxes should not contradict each other.
+
+- [ ] Review unchecked items in `plans/000-resource-gathering.md` against actual implementation/session evidence.
+- [ ] Review unchecked vertical-slice items in `plans/001-web-foundation.md` against actual smoke-test evidence.
+- [ ] Mark items complete only when evidence supports it.
+- [ ] Mark intentionally skipped/non-applicable optional items explicitly as deferred/N/A.
+- [ ] Keep historical blockers/discovery truthful; do not rewrite history to look cleaner.
+- [ ] Update `.agents/state.md` so only current work is presented as active.
+
+Acceptance:
+
+- [ ] Completed plans no longer contain misleading status/checklist contradictions.
+- [ ] Deferred optional work remains explicitly visible.
+
+---
+
+# Phase 7 — Final validation and closeout
+
+No CI or unit-test framework is required for this plan.
+
+- [ ] `git diff --check`
+- [ ] Clean lockfile install validation with `npm ci` when practical.
+- [ ] `npm run lint`
+- [ ] `npm run typecheck`
+- [ ] `npm run build`
+- [ ] Manual unauthenticated `/api/me` check still rejects access.
+- [ ] Manual authenticated `/api/me` check still reaches Drizzle/PostgreSQL.
+- [ ] Manual Situm dashboard check reaches the real SDK ready state with local config.
+- [ ] No secrets are staged or committed.
+- [ ] Update relevant `.agents/` files before final phase commit.
+- [ ] Commit and push every completed phase according to the Git protocol.
+- [ ] Do not open a PR until explicitly authorized.
+
+---
+
+## Explicit non-goals
+
+- No self-improvement product/domain tables yet.
+- No native/mobile app.
+- No CI setup.
+- No unit-test framework.
+- No account-management expansion.
+- No unrelated refactor.
+
+## Definition of done
+
+This plan is complete when the current Nuxt foundation has an explicit resource-visibility policy, a least-privilege Situm browser credential boundary, reproducible lint setup, truthful viewer readiness, one fixed PostgreSQL schema contract, reconciled plan history, and passing local quality gates.
+
+After that, the next plan may start the first actual self-improvement product behavior.

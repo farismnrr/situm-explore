@@ -4,49 +4,59 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Local testing of the completed Nuxt web foundation with local environment configured; dev server is running on port 3000.
+Harden the completed Nuxt web foundation before starting the first self-improvement product/domain plan.
 
 ## Phase
 
-**Phase 1 — Web foundation complete**
+**Phase 2 — Foundation hardening planned**
 
 ## Active decisions
 
 - Root `AGENTS.md` acts as a short router into `.agents/`.
 - `.agents/` is the source of truth for persistent agent context.
 - Every conversation creates a concise session entry.
-- Every plan executes in its own `plan/<number>-<slug>` branch and linked worktree; do not implement plans directly on `main`.
+- Every plan executes on its own `plan/<number>-<slug>` branch in the normal repository working directory.
+- Linked Git worktrees are not required; do not create them unless the user explicitly asks for them.
 - After each completed implementation phase, update the plan + relevant `.agents/`, validate, commit, and push the plan branch.
+- Do not implement plans directly on `main`.
 - Do not create a PR until the user explicitly authorizes it.
-- CI and unit-test infrastructure are deferred for now; Nuxt lint is mandatory once code/lint tooling exists.
+- CI and unit-test infrastructure are deferred for now; Nuxt lint is mandatory for code-changing phases.
 - Build web first; native/mobile remains deferred.
 - Use one full-stack Nuxt application for frontend and backend.
 - Use Nuxt UI.
-- Integrate Situm on web first through environment configuration.
-- Reuse the existing PostgreSQL database with a dedicated Situm Explore schema.
-- Codex must inspect the existing database before applying any schema/migration changes.
+- Integrate Situm on web first.
+- Reuse the existing PostgreSQL database with the dedicated Situm Explore schema.
 - Use Drizzle ORM.
-- Use a maintained Nuxt-oriented auth module/plugin rather than custom auth infrastructure.
-- Keep the architecture deliberately simple until real requirements justify more complexity.
-- Gather resources before implementation when they already exist locally; do not ask the user for metadata Codex can safely discover from Situm/PostgreSQL.
-- Preserve original local source assets during intake; copy normalized repository-local versions instead of deleting the originals.
+- Use `nuxt-auth-utils` for the current simple owner authentication/session flow.
+- Keep architecture deliberately simple until real requirements justify more complexity.
 
-## Active plans
+## Active plan
 
-1. `plans/000-resource-gathering.md`
-2. `plans/001-web-foundation.md`
+- `plans/002-foundation-hardening.md`
 
-## Known local resources
+## Completed plans
 
-- `/home/farismnrr/Downloads/lt 1-1422.jpeg`
-- `/home/farismnrr/Downloads/lt 2-1422.jpeg`
-- Situm API key exists locally and must never be committed.
-- Existing PostgreSQL database will be accessed through a local `DATABASE_URL` and a dedicated application schema.
+- `plans/000-resource-gathering.md`
+- `plans/001-web-foundation.md`
+
+## Known foundation state
+
+- Nuxt full-stack foundation is merged to `main`.
+- Local PostgreSQL `situm_explore` schema has been migrated without touching unrelated database objects.
+- Situm building discovery identified building `19866` and floors `69904`/`69905`.
+- Building floorplan JPEGs and related non-secret metadata are currently committed in a public repository; visibility/exposure must be treated as an explicit policy decision during hardening.
+- Local credentials remain ignored and must never be committed.
 
 ## Open loops
 
-- Stop the local Nuxt dev server when testing is finished. Future product work can start from `main` in a new plan branch/worktree.
+- Execute `plans/002-foundation-hardening.md` on branch `plan/002-foundation-hardening` using the normal repository working directory.
+- Resolve the public-resource exposure decision before treating the foundation as fully hardened.
+- Verify least-privilege Situm browser credential usage.
+- Make Nuxt ESLint clean-clone reproducible.
+- Make Situm viewer ready-state reflect the SDK's actual ready event.
+- Remove false PostgreSQL schema configurability and keep `situm_explore` explicit.
+- Reconcile stale checkboxes in completed plans 000/001.
 
 ## Next likely action
 
-The completed web foundation is merged to `main`; the local dedicated `situm_explore` schema is migrated and no unrelated database objects were changed.
+From a clean, up-to-date `main`, create/switch to `plan/002-foundation-hardening` in the normal repository directory and execute the plan phase by phase. Commit and push each completed phase; do not open a PR until explicitly authorized.

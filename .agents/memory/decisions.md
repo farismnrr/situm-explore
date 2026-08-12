@@ -20,31 +20,38 @@ Status: active.
 
 ## 2026-08-12 — Initial web architecture
 
-- Move from agent-foundation-only into the first web foundation phase.
 - Build web first; native/mobile is explicitly deferred.
 - Use a single full-stack Nuxt application for frontend and backend to minimize operational complexity.
 - Keep backend routes and server logic inside Nuxt/Nitro rather than introducing a separate backend service.
 - Use Nuxt UI for UI primitives.
-- Integrate Situm on the web first using environment-based configuration; do not commit the real API key.
-- Reuse the existing PostgreSQL database, but isolate Situm Explore in a dedicated PostgreSQL schema.
+- Integrate Situm on the web first using environment-based configuration; do not commit real credentials.
+- Reuse the existing PostgreSQL database, but isolate Situm Explore in its dedicated PostgreSQL schema.
 - Codex must inspect the existing database before applying migrations and must not modify unrelated schemas/tables.
 - Use Drizzle ORM for application-owned database access and migrations.
 - Use a maintained Nuxt-oriented auth module/plugin rather than building custom authentication infrastructure.
 - Avoid premature architecture: no monorepo, microservices, queues, separate API app, or native layer until requirements justify them.
-- The implementation sequence is tracked in `plans/001-web-foundation.md`.
 
 Status: active.
 
 ## 2026-08-12 — Git execution workflow
 
-- Every plan must be implemented in its own dedicated `plan/<number>-<slug>` branch and linked Git worktree.
+- Every plan must be implemented on its own dedicated `plan/<number>-<slug>` branch.
+- Use the normal repository working directory. Linked Git worktrees are no longer required and should not be created unless the user explicitly requests them.
 - New plan work should start from the latest fetched `origin/main` unless an explicit dependency requires another base.
-- The main worktree is a coordination workspace; do not implement plan changes directly on `main`.
-- Every completed implementation phase must update the plan and relevant `.agents/` persistence first, then be committed and pushed to the plan branch.
+- Never implement plan changes directly on `main`.
+- Every completed implementation phase must update the plan and relevant `.agents/` persistence first, then be validated, committed, and pushed to the plan branch.
 - Pull requests are user-gated: pushing a plan branch must never automatically create a PR, including a draft PR.
 - CI is intentionally deferred for now.
 - Unit tests/test-runner infrastructure are intentionally deferred for now to avoid premature complexity.
-- Once Nuxt exists, linting is mandatory for code-changing phases and should use Nuxt's maintained `@nuxt/eslint` project-aware flat-config approach.
+- Nuxt lint is mandatory for code-changing phases and must pass before commit/push.
 - Avoid force-push/destructive Git operations as normal workflow; preserve small, reviewable, phase-scoped history.
+
+Status: active.
+
+## 2026-08-12 — Foundation hardening before product work
+
+- Run one narrow hardening plan before introducing self-improvement product/domain features.
+- Hardening should address public-resource exposure policy, least-privilege Situm browser credentials, reproducible Nuxt ESLint setup, truthful Situm viewer readiness, fixed `situm_explore` schema ownership, and stale completed-plan checklist state.
+- Keep this as foundation cleanup only; do not expand it into product architecture, CI, tests, or native/mobile work.
 
 Status: active.

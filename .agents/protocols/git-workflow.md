@@ -6,54 +6,68 @@ The goals are isolation, reviewability, recoverability, and low process overhead
 
 ## Core rules
 
-1. One plan = one dedicated branch = one dedicated Git worktree.
-2. Never implement a plan directly in the main worktree or directly on `main`.
-3. Every completed implementation phase must end with a commit and a push to that plan branch.
-4. Before every phase commit, update the relevant `.agents/` persistent context and the plan checklist/status.
-5. Never open a pull request until the user explicitly asks for one.
-6. CI is intentionally deferred for now.
-7. Unit tests are intentionally deferred for now; do not add a test framework just for ceremony.
-8. Linting is mandatory for code-changing phases and must pass before commit/push.
-9. Never commit secrets, `.env`, API keys, database credentials, tokens, or generated credential files.
-10. Prefer small, phase-scoped commits with clear Conventional Commit-style messages.
+1. One plan = one dedicated Git branch.
+2. Use the repository's normal working directory. Linked Git worktrees are **not required** and should not be created unless the user explicitly requests them later.
+3. Never implement a plan directly on `main`.
+4. Every completed implementation phase must end with a commit and push to the plan branch.
+5. Before every phase commit, update the active plan and relevant `.agents/` persistent context.
+6. Never open a pull request until the user explicitly asks for one.
+7. CI is intentionally deferred for now.
+8. Unit tests are intentionally deferred for now; do not add a test framework just for ceremony.
+9. Linting is mandatory for code-changing phases and must pass before commit/push.
+10. Never commit secrets, `.env`, API keys, database credentials, tokens, or generated credential files.
+11. Prefer small, phase-scoped commits with clear Conventional Commit-style messages.
+12. Do not force-push or destructively rewrite branch history as normal workflow.
 
 ## 1. Start a plan safely
 
-Before creating anything:
+Before switching branches:
 
 ```bash
 git status --short
-git worktree list
 git fetch origin
 ```
 
-The main worktree should remain a clean coordination workspace. Do not silently discard or overwrite existing local changes.
+Do not silently discard local changes. If the current working directory contains unrelated changes, preserve them safely before switching branches; never use destructive reset/clean as a shortcut.
 
-For a plan named, for example, `plans/001-web-foundation.md`, use:
-
-```text
-branch:   plan/001-web-foundation
-worktree: ../situm-explore-worktrees/001-web-foundation
-```
-
-Preferred creation flow:
+For a new plan, synchronize `main` first:
 
 ```bash
-mkdir -p ../situm-explore-worktrees
-git worktree add -b plan/001-web-foundation ../situm-explore-worktrees/001-web-foundation origin/main
+git switch main
+git pull --ff-only origin main
 ```
 
-Rules:
+For a plan such as `plans/002-foundation-hardening.md`, create its branch from the latest `origin/main`:
 
-- Base a new plan branch on the latest fetched `origin/main` unless the plan explicitly depends on another unmerged branch.
-- If the branch or worktree already exists, inspect and reuse it instead of recreating it with force.
-- Do not use `-B`, `--force`, hard reset, or destructive cleanup as a shortcut.
-- Verify the worktree before implementation:
+```bash
+git switch -c plan/002-foundation-hardening origin/main
+```
+
+Then verify:
 
 ```bash
 git branch --show-current
 git status --short
 ```
+
+If the plan branch already exists locally or remotely, inspect and reuse it instead of recreating it or forcing it to another commit.
+
+Examples:
+
+```bash
+# existing local branch
+git switch plan/002-foundation-hardening
+
+# remote branch not yet tracked locally
+git switch --track origin/plan/002-foundation-hardening
+```
+
+Rules:
+
+- A new plan branch normally starts from the latest fetched `origin/main`.
+- If a plan explicitly depends on another unmerged plan, document that dependency before using a different base.
+- Do not use `git switch -C`, `git checkout -B`, `git reset --hard`, `git clean -fd`, or `--force` as routine shortcuts.
+- Only one plan needs to be checked out in the normal working directory at a time.
 
 ## 2. Branch naming
 
@@ -68,41 +82,41 @@ Examples:
 ```text
 plan/000-resource-gathering
 plan/001-web-foundation
-plan/002-some-feature
+plan/002-foundation-hardening
 ```
 
-Non-plan maintenance may use conventional prefixes such as `docs/`, `chore/`, `fix/`, or `refactor/`, but plan execution always uses the `plan/` convention.
+Non-plan maintenance may use conventional prefixes such as `docs/`, `chore/`, `fix/`, or `refactor/`, but plan execution uses the `plan/` convention.
 
 Do not mix multiple plans into one branch.
 
 ## 3. Phase boundaries
 
-A phase is an explicit phase in the plan. If a plan does not use the word "phase", treat each top-level numbered implementation section as a phase unless the plan clearly groups sections differently.
+A phase is an explicit phase in the plan. If a plan does not use the word `phase`, treat each top-level numbered implementation section as a phase unless the plan clearly groups sections differently.
 
 At the start of a phase:
 
 - read the relevant plan section;
 - inspect existing code/config before editing;
-- confirm the current branch/worktree;
+- confirm the current branch;
 - keep scope limited to that phase.
 
 Do not opportunistically implement future phases just because nearby code is easy to change.
 
 ## 4. Mandatory pre-commit persistence checkpoint
 
-Before every phase commit, Codex must run the repository persistence workflow.
+Before every phase commit, run the repository persistence workflow.
 
 At minimum:
 
-1. Update the completed checkboxes/status in the active `plans/*.md` file.
+1. Update completed checkboxes/status in the active `plans/*.md` file.
 2. Update `.agents/state.md` when current focus, open loops, blockers, or next action changed.
 3. Update `.agents/memory/decisions.md` when the phase introduced a durable project/architecture decision.
 4. Update `.agents/knowledge/` when reusable technical discoveries were learned.
 5. Update `.agents/reflections/` when the phase produced a reusable process/agent lesson.
 6. Append a concise phase/session trace to `.agents/sessions/YYYY-MM-DD.md`.
-7. Do not fabricate updates to durable stores when nothing durable changed.
+7. Do not fabricate durable updates when nothing durable changed.
 
-The `.agents/` changes belong in the same phase commit as the implementation that produced them. This makes repository history explain both **what changed** and **what the agent learned**.
+The `.agents/` changes belong in the same phase commit as the implementation that produced them. Repository history should explain both **what changed** and **what the agent learned**.
 
 Never persist secrets or credential values in `.agents/`.
 
@@ -116,7 +130,7 @@ git diff --check
 git diff
 ```
 
-Review staged content before committing:
+After staging, review exactly what will be committed:
 
 ```bash
 git diff --staged
@@ -124,26 +138,21 @@ git diff --staged
 
 ### Nuxt lint requirement
 
-Once the Nuxt application exists, use the current Nuxt-recommended ESLint integration:
-
-- `@nuxt/eslint`;
-- project-aware ESLint flat config (`eslint.config.mjs` or current generated equivalent);
-- a package script equivalent to `eslint .`.
+Use the maintained Nuxt ESLint integration and project-aware flat config.
 
 A code-changing phase may not be committed/pushed with lint errors.
 
-Use the repository's selected package manager, for example:
+Use the repository's selected package manager:
 
 ```bash
-pnpm lint
-# or npm run lint / yarn lint / bun run lint, matching the committed lockfile
+npm run lint
 ```
 
 Do not switch package managers during a plan.
 
-If the phase is docs/resources-only and the Nuxt linter does not exist yet, do not install framework tooling solely to lint Markdown/images. `git diff --check` and appropriate file/resource validation are sufficient until the app bootstrap phase installs the normal lint stack.
+If the active plan defines additional validation such as typecheck or build, run it too. Unit tests are not required at this stage unless the user later changes this policy.
 
-If the active plan defines additional validation such as build or typecheck, run it too. Unit tests are not required at this stage unless the user later changes this policy.
+For docs/resources-only phases, use appropriate lightweight validation and `git diff --check`; do not add framework tooling solely for ceremony.
 
 ## 6. Commit discipline
 
@@ -154,26 +163,24 @@ Use clear Conventional Commit-style subjects, for example:
 ```text
 chore: gather building resources
 feat: bootstrap Nuxt web foundation
-feat: configure Situm web integration
-feat: add authentication flow
-chore: configure Drizzle schema
-fix: handle missing Situm configuration
+fix: make Situm viewer readiness truthful
+chore: harden foundation configuration
 ```
 
 Guidelines:
 
 - Keep each commit scoped to one completed phase.
 - Do not bundle unrelated cleanup.
-- Do not use vague subjects such as `update`, `changes`, or `wip` for a completed phase.
-- Do not amend/rewrite an already pushed phase commit unless there is a concrete reason.
-- Never force-push as a normal workflow. If rewriting public branch history becomes necessary, get explicit user approval first.
+- Do not use vague completed-phase subjects such as `update`, `changes`, or `wip`.
+- Do not amend/rewrite an already pushed phase commit without a concrete reason.
+- Never force-push as normal workflow. Get explicit user approval before rewriting pushed history.
 
 ## 7. Push after every completed phase
 
-The first push for a plan branch should set its upstream explicitly:
+The first push for a plan branch sets upstream explicitly:
 
 ```bash
-git push -u origin plan/001-web-foundation
+git push -u origin plan/002-foundation-hardening
 ```
 
 Later phase commits:
@@ -189,7 +196,7 @@ git status
 git log -1 --oneline
 ```
 
-Expected state: working tree clean and local branch synchronized with its upstream.
+Expected state: the working tree is clean and the local branch is synchronized with its upstream.
 
 Do not push plan commits directly to `main`.
 
@@ -203,11 +210,11 @@ Until the user explicitly asks for a PR:
 - do not call a GitHub PR creation tool;
 - do not auto-open a draft PR;
 - do not merge the branch into `main`;
-- keep the pushed branch/worktree available for review and follow-up changes.
+- keep the pushed branch available for review and follow-up changes.
 
-When the user later asks for a PR, review the full branch diff and current `.agents/` state before creating it.
+When the user asks for a PR, review the full branch diff, validation results, active plan, and `.agents/` state before creating it.
 
-## 9. CI and tests policy for the current phase of the project
+## 9. CI and tests policy
 
 ### CI
 
@@ -220,38 +227,39 @@ CI is intentionally not configured yet.
 
 Unit tests are intentionally deferred to avoid premature complexity.
 
-- Do not install Vitest/Jest/etc. just to satisfy a generic testing convention.
+- Do not install Vitest/Jest/etc. just to satisfy a generic convention.
 - Do not add placeholder tests.
 - Revisit testing when product logic becomes substantial enough to justify it or the user explicitly requests it.
 
-This does not prohibit lightweight manual verification, lint, typecheck, build checks, migration inspection, or other validation required by the active plan.
+This does not prohibit manual verification, lint, typecheck, build checks, migration inspection, or other validation required by the active plan.
 
-## 10. Worktree lifecycle
+## 10. Branch lifecycle
 
-While a plan is awaiting user review or PR authorization, keep its branch and worktree intact.
+While a plan is awaiting review or PR authorization, keep its pushed branch intact.
 
-Do not automatically delete the worktree immediately after the final push.
-
-After the work is integrated or the user explicitly says the branch can be cleaned up, use normal Git cleanup:
+After the plan is merged/integrated:
 
 ```bash
-git worktree remove ../situm-explore-worktrees/001-web-foundation
-git worktree prune
+git switch main
+git pull --ff-only origin main
+git branch -d plan/002-foundation-hardening
 ```
 
-Delete local/remote branches only when it is clear they are no longer needed.
+Delete a remote branch only when it is clearly no longer needed.
+
+No linked-worktree cleanup is needed because normal plan execution uses the ordinary repository working directory.
 
 ## Phase closeout checklist
 
 Before saying a phase is complete, all applicable items must be true:
 
-- [ ] Correct plan branch and worktree are active.
+- [ ] Correct plan branch is active; work is not being done on `main`.
 - [ ] Phase scope is complete; future phases were not pulled in unnecessarily.
 - [ ] Plan checklist/status is updated.
 - [ ] `.agents/` persistence pass is complete.
 - [ ] No secrets are staged.
 - [ ] `git diff --check` passes.
-- [ ] Nuxt lint passes for code-changing phases once lint tooling exists.
+- [ ] Nuxt lint passes for code-changing phases.
 - [ ] Any additional validation required by the plan passes.
 - [ ] Changes are committed with a clear phase-scoped message.
 - [ ] Commit is pushed to the plan branch/upstream.

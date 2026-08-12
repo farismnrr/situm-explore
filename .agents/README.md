@@ -12,7 +12,7 @@ The root `AGENTS.md` is intentionally small. This directory contains the operati
 | `state.md` | Current focus, open loops, blockers, and next actions. |
 | `protocols/chat-lifecycle.md` | What to read and do during each conversation. |
 | `protocols/persistence.md` | Rules for deciding what gets written after a chat. |
-| `protocols/git-workflow.md` | Mandatory branch/worktree, phase commit/push, lint, and PR-gate workflow for plan implementation. |
+| `protocols/git-workflow.md` | Mandatory plan-branch, phase commit/push, lint, and PR-gate workflow. |
 | `memory/` | Durable context about the user: profile, preferences, goals, decisions. |
 | `knowledge/` | Reusable external/domain knowledge and frameworks. |
 | `reflections/` | Lessons that should improve future agent behavior. |
@@ -73,8 +73,9 @@ Never silently promote inference above explicit user statements.
 - Keep provenance clear: `user-stated`, `observed`, or `inferred`.
 - If confidence is low, say so in the stored entry.
 - Never persist secrets or credentials.
-- Keep plan branches/worktrees isolated and preserve a reviewable phase-by-phase Git history.
+- Keep each plan isolated on its own branch and preserve a reviewable phase-by-phase Git history.
+- Use the normal repository working directory; linked Git worktrees are optional only when explicitly requested.
 
 ## Current scope
 
-The project is currently gathering resources before the first web implementation plan. Web architecture is intentionally simple; native/mobile, CI, and unit-test infrastructure are deferred until requirements justify them or the user explicitly asks for them.
+The Nuxt web foundation is complete. The current next step is a narrow foundation-hardening plan before starting self-improvement product/domain features. Native/mobile, CI, and unit-test infrastructure remain deferred until requirements justify them or the user explicitly asks for them.

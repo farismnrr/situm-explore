@@ -19,7 +19,7 @@ For any plan execution or repository implementation work, also read and follow:
 
 5. `.agents/protocols/git-workflow.md`
 
-The Git workflow protocol is mandatory. In particular, plan implementation must happen in a dedicated plan branch + Git worktree, and completed phases must be persisted, validated, committed, and pushed without opening a PR unless the user explicitly asks for one.
+The Git workflow protocol is mandatory. In particular, every plan uses its own dedicated branch in the normal repository working directory. Linked Git worktrees are not required. Completed phases must be persisted, validated, committed, and pushed without opening a PR unless the user explicitly asks for one.
 
 ## Mandatory chat closeout
 
@@ -42,4 +42,5 @@ Prefer revising existing entries over adding duplicates.
 - Mark inference as inference; do not rewrite guesses as user-stated facts.
 - Do not treat session logs as permanent truth when a newer durable memory contradicts them.
 - Keep architecture simple until requirements justify complexity.
+- Do not implement plans directly on `main`.
 - Do not create pull requests for plan branches without explicit user authorization.
