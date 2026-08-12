@@ -2,11 +2,11 @@
 
 Status: planned
 Branch: `plan/009-ui-conformance-polish`
-Depends on: Plans 004–008
+Depends on: Plan 008 complete, reviewed, and integrated into `main` (therefore Plans 004–007 are already integrated too)
 
 ## Goal
 
-Do a dedicated visual-conformance and interaction-quality pass after all approved reference surfaces exist. This plan must not redesign the product.
+Perform a dedicated screen-by-screen visual, responsive, interaction, accessibility, architecture, and existing-integration conformance pass after every UI surface from Plans 004–008 exists. This plan must not redesign the product or add backend/Situm product-domain integrations.
 
 ## Mandatory HTML-first conformance protocol
 
@@ -14,188 +14,207 @@ Canonical visual/interaction reference:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-This plan is a **screen-by-screen comparison against the canonical HTML**, not a generic polish pass.
+Before changing a screen:
 
-Before changing any screen:
-
-1. Open the canonical HTML reference.
-2. Navigate/read the exact prototype screen/section under review.
-3. Inspect its desktop state, mobile media-query behavior and relevant JavaScript interaction states.
+1. Open the current canonical HTML.
+2. Locate the corresponding screen semantically.
+3. Inspect desktop/mobile behavior and relevant interaction states.
 4. Open the corresponding Nuxt route.
-5. Compare hierarchy, spacing, density, interactions and responsive behavior.
-6. Change Nuxt to match the approved reference unless a real accessibility/framework/SDK constraint requires a documented deviation.
-7. Re-check the same HTML section after the change.
+5. Compare hierarchy, spacing, density, interactions, and responsive behavior.
+6. Change Nuxt to match unless accessibility/framework/SDK reality requires a documented deviation.
+7. Re-check the same reference area.
 
-Do not rely on screenshots from memory. Do not introduce a new visual direction.
+Old selector names listed below are **locator hints for the approved prototype**, not independent design sources. If the user-populated HTML changed IDs/classes, locate the corresponding screen by content/function. Never reconstruct a missing screen from the plan text alone.
 
-## Source of truth
+## Authority
 
-1. `design/reference/situm-explore-interactive-prototype.html`
-2. `DESIGN.md`
-3. `design/IMPLEMENTATION.md`
-4. active Plan 009 notes
+For visual decisions:
 
-If implemented Nuxt UI differs materially from the reference, prefer changing Nuxt implementation to match the reference unless a real framework/accessibility constraint requires a documented deviation.
+1. user's latest explicit direction;
+2. populated canonical HTML;
+3. `DESIGN.md`;
+4. this active plan;
+5. `design/IMPLEMENTATION.md`.
 
-## Required screen mapping
+For code/folder/dependency decisions, `ARCHITECTURE.md` remains authoritative.
 
-Use this exact checklist during the audit:
+## Required reading
 
-- `/` -> `#screen-landing`
-- `/login` -> `#screen-auth` + `#loginPane`
-- `/register` -> `#screen-auth` + `#registerPane`
-- `/app` -> `#app-home`
-- `/app/dashboard` -> `#app-dashboard`
-- `/app/map` -> `#app-map`
-- `/app/buildings` -> `#app-buildings`
-- `/app/pois` -> `#app-pois`
-- `/app/geofences` -> `#app-geofences`
-- `/app/paths` -> `#app-paths`
-- `/app/realtime` -> `#app-realtime`
-- `/app/analytics` -> `#app-analytics`
-- `/app/alarms` -> `#app-alarms`
-- `/app/users` -> `#app-users`
-- `/app/organization` -> `#app-organization`
-- `/app/settings` -> `#app-settings`
-- shared details drawer -> `#detailDrawer`
-- global search modal -> `#searchModal`
-- viewer settings modal -> `#viewerModal`
+- `AGENTS.md`
+- `ARCHITECTURE.md`
+- `DESIGN.md`
+- `design/IMPLEMENTATION.md`
+- `design/data-source-matrix.md`
+- `design/reference/situm-explore-interactive-prototype.html`
+- completed Plans 004–008 implementation/state
+- this plan
 
-## Phase 1 — Visual audit
+## Screen mapping checklist
 
-Read each HTML section immediately before auditing its Nuxt route.
+Use the corresponding current HTML surface for:
 
-For every surface above, compare:
+- `/` — landing (historically `#screen-landing`)
+- `/login` — login auth state
+- `/register` — register auth state
+- `/app` — Home
+- `/app/dashboard` — Dashboard
+- `/app/map` — Map workspace
+- `/app/buildings` — Buildings/Floors
+- `/app/pois` — POIs
+- `/app/geofences` — Geofences
+- `/app/paths` — Paths/Routing
+- `/app/realtime` — Realtime
+- `/app/analytics` — Analytics/Reports
+- `/app/alarms` — Alarms
+- `/app/users` — Users/Groups
+- `/app/organization` — Organization
+- `/app/settings` — Viewer Settings
+- shared detail drawer
+- global search/command modal
+- viewer-settings modal/overlay when represented
 
-- [ ] page width and horizontal padding;
-- [ ] sidebar width/density where applicable;
-- [ ] navigation-arrow mark size/placement;
-- [ ] heading scale/letter spacing;
-- [ ] paragraph and metadata hierarchy;
-- [ ] vertical spacing rhythm;
-- [ ] border/radius values;
-- [ ] shadow restraint;
-- [ ] status-pill sizing/colors;
+## Phase 1 — Page-by-page visual audit
+
+For every surface above compare:
+
+- [ ] width/padding;
+- [ ] sidebar/topbar density where applicable;
+- [ ] navigation-arrow mark;
+- [ ] heading/body/metadata hierarchy;
+- [ ] spacing rhythm;
+- [ ] borders/radii/shadows;
+- [ ] status badges/pills;
 - [ ] neutral surface hierarchy;
-- [ ] button density and action hierarchy;
+- [ ] button/action hierarchy;
 - [ ] map prominence;
-- [ ] tables/toolbars/filter controls;
+- [ ] tables/toolbars/filters;
 - [ ] drawers/modals;
 - [ ] dummy charts/heatmaps;
-- [ ] empty/loading/error states where production behavior adds them.
+- [ ] truthful loading/empty/error states added by production behavior.
 
-Do not introduce a new visual direction during this audit.
+Record explicit signoff for:
 
-### Required page-by-page signoff
+- [ ] Landing
+- [ ] Login
+- [ ] Register
+- [ ] Home
+- [ ] Dashboard
+- [ ] Map
+- [ ] Buildings
+- [ ] POIs
+- [ ] Geofences
+- [ ] Paths
+- [ ] Realtime
+- [ ] Analytics including every represented report state
+- [ ] Alarms
+- [ ] Users
+- [ ] Organization
+- [ ] Settings including every represented settings state
+- [ ] shared drawer/search/modal states
 
-Do not mark Phase 1 complete with a single generic “looks close” statement. Record each page as checked:
-
-- [ ] Landing checked against `#screen-landing`.
-- [ ] Login checked against `#loginPane`.
-- [ ] Register checked against `#registerPane`.
-- [ ] Home checked against `#app-home`.
-- [ ] Dashboard checked against `#app-dashboard`.
-- [ ] Map checked against `#app-map`.
-- [ ] Buildings checked against `#app-buildings`.
-- [ ] POIs checked against `#app-pois`.
-- [ ] Geofences checked against `#app-geofences`.
-- [ ] Paths checked against `#app-paths`.
-- [ ] Realtime checked against `#app-realtime`.
-- [ ] Analytics checked against `#app-analytics` including every report tab.
-- [ ] Alarms checked against `#app-alarms`.
-- [ ] Users checked against `#app-users`.
-- [ ] Organization checked against `#app-organization`.
-- [ ] Settings checked against `#app-settings` including every settings tab.
-- [ ] Shared drawer/search/viewer modal states checked against HTML equivalents.
+Do not complete the phase with one generic `looks close` statement.
 
 ## Phase 2 — Responsive behavior
 
-**Before this phase, re-read all canonical `@media` rules instead of inferring mobile design from desktop.**
+Read the actual current HTML media-query/responsive behavior first.
 
 Validate at minimum:
 
 - [ ] desktop >= 1200px;
-- [ ] normal laptop around 1024px;
+- [ ] laptop around 1024px;
 - [ ] tablet around 768px;
 - [ ] mobile around 390px;
-- [ ] public nav/hero follows prototype collapse behavior;
-- [ ] auth split panel becomes the approved single-panel mobile composition;
-- [ ] app sidebar becomes mobile drawer;
-- [ ] wide tables scroll safely;
-- [ ] map workspace stacks/reflows without unusable height;
-- [ ] settings navigation follows mobile reference behavior;
+- [ ] landing/nav/hero reflow;
+- [ ] auth mobile composition;
+- [ ] app sidebar -> mobile drawer behavior;
+- [ ] tables scroll safely;
+- [ ] map workspace remains usable;
+- [ ] settings navigation responds appropriately;
 - [ ] forms remain comfortable;
 - [ ] no horizontal document overflow.
 
-Small responsive deviations are acceptable only when they improve usability/accessibility and are recorded in the plan notes.
+Small deviations are allowed only for real usability/accessibility reasons and must be documented.
 
 ## Phase 3 — Interaction consistency
 
-**Before reviewing an interaction, inspect its corresponding JavaScript behavior in the canonical HTML.**
+Inspect the corresponding HTML interaction intent before each review.
 
-Check:
+- [ ] route links use Nuxt routing;
+- [ ] auth remains real while matching approved visual states;
+- [ ] global search open/filter/navigate/close works locally;
+- [ ] drawers/modals close clearly and Escape works when supported by Nuxt UI primitives;
+- [ ] dummy filters/search work;
+- [ ] map Explore/Route/Layers states remain local/dummy except the pre-existing real viewer lifecycle;
+- [ ] analytics tabs work locally;
+- [ ] settings tabs/switch/reset work locally;
+- [ ] no dead controls unless intentionally disabled in the reference;
+- [ ] no dummy action claims a remote Situm mutation.
 
-- [ ] buttons use consistent hierarchy;
-- [ ] route links use Nuxt navigation instead of prototype screen switching;
-- [ ] auth tabs/pages preserve intended visual state while real login remains real;
-- [ ] global search open/filter/navigate/close behavior mirrors prototype intent;
-- [ ] drawers/modals close via obvious action + Escape when practical;
-- [ ] local dummy filters/search work like reference;
-- [ ] map Explore/Route/Layers state transitions preserve reference intent;
-- [ ] analytics tab switching preserves reference intent;
-- [ ] settings tab/switch/reset behavior preserves reference intent;
-- [ ] loading/empty/error states use common patterns;
-- [ ] real actions are distinguishable in source code from dummy actions;
-- [ ] no dead controls unless the reference intentionally shows a disabled state.
-
-The implementation does not need to copy prototype JavaScript literally; it must reproduce the approved interaction result using Vue/Nuxt state and routing.
+Do not add new Situm REST/SDK feature integration as part of polishing.
 
 ## Phase 4 — Accessibility
 
-The HTML reference establishes visual intent, but accessibility may override exact implementation mechanics.
+Visual fidelity does not override accessibility.
 
 - [ ] keyboard navigation;
-- [ ] focus visibility;
+- [ ] visible focus;
 - [ ] form labels;
-- [ ] icon-button accessible labels/tooltips;
+- [ ] accessible icon-button names/tooltips;
 - [ ] status not color-only;
 - [ ] adequate light-mode contrast;
 - [ ] sensible landmarks/headings;
-- [ ] modal/drawer focus handling where practical;
+- [ ] modal/drawer focus handling via Nuxt UI where appropriate;
 - [ ] reduced-motion-friendly behavior.
 
-Document accessibility-driven differences from HTML instead of silently diverging.
+Document accessibility-driven differences from HTML.
 
-## Phase 5 — Real integration regression check
+## Phase 5 — Real foundation regression check
 
-The reference uses dummy interactions in several places. Production behavior that already exists must stay real.
+Production behavior that existed before the UI roadmap must remain real:
 
-- [ ] real login success/failure still works;
-- [ ] auth middleware still protects `/app/**`;
-- [ ] logout works;
-- [ ] `/api/me` real behavior remains intact;
-- [ ] real Situm viewer still reaches `MAP_IS_READY`;
-- [ ] viewer error/missing-config states remain truthful;
-- [ ] no production API behavior was replaced with prototype-only fake behavior;
+- [ ] login success/failure;
+- [ ] `/app/**` auth middleware;
+- [ ] unauthenticated app routes go to `/login`;
+- [ ] logout;
+- [ ] `/api/me` real DB behavior;
+- [ ] real Situm Viewer initialization;
+- [ ] `MAP_IS_READY` readiness;
+- [ ] viewer missing-config/error behavior;
 - [ ] no secrets committed.
 
-## Phase 6 — Code cleanup
+The broader Read & Write POC key does not authorize adding new remote features in Plan 009.
 
-- [ ] remove obsolete Plan 003-only components/styles if no longer used;
-- [ ] remove duplicated one-off visual classes where central semantic styling is clearly better;
-- [ ] preserve prototype fidelity while simplifying obviously duplicated code;
-- [ ] do not over-abstract simple components;
-- [ ] keep dummy fixtures centralized and typed;
-- [ ] no new architecture package.
+## Phase 6 — Architecture/DRY cleanup
 
-## Final gates
+- [ ] verify Nuxt 4 `app/`, root `server/`, and optional `shared/` runtime boundaries;
+- [ ] remove obsolete Plan 003 shell/styles/routes when no longer needed;
+- [ ] ensure there is one authenticated layout owner;
+- [ ] remove duplicated synthetic building/POI/user records; canonical fixtures stay under `app/data/prototype/`;
+- [ ] remove duplicated visual code only where a real semantic component/pattern exists;
+- [ ] do not create generic components/services/repositories/stores for polish;
+- [ ] pages remain route composition rather than large feature dumps;
+- [ ] Nuxt UI primitives remain the production design foundation.
 
+## Phase 7 — Documentation and final gates
+
+- [ ] README setup/routes/Situm viewer location match the resulting application;
+- [ ] architecture/design/data-source docs do not describe superseded paths or permission wording;
+- [ ] active `.agents/state.md` reflects UI completion and the next post-UI integration boundary;
 - [ ] `git diff --check`;
 - [ ] `npm run lint`;
 - [ ] `npm run typecheck`;
 - [ ] `npm run build`;
-- [ ] manual visual walkthrough against every mapped HTML reference section;
-- [ ] list any intentional deviations and reasons in this plan;
-- [ ] update `.agents/` and plan;
-- [ ] commit/push phases;
+- [ ] manual visual walkthrough against every current reference surface;
+- [ ] list intentional deviations/reasons in this plan;
+- [ ] update `.agents/` and this plan;
+- [ ] commit/push each completed phase;
 - [ ] no PR until user authorization.
+
+## Completion boundary
+
+Plan 009 is complete only when the user can review the **entire UI roadmap as one coherent product**.
+
+Do not start Plan 010 or any later Situm backend/integration work until:
+
+1. Plan 009 is integrated into `main`; and
+2. the user explicitly says the UI is accepted enough to proceed.
