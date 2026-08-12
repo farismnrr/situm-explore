@@ -79,15 +79,15 @@ Represent only report tabs shown by the approved reference, such as:
 
 Rules:
 
-- [ ] typed local fixture data;
-- [ ] match tab density/selected state and information hierarchy;
-- [ ] lightweight CSS/SVG chart/heatmap visuals where suitable;
-- [ ] no chart dependency solely for dummy graphics;
-- [ ] date range is local state;
-- [ ] CSV action may create a local dummy CSV or local completion state only;
-- [ ] no report endpoint/job;
-- [ ] never silently mix fake metric values with a real source;
-- [ ] compare every state against the current HTML.
+- [x] typed local fixture data;
+- [x] match tab density/selected state and information hierarchy;
+- [x] lightweight CSS/SVG chart/heatmap visuals where suitable;
+- [x] no chart dependency solely for dummy graphics;
+- [x] date range is local state;
+- [x] CSV action may create a local dummy CSV or local completion state only;
+- [x] no report endpoint/job;
+- [x] never silently mix fake metric values with a real source;
+- [x] compare every state against the current HTML.
 
 ## Phase 3 — Alarms `/app/alarms`
 
