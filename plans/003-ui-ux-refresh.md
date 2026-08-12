@@ -91,18 +91,18 @@ Acceptance:
 
 The product is intentionally light mode only.
 
-- [ ] Configure Nuxt UI/color mode so the application consistently renders light.
-- [ ] Do not add a theme toggle.
-- [ ] Avoid dead dark-mode-specific classes/configuration.
-- [ ] Ensure initial browser/page rendering uses a light color scheme without a dark flash.
-- [ ] Configure a restrained neutral palette plus one primary accent using Nuxt UI semantics.
-- [ ] Set shared radius/container/global surface decisions centrally where supported.
-- [ ] Keep success/warning/error colors semantic and secondary to the main palette.
+- [x] Configure Nuxt UI/color mode so the application consistently renders light.
+- [x] Do not add a theme toggle.
+- [x] Avoid dead dark-mode-specific classes/configuration.
+- [x] Ensure initial browser/page rendering uses a light color scheme without a dark flash.
+- [x] Configure a restrained neutral palette plus one primary accent using Nuxt UI semantics.
+- [x] Set shared radius/container/global surface decisions centrally where supported.
+- [x] Keep success/warning/error colors semantic and secondary to the main palette.
 
 Acceptance:
 
-- [ ] Login and dashboard remain light regardless of system dark preference.
-- [ ] Global visual values are centralized rather than duplicated across pages.
+- [x] Login and dashboard remain light regardless of system dark preference.
+- [x] Global visual values are centralized rather than duplicated across pages.
 
 ---
 
