@@ -30,8 +30,8 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Alarms' })
     </ProductPageHeader>
 
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-      <USelect v-model="typeFilter" :items="alarmTypes" aria-label="Filter alarms by type" class="w-full sm:w-52" />
-      <USelect v-model="statusFilter" :items="alarmStatuses" aria-label="Filter alarms by status" class="w-full sm:w-44" />
+      <USelect v-model="typeFilter" :items="alarmTypes" aria-label="Filter alarms by type" class="alarm-filter w-full sm:w-52" />
+      <USelect v-model="statusFilter" :items="alarmStatuses" aria-label="Filter alarms by status" class="alarm-filter w-full sm:w-44" />
     </div>
 
     <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
@@ -66,4 +66,5 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Alarms' })
 
 <style scoped>
 .operations-page { max-width: 1480px; }
+.alarm-filter :deep([data-slot='control']) { min-height: 36px; height: 36px; border-radius: 9px; font-size: 10px; }
 </style>

@@ -42,7 +42,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
 
 <template>
   <div class="operations-page space-y-6">
-    <ProductPageHeader eyebrow="Viewer" title="Viewer settings" description="Preview map viewer configuration, accessibility and appearance preferences.">
+    <ProductPageHeader eyebrow="Viewer" title="Viewer settings" description="Prototype the map viewer configuration, accessibility and appearance controls.">
       <template #actions><UButton label="Reset demo" icon="i-lucide-rotate-ccw" color="neutral" variant="outline" @click="resetSettings" /></template>
     </ProductPageHeader>
 

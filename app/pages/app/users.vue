@@ -9,7 +9,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
 
 <template>
   <div class="operations-page space-y-6">
-    <ProductPageHeader eyebrow="Organization" title="Users & groups" description="Local directory context for people and device grouping." />
+    <ProductPageHeader eyebrow="Organization" title="Users & groups" description="Read-only directory context for people and device grouping.">
+      <template #actions><ProductStatusBadge label="Only Read" tone="info" /></template>
+    </ProductPageHeader>
 
     <div class="grid gap-4 lg:grid-cols-2">
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">

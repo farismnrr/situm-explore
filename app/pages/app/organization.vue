@@ -34,17 +34,19 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Organization' })
         </dl>
       </UCard>
 
-      <UCard>
+      <UCard :ui="{ body: 'p-0 sm:p-0' }">
         <div class="panel-head">
           <div><h2 class="font-semibold text-highlighted">POC credential boundary</h2><p class="mt-1 text-xs text-muted">Prototype rule</p></div>
           <ProductStatusBadge label="Configured" tone="success" />
         </div>
-        <div class="soft-card mt-4 p-3">
-          <div class="flex items-center justify-between gap-3"><strong class="text-sm text-highlighted">Browser viewer credential</strong><ProductStatusBadge :label="organization.permission" tone="info" /></div>
-          <p class="mt-3 text-xs leading-relaxed text-muted">The time-boxed POC credential is represented only by its permission context. Its value is never shown, stored in fixtures, or written to logs.</p>
+        <div class="p-4 sm:p-4">
+        <div class="soft-card p-3">
+          <div class="flex items-center justify-between gap-3"><strong class="text-sm text-highlighted">Browser viewer key</strong><ProductStatusBadge label="Only Read" tone="info" /></div>
+          <p class="mt-3 text-xs leading-relaxed text-muted">One read-only key is enough for this POC reference. No destructive cartography or account actions are represented as active operations.</p>
         </div>
         <div class="my-5 border-t border-default" />
         <p class="text-xs text-muted">This screen is product context only. No account, organization, cartography, or credential-management actions are available.</p>
+        </div>
       </UCard>
     </div>
   </div>

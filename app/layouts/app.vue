@@ -91,9 +91,9 @@ function syncWorkspace() {
 <template>
   <div>
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <div class="app-shell flex min-h-screen bg-default text-default">
+    <div class="app-shell flex min-h-screen bg-[var(--explore-background)] text-default">
     <button v-if="mobileOpen" class="shell-menu-backdrop fixed inset-0 z-30 bg-gray-950/25" aria-label="Close navigation" @click="mobileOpen = false" />
-    <aside id="workspace-navigation" class="app-sidebar fixed inset-y-0 left-0 z-40 flex w-[228px] flex-col border-r border-default bg-default transition-transform" :class="{ 'translate-x-0': mobileOpen }" :aria-hidden="navigationHidden ? 'true' : undefined" :inert="navigationHidden">
+    <aside id="workspace-navigation" class="app-sidebar fixed inset-y-0 left-0 z-40 flex w-[228px] flex-col border-r border-default bg-[var(--explore-surface-subtle)] transition-transform" :class="{ 'translate-x-0': mobileOpen }" :aria-hidden="navigationHidden ? 'true' : undefined" :inert="navigationHidden">
       <div class="flex h-16 items-center border-b border-default px-4">
         <NuxtLink to="/" class="flex items-center gap-2 text-sm font-semibold tracking-tight text-highlighted" @click="mobileOpen = false">
           <BrandMark size="sm" /><span>Situm Explore</span>

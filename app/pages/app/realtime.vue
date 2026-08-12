@@ -50,13 +50,13 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
       <ProductStatCard v-for="stat in realtimeStats" :key="stat.label" :label="stat.label" :value="stat.value" :note="stat.note" />
     </div>
 
-    <div class="grid gap-4 xl:grid-cols-2">
+    <div class="realtime-grid grid gap-4 lg:grid-cols-[1.4fr_.6fr]">
       <UCard :ui="{ body: 'p-0' }">
         <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3">
           <h2 class="text-sm font-semibold text-highlighted">Live map</h2>
           <span class="text-xs text-muted">Updated {{ updatedAt }}</span>
         </div>
-        <div class="realtime-map relative m-3 overflow-hidden rounded-lg border border-default" aria-label="Local realtime map preview">
+        <div class="realtime-map relative overflow-hidden border-t border-default" aria-label="Local realtime map preview">
           <div class="realtime-floor" />
           <span v-for="position in positions" :key="position.id" class="absolute z-10 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm transition-all duration-500" :class="position.status === 'online' ? 'bg-sky-500' : 'bg-gray-400'" :style="{ left: `${position.marker.left}%`, top: `${position.marker.top}%` }" :title="position.name" />
         </div>
@@ -87,4 +87,5 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
 .realtime-floor::before { content:''; position:absolute; inset:15% 12%; border:1px solid #e0e3e7; border-radius:9px; }
 .activity-row strong { font-size: .6875rem; }
 .activity-row span { font-size: .625rem; }
+@media (max-width: 1023px) { .realtime-grid { grid-template-columns: 1fr; } }
 </style>
