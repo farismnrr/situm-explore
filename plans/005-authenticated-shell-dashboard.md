@@ -105,12 +105,12 @@ Acceptance: login never points at a missing route and the real Situm Viewer rema
 
 Before implementation, inspect Home in current HTML.
 
-- [ ] welcome identity uses real session;
-- [ ] map CTA routes to `/app/map`;
-- [ ] metric cards/recent activity use typed local dummy data;
-- [ ] main-building preview is a local visual, not a second Viewer;
-- [ ] Quick Explore routes to actual `/app/**` destinations;
-- [ ] dummy fixtures live under `app/data/prototype/`.
+- [x] welcome identity uses real session;
+- [x] map CTA routes to `/app/map`;
+- [x] metric cards/recent activity use typed local dummy data;
+- [x] main-building preview is a local visual, not a second Viewer;
+- [x] Quick Explore routes to actual `/app/**` destinations;
+- [x] dummy fixtures live under `app/data/prototype/`.
 
 ### Fixture ownership rule
 
