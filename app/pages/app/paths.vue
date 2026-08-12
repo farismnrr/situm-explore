@@ -43,7 +43,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Paths & routing' })
       <UCard>
         <div class="flex items-center justify-between gap-3 border-b border-default pb-4">
           <h2 class="text-sm font-semibold text-highlighted">Route preview</h2>
-          <span class="text-xs text-muted">Local directions</span>
+          <span class="text-xs text-muted">Directions</span>
         </div>
         <div class="mt-5 space-y-4">
           <UFormField label="From"><USelect v-model="routeStart" :items="routePoints" class="w-full" /></UFormField>
@@ -62,7 +62,6 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Paths & routing' })
                 <span class="pt-0.5">{{ step }}</span>
               </li>
             </ol>
-            <p class="mt-4 text-xs text-muted">Preview uses local fixture data; no directions service was contacted.</p>
           </div>
         </div>
       </UCard>

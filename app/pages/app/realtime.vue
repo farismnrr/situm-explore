@@ -71,7 +71,6 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
         <div class="realtime-map relative m-3 overflow-hidden rounded-lg border border-default" aria-label="Local realtime map preview">
           <div class="realtime-floor" />
           <span v-for="position in positions" :key="position.id" class="absolute z-10 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm transition-all duration-500" :class="position.status === 'online' ? 'bg-sky-500' : 'bg-gray-400'" :style="{ left: `${position.marker.left}%`, top: `${position.marker.top}%` }" :title="position.name" />
-          <div class="absolute bottom-3 left-3 rounded-md border border-default bg-default/90 px-2.5 py-1.5 text-[11px] text-muted shadow-sm">Main Building · local preview</div>
         </div>
       </UCard>
 

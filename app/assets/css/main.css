@@ -167,6 +167,8 @@ body {
 .shell-menu-button,
 .shell-menu-backdrop { display: none; }
 
+.operations-page > :not([hidden]) ~ :not([hidden]) { margin-top: 1.25rem; }
+
 @media (max-width: 1023px) {
   .app-content { padding-inline: 1rem; }
 }

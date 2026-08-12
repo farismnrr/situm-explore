@@ -70,7 +70,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
         <section v-if="activeTab === 'general'" class="p-[18px]">
           <h2 class="text-base font-semibold text-highlighted">General viewer behavior</h2>
-          <p class="mt-1 text-xs text-muted">Local preferences representing viewer actions and configuration.</p>
+          <p class="mt-1 text-xs text-muted">Viewer behavior and accessibility preferences.</p>
           <div class="mt-5 divide-y divide-default">
             <div class="setting-row"><div><strong class="block text-sm text-highlighted">Light UI mode</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Keep Situm Explore light-only for this product phase.</span></div><USwitch :model-value="true" disabled aria-label="Light UI mode locked on" /></div>
             <div class="setting-row"><div><strong class="block text-sm text-highlighted">Show user settings</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Expose viewer accessibility controls.</span></div><USwitch v-model="showUserSettings" aria-label="Show user settings" /></div>
@@ -89,7 +89,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
         </section>
 
         <section v-else-if="activeTab === 'map'" class="p-[18px]">
-          <h2 class="text-base font-semibold text-highlighted">Map configuration</h2><p class="mt-1 text-xs text-muted">Local configuration profile and viewer interaction defaults.</p>
+          <h2 class="text-base font-semibold text-highlighted">Map configuration</h2><p class="mt-1 text-xs text-muted">Configuration profile and viewer interaction defaults.</p>
           <div class="mt-5 divide-y divide-default">
             <div class="flex items-center justify-between gap-5 py-4 first:pt-0"><div><strong class="block text-sm text-highlighted">Configuration profile</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Map behavior profile.</span></div><USelect v-model="configurationProfile" :items="['default', 'poc-workspace']" aria-label="Configuration profile" class="w-48" /></div>
             <div class="flex items-center justify-between gap-5 py-4"><div><strong class="block text-sm text-highlighted">Default building</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Building selected when opening the viewer.</span></div><USelect v-model="defaultBuilding" :items="['Main Building', 'Warehouse Demo']" aria-label="Default building" class="w-48" /></div>
@@ -98,12 +98,12 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
         </section>
 
         <section v-else-if="activeTab === 'styles'" class="p-[18px]">
-          <h2 class="text-base font-semibold text-highlighted">Map styles</h2><p class="mt-1 text-xs text-muted">Local read-only previews; no style upload or remote mutation is available.</p>
+          <h2 class="text-base font-semibold text-highlighted">Map styles</h2><p class="mt-1 text-xs text-muted">Current map style references.</p>
           <div class="mt-5 grid gap-3 sm:grid-cols-3"><div v-for="style in [{ name: 'Default light', tone: 'bg-gradient-to-br from-slate-50 to-slate-200' }, { name: 'High contrast', tone: 'bg-gradient-to-br from-white to-slate-300' }, { name: 'Brand neutral', tone: 'bg-gradient-to-br from-zinc-50 to-zinc-200' }]" :key="style.name" class="rounded-lg border border-default p-3"><strong class="text-sm text-highlighted">{{ style.name }}</strong><div class="mt-3 h-20 rounded-md" :class="style.tone" /></div></div>
         </section>
 
         <section v-else class="p-[18px]">
-          <h2 class="text-base font-semibold text-highlighted">Images</h2><p class="mt-1 text-xs text-muted">Local reference examples for POI, category and floor resources.</p>
+          <h2 class="text-base font-semibold text-highlighted">Images</h2><p class="mt-1 text-xs text-muted">Referenced POI, category and floor resources.</p>
           <div class="mt-5 divide-y divide-default rounded-lg border border-default"><div v-for="image in [{ name: 'poi-reception.svg', detail: 'POI icon · 6 KB', status: 'Referenced' }, { name: 'category-workspace.svg', detail: 'POI category icon · 5 KB', status: 'Referenced' }, { name: 'floor-1-map.png', detail: 'Floor resource · 842 KB', status: 'Active' }]" :key="image.name" class="flex items-center gap-3 p-4"><span class="size-2.5 shrink-0 rounded-full" :class="image.status === 'Active' ? 'bg-success' : 'bg-primary'" /><div class="min-w-0 flex-1"><strong class="block text-sm text-highlighted">{{ image.name }}</strong><span class="mt-1 block text-xs text-muted">{{ image.detail }}</span></div><UBadge :color="image.status === 'Active' ? 'success' : 'neutral'" variant="soft">{{ image.status }}</UBadge></div></div>
         </section>
       </UCard>

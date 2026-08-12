@@ -37,7 +37,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Geofences' })
 
     <div class="grid gap-4 sm:grid-cols-3">
       <UCard><p class="text-sm text-muted">Active zones</p><p class="mt-2 text-2xl font-semibold text-highlighted">{{ cartographyGeofences.filter(geofence => geofence.status === 'Active').length }}</p><p class="mt-1 text-xs text-muted">across {{ activeBuildingCount }} buildings</p></UCard>
-      <UCard><p class="text-sm text-muted">Sessions today</p><p class="mt-2 text-2xl font-semibold text-highlighted">214</p><p class="mt-1 text-xs text-muted">enter / exit matches · dummy</p></UCard>
+      <UCard><p class="text-sm text-muted">Sessions today</p><p class="mt-2 text-2xl font-semibold text-highlighted">214</p><p class="mt-1 text-xs text-muted">enter / exit matches</p></UCard>
       <UCard><p class="text-sm text-muted">Longest avg. stay</p><p class="mt-2 text-2xl font-semibold text-highlighted">{{ longestStay.averageStay }}</p><p class="mt-1 text-xs text-muted">{{ longestStay.name }}</p></UCard>
     </div>
 

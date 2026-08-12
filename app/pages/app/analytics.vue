@@ -71,8 +71,8 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Analytics & reports'
 .analytics-grid { position: absolute; inset: 0 0 1.5rem; background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(25% - 1px), var(--ui-border) 25%); }
 .analytics-bar { position: relative; z-index: 1; max-width: 2rem; border-radius: 0.3rem 0.3rem 0.1rem 0.1rem; background: #dfe3e8; transition: height .2s ease; }
 .analytics-bar.bg-primary\/35 { background: #dfe3e8; }.analytics-bar.bg-primary { background: #9ebcfb; }
-.analytics-heatmap { background: linear-gradient(135deg, #f8fafc, #eef2f7); }
-.heat-spot { position: absolute; width: 10rem; height: 10rem; border-radius: 999px; filter: blur(25px); opacity: .72; }
-.heat-one { left: 18%; top: 20%; background: #ef4444; }.heat-two { left: 48%; top: 35%; background: #f59e0b; }.heat-three { right: 14%; bottom: 14%; background: #dc2626; }.heat-four { left: 35%; bottom: 5%; background: #fbbf24; }
+.analytics-heatmap { background: repeating-linear-gradient(0deg, #fafbfc 0 27px, #eef1f4 28px), repeating-linear-gradient(90deg, transparent 0 27px, #eef1f4 28px); }
+.heat-spot { position: absolute; width: 7rem; height: 7rem; border-radius: 999px; opacity: .75; background: radial-gradient(circle, #ef4444 0 8%, #f59e0b 18%, #facc15 34%, transparent 68%); }
+.heat-one { left: 18%; top: 20%; }.heat-two { left: 48%; top: 35%; transform: scale(1.25); }.heat-three { right: 14%; bottom: 14%; transform: scale(.8); }.heat-four { left: 35%; bottom: 5%; transform: scale(.65); }
 .operations-page { max-width: 1480px; }
 </style>

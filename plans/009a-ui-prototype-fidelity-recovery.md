@@ -337,93 +337,93 @@ Do not redesign. Use the canonical page/state as the target.
 
 ## Home `/app`
 
-- [ ] Verify welcome card, four stats, 1.4/.6 content grid, building mini, activity rows and Quick Explore against rendered reference.
-- [ ] Remove any residual extra copy/spacing that changes silhouette.
+- [x] Verify welcome card, four stats, 1.4/.6 content grid, building mini, activity rows and Quick Explore against rendered reference.
+- [x] Remove any residual extra copy/spacing that changes silhouette.
 
 ## Dashboard `/app/dashboard`
 
-- [ ] Canonical ~30px page title/action alignment.
-- [ ] Four compact stats.
-- [ ] Visitor chart canvas/density.
-- [ ] System status footprint remains truthful for real DB/Situm while matching canonical density.
-- [ ] Lower occupancy/alarm 1:1 grid.
+- [x] Canonical ~30px page title/action alignment.
+- [x] Four compact stats.
+- [x] Visitor chart canvas/density.
+- [x] System status footprint remains truthful for real DB/Situm while matching canonical density.
+- [x] Lower occupancy/alarm 1:1 grid.
 
 ## Buildings `/app/buildings`
 
-- [ ] Canonical page head and single-search toolbar; remove status filter if still present.
-- [ ] Compact table rows with no unreferenced second-line organization text when it changes row height.
-- [ ] Floor coverage and resources panels match canonical density.
+- [x] Canonical page head and single-search toolbar; remove status filter if still present.
+- [x] Compact table rows with no unreferenced second-line organization text when it changes row height.
+- [x] Floor coverage and resources panels match canonical density.
 
 ## POIs `/app/pois`
 
-- [ ] Canonical search + category filter + POI count.
-- [ ] Compact single-line table silhouette; remove unreferenced secondary description row text when necessary.
-- [ ] Favorite treatment and drawer trigger match reference.
+- [x] Canonical search + category filter + POI count.
+- [x] Compact single-line table silhouette; remove unreferenced secondary description row text when necessary.
+- [x] Favorite treatment and drawer trigger match reference.
 
 ## Geofences `/app/geofences`
 
-- [ ] Page head -> 3 metrics -> table, no extra toolbar.
-- [ ] Compact table; avoid unreferenced identifier second lines that change silhouette.
+- [x] Page head -> 3 metrics -> table, no extra toolbar.
+- [x] Compact table; avoid unreferenced identifier second lines that change silhouette.
 
 ## Paths `/app/paths`
 
-- [ ] Building-mini path network language.
-- [ ] Canonical 1.4/.6 relationship.
-- [ ] Compact route result; remove explanatory local-fixture footer copy that is not represented.
-- [ ] Route step number/text density matches prototype.
+- [x] Building-mini path network language.
+- [x] Canonical 1.4/.6 relationship.
+- [x] Compact route result; remove explanatory local-fixture footer copy that is not represented.
+- [x] Route step number/text density matches prototype.
 
 ## Realtime `/app/realtime`
 
-- [ ] Auto refresh · 5s is truthful and locally simulated with cleanup.
-- [ ] Four compact stats.
-- [ ] Building-mini live map and compact activity rows.
-- [ ] No persistent visual debug/local-preview labels beyond what reference footprint permits.
+- [x] Auto refresh · 5s is truthful and locally simulated with cleanup.
+- [x] Four compact stats.
+- [x] Building-mini live map and compact activity rows.
+- [x] No persistent visual debug/local-preview labels beyond what reference footprint permits.
 
 ## Analytics `/app/analytics`
 
-- [ ] Replace underline report navigation with canonical compact bordered/pill-style controls and dark-filled active state.
-- [ ] Visitors/Positioning chart geometry matches canonical 250px-ish canvas/density.
-- [ ] Heatmap uses canonical grid/radial density language and approximate 260px height.
-- [ ] Stay/Positions tables use canonical compact density.
-- [ ] Viewer usage is three compact soft cards.
-- [ ] Export feedback is transient.
+- [x] Replace underline report navigation with canonical compact bordered/pill-style controls and dark-filled active state.
+- [x] Visitors/Positioning chart geometry matches canonical 250px-ish canvas/density.
+- [x] Heatmap uses canonical grid/radial density language and approximate 260px height.
+- [x] Stay/Positions tables use canonical compact density.
+- [x] Viewer usage is three compact soft cards.
+- [x] Export feedback is transient.
 
 ## Alarms `/app/alarms`
 
-- [ ] Canonical header/open pill + two-filter toolbar.
-- [ ] Compact table and status/type pills.
+- [x] Canonical header/open pill + two-filter toolbar.
+- [x] Compact table and status/type pills.
 
 ## Users `/app/users`
 
-- [ ] Canonical equal Users/Groups grid.
-- [ ] Compact user rows; remove unreferenced email second line from table if it changes reference silhouette.
-- [ ] Groups activity rows match canonical density.
+- [x] Canonical equal Users/Groups grid.
+- [x] Compact user rows; remove unreferenced email second line from table if it changes reference silhouette.
+- [x] Groups activity rows match canonical density.
 
 ## Organization `/app/organization`
 
-- [ ] Canonical 1.4/.6 composition and detail-list rhythm.
-- [ ] Keep truthful Read & Write (POC) wording in the same visual role as reference permission pill.
-- [ ] Credential boundary stays visually compact; do not expose key value.
+- [x] Canonical 1.4/.6 composition and detail-list rhythm.
+- [x] Keep truthful Read & Write (POC) wording in the same visual role as reference permission pill.
+- [x] Credential boundary stays visually compact; do not expose key value.
 
 ## Viewer Settings `/app/settings`
 
-- [ ] 220px settings nav + 14px gap on desktop.
-- [ ] Canonical 11px-ish nav/row density and 18px content padding.
-- [ ] General/Navigation/Map/Styles/Images state composition matches reference.
-- [ ] <=800 settings nav becomes horizontal without overflow bugs.
+- [x] 220px settings nav + 14px gap on desktop.
+- [x] Canonical 11px-ish nav/row density and 18px content padding.
+- [x] General/Navigation/Map/Styles/Images state composition matches reference.
+- [x] <=800 settings nav becomes horizontal without overflow bugs.
 
 For each route above:
 
-- [ ] rendered desktop comparison completed;
-- [ ] relevant tablet/mobile comparison completed;
-- [ ] no extra debug/local-fixture UI materially changes hierarchy.
+- [x] rendered desktop comparison completed;
+- [x] relevant tablet/mobile comparison completed;
+- [x] no extra debug/local-fixture UI materially changes hierarchy.
 
 Validation:
 
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] commit and push Phase 4.
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] commit and push Phase 4.
 
 ---
 
