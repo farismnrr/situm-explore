@@ -8,7 +8,7 @@ Execute a gap-free sequential Situm Explore POC roadmap: Nuxt 4 architecture ali
 
 ## Phase
 
-**Plan 004 Phase 1 is complete on its plan branch; landing page Phase 2 is next.**
+**Plan 004 Phase 2 is complete on its plan branch; real login Phase 3 is next.**
 
 ## Active contracts
 
@@ -142,4 +142,4 @@ The only intentional visual blocker is the user-populated canonical HTML.
 
 ## Next action
 
-Continue Plan 004 with Phase 2 landing page. No dependent plan starts until the previous plan is reviewed, explicitly authorized for integration, and landed in `main`.
+Continue Plan 004 with Phase 3 real login. No dependent plan starts until the previous plan is reviewed, explicitly authorized for integration, and landed in `main`.

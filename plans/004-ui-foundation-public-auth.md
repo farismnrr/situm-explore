@@ -167,12 +167,12 @@ Match its actual navigation, hero hierarchy/proportions, CTA hierarchy, product 
 
 Tasks:
 
-- [ ] Replace the current auth-only root page with the approved public landing composition.
-- [ ] Use Nuxt links/routes for navigation and auth CTAs.
-- [ ] Keep landing content static; no backend endpoint is required.
-- [ ] Auth CTAs route to `/login` or `/register`.
-- [ ] If a real session exists during Plan 004, the authenticated continuation must still use the existing `/dashboard` route. Do **not** point to `/app` before Plan 005 creates it.
-- [ ] Compare desktop/mobile output against the HTML.
+- [x] Replace the current auth-only root page with the approved public landing composition.
+- [x] Use Nuxt links/routes for navigation and auth CTAs.
+- [x] Keep landing content static; no backend endpoint is required.
+- [x] Auth CTAs route to `/login` or `/register`.
+- [x] If a real session exists during Plan 004, the authenticated continuation must still use the existing `/dashboard` route. Do **not** point to `/app` before Plan 005 creates it.
+- [x] Compare desktop/mobile output against the HTML.
 
 Do not add marketing sections not represented by the populated reference.
 
