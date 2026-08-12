@@ -120,6 +120,6 @@ Do not create a PR or merge unless the user explicitly requests it.
 
 ## Next action
 
-Execute `plans/009a-ui-prototype-fidelity-recovery.md` phase-by-phase on the existing recovery branch, beginning with reference/brand normalization and global Nuxt UI primitives before page-level fixes.
+Phase 0 of Plan 009A is complete, reviewed, linted, committed, and pushed. Delegate Phase 1 global Nuxt UI visual foundation to the configured worker.
 
 Final visual signoff must be evidence-based. If browser/screenshot comparison is unavailable to the executing agent, do not mark final fidelity complete; leave that gate pending for user/manual review.

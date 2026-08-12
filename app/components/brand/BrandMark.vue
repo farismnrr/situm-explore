@@ -6,8 +6,7 @@
     aria-label="Situm Explore"
   >
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M5 12h11" />
-      <path d="m12 6 6 6-6 6" />
+      <path d="M21 3 3 10.5l7.5 3L14 21 21 3Z" />
     </svg>
   </span>
 </template>
@@ -32,27 +31,19 @@ const sizeClass = computed(() => props.size === 'sm' ? 'brand-mark--sm' : 'brand
 }
 
 .brand-mark--md {
-  width: 2rem;
-  height: 2rem;
+  width: 30px;
+  height: 30px;
 }
 
 .brand-mark--sm {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 30px;
+  height: 30px;
 }
 
 svg {
-  width: 1.125rem;
-  height: 1.125rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2.25;
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
 }
 
-.brand-mark--sm svg {
-  width: 1rem;
-  height: 1rem;
-}
 </style>

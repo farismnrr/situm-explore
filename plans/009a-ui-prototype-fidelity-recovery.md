@@ -138,14 +138,46 @@ Required recovery: reproduce shell composition closely while keeping real sessio
 
 This phase changes no product behavior.
 
-- [ ] Open the current canonical HTML and `DESIGN.md` together.
-- [ ] Replace only the stale `S` brand mark instances in the canonical HTML with the approved navigation-arrow mark required by `DESIGN.md`.
-- [ ] Do not otherwise change prototype layout/content to make implementation easier.
-- [ ] Update `BrandMark.vue` to the exact same navigation-arrow geometry.
-- [ ] Create a route-to-reference audit checklist in this plan for every route below.
-- [ ] Establish visual review viewports: desktop around 1440×900, laptop around 1024px wide, tablet around 768px, mobile around 390px.
-- [ ] If browser/screenshot tooling is available in the execution environment, rendered comparison is mandatory before any visual signoff.
-- [ ] If rendered comparison tooling is unavailable, **do not falsely mark final visual signoff complete**; source-level work may proceed, but final visual acceptance remains blocked for user/manual review.
+- [x] Open the current canonical HTML and `DESIGN.md` together.
+- [x] Replace only the stale `S` brand mark instances in the canonical HTML with the approved navigation-arrow mark required by `DESIGN.md`.
+- [x] Do not otherwise change prototype layout/content to make implementation easier.
+- [x] Update `BrandMark.vue` to the exact same navigation-arrow geometry.
+- [x] Create a route-to-reference audit checklist in this plan for every route below.
+- [x] Establish visual review viewports: desktop around 1440×900, laptop around 1024px wide, tablet around 768px, mobile around 390px.
+- [x] If browser/screenshot tooling is available in the execution environment, rendered comparison is mandatory before any visual signoff.
+- [x] If rendered comparison tooling is unavailable, **do not falsely mark final visual signoff complete**; source-level work may proceed, but final visual acceptance remains blocked for user/manual review.
+
+### Phase 0 route/state audit target
+
+The following checklist is the route-to-reference inventory for review. Each route must be compared at the listed baseline state before its phase can receive visual signoff.
+
+| Route / surface | Reference target | Baseline state(s) |
+| --- | --- | --- |
+| `/` | `#publicHome` | desktop, mobile |
+| `/login` | `#authLogin` | empty, validation/error, mobile |
+| `/register` | `#authRegister` | empty, mobile |
+| `/app` | `#appHome` | authenticated populated |
+| `/app/dashboard` | `#appDashboard` | authenticated populated |
+| `/app/map` | `#appMap` | loading, ready, selected POI, Route, Layers, mobile |
+| `/app/buildings` | `#appBuildings` | populated, search/filter, details drawer |
+| `/app/pois` | `#appPois` | populated, search/filter, details drawer |
+| `/app/geofences` | `#appGeofences` | populated |
+| `/app/paths` | `#appPaths` | populated, route preview |
+| `/app/realtime` | `#appRealtime` | populated, refresh feedback |
+| `/app/analytics` | `#appAnalytics` | Visitors, Positioning, Heatmap, Reports tabs |
+| `/app/alarms` | `#appAlarms` | populated, filters |
+| `/app/users` | `#appUsers` | Users, Groups, user drawer |
+| `/app/organization` | `#appOrganization` | populated |
+| `/app/settings` | `#appSettings` | General, Navigation, Map, Styles, Images tabs |
+| Shared overlays | `#searchModal`, `#accessibilityModal`, `#poiPopover`, toast | open/selected/transient states |
+
+### Phase 0 review viewport and tooling gate
+
+- Desktop: `1440×900`.
+- Laptop: `1024×900`.
+- Tablet: `768×1024`.
+- Mobile: `390×844`.
+- Observed tooling on 2026-08-12: Playwright `1.60.0` is available on `PATH`; Chromium, Firefox, and WebKit browser binaries are installed under `/home/farismnrr/.cache/ms-playwright/`. Screenshot comparison is therefore available for subsequent visual phases. Final visual acceptance remains pending until rendered comparisons are reviewed at every route/state above.
 
 Acceptance:
 
