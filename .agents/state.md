@@ -4,11 +4,11 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Plan 003 is closed; await the user's direction for the next major revision.
+Rebuild the web UI from the user-approved interactive HTML reference, preserving the existing Nuxt backend/auth/database/Situm behavior and using typed dummy data for product surfaces whose backend does not yet exist.
 
 ## Phase
 
-**No active plan**
+**Plan 004 — UI foundation/public/auth planned**
 
 ## Active decisions
 
@@ -25,37 +25,46 @@ Plan 003 is closed; await the user's direction for the next major revision.
 - Use one full-stack Nuxt application for frontend and backend.
 - Use Nuxt UI.
 - UI direction is clean minimalist SaaS, light mode only.
-- Use `DESIGN.md` and `.agents/design/` as mandatory persistent design context for UI/UX work.
-- Keep current navigation minimal: top bar + content canvas; no sidebar until real destinations justify it.
-- Integrate Situm on web first and preserve truthful viewer readiness.
-- Reuse the existing PostgreSQL database with the fixed `situm_explore` application schema.
-- Use Drizzle ORM.
-- Use `nuxt-auth-utils` for the current simple owner authentication/session flow.
+- The canonical visual source of truth is `design/reference/situm-explore-interactive-prototype.html`.
+- `design/ui-reference.html` is only a compatibility wrapper pointing at the canonical reference.
+- Use the approved navigation-arrow mark, not an `S` lettermark.
+- The approved UI now includes a compact authenticated sidebar; Plan 003's no-sidebar conclusion is superseded.
+- Preserve existing real login/session, `/api/me` database behavior, and truthful Situm `MAP_IS_READY` viewer lifecycle.
+- For UI surfaces without an existing backend, prefer typed local dummy data instead of expanding backend/database scope.
+- Current Situm POC permission boundary remains `Only Read`; do not implement remote writes.
 - Keep architecture deliberately simple until real requirements justify more complexity.
 
-## Active plan
+## Active roadmap
 
-- None. Plan 003 is closed after PR #5 merged to `main`; browser/credential-dependent checks were explicitly deferred.
+1. `plans/004-ui-foundation-public-auth.md`
+2. `plans/005-authenticated-shell-dashboard.md`
+3. `plans/006-situm-map-workspace.md`
+4. `plans/007-cartography-explorer.md`
+5. `plans/008-operations-reports-ui.md`
+6. `plans/009-ui-conformance-polish.md`
+7. `plans/010-progressive-situm-data-integration.md` — later, only after UI acceptance.
 
-## Completed plans
+## Completed / closed plans
 
 - `plans/000-resource-gathering.md`
 - `plans/001-web-foundation.md`
-- `plans/002-foundation-hardening.md` — merged through PR #3; manual authenticated/API and Situm browser checks were later confirmed complete by the user.
-- `plans/003-ui-ux-refresh.md` — merged through PR #5; automated validation passed, with browser/credential-dependent checks deferred at closeout.
+- `plans/002-foundation-hardening.md`
+- `plans/003-ui-ux-refresh.md` — closed after PR #5, but its rendered UI was **not accepted as the design target** because it was too far from the user's expectation. The approved HTML prototype supersedes its visual decisions.
 
 ## Known foundation state
 
-- Nuxt full-stack foundation and foundation hardening are merged to `main`.
-- Login, authenticated `/api/me`, PostgreSQL access, and Situm browser readiness have been manually tested by the user after hardening.
-- Local PostgreSQL `situm_explore` schema is application-owned; unrelated database objects remain out of scope.
-- Building floorplan resources are not present in the current public tree; historical Git blobs remain because history rewrite was not authorized.
+- Nuxt full-stack foundation and hardening are merged to `main`.
+- Existing login/session flow is real and should be reused.
+- Authenticated `/api/me` and PostgreSQL `situm_explore` behavior already exist.
+- Real Situm browser viewer integration already exists with read-only credential configuration and truthful `MAP_IS_READY` readiness.
 - Local credentials remain ignored and must never be committed.
 
 ## Open loops
 
-- Await the user's requirements for the next major revision.
+- Execute Plan 004 from latest `origin/main` on `plan/004-ui-foundation-public-auth`.
+- Keep each subsequent UI plan narrow and reviewable.
+- Do not replace dummy product data with broad Situm API integration until the UI is accepted and Plan 010 is explicitly reached.
 
 ## Next likely action
 
-Wait for the user's next revision brief; start a new dedicated plan branch when requirements are provided.
+Create/switch to `plan/004-ui-foundation-public-auth`, read `DESIGN.md`, the canonical HTML reference, `design/IMPLEMENTATION.md`, and execute Plan 004 phase by phase. Commit/push each phase; no PR until explicit user authorization.
