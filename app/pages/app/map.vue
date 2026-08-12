@@ -213,14 +213,14 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
     </aside>
 
     <section class="relative min-h-[34rem] min-w-0 flex-1 bg-elevated sm:min-h-[38rem] lg:min-h-0">
-      <div class="absolute left-4 right-4 top-4 z-10 flex flex-wrap items-center justify-between gap-2 sm:left-6 sm:right-6">
-        <div class="flex items-center gap-2 rounded-lg border border-default bg-default/95 p-1 shadow-sm backdrop-blur">
-          <USelect :items="syntheticBuildingOptions" :model-value="selectedBuilding" aria-label="Synthetic building" class="w-44" size="sm" @update:model-value="selectBuilding" />
-          <div class="flex rounded-md bg-elevated p-0.5">
+      <div class="absolute left-3 right-3 top-3 z-10 flex flex-wrap items-center justify-between gap-2 sm:left-6 sm:right-6 sm:top-4">
+        <div class="flex min-w-0 max-w-full flex-wrap items-center gap-1 rounded-lg border border-default bg-default/95 p-1 shadow-sm backdrop-blur">
+          <USelect :items="syntheticBuildingOptions" :model-value="selectedBuilding" aria-label="Synthetic building" class="w-36 sm:w-44" size="sm" @update:model-value="selectBuilding" />
+          <div class="flex max-w-full overflow-x-auto rounded-md bg-elevated p-0.5">
             <UButton v-for="floor in activeBuilding.floors" :key="floor" :label="floor" :color="selectedFloor === floor ? 'primary' : 'neutral'" :variant="selectedFloor === floor ? 'soft' : 'ghost'" size="xs" @click="selectFloor(floor)" />
           </div>
         </div>
-        <div class="flex rounded-lg border border-default bg-default/95 p-1 shadow-sm backdrop-blur">
+        <div class="flex max-w-full overflow-x-auto rounded-lg border border-default bg-default/95 p-1 shadow-sm backdrop-blur">
           <UButton v-for="mode in (['explore', 'realtime', 'trajectory'] as const)" :key="mode" :label="mode.charAt(0).toUpperCase() + mode.slice(1)" :color="viewMode === mode ? 'primary' : 'neutral'" :variant="viewMode === mode ? 'soft' : 'ghost'" size="xs" @click="selectViewMode(mode)" />
         </div>
       </div>
@@ -232,13 +232,13 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
         <UButton label="+" aria-label="Zoom in locally" color="neutral" variant="ghost" :disabled="zoomLevel === 4" @click="adjustZoom(1)" />
         <UButton label="−" aria-label="Zoom out locally" color="neutral" variant="ghost" :disabled="zoomLevel === 0" @click="adjustZoom(-1)" />
       </div>
-      <UCard v-if="selectedPoi" class="absolute bottom-6 right-6 z-10 w-72 shadow-lg" :ui="{ body: 'p-4' }">
+      <UCard v-if="selectedPoi" class="absolute bottom-4 left-3 right-3 z-10 shadow-lg sm:bottom-6 sm:left-auto sm:right-6 sm:w-72" :ui="{ body: 'p-4' }">
         <div class="flex items-start justify-between gap-3">
           <div><p class="font-semibold text-highlighted">{{ selectedPoi.name }}</p><p class="mt-1 text-xs text-muted">{{ selectedPoi.category }} · {{ selectedPoi.floor }} · {{ homeBuilding.name }}</p></div>
           <UButton icon="i-lucide-x" aria-label="Close POI details" color="neutral" variant="ghost" size="xs" @click="selectedPoiId = null" />
         </div>
         <p class="mt-3 text-xs text-muted">{{ selectedPoi.description }}</p>
-        <div class="mt-4 flex gap-2"><UButton label="Directions" color="primary" size="sm" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
+        <div class="mt-4 flex flex-wrap gap-2"><UButton label="Directions" color="primary" size="sm" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
       </UCard>
       <UCard v-if="locationPickerOpen" class="absolute left-1/2 top-1/2 z-20 w-72 -translate-x-1/2 -translate-y-1/2 shadow-lg" :ui="{ body: 'p-4' }">
         <div class="flex items-start justify-between gap-3"><div><p class="font-semibold text-highlighted">Location picker</p><p class="mt-1 text-xs text-muted">Choose a local preview point on Floor 1.</p></div><UButton icon="i-lucide-x" aria-label="Close location picker" color="neutral" variant="ghost" size="xs" @click="locationPickerOpen = false" /></div>

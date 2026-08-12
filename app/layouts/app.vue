@@ -88,12 +88,12 @@ async function logout() {
     </aside>
 
     <div class="min-w-0 flex-1 lg:pl-[228px]">
-      <header class="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-default bg-default/90 px-4 backdrop-blur sm:px-6">
+      <header class="sticky top-0 z-20 flex h-16 min-w-0 items-center justify-between gap-2 border-b border-default bg-default/90 px-3 backdrop-blur sm:gap-3 sm:px-6">
         <div class="flex min-w-0 items-center gap-3">
           <UButton icon="i-lucide-menu" aria-label="Open navigation" color="neutral" variant="ghost" class="lg:hidden" @click="mobileOpen = true" />
           <p class="truncate text-xs text-muted">Workspace <span class="px-1">/</span> <span class="text-highlighted">{{ $route.meta.title || 'Home' }}</span></p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex shrink-0 items-center gap-1 sm:gap-2">
           <UButton icon="i-lucide-search" label="Search" color="neutral" variant="ghost" size="sm" class="hidden sm:inline-flex" aria-haspopup="dialog" @click="openSearch" />
           <UButton icon="i-lucide-refresh-cw" aria-label="Local demo refresh unavailable" color="neutral" variant="ghost" size="sm" disabled />
           <UBadge color="neutral" variant="soft" class="hidden sm:inline-flex"><span class="mr-1.5 size-1.5 rounded-full bg-muted" />Local demo</UBadge>

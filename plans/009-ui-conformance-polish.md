@@ -120,18 +120,18 @@ Read the actual current HTML media-query/responsive behavior first.
 
 Validate at minimum:
 
-- [ ] desktop >= 1200px;
-- [ ] laptop around 1024px;
-- [ ] tablet around 768px;
-- [ ] mobile around 390px;
-- [ ] landing/nav/hero reflow;
-- [ ] auth mobile composition;
-- [ ] app sidebar -> mobile drawer behavior;
-- [ ] tables scroll safely;
-- [ ] map workspace remains usable;
-- [ ] settings navigation responds appropriately;
-- [ ] forms remain comfortable;
-- [ ] no horizontal document overflow.
+- [x] desktop >= 1200px;
+- [x] laptop around 1024px;
+- [x] tablet around 768px;
+- [x] mobile around 390px;
+- [x] landing/nav/hero reflow;
+- [x] auth mobile composition;
+- [x] app sidebar -> mobile drawer behavior;
+- [x] tables scroll safely;
+- [x] map workspace remains usable;
+- [x] settings navigation responds appropriately;
+- [x] forms remain comfortable;
+- [x] no horizontal document overflow.
 
 Small deviations are allowed only for real usability/accessibility reasons and must be documented.
 
