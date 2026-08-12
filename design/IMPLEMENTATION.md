@@ -1,10 +1,10 @@
 # Situm Explore UI Implementation Map
 
-This document translates the approved visual prototype in `design/ui-reference.html` into the current Nuxt application.
+This document translates the approved visual prototype in `design/reference/situm-explore-interactive-prototype.html` into the current Nuxt application.
 
-The HTML prototype is the visual source of truth. It is not production code to copy verbatim.
+The HTML prototype is the visual and interaction source of truth. **It is not production code, a CSS framework, or a stylesheet to copy.**
 
-## Core rule
+## Core implementation rule
 
 Match the prototype's:
 
@@ -18,9 +18,49 @@ Match the prototype's:
 - sidebar density;
 - map-first workspace layout;
 - responsive behavior;
-- information hierarchy.
+- information hierarchy;
+- interaction intent.
 
-Translate those decisions into Vue/Nuxt UI components and semantic tokens. Do not paste the prototype's CSS wholesale into Vue files.
+Then translate those decisions into **Nuxt 4 + Vue + Nuxt UI** using the libraries already installed in the repository.
+
+### Nuxt UI first
+
+For every prototype element, use this decision order:
+
+1. Use an existing Nuxt UI component when it fits the required semantics and interaction.
+2. Configure it through Nuxt UI props, variants, slots, semantic color tokens, app config, and normal utility classes.
+3. Compose multiple Nuxt UI primitives when the reference is a larger pattern such as a sidebar, auth panel, toolbar, table area, drawer, or form.
+4. Use a small Vue component for repeated project-specific composition when reuse is real.
+5. Add small project CSS only when Nuxt UI/Tailwind composition cannot reproduce a reference detail cleanly.
+
+Do **not**:
+
+- paste prototype CSS blocks into Vue SFCs;
+- reproduce the prototype class names as a second design system;
+- copy the prototype JavaScript state machine instead of using Vue state/composables/router behavior;
+- create raw HTML controls where Nuxt UI already provides the appropriate accessible primitive without a concrete reason;
+- hardcode every prototype hex/pixel value when a semantic Nuxt UI token or Tailwind utility expresses the same design intent;
+- replace Nuxt UI with another component library.
+
+The prototype CSS may be read to understand measurements, hierarchy, density, breakpoints, and visual relationships. It is **reference material only**.
+
+## Typical translation examples
+
+| Prototype concept | Preferred production translation |
+| --- | --- |
+| `.btn`, `.btn-primary`, `.btn-secondary` | `UButton` variants/colors/sizes |
+| text fields/selects | `UForm`, `UFormField`, `UInput`, `USelect` or current Nuxt UI equivalent |
+| status pill | `UBadge` or a tiny project wrapper around Nuxt UI semantics |
+| cards/panels | `UCard` when a semantic card is appropriate; otherwise normal semantic layout with Nuxt/Tailwind utilities |
+| alerts/errors | `UAlert` |
+| modal | `UModal` |
+| mobile sidebar/drawer | Nuxt UI slideover/drawer primitive available in the installed version, composed with the app layout |
+| loading state | `USkeleton`, progress/loading primitives, or minimal semantic state around the real viewer |
+| navigation links | `NuxtLink`/Nuxt routing, optionally composed with Nuxt UI navigation primitives |
+| tables | semantic table or current Nuxt UI table primitive when it matches the accepted reference without unnecessary complexity |
+| prototype JS show/hide | Vue `ref`/`computed`, components, routing and Nuxt state patterns |
+
+If the exact Nuxt UI component API is uncertain, inspect the installed project/version and current official Nuxt UI documentation before inventing an API.
 
 ## Existing production behavior that must be reused
 
@@ -263,7 +303,7 @@ Mobile:
 - `npm run typecheck`
 - `npm run build`
 - no secrets committed;
-- visual comparison against `design/ui-reference.html`;
+- visual comparison against `design/reference/situm-explore-interactive-prototype.html`;
 - mobile and desktop manual check when browser runtime is available;
 - preserve real auth/database/Situm behavior touched by the plan.
 
@@ -271,6 +311,8 @@ Mobile:
 
 - redesigning the approved reference while implementing it;
 - copying prototype CSS wholesale into one giant stylesheet;
+- copying prototype CSS into component-scoped styles merely under different class names;
+- rebuilding Nuxt UI primitives as raw custom controls without a concrete limitation;
 - replacing Nuxt UI with another component library;
 - adding Pinia/global state unless a concrete plan needs it;
 - adding backend endpoints just so dummy pages feel more real;
