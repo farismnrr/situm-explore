@@ -4,7 +4,7 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Gathered building assets, Situm metadata, and local PostgreSQL runtime/schema information; ready to start the Nuxt web foundation.
+Local testing of the completed Nuxt web foundation; dev server is running on port 3000.
 
 ## Phase
 
@@ -45,7 +45,7 @@ Gathered building assets, Situm metadata, and local PostgreSQL runtime/schema in
 
 ## Open loops
 
-- No active implementation loop. Future product work can start from `main` in a new plan branch/worktree.
+- Stop the local Nuxt dev server when testing is finished. Future product work can start from `main` in a new plan branch/worktree.
 
 ## Next likely action
 
