@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { homeBuilding, homePois } from '~/data/prototype/home'
+import { mapBuildings } from '~/data/prototype/map'
 
 const activeTab = ref<'explore' | 'route' | 'layers'>('explore')
 const viewerState = ref<'loading' | 'ready' | 'error'>('loading')
@@ -21,23 +22,18 @@ const highContrastCues = ref(false)
 const viewerToolStatus = ref('')
 const mapSearchFilter = ref(false)
 const savedCar = ref(false)
-const syntheticBuildings = [
-  { label: 'Main Building', floors: ['Floor 1', 'Floor 2'] },
-  { label: 'Warehouse (synthetic)', floors: ['Ground floor', 'Mezzanine'] },
-  { label: 'Demo Venue (synthetic)', floors: ['Lobby', 'Event floor'] }
-] as const
-const syntheticBuildingOptions = syntheticBuildings.map(building => building.label) as string[]
-const selectedBuilding = ref<string>(syntheticBuildings[0].label)
-const selectedFloor = ref<string>(syntheticBuildings[0].floors[0])
+const syntheticBuildingOptions = mapBuildings.map(building => building.label)
+const selectedBuilding = ref<string>(mapBuildings[0]!.label)
+const selectedFloor = ref<string>(mapBuildings[0]!.floors[0]!)
 const viewMode = ref<'explore' | 'realtime' | 'trajectory'>('explore')
 const zoomLevel = ref(1)
 const centerVersion = ref(0)
 
-const activeBuilding = computed(() => syntheticBuildings.find(building => building.label === selectedBuilding.value) ?? syntheticBuildings[0])
+const activeBuilding = computed(() => mapBuildings.find(building => building.label === selectedBuilding.value) ?? mapBuildings[0]!)
 
 function selectBuilding(building: string) {
   selectedBuilding.value = building
-  selectedFloor.value = activeBuilding.value.floors[0]
+  selectedFloor.value = activeBuilding.value.floors[0]!
   showViewerToolStatus(`${building} selected locally. The real viewer remains on the configured building.`)
 }
 

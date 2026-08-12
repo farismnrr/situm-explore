@@ -145,6 +145,8 @@ Nuxt nested component auto-import naming follows Nuxt conventions; explicit impo
 
 Do not create services/repositories/global stores for dummy map state. Prefer local component state or one focused composable only when multiple map components genuinely share reactive state.
 
+Implementation: the existing `SitumViewer` owns SDK lifecycle, the map page owns local workspace state, and synthetic building records are centralized in `app/data/prototype/map.ts`.
+
 ## Validation
 
 - [ ] real viewer reaches `MAP_IS_READY` manually;
