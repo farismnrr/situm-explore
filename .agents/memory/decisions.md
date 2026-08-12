@@ -3,7 +3,7 @@
 ## 2026-08-12 — Repo-native persistence foundation
 
 - Keep root `AGENTS.md` concise and use it as a router into `.agents/`.
-- Treat `.agents/` as the canonical persistent context directory.
+- Treat `.agents/` as the canonical persistent context directory for agent state/memory/protocols.
 - Require a persistence pass at the end of every conversation.
 - Create a concise session trace for every conversation.
 - Update durable stores selectively to avoid memory noise and duplication.
@@ -14,11 +14,10 @@ Status: active.
 
 - Use Nuxt UI v4 semantic aliases with a restrained blue primary and zinc neutral palette; keep success, info, warning, and error semantic.
 - Use Nuxt UI semantic text, background, and border utilities as the shared surface language instead of a parallel hard-coded palette.
-- Set the shared radius to `0.5rem` and the application container to Nuxt UI's `5xl` container token.
 - Preserve the existing/system sans font stack.
 - The earlier top-bar-only / no-sidebar conclusion from Plan 003 is no longer authoritative.
 
-Status: superseded by the approved interactive UI reference for composition/information architecture; reusable token lessons may remain where they match the reference.
+Status: superseded by the canonical interactive UI reference for composition/information architecture; reusable token lessons may remain where they match the populated reference.
 
 ## 2026-08-12 — Web foundation implementation
 
@@ -70,20 +69,19 @@ Status: complete.
 
 - Target a clean minimalist SaaS visual language with light mode only.
 - Keep Nuxt UI as the design/component foundation rather than creating a parallel custom design system.
-- Root `DESIGN.md` plus `.agents/design/` remain persistent design guidance.
-- Generic references such as Linear, Vercel, Notion, and Stripe are secondary principle references only.
+- Root `DESIGN.md` is the single design router. Do not recreate `.agents/design/` or another parallel design-guidance tree.
 - Preserve working auth, PostgreSQL, and Situm behavior during UI work.
 
-Status: active, as refined by the approved interactive reference below.
+Status: active.
 
-## 2026-08-12 — Approved interactive UI reference and rebuild roadmap
+## 2026-08-12 — Canonical UI reference and rebuild roadmap
 
 - Plan 003 was closed because its rendered UI was too far from the user's expectation; closing/merging it did not mean that visual direction was accepted.
-- `design/reference/situm-explore-interactive-prototype.html` is the canonical visual and interaction source of truth for the rebuild.
-- `design/ui-reference.html` is only a compatibility wrapper to the canonical reference.
-- Use the approved navigation-arrow mark; do not restore the `S` lettermark.
-- The approved product reference includes enough destinations to justify a compact authenticated desktop sidebar and mobile drawer, superseding Plan 003's no-sidebar conclusion.
-- Translate the prototype into Nuxt/Vue/Nuxt UI rather than copying its raw HTML/CSS/JS architecture.
+- `design/reference/situm-explore-interactive-prototype.html` is the **only** HTML visual/interaction reference.
+- The user will manually replace that file's placeholder content with the approved prototype.
+- While the file still contains only placeholder content such as `Hello World`, AI must not infer, reconstruct, or implement the intended UI from memory or generic references.
+- The populated HTML is visual/interaction intent only; production must translate it into Nuxt/Vue/Nuxt UI rather than copying raw HTML/CSS/JS architecture.
+- `DESIGN.md` is the design router; `design/IMPLEMENTATION.md` is the Nuxt translation contract; `design/data-source-matrix.md` defines real-vs-dummy boundaries.
 - Plans 004–009 implement the approved UI first. Existing integrations stay real; missing product domains use typed local dummy data so UI scope does not expand the backend.
 - Plans 010–015 are later read-only Situm integration work and must not start until the user manually accepts the UI produced by Plans 004–009.
 - During UI-first work, keep real: login/session/logout, auth middleware, `/api/me`, PostgreSQL behavior, `/api/situm/status` configuration semantics, and the existing Situm Viewer `MAP_IS_READY` / `APP_ERROR` lifecycle.
