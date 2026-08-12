@@ -1,6 +1,6 @@
 # Plan 000 — Resource Gathering
 
-Status: active  
+Status: blocked pending local `DATABASE_URL`
 Scope: collect and normalize inputs before implementation  
 Principle: gather what we already have, discover what the APIs/database can tell us, and avoid blocking on information Codex can inspect itself.
 
@@ -21,7 +21,7 @@ The user currently has these source files on the local development machine:
 /home/farismnrr/Downloads/lt 2-1422.jpeg
 ```
 
-- [ ] Confirm both source files exist before touching them.
+- [x] Confirm both source files exist before touching them.
 - [ ] Create a repository-local resource directory:
 
 ```text
@@ -31,26 +31,26 @@ resources/
         └── source/
 ```
 
-- [ ] **Copy** the source files into the repository rather than deleting/moving the originals from `~/Downloads`.
-- [ ] Normalize filenames while copying:
+- [x] **Copy** the source files into the repository rather than deleting/moving the originals from `~/Downloads`.
+- [x] Normalize filenames while copying:
 
 ```text
 resources/buildings/building-1422/source/floor-1.jpeg
 resources/buildings/building-1422/source/floor-2.jpeg
 ```
 
-- [ ] Preserve the files without recompressing or resizing during intake.
-- [ ] Record original pixel dimensions and file sizes in `resources/buildings/building-1422/README.md`.
-- [ ] Add a short mapping in that README from original filename to normalized filename.
-- [ ] Do not assume `1422` is a Situm building identifier; treat it only as a local resource slug until Situm metadata confirms the actual building identifier.
-- [ ] Do not place the source files directly under `public/` yet. Decide later whether the application needs a public/optimized derivative.
+- [x] Preserve the files without recompressing or resizing during intake.
+- [x] Record original pixel dimensions and file sizes in `resources/buildings/building-1422/README.md`.
+- [x] Add a short mapping in that README from original filename to normalized filename.
+- [x] Do not assume `1422` is a Situm building identifier; treat it only as a local resource slug until Situm metadata confirms the actual building identifier.
+- [x] Do not place the source files directly under `public/` yet. Decide later whether the application needs a public/optimized derivative.
 
 ### Image questions Codex should inspect, not ask prematurely
 
-- [ ] Determine whether the two images correspond to floor 1 and floor 2 as implied by the filenames.
-- [ ] Inspect orientation and whether either image needs rotation for display.
-- [ ] Determine whether these are canonical floorplans already present in Situm or merely local reference/export images.
-- [ ] If Situm already owns the canonical floorplans, do not duplicate upload flows just because local copies exist.
+- [x] Determine whether the two images correspond to floor 1 and floor 2 as implied by the filenames.
+- [x] Inspect orientation and whether either image needs rotation for display.
+- [x] Determine whether these are canonical floorplans already present in Situm or merely local reference/export images.
+- [x] If Situm already owns the canonical floorplans, do not duplicate upload flows just because local copies exist.
 
 ---
 
@@ -81,12 +81,12 @@ Do not require the user to manually type metadata that Codex can retrieve using 
 
 Once local credentials are configured:
 
-- [ ] List buildings accessible to the Situm account.
-- [ ] Identify the intended building from returned names/metadata.
-- [ ] Record the actual Situm building identifier in local configuration or application-owned data as appropriate; do not confuse it with the local `building-1422` slug.
-- [ ] Fetch floors for the selected building.
-- [ ] Record floor identifiers, names/numbers, order, and other metadata needed by the web viewer.
-- [ ] Check whether floorplan/cartography is already configured in Situm.
+- [x] List buildings accessible to the Situm account.
+- [x] Identify the intended building from returned names/metadata.
+- [x] Record the actual Situm building identifier in local configuration or application-owned data as appropriate; do not confuse it with the local `building-1422` slug.
+- [x] Fetch floors for the selected building.
+- [x] Record floor identifiers, names/numbers, order, and other metadata needed by the web viewer.
+- [x] Check whether floorplan/cartography is already configured in Situm.
 - [ ] Check whether POIs, geofences, paths, or map configuration already exist, but do not import/model them in our database yet unless the first web slice requires them.
 - [ ] Save reusable non-secret discoveries in `.agents/knowledge/` when they materially affect implementation.
 
@@ -169,13 +169,17 @@ Never copy secrets into resource manifests.
 
 Before starting `plans/001-web-foundation.md`:
 
-- [ ] Both building images are copied into `resources/buildings/building-1422/source/` and originals remain untouched.
-- [ ] Resource manifest exists.
-- [ ] Situm API key is available locally, not in git.
-- [ ] Situm building/floor metadata can be discovered or there is a clear reason it cannot.
+- [x] Both building images are copied into `resources/buildings/building-1422/source/` and originals remain untouched.
+- [x] Resource manifest exists.
+- [x] Situm API key is available locally, not in git.
+- [x] Situm building/floor metadata can be discovered or there is a clear reason it cannot.
 - [ ] `DATABASE_URL` is available locally, not in git.
 - [ ] Existing PostgreSQL schemas can be inspected safely.
 - [ ] No additional credentials are being requested without a concrete implementation need.
+
+### Current blocker
+
+The local environment did not provide `DATABASE_URL`, so existing PostgreSQL schemas could not be inspected read-first. No database changes were made. Resume this plan when the local connection configuration is available.
 
 ## Definition of done
 

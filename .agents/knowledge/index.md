@@ -6,6 +6,12 @@ Do not place user-specific facts here; those belong in `../memory/`.
 
 ## Current knowledge
 
+### Situm Explore building resource discovery
+
+- Situm discovery mapped local slug `building-1422` to building `19866` (`PT Berjaya Inovasi Global`), with floors `69904` (`lt 1`) and `69905` (`lt 2`). Local JPEGs remain reference assets pending cartography comparison.
+
+Source: observed from Situm API discovery during resource gathering on 2026-08-12.
+
 ### Repo-native Codex context pattern
 
 - Keep root `AGENTS.md` concise and navigational rather than turning it into a large encyclopedia.

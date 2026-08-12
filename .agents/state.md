@@ -4,11 +4,11 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Gather local building assets and required credentials/metadata before executing the first Nuxt web foundation.
+Gathered building assets and Situm metadata; PostgreSQL discovery is blocked until local `DATABASE_URL` is available.
 
 ## Phase
 
-**Phase 0.5 — Resource gathering**
+**Phase 0.5 — Resource gathering (blocked on PostgreSQL credentials)**
 
 ## Active decisions
 
@@ -45,13 +45,9 @@ Gather local building assets and required credentials/metadata before executing 
 
 ## Open loops
 
-- Execute `plans/000-resource-gathering.md` in branch/worktree `plan/000-resource-gathering` / `../situm-explore-worktrees/000-resource-gathering`.
-- Copy and normalize the two building images into `resources/buildings/building-1422/source/` while preserving originals.
-- Create the local resource manifest.
-- Configure Situm credentials locally, then discover the actual building identifier and floor metadata through Situm rather than assuming `1422` is the Situm ID.
 - Confirm local PostgreSQL connectivity and inspect existing schemas read-first.
 - After plan 000 is complete and pushed, start `plans/001-web-foundation.md` in a **new** branch/worktree `plan/001-web-foundation` / `../situm-explore-worktrees/001-web-foundation`; do not continue 001 in the 000 branch.
 
 ## Next likely action
 
-Have Codex execute `plans/000-resource-gathering.md` locally using `.agents/protocols/git-workflow.md`. Each completed phase must be persisted, validated, committed, and pushed. Do not create a PR until explicitly requested.
+Provide/configure the local `DATABASE_URL`, then complete the read-only PostgreSQL inspection before starting plan 001. Do not create a PR until explicitly requested.
