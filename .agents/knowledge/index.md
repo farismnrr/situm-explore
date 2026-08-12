@@ -23,6 +23,7 @@ Source: observed from the local Compose file, running container, and read-only P
 ### Situm web SDK credential boundary
 
 - The installed official `@situm/sdk-js` browser integration initializes `SitumSDK` with `auth.apiKey` and creates a viewer against a DOM element and building ID. This means the chosen web slice must use a clearly named public browser credential rather than pretending a server-only key can initialize the browser SDK.
+- Official Situm SDK JS documentation confirms the browser initialization requires an API key and supports `ViewerEventType.MAP_IS_READY`. Repository/environment metadata cannot establish whether a local key is dedicated or least-privilege; use `NUXT_PUBLIC_SITUM_VIEWER_API_KEY` only after confirming that in the Situm account.
 
 Source: observed in the installed SDK README during web-foundation implementation on 2026-08-12.
 
