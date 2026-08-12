@@ -90,14 +90,14 @@ app/pages/app/settings.vue
 
 Rules:
 
-- [ ] Every `/app/**` page uses the authenticated app layout and auth middleware via explicit Nuxt page metadata or an equally clear Nuxt-native mechanism.
-- [ ] `/app` and `/app/dashboard` receive full content in this plan.
-- [ ] Other routes receive intentional lightweight placeholders for later plans; do not implement future phases early.
-- [ ] `/app/map` is the exception to a blank placeholder: mount the **existing real `SitumViewer` unchanged** in a minimal temporary composition so the working viewer remains reachable between Plans 005 and 006.
-- [ ] Update real login continuation from Plan 004 `/dashboard` to `/app` only after `/app` exists in this phase.
-- [ ] Logged-in `/login` continuation moves to `/app` at the same time.
-- [ ] Keep legacy `/dashboard` as a compatibility redirect to `/app/map`, or remove it only when all internal references are migrated and the real Viewer remains reachable. Do not leave the old Plan 003 dashboard UI as a second product surface.
-- [ ] Update all internal links/CTAs that still point at the legacy dashboard.
+- [x] Every `/app/**` page uses the authenticated app layout and auth middleware via explicit Nuxt page metadata or an equally clear Nuxt-native mechanism.
+- [x] `/app` and `/app/dashboard` receive full content in this plan.
+- [x] Other routes receive intentional lightweight placeholders for later plans; do not implement future phases early.
+- [x] `/app/map` is the exception to a blank placeholder: mount the **existing real `SitumViewer` unchanged** in a minimal temporary composition so the working viewer remains reachable between Plans 005 and 006.
+- [x] Update real login continuation from Plan 004 `/dashboard` to `/app` only after `/app` exists in this phase.
+- [x] Logged-in `/login` continuation moves to `/app` at the same time.
+- [x] Keep legacy `/dashboard` as a compatibility redirect to `/app/map`, or remove it only when all internal references are migrated and the real Viewer remains reachable. Do not leave the old Plan 003 dashboard UI as a second product surface.
+- [x] Update all internal links/CTAs that still point at the legacy dashboard.
 
 Acceptance: login never points at a missing route and the real Situm Viewer remains reachable throughout the completed migration.
 

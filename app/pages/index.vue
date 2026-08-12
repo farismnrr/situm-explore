@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { loggedIn } = useUserSession()
 
-const continuePath = computed(() => loggedIn.value ? '/dashboard' : '/login')
+const continuePath = computed(() => loggedIn.value ? '/app' : '/login')
 </script>
 
 <template>
