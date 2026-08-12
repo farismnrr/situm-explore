@@ -4,69 +4,152 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Pause implementation while the user manually identifies the remaining UI fidelity issues for **Plan 009B — Final UI Fidelity Punch List**.
+Execute **Plan 009B — Nuxt UI Foundation Fidelity & Reusability** before any more page-by-page UI recovery or backend/Situm integration.
 
-## Current roadmap state
+The user reviewed the post-009A product and concluded that many 1:1 differences originate from the shared UI foundation itself: buttons, primary/accent semantics, cards, controls, pills, typography, spacing, overlays, and duplicated UI/logic patterns.
+
+The correct next move is therefore **components/foundation first**, not another broad page-by-page patch pass.
+
+## Roadmap state
 
 **Plan 009A is closed with known UI gaps.**
 
-The user explicitly chose to close 009A because the overall cumulative UI is safe enough to stop that recovery loop, while also stating that the UI is **not yet 100% final**.
+009A closure is historical/administrative and is not a claim of final pixel-perfect UI acceptance.
 
-This means:
+**Plan 009B is now fully scoped and planned-ready.**
 
-- 009A closure is administrative/historical;
-- it is not a claim of pixel-perfect conformance;
-- it is not the final UI acceptance gate for Plan 010;
-- remaining user-identified UI issues belong to Plan 009B.
+Plan file:
 
-## Plan 009A closure truth
+`plans/009b-ui-final-fidelity-punch-list.md`
 
-Closed plan: `plans/009a-ui-prototype-fidelity-recovery.md`
-Closed branch baseline before closure-doc commits: `af012f4`
+Execution branch:
 
-Passed/verified before closure:
+`plan/009b-ui-final-fidelity-punch-list`
 
-- `git diff --check`;
-- lint;
-- clean-config typecheck;
-- build;
-- unauthenticated protected-route redirect;
-- invalid/missing login behavior;
-- anonymous `/api/me` protection;
-- `/api/situm/status` configuration-only semantics;
-- source-level Situm Viewer `MAP_IS_READY` / `APP_ERROR` lifecycle preservation;
-- no new Situm product-domain integration;
-- no known secret leakage.
+When execution is authorized, create the 009B branch from the latest cumulative `plan/009a-ui-prototype-fidelity-recovery` HEAD, not stale `main`, because the UI roadmap has intentionally been developed as an explicitly authorized stacked branch chain and none of Plans 004–009A have been integrated yet.
 
-Not claimed as completed in 009A:
+No PR or merge is currently authorized.
 
-- configured successful-login happy path;
-- logout after successful authenticated session;
-- authenticated `/api/me` + configured PostgreSQL happy path;
-- configured Situm Viewer reaching real runtime ready state;
-- full rendered route-by-route visual acceptance.
+## Plan 009B objective
 
-Do not retroactively mark those as passed merely because 009A is closed.
+Align the **Nuxt UI component foundation itself** with the canonical prototype before further page-layout fidelity work.
 
-## Plan 009B
+Main requirements:
 
-Plan file: `plans/009b-ui-final-fidelity-punch-list.md`
-Status: **pending-user-scope**
-Expected branch when execution is later authorized: `plan/009b-ui-final-fidelity-punch-list`
+1. translate canonical prototype tokens into a coherent Nuxt UI theme;
+2. restore the prototype's semantic distinction between **dark ink primary actions** and **blue accent actions/states**;
+3. make shared primitive geometry match the prototype closely;
+4. create/reconcile reusable product components for genuinely repeated product composition;
+5. create/reconcile small reusable composables/utilities for genuinely repeated client behavior;
+6. migrate all current routes to the shared foundation so identical semantic roles do not drift page by page;
+7. perform primitive-by-primitive rendered conformance before returning to page-layout polish.
 
-The user is currently identifying which UI surfaces still have issues.
+## Reuse-first contract
 
-Do not invent the 009B scope from old audit notes, generic design taste, or assumptions. Wait for the user's concrete punch list, then convert the placeholder plan into an executable checklist.
+For every future UI/client-logic change:
+
+1. search existing Nuxt UI theme/components/composables/utilities first;
+2. reuse an existing owner when semantics match;
+3. if a repeated product pattern or repeated behavior has no owner, extract the smallest appropriate shared implementation;
+4. migrate duplicate callers when they should change together;
+5. keep genuinely unique page behavior local.
+
+Do not create a generic framework merely to satisfy DRY.
+
+### Low-level primitives
+
+Prefer Nuxt UI theming/configuration for:
+
+- buttons;
+- cards;
+- inputs/selects/textareas;
+- badges/pills;
+- switches/tabs;
+- modal/popover/slideover/toast primitives.
+
+Do not automatically create cosmetic `BaseButton`, `BaseCard`, `BaseInput`, etc. A wrapper is justified only for a real Situm Explore product semantic or shared behavior that Nuxt UI configuration cannot express cleanly.
+
+### Reusable product UI
+
+Examples of legitimate shared responsibilities when repeated:
+
+- page header/title/actions;
+- stat cards;
+- product status pills;
+- panel framing;
+- toolbar/filter composition;
+- compact detail lists;
+- shared details drawer;
+- search trigger/results;
+- transient feedback presentation;
+- repeated activity/list rows when behavior and geometry truly match.
+
+### Reusable logic
+
+Examples when repeated:
+
+- transient feedback timer ownership;
+- tablist keyboard behavior;
+- equivalent filtering/search behavior;
+- shared component-selection/disclosure coordination.
+
+Prefer composables for reactive/lifecycle behavior and utilities for pure deterministic logic. No Pinia, event bus, god composable or speculative abstraction.
+
+## Canonical foundation intent
+
+The prototype's core visual semantics include:
+
+```text
+background        #f6f7f9
+surface           #ffffff
+surface-subtle    #fafbfc
+surface-hover     #f4f5f7
+text              #16181c
+text-muted        #515862
+border            #e6e8ec
+border-strong     #d8dce2
+ink               #111827
+ink-hover         #202939
+accent            #2563eb
+```
+
+Important distinction:
+
+- normal primary product action = dark `ink`;
+- blue = explicit accent/selected/highlight role;
+- do not let Nuxt UI's `primary` naming make the whole product blue.
+
+Approximate canonical primitive geometry:
+
+```text
+button            40px / 13px / radius 10
+button-sm         34px / 12px / radius 9
+icon-button       36x36 / radius 9
+input/select      42px / radius 10
+pill              28px / 11px
+switch            36x20
+main card         radius 16 / 1px border / subtle shadow
+soft card         radius 12 / subtle surface / border
+page title        ~30px / 1.08 line-height / tight tracking
+```
+
+The canonical HTML remains final visual authority for exact values and representative states. Accessibility may require a restrained contrast deviation for small text.
+
+## Current known systemic issue
+
+At 009B plan creation, current Nuxt config still maps `primary` to blue and defaults plain `UButton` to `primary + solid + sm`, while the canonical prototype uses dark ink for normal primary actions, blue only as accent, and ~40px for normal buttons.
+
+This is a cross-route foundation defect and is one of the first Phase 1 targets.
 
 ## Active contracts
 
 - `AGENTS.md` — root router/workflow.
-- `ARCHITECTURE.md` — full-stack Nuxt architecture contract; SOLID/DRY/KISS/layering remain mandatory.
+- `ARCHITECTURE.md` — Nuxt 4 architecture, SOLID/DRY/KISS/layering.
 - `DESIGN.md` — visual authority router.
 - `design/IMPLEMENTATION.md` — prototype -> Nuxt/Vue/Nuxt UI translation contract.
-- `design/data-source-matrix.md` — existing-real vs dummy/local data boundary.
-- `design/reference/situm-explore-interactive-prototype.html` — canonical visual/interaction reference unless superseded by the user's newer explicit direction.
-- `plans/009b-ui-final-fidelity-punch-list.md` — next UI plan, pending user scope.
+- `design/data-source-matrix.md` — existing-real vs dummy/local boundary.
+- `design/reference/situm-explore-interactive-prototype.html` — canonical visual/interaction reference.
+- `plans/009b-ui-final-fidelity-punch-list.md` — active planned UI foundation work.
 
 ## Runtime/data boundary remains unchanged
 
@@ -88,20 +171,28 @@ Keep local/dummy until later integration plans:
 - realtime product data;
 - analytics/reports;
 - alarms/users/groups/organization;
-- new map tools/settings not already part of the real Viewer lifecycle.
+- new map tools/settings beyond the existing real Viewer lifecycle.
+
+Plan 009B must not add new backend endpoints, migrations, Situm product-domain reads/writes, or credential changes.
 
 ## Backend roadmap gate
 
-**Do not start Plan 010 yet.**
+**Do not start Plan 010.**
 
 Plan 010 and later Situm integration plans remain blocked until:
 
-1. the user supplies and reviews the Plan 009B scope;
-2. Plan 009B is completed, or the user explicitly decides it is unnecessary/skipped after review;
-3. the final rendered UI baseline is explicitly accepted by the user.
-
-No PR or merge is authorized by the 009A closure.
+1. Plan 009B foundation work is complete;
+2. the user accepts the shared component foundation;
+3. any later page/layout-specific UI punch list required by manual review is complete or explicitly waived;
+4. the user explicitly accepts the final rendered UI baseline overall.
 
 ## Next action
 
-Wait for the user's concrete list of remaining UI issues. When supplied, update Plan 009B with exact routes/states/expected results and execute it only after normal branch/workflow checks.
+When the user starts 009B:
+
+1. fetch latest refs;
+2. create `plan/009b-ui-final-fidelity-punch-list` from the latest cumulative 009A HEAD;
+3. execute Plan 009B Phase 0 inventory first;
+4. do not start broad page-layout redesign before the shared primitive/component/logic ownership matrix is established;
+5. validate and commit/push each phase;
+6. do not create a PR without explicit authorization.
