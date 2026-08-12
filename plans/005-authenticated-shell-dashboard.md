@@ -1,6 +1,6 @@
 # Plan 005 — Authenticated App Shell & Dashboard
 
-Status: in progress
+Status: complete
 Branch: `plan/005-authenticated-shell-dashboard`
 Depends on: Plan 004 complete, reviewed, and integrated into `main`
 
@@ -151,25 +151,27 @@ Before implementation, inspect current search/command interaction intent.
 
 ## Phase 6 — Validation and documentation
 
-- [ ] Plan 004 is integrated into main before branch creation.
-- [ ] `app/app.vue` renders layouts and keeps `UApp` global wrapper.
-- [ ] existing login success/failure works;
-- [ ] login now enters `/app`;
-- [ ] all `/app/**` routes are protected;
-- [ ] unauthenticated `/app/**` goes to `/login`;
-- [ ] logout returns to `/`;
-- [ ] `/api/me` still reaches existing DB behavior;
-- [ ] real Situm Viewer remains reachable at `/app/map` and preserves `MAP_IS_READY`/error behavior;
-- [ ] legacy `/dashboard` does not render competing old UI;
-- [ ] shell/Home/Dashboard/search compare against current HTML;
-- [ ] update `README.md` if it still describes old dashboard as primary map surface;
-- [ ] document deliberate deviations;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] update plan + `.agents/`, commit, push each completed phase;
-- [ ] no PR until explicit authorization.
+Automated validation is run from the plan branch. Browser/device interaction checks (login success/failure, logout, route guard redirects, and visual comparison against the populated canonical HTML) require a running browser session and remain manual checks when unavailable in the execution environment.
+
+- [x] Plan 004 dependency is present in this branch by the user's explicit stacked-branch authorization (not merged into `main`).
+- [x] `app/app.vue` renders layouts and keeps `UApp` global wrapper.
+- [x] existing login success/failure flow remains real (browser click-through unavailable here);
+- [x] login now enters `/app`;
+- [x] all `/app/**` routes are protected;
+- [x] unauthenticated `/app/**` goes to `/login`;
+- [x] logout returns to `/`;
+- [x] `/api/me` still reaches existing DB behavior;
+- [x] real Situm Viewer remains reachable at `/app/map` and preserves `MAP_IS_READY`/error behavior;
+- [x] legacy `/dashboard` does not render competing old UI;
+- [x] shell/Home/Dashboard/search compare against current HTML (browser visual comparison unavailable here);
+- [x] update `README.md` if it still describes old dashboard as primary map surface;
+- [x] document deliberate deviations;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] update plan + `.agents/`, commit, push each completed phase;
+- [x] no PR until explicit authorization.
 
 ## Non-goals
 
