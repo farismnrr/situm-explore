@@ -162,20 +162,18 @@ Acceptance:
 
 # Phase 7 — Final validation and closeout
 
-Status: blocked pending manual authenticated/browser checks
-
 No CI or unit-test framework is required for this plan.
 
-- [x] `git diff --check`
-- [x] Clean lockfile install validation with `npm ci` when practical.
-- [x] `npm run lint`
-- [x] `npm run typecheck`
-- [x] `npm run build`
-- [x] Manual unauthenticated `/api/me` check still rejects access with HTTP 401.
+- [ ] `git diff --check`
+- [ ] Clean lockfile install validation with `npm ci` when practical.
+- [ ] `npm run lint`
+- [ ] `npm run typecheck`
+- [ ] `npm run build`
+- [ ] Manual unauthenticated `/api/me` check still rejects access.
 - [ ] Manual authenticated `/api/me` check still reaches Drizzle/PostgreSQL.
 - [ ] Manual Situm dashboard check reaches the real SDK ready state with local config.
-- [x] No secrets are staged or committed.
-- [x] Update relevant `.agents/` files before final phase commit.
+- [ ] No secrets are staged or committed.
+- [ ] Update relevant `.agents/` files before final phase commit.
 - [ ] Commit and push every completed phase according to the Git protocol.
 - [ ] Do not open a PR until explicitly authorized.
 
