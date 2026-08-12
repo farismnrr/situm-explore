@@ -15,7 +15,7 @@ Required configuration:
 - `NUXT_SESSION_PASSWORD`: at least 32 characters; used by maintained `nuxt-auth-utils` for sealed secure sessions.
 - `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`: the single owner credential. Generate the scrypt hash with `hashPassword` from `nuxt-auth-utils`; login verifies it with `verifyPassword`.
 - `DATABASE_URL` and optional `DB_SCHEMA` (default `situm_explore`).
-- `NUXT_PUBLIC_SITUM_VIEWER_API_KEY` and `NUXT_PUBLIC_SITUM_BUILDING_ID`: a dedicated read-only/browser-safe Situm Map Viewer credential and building identifier. The key is public because the SDK requires it in the browser; do not use a discovery, administration, or server credential here.
+- `NUXT_PUBLIC_SITUM_API_KEY` and `NUXT_PUBLIC_SITUM_BUILDING_ID`: the official Situm browser SDK credential and building identifier. The API key is explicitly public because the SDK requires it in the browser.
 
 ## Database
 
