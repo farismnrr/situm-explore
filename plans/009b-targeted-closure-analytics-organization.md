@@ -188,50 +188,50 @@ Reference: canonical `#app-analytics` plus canonical `.analytics-tabs`, `.analyt
 
 ## Page head
 
-- [ ] Keep `ProductPageHeader`.
-- [ ] Date select rendered width matches canonical 150px footprint (not a generic wider `w-40` unless rendered measurement proves equivalence).
-- [ ] `Export CSV` matches canonical secondary text-only action; remove the unreferenced download icon.
-- [ ] Preserve local CSV behavior and transient feedback.
+- [x] Keep `ProductPageHeader`.
+- [x] Date select rendered width matches canonical 150px footprint (not a generic wider `w-40` unless rendered measurement proves equivalence).
+- [x] `Export CSV` matches canonical secondary text-only action; remove the unreferenced download icon.
+- [x] Preserve local CSV behavior and transient feedback.
 
 ## Report tabs
 
-- [ ] Match canonical flex-wrap behavior rather than forcing a desktop horizontal-scroll strip when wrapping is available.
-- [ ] Each tab: ~32px minimum height, 10px horizontal padding, 10px text, 8px radius, 1px border.
-- [ ] Active tab uses dark ink background/border + white text.
-- [ ] Inactive tabs use white surface + canonical border/muted text.
-- [ ] Preserve correct tab semantics, roving tabindex and Arrow/Home/End keyboard behavior through `useTabKeyboard`.
+- [x] Match canonical flex-wrap behavior rather than forcing a desktop horizontal-scroll strip when wrapping is available.
+- [x] Each tab: ~32px minimum height, 10px horizontal padding, 10px text, 8px radius, 1px border.
+- [x] Active tab uses dark ink background/border + white text.
+- [x] Inactive tabs use white surface + canonical border/muted text.
+- [x] Preserve correct tab semantics, roving tabindex and Arrow/Home/End keyboard behavior through `useTabKeyboard`.
 
 ## Report card/panels
 
-- [ ] Use one consistent shared panel-head/body framing for every report pane; remove route-specific negative-margin/header recipes.
-- [ ] Visitors panel right meta is `Unique indoor visitors` like the reference; do not replace that slot with the selected date range.
-- [ ] Positioning panel right meta is `Tracked duration by user`.
-- [ ] Stay panel right meta is `Average duration`.
-- [ ] Positions panel right meta is `Latest report rows`.
-- [ ] Viewer usage panel right meta is `Sessions & interactions`.
+- [x] Use one consistent shared panel-head/body framing for every report pane; remove route-specific negative-margin/header recipes.
+- [x] Visitors panel right meta is `Unique indoor visitors` like the reference; do not replace that slot with the selected date range.
+- [x] Positioning panel right meta is `Tracked duration by user`.
+- [x] Stay panel right meta is `Average duration`.
+- [x] Positions panel right meta is `Latest report rows`.
+- [x] Viewer usage panel right meta is `Sessions & interactions`.
 
 ## Charts / heatmap
 
-- [ ] Visitor/positioning chart overall height and inner padding follow canonical 250px chart geometry.
-- [ ] Keep canonical restrained gray bars with pale-blue accent bars; do not turn the chart into a generic Nuxt/Tailwind primary chart.
-- [ ] Heatmap is canonical 260px high, not the current 320px.
-- [ ] Heatmap uses three canonical density spots, not four.
-- [ ] Remove the unreferenced `Main Building · Floor 1` floating label unless the user explicitly asks to keep it.
-- [ ] Match canonical low-blur red/amber/yellow density treatment.
+- [x] Visitor/positioning chart overall height and inner padding follow canonical 250px chart geometry.
+- [x] Keep canonical restrained gray bars with pale-blue accent bars; do not turn the chart into a generic Nuxt/Tailwind primary chart.
+- [x] Heatmap is canonical 260px high, not the current 320px.
+- [x] Heatmap uses three canonical density spots, not four.
+- [x] Remove the unreferenced `Main Building · Floor 1` floating label unless the user explicitly asks to keep it.
+- [x] Match canonical low-blur red/amber/yellow density treatment.
 
 ## Tables / viewer usage
 
-- [ ] Stay and Positions tables use shared compact table density with no route-level p-4/p-6 shell that changes canonical footprint.
-- [ ] Viewer usage uses canonical `panel-body grid-3` + soft stat cards and canonical compact type.
+- [x] Stay and Positions tables use shared compact table density with no route-level p-4/p-6 shell that changes canonical footprint.
+- [x] Viewer usage uses canonical `panel-body grid-3` + soft stat cards and canonical compact type.
 
 Validation:
 
-- [ ] Render `http://100.99.88.53:3000/app/analytics` at 1440x900 and compare side-by-side with canonical Analytics.
-- [ ] Check every report tab.
-- [ ] Check 1024px, 768px and 390px behavior.
-- [ ] No horizontal document overflow.
-- [ ] `git diff --check`, lint, typecheck.
-- [ ] commit and push Analytics closure.
+- [x] Render `http://100.99.88.53:3000/app/analytics` at 1440x900 and compare side-by-side with canonical Analytics.
+- [x] Check every report tab.
+- [x] Check 1024px, 768px and 390px behavior.
+- [x] No horizontal document overflow.
+- [x] `git diff --check`, lint, typecheck.
+- [x] commit and push Analytics closure.
 
 ---
 
