@@ -491,21 +491,21 @@ Validation:
 
 Do this **after** the visual shape is correct so architecture cleanup does not become redesign.
 
-- [ ] Keep Nuxt 4 `app/` / root `server/` boundaries intact.
-- [ ] Keep one authenticated layout owner.
-- [ ] Remove the derived duplicate map fixture if not already removed in Phase 0.
-- [ ] Audit `app/pages/app/map.vue` against the architecture rule that pages remain route/composition focused.
-- [ ] Extract only clear product responsibilities; prefer a few boundaries such as `MapWorkspaceSidebar` and `MapViewerChrome` if they materially reduce the route file.
-- [ ] Introduce `useMapWorkspaceState()` only if it clearly improves reactive coordination; do not create a god composable.
-- [ ] Do not create generic UI wrappers for Nuxt UI primitives.
-- [ ] Do not add Pinia, event bus, generic API client, DI container, repository layer, or service layer for UI recovery.
-- [ ] Ensure fixtures stay typed and canonical under `app/data/prototype/`.
-- [ ] Ensure no app code imports `server/` source.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
-- [ ] commit and push Phase 6.
+- [x] Keep Nuxt 4 `app/` / root `server/` boundaries intact.
+- [x] Keep one authenticated layout owner.
+- [x] Remove the derived duplicate map fixture if not already removed in Phase 0.
+- [x] Audit `app/pages/app/map.vue` against the architecture rule that pages remain route/composition focused.
+- [x] Extract only clear product responsibilities; prefer a few boundaries such as `MapWorkspaceSidebar` and `MapViewerChrome` if they materially reduce the route file.
+- [x] Introduce `useMapWorkspaceState()` only if it clearly improves reactive coordination; do not create a god composable.
+- [x] Do not create generic UI wrappers for Nuxt UI primitives.
+- [x] Do not add Pinia, event bus, generic API client, DI container, repository layer, or service layer for UI recovery.
+- [x] Ensure fixtures stay typed and canonical under `app/data/prototype/`.
+- [x] Ensure no app code imports `server/` source.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] `npm run build`.
+- [x] commit and push Phase 6.
 
 ---
 
