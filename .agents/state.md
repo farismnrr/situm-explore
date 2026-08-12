@@ -8,7 +8,7 @@ Refresh the existing Nuxt web UI/UX into a clean minimalist SaaS experience whil
 
 ## Phase
 
-**Phase 3 — UI/UX refresh planned**
+**Phase 2 — UI/UX refresh in progress**
 
 ## Active decisions
 
@@ -35,7 +35,7 @@ Refresh the existing Nuxt web UI/UX into a clean minimalist SaaS experience whil
 
 ## Active plan
 
-- `plans/003-ui-ux-refresh.md` — planned next implementation on branch `plan/003-ui-ux-refresh`.
+- `plans/003-ui-ux-refresh.md` — active implementation on branch `plan/003-ui-ux-refresh`; Phase 1 is complete and Phase 2 is next.
 
 ## Completed plans
 
@@ -53,7 +53,7 @@ Refresh the existing Nuxt web UI/UX into a clean minimalist SaaS experience whil
 
 ## Open loops
 
-- Execute Plan 003 without changing auth/database/Situm behavior beyond UI composition and feedback presentation.
+- Execute Plan 003 without changing auth/database/Situm behavior beyond UI composition and feedback presentation; Phase 1 baseline is complete.
 - Keep light-mode-only scope and avoid premature navigation/design-system complexity.
 
 ## Next likely action

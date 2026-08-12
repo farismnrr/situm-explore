@@ -1,6 +1,6 @@
 # Plan 003 — UI/UX Refresh
 
-Status: planned
+Status: in progress
 Scope: visual and interaction refresh of the existing web foundation
 Direction: clean minimalist SaaS, light mode only
 Principle: improve clarity, hierarchy, polish, and responsiveness without inventing product complexity.
@@ -73,17 +73,17 @@ Current surface inventory should remain intentionally small:
 5. Situm viewer;
 6. loading/error states.
 
-- [ ] Confirm no extra application navigation currently justifies a sidebar.
-- [ ] Keep a simple top application bar + content canvas for this phase.
-- [ ] Inspect the current official Nuxt UI theming APIs before configuring global tokens/defaults.
-- [ ] Define the implementation baseline using Nuxt UI semantic primary/neutral colors, text/background/border tokens, shared radius, and container sizing.
-- [ ] Keep the existing/system font stack unless a concrete readability/brand reason justifies another dependency.
-- [ ] Record any durable visual-system decision before committing.
+- [x] Confirm no extra application navigation currently justifies a sidebar.
+- [x] Keep a simple top application bar + content canvas for this phase.
+- [x] Inspect the current official Nuxt UI theming APIs before configuring global tokens/defaults.
+- [x] Define the implementation baseline using Nuxt UI semantic primary/neutral colors, text/background/border tokens, shared radius, and container sizing.
+- [x] Keep the existing/system font stack unless a concrete readability/brand reason justifies another dependency.
+- [x] Record any durable visual-system decision before committing.
 
 Acceptance:
 
-- [ ] No unnecessary navigation or new component architecture is introduced.
-- [ ] The visual baseline follows `DESIGN.md` and `.agents/design/`.
+- [x] No unnecessary navigation or new component architecture is introduced.
+- [x] The visual baseline follows `DESIGN.md` and `.agents/design/`.
 
 ---
 

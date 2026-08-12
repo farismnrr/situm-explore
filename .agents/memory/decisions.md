@@ -10,6 +10,15 @@
 
 Status: active.
 
+## 2026-08-12 — UI visual baseline
+
+- Use Nuxt UI v4 semantic aliases with a restrained blue primary and zinc neutral palette; keep success, info, warning, and error semantic.
+- Use Nuxt UI semantic text, background, and border utilities as the shared surface language instead of a parallel hard-coded palette.
+- Set the shared radius to `0.5rem` and the application container to Nuxt UI's `5xl` container token.
+- Preserve the existing/system sans font stack and the intentionally small top-bar-plus-content-canvas information architecture; no sidebar is justified by current destinations.
+
+Status: active.
+
 ## 2026-08-12 — Web foundation implementation
 
 - Use `nuxt-auth-utils` for sealed sessions and its scrypt password utilities; the first slice authenticates one configured owner credential rather than introducing account management.
