@@ -4,23 +4,23 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Recover the cumulative Plans 004–009 UI so the Nuxt implementation closely matches the canonical interactive prototype before any backend/Situm data integration begins.
+Finish the reopened Plan 009A UI fidelity recovery so the cumulative Plans 004–009 Nuxt application closely matches the canonical interactive prototype before any backend/Situm data integration begins.
 
-## Phase
+## Active phase
 
-**Plan 009A — UI Prototype Fidelity Recovery is next/active on `plan/009a-ui-prototype-fidelity-recovery`.**
+**Plan 009A — UI Prototype Fidelity Recovery is active/reopened on `plan/009a-ui-prototype-fidelity-recovery`.**
 
-The branch is intentionally stacked from the cumulative HEAD of `plan/009-ui-conformance-polish`; therefore it contains all implementation from Plans 004–009.
+A deep review of the pushed 009A branch found that the recovery materially improved the UI but is **not yet ready for PR/merge or user acceptance**. Older 009A visual checkboxes are implementation history only; the new Closure Phases 0–8 in `plans/009a-ui-prototype-fidelity-recovery.md` are the authoritative execution checklist.
 
 No PR or merge has been requested.
 
-## Why Plan 009A is required
+## Branch lineage truth
 
-The user manually tested real login successfully, but rejected current UI fidelity because many screens are visibly different from the prototype.
+009A was originally created from an earlier cumulative HEAD of `plan/009-ui-conformance-polish`, but Plan 009 later received additional commits. The two branches are now diverged.
 
-A repository-wide static audit confirmed major visual drift across shared primitives, authenticated shell, auth, map workspace, cartography, operations, organization/settings, drawers/modals, and page density.
+Do not merge Plan 009 wholesale into 009A and do not reset/rebase 009A merely to linearize history. Inspect later Plan 009 commits selectively and port/reimplement only still-relevant fixes that are missing from 009A.
 
-Important finding: Plan 009 is **not actually complete**. Its own file records Phases 4–7 as incomplete after worker capacity was exhausted. Earlier visual signoff checkboxes must not be interpreted as user acceptance; the user's later manual review supersedes them.
+Known missing cleanup from the later Plan 009 history: the derived duplicate `app/data/prototype/map.ts` should be removed and map building/floor selectors should derive from the canonical cartography fixture source.
 
 ## Active contracts
 
@@ -29,8 +29,8 @@ Important finding: Plan 009 is **not actually complete**. Its own file records P
 - `DESIGN.md` — visual authority router.
 - `design/IMPLEMENTATION.md` — prototype -> Nuxt/Vue/Nuxt UI translation contract.
 - `design/data-source-matrix.md` — existing-real vs dummy/local data boundary.
-- `design/reference/situm-explore-interactive-prototype.html` — canonical visual/interaction reference, subject to the user's newer explicit design direction.
-- `plans/009a-ui-prototype-fidelity-recovery.md` — active recovery checklist.
+- `design/reference/situm-explore-interactive-prototype.html` — canonical visual/interaction reference.
+- `plans/009a-ui-prototype-fidelity-recovery.md` — active reopened closure checklist.
 
 ## Visual authority
 
@@ -40,36 +40,60 @@ Important finding: Plan 009 is **not actually complete**. Its own file records P
 4. active recovery plan;
 5. implementation guide.
 
-The canonical HTML currently contains stale `S` brand markup, while `DESIGN.md` requires the approved navigation-arrow mark. Plan 009A Phase 0 owns normalizing only that stale reference detail before production fidelity work.
+The brand reference was already normalized to the approved filled navigation-pointer mark during 009A Phase 0. Do not treat the old `S` mark as current truth.
 
-The HTML remains reference only. Production must stay Nuxt 4 + Vue + Nuxt UI and must not copy the prototype stylesheet/JS architecture.
+The HTML remains reference only. Production stays Nuxt 4 + Vue + Nuxt UI and must not copy the prototype stylesheet or JavaScript screen-switching architecture.
 
-## Main audit findings
+Useful canonical locator hints include current reference surfaces such as `#screen-landing`, authenticated `#app-*` screens, `#detailDrawer`, `#searchModal`, `#viewerModal`, and `#poiPopover` where present. Locator names are hints only; visual/function meaning remains authoritative.
 
-Systemic:
+## Deep-review findings that currently block completion
 
-- global Nuxt UI button defaults are neutral/outline while many prototype primary actions are dark filled;
-- multiple authenticated routes are narrowed with `max-w-6xl` even though the prototype app content extends to ~1480px;
-- common page titles/tables/cards/navigation are looser/larger than the compact prototype language;
-- shell search/account/status/action composition materially differs from the prototype;
-- current `BrandMark.vue` is a thin right arrow rather than the approved navigation-pointer mark.
+### Branch / governance
 
-Public/auth:
+- 009A diverged from later Plan 009 commits; relevant fixes must be reconciled selectively.
+- Previous 009A checked visual boxes do not prove final rendered conformance.
+- Final route/state signoff remains incomplete.
 
-- landing is structurally similar but has width/type/action-state drift;
-- auth is materially redesigned: unequal desktop columns, underline tabs, different art-card layout, and mobile keeps a partial dark art block instead of hiding it.
+### Public/auth
 
-Authenticated product:
+- auth navigation still needs canonical segmented gray treatment instead of underline-tabs;
+- register completion must avoid a large page-shifting success alert;
+- auth-art must disappear at the canonical <=800px transition;
+- auth-art brand mark needs canonical inverse treatment;
+- landing typography/grid/breakpoint details still require exact rendered recovery.
 
-- Home/Dashboard density and proportions drift;
-- Map chrome differs and lacks high-fidelity prototype popover/transient feedback behavior;
-- Buildings/POIs add debug/local-fixture UI and use oversized table density;
-- Geofences adds an unreferenced filter toolbar;
-- Paths uses a different SVG network visual;
-- Realtime uses a different live-map composition and persistent alerts;
-- Analytics adds local-data UI and uses different tab/heatmap/chart language;
-- Users/Organization/Settings add large explanatory alerts/badges and different grid/density decisions;
-- shared drawer uses generic slideover composition instead of matching canonical drawer geometry closely.
+### Authenticated shell / responsive
+
+- current breakpoint ownership mixes Tailwind `lg=1024` behavior with prototype transitions around 1050/800/520;
+- the 640–1100 app offset can create a phantom ~208px left gutter while sidebar is hidden;
+- authenticated rendering must be checked at 1440, 1024, **900**, 768 and 390 widths.
+
+### Product routes
+
+- canonical ~30px page-title treatment is not consistently used across routes;
+- multiple tables add secondary lines that make rows taller than the reference;
+- Analytics still needs canonical compact dark-active pill tabs and heatmap language;
+- several route/card/table surfaces remain too spacious and need rendered comparison.
+
+### Map / overlays
+
+- center/zoom cluster should match canonical right-bottom placement;
+- selected POI should be a compact anchored ~240px popover, not a large bottom-right card;
+- location picker should use an on-map marker/state like the reference rather than a separate modal;
+- persistent local/dummy explanation copy should not replace prototype-like transient feedback;
+- shared drawer still needs canonical fixed-label-column composition;
+- shared transient feedback timer ownership can race across callers.
+
+### Architecture / accessibility
+
+- `app/pages/app/map.vue` has grown large enough to justify a small number of clear product boundaries while staying KISS;
+- `app/data/prototype/map.ts` is an unnecessary derived duplicate fixture;
+- later Plan 009 accessibility improvements must be reconciled selectively where 009A regressed contrast/tab semantics;
+- do not create generic UI wrappers, Pinia, event bus, DI, repository/service layers, or backend expansion for this recovery.
+
+### Validation truth
+
+Older state reported a pre-existing `nuxt.config.ts` typecheck blocker, but that exact historical change is not obviously present in the currently pushed file. Do **not** assume the blocker still exists. Rerun `npm run typecheck` from a clean current 009A checkout and record the actual result.
 
 ## Data/runtime boundary during Plan 009A
 
@@ -95,31 +119,28 @@ Keep local/dummy:
 
 Plan 009A must not add new backend endpoints, database work, or Situm product-domain integration.
 
-## Branch / roadmap state
+## Roadmap gate
 
-Current cumulative chain:
+Plan 010 and all later backend/integration plans remain blocked until:
 
-```text
-main
-└─ plan/004-ui-foundation-public-auth
-   └─ plan/005-authenticated-shell-dashboard
-      └─ plan/006-situm-map-workspace
-         └─ plan/007-cartography-explorer
-            └─ plan/008-operations-reports-ui
-               └─ plan/009-ui-conformance-polish
-                  └─ plan/009a-ui-prototype-fidelity-recovery  <- active
-```
-
-Plan 010 and later backend/integration plans are blocked until:
-
-1. Plan 009A is complete;
-2. rendered UI has been reviewed against every reference surface;
-3. the user explicitly accepts the recovered UI.
+1. all Plan 009A Closure Phases 0–8 are complete;
+2. clean-branch lint/typecheck/build pass;
+3. real auth/DB/Situm foundation regression checks pass or an exact environment-only blocker is documented;
+4. every major route/state receives rendered comparison at relevant reference viewports;
+5. no known silhouette-level UI mismatch remains;
+6. the user explicitly accepts the recovered UI.
 
 Do not create a PR or merge unless the user explicitly requests it.
 
 ## Next action
 
-Phases 0–8 of Plan 009A are complete, reviewed, linted, committed, and pushed. Phase 9 responsive/accessibility work is complete, but final regression is blocked by the pre-existing `nuxt.config.ts` typecheck error and unavailable protected Situm runtime validation. Do not start Phase 10 until this blocker is resolved.
+Execute **Closure Phase 0** from `plans/009a-ui-prototype-fidelity-recovery.md`:
 
-Final visual signoff must be evidence-based. If browser/screenshot comparison is unavailable to the executing agent, do not mark final fidelity complete; leave that gate pending for user/manual review.
+- reconcile 009 vs 009A history selectively;
+- remove the duplicate map fixture;
+- restore only still-missing accessibility fixes;
+- correct stale state/reference notes;
+- validate, commit and push;
+- then continue Closure Phases 1–8 sequentially.
+
+Do not start Plan 010.
