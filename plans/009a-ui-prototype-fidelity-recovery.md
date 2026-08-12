@@ -1,579 +1,644 @@
 # Plan 009A — UI Prototype Fidelity Recovery
 
-Status: planned
+Status: **active-reopened**
 Branch: `plan/009a-ui-prototype-fidelity-recovery`
-Base: completed cumulative HEAD of `plan/009-ui-conformance-polish`
-Depends on: Plans 004–009 implementation already present on the stacked branch chain; manual user review has **rejected current visual fidelity**
+Depends on: cumulative Plans 004–009 implementation present in this branch history
 Blocks: Plan 010 and every later backend/Situm integration plan
 
-## Why this recovery plan exists
+## Current purpose
 
-The cumulative Plans 004–009 implementation is functionally useful, and the user has manually verified real login works, but manual UI review found that many screens are not close enough to the canonical prototype.
+This plan was originally created to recover the cumulative Plans 004–009 UI toward the canonical interactive prototype. A later deep review of the pushed 009A branch found that the recovery materially improved the product but **did not yet achieve reliable high-fidelity conformance**.
 
-A repository-wide static audit confirmed that this is **not one isolated styling bug**. The drift is cross-cutting:
+Previous checked boxes in older 009A execution history are therefore **implementation history only**. They do not prove current visual acceptance. The closure phases in this file are now the active executable checklist and override any earlier visual signoff that conflicts with the findings below.
 
-1. the canonical HTML contains one stale brand-mark detail that conflicts with the current design contract;
-2. global Nuxt UI defaults and shared shell geometry do not consistently reproduce the prototype;
-3. multiple routes preserve prototype content but redesign the composition, density, or visual language;
-4. several routes add prominent `Local fixture` / `Local demo` alerts, badges, filters, explanatory copy, or alternate diagrams that are not in the reference;
-5. Plan 009 marked many visual signoffs complete even though the actual conformance pass was small and later phases were blocked by worker capacity;
-6. Plan 009 itself still records Phases 4–7 as incomplete.
+Do not create a new 009B plan for these findings. Close them in this branch.
 
-This plan is therefore a **visual fidelity recovery**, not a redesign and not a backend plan.
+## Branch lineage warning
 
-## Authority and hard rules
+`plan/009a-ui-prototype-fidelity-recovery` was originally created from an earlier cumulative Plan 009 HEAD, but `plan/009-ui-conformance-polish` later received additional commits. The branches are now diverged.
 
-Read before any implementation:
+Rules:
 
-- `AGENTS.md`
-- `.agents/README.md`
-- `.agents/state.md`
-- `.agents/protocols/git-workflow.md`
-- `ARCHITECTURE.md`
-- `DESIGN.md`
-- `design/IMPLEMENTATION.md`
-- `design/data-source-matrix.md`
-- `design/reference/situm-explore-interactive-prototype.html`
-- `plans/009-ui-conformance-polish.md`
-- this plan
+- do **not** merge `plan/009-ui-conformance-polish` wholesale into 009A;
+- do **not** rebase/reset 009A onto latest Plan 009 merely to make the graph linear;
+- inspect later Plan 009 commits only for still-relevant fixes;
+- selectively port or reimplement a relevant fix when it is still needed;
+- do not reintroduce superseded pre-009A UI while reconciling history;
+- 009A remains the cumulative UI recovery baseline to finish and review.
 
-Visual authority remains:
+One known still-relevant Plan 009 cleanup is removal of the derived duplicate `app/data/prototype/map.ts`; 009A currently still contains that derived fixture and must reconcile it during Closure Phase 0.
+
+---
+
+# Authority and hard boundaries
+
+Read before implementation:
+
+1. `AGENTS.md`
+2. `.agents/README.md`
+3. `.agents/state.md`
+4. `.agents/protocols/git-workflow.md`
+5. `ARCHITECTURE.md`
+6. `DESIGN.md`
+7. `design/IMPLEMENTATION.md`
+8. `design/data-source-matrix.md`
+9. `design/reference/situm-explore-interactive-prototype.html`
+10. this plan
+
+Visual authority:
 
 1. user's latest explicit direction;
 2. canonical HTML reference;
 3. `DESIGN.md`;
-4. this recovery plan;
-5. implementation guide.
+4. this active recovery plan;
+5. `design/IMPLEMENTATION.md`.
 
-The HTML/CSS/JS prototype is **visual and interaction reference only**. Do not copy its stylesheet or JavaScript architecture into production.
+The HTML/CSS/JS prototype is a **visual and interaction specification only**. Production remains Nuxt 4 + Vue + Nuxt UI. Do not copy the prototype stylesheet or screen-switching JavaScript architecture into production.
 
-Production remains Nuxt 4 + Vue + Nuxt UI.
+### Existing real behavior that must remain real
 
-### Fidelity rule
+Preserve:
 
-When the canonical HTML shows a composition, implement that composition unless one of these requires a deliberate deviation:
+- `/api/auth/login`;
+- `useUserSession()`;
+- auth middleware for `/app/**`;
+- logout via session clear;
+- `/api/me` and PostgreSQL/Drizzle behavior;
+- `/api/situm/status` configuration semantics;
+- real `SitumViewer` creation;
+- `ViewerEventType.MAP_IS_READY` as the truthful ready transition;
+- `ViewerEventType.APP_ERROR` and initialization/missing-config handling.
 
-- real authentication semantics;
-- real Situm Viewer SDK lifecycle;
-- truthful application state;
-- accessibility;
-- framework/runtime constraints.
+### UI-roadmap data boundary remains unchanged
 
-A deliberate deviation must preserve approximately the same visual hierarchy and footprint and must be documented in this plan.
+Keep local/dummy during this plan:
 
-Do **not** add extra user-visible explanatory UI merely because source data is dummy. Dummy/local boundaries should primarily be clear in source code and existing product copy. Do not insert large info alerts, `LOCAL FIXTURE` banners, debug-style labels, or extra status rows unless the canonical prototype contains an equivalent product element or truthfulness genuinely requires it.
+- registration;
+- Home/Dashboard product metrics and activity;
+- cartography product records;
+- route previews and local navigation actions;
+- realtime product data;
+- analytics/reports;
+- alarms/users/groups/organization;
+- new map tools and settings beyond the existing real Viewer lifecycle.
 
-The target is **high-fidelity product translation**, not default Nuxt UI styling with similar text.
+Do not add:
 
----
+- new Nitro product endpoints;
+- database tables/migrations;
+- new Situm REST/SDK product-domain integrations;
+- Pinia/global store;
+- a second component framework;
+- speculative service/repository abstractions.
 
-# Audit baseline
-
-## A. Global / systemic drift
-
-### A1 — Brand mark conflict
-
-Current canonical HTML still contains an `S` lettermark in several markup locations, while `DESIGN.md` explicitly requires the approved navigation-arrow product mark, not an `S`.
-
-Current `BrandMark.vue` uses a thin right-arrow stroke icon, which is also not the approved navigation-pointer mark.
-
-Required recovery:
-
-- normalize the canonical HTML's stale brand markup to the current approved navigation-arrow mark **without otherwise redesigning the prototype**;
-- update production `BrandMark.vue` to the same approved mark geometry;
-- preserve the prototype's 30px/9px dark brand container treatment on normal surfaces and inverse treatment on the auth-art surface.
-
-### A2 — Button default semantics
-
-`app/app.config.ts` globally defaults Nuxt UI buttons to neutral + outline. Many routes use plain `<UButton>` for actions that are visually primary in the prototype.
-
-This can turn intended dark/filled primary actions into outline controls throughout the product.
-
-Required recovery:
-
-- define a consistent mapping between prototype primary / secondary / ghost / accent actions and Nuxt UI variants;
-- make plain product-primary actions render as the prototype's dark ink button unless an explicit alternate variant is required;
-- preserve blue accent actions only where the reference actually uses the accent treatment;
-- avoid page-by-page contradictory button overrides.
-
-### A3 — Repeated geometry drift
-
-Prototype baseline includes approximately:
-
-- public max width: 1240px;
-- authenticated sidebar: 228px desktop;
-- topbar: 64px;
-- authenticated content: max 1480px with 30px/28px/50px desktop content rhythm;
-- page title: 30px with tight tracking;
-- nav items: compact 36px rows / ~12px text;
-- card radius: ~16px;
-- panel headings/body/table typography notably denser than normal default dashboard components;
-- tables: ~10px headers and ~11px row text;
-- stat gaps: ~12px;
-- map workspace: 320px left panel and dominant remaining viewer area.
-
-The current implementation often uses `max-w-6xl`, 24px page titles, 14px table text, 16–24px gaps, and default Nuxt UI card/control density.
-
-Required recovery: translate these measurements into Nuxt UI configuration, utilities, and small reusable composition patterns rather than scattered prototype CSS copies.
-
-### A4 — Shell drift
-
-Canonical shell has:
-
-- compact sidebar groups/items;
-- avatar + display name + email + overflow affordance;
-- separate full-width Sign out action;
-- breadcrumb;
-- visible search-trigger field with `⌘ K` hint;
-- Sync ghost action;
-- compact POC status pill.
-
-Current shell differs materially: simplified email-only account footer, icon logout, ghost Search button instead of search field, disabled refresh action, different status badge, different nav density/icon treatment.
-
-Required recovery: reproduce shell composition closely while keeping real session/logout and real Nuxt routes.
+Plan 010 remains blocked until this recovery is complete **and the user explicitly accepts the rendered UI**.
 
 ---
 
-# Phase 0 — Normalize the reference and establish measurable fidelity gates
+# Deep-review findings that reopen 009A
 
-This phase changes no product behavior.
+The following findings are current requirements, not optional polish.
 
-- [x] Open the current canonical HTML and `DESIGN.md` together.
-- [x] Replace only the stale `S` brand mark instances in the canonical HTML with the approved navigation-arrow mark required by `DESIGN.md`.
-- [x] Do not otherwise change prototype layout/content to make implementation easier.
-- [x] Update `BrandMark.vue` to the exact same navigation-arrow geometry.
-- [x] Create a route-to-reference audit checklist in this plan for every route below.
-- [x] Establish visual review viewports: desktop around 1440×900, laptop around 1024px wide, tablet around 768px, mobile around 390px.
-- [x] If browser/screenshot tooling is available in the execution environment, rendered comparison is mandatory before any visual signoff.
-- [x] If rendered comparison tooling is unavailable, **do not falsely mark final visual signoff complete**; source-level work may proceed, but final visual acceptance remains blocked for user/manual review.
+## F1 — Previous visual signoff is not sufficient evidence
 
-### Phase 0 route/state audit target
+The pushed plan still has final regression and rendered Phase 10 gates incomplete. Earlier visual checkboxes were marked while authenticated/runtime surfaces were not fully rendered and compared.
 
-The following checklist is the route-to-reference inventory for review. Each route must be compared at the listed baseline state before its phase can receive visual signoff.
+Required outcome: no final conformance checkbox is accepted from source inspection alone when browser rendering is available.
 
-| Route / surface | Reference target | Baseline state(s) |
-| --- | --- | --- |
-| `/` | `#publicHome` | desktop, mobile |
-| `/login` | `#authLogin` | empty, validation/error, mobile |
-| `/register` | `#authRegister` | empty, mobile |
-| `/app` | `#appHome` | authenticated populated |
-| `/app/dashboard` | `#appDashboard` | authenticated populated |
-| `/app/map` | `#appMap` | loading, ready, selected POI, Route, Layers, mobile |
-| `/app/buildings` | `#appBuildings` | populated, search/filter, details drawer |
-| `/app/pois` | `#appPois` | populated, search/filter, details drawer |
-| `/app/geofences` | `#appGeofences` | populated |
-| `/app/paths` | `#appPaths` | populated, route preview |
-| `/app/realtime` | `#appRealtime` | populated, refresh feedback |
-| `/app/analytics` | `#appAnalytics` | Visitors, Positioning, Heatmap, Reports tabs |
-| `/app/alarms` | `#appAlarms` | populated, filters |
-| `/app/users` | `#appUsers` | Users, Groups, user drawer |
-| `/app/organization` | `#appOrganization` | populated |
-| `/app/settings` | `#appSettings` | General, Navigation, Map, Styles, Images tabs |
-| Shared overlays | `#searchModal`, `#accessibilityModal`, `#poiPopover`, toast | open/selected/transient states |
+## F2 — Auth surface still differs materially
 
-### Phase 0 review viewport and tooling gate
+Known mismatches:
 
-- Desktop: `1440×900`.
-- Laptop: `1024×900`.
-- Tablet: `768×1024`.
-- Mobile: `390×844`.
-- Observed tooling on 2026-08-12: Playwright `1.60.0` is available on `PATH`; Chromium, Firefox, and WebKit browser binaries are installed under `/home/farismnrr/.cache/ms-playwright/`. Screenshot comparison is therefore available for subsequent visual phases. Final visual acceptance remains pending until rendered comparisons are reviewed at every route/state above.
+- current auth navigation still behaves/looks like underline tabs rather than the canonical segmented gray control;
+- register completion still uses a large `UAlert` footprint rather than staying inside the compact canonical form language;
+- auth art disappears too late compared with the canonical `800px` transition;
+- auth-art brand treatment must be inverse: light/white container with dark navigation-pointer mark;
+- canonical desktop remains approximately a 1:1 split with compact two-column art cards.
 
-Acceptance:
+## F3 — Authenticated responsive breakpoints are inconsistent
 
-- canonical reference and design contract no longer disagree about the brand mark;
-- there is one explicit visual target per route/state.
+The prototype uses meaningful transitions around `1050px`, `800px`, and `520px`. Current production mixes Tailwind `lg=1024` behavior with global CSS that can keep a `208px` content offset while the sidebar is hidden.
+
+Required outcome: no phantom left offset or hidden-sidebar gutter at intermediate widths such as `900px` and `768px`.
+
+## F4 — Landing remains measurably off
+
+Known areas:
+
+- hero type scale/line-height/tracking;
+- section/grid spacing;
+- Operations two-column gap;
+- tablet feature-grid transition;
+- exact public width/rhythm.
+
+## F5 — Product page density is not consistently canonical
+
+Several routes still bypass the shared canonical page-header treatment and use 24px headings where the prototype uses the ~30px page-title language.
+
+Multiple tables also add second-line descriptions/IDs/emails that make rows visibly taller than the reference. Truthful data may remain, but secondary content must not alter the canonical silhouette without a justified reason.
+
+## F6 — Map workspace still has silhouette-level drift
+
+Known mismatches:
+
+- center/zoom controls are placed left-bottom instead of canonical right-bottom;
+- selected POI uses a large bottom-right card rather than a compact anchored ~240px popover;
+- location picker currently uses a modal, while the prototype toggles an on-map marker and transient feedback;
+- persistent `Local preview`, `dummy route data`, and inline feedback copy creates extra footprint where the prototype uses compact route UI + toast;
+- map route, tabs, control bars, and popover must be evaluated around the real Situm Viewer, not against a fake map replacement.
+
+## F7 — Analytics still uses the wrong visual language
+
+Known mismatches:
+
+- canonical analytics navigation is compact bordered pill controls with dark-filled active state, not underline tabs;
+- heatmap should use the canonical compact grid/radial-density language rather than large blurred blobs;
+- chart/table/report density still requires rendered comparison.
+
+## F8 — Shared drawer remains too generic
+
+Canonical drawer behavior/geometry:
+
+- ~380px desktop width;
+- starts below the app topbar;
+- compact ~62px header;
+- type pill followed directly by compact detail-list rows;
+- ~115px fixed label column;
+- divider and full-width View on map action.
+
+Current generic slideover composition must be adjusted to that footprint without giving up Nuxt UI accessibility behavior.
+
+## F9 — Accessibility fixes regressed through branch divergence
+
+A later Plan 009 commit improved subtle-text contrast and tab semantics, but those exact changes are not all present in 009A.
+
+Requirements:
+
+- restore adequate normal-text contrast on light surfaces without destroying the approved visual hierarchy;
+- preserve skip-link/navigation accessibility already present;
+- ensure true tab interfaces use correct semantics and keyboard behavior;
+- preserve visible focus and reduced-motion behavior;
+- accessibility may intentionally deviate from the HTML where necessary, but the visual footprint should remain close.
+
+## F10 — Derived fixture duplication remains
+
+`app/data/prototype/map.ts` derives data that already comes from canonical cartography fixtures. Remove the unnecessary duplicate module and derive map selector data from the canonical source at the smallest sensible boundary.
+
+Do not introduce a generic repository/store to solve this.
+
+## F11 — Global transient feedback has a timer ownership bug
+
+`useExploreFeedback()` stores the message globally via `useState`, but each composable invocation owns a separate timer. Two callers can therefore race and clear a newer message with an older timer.
+
+Use one small KISS-safe feedback owner/timer model. Do not build a notification subsystem.
+
+## F12 — Map route has become too large for the architecture contract
+
+`app/pages/app/map.vue` owns substantial Explore, Route, Layers, POI, viewer-tool, modal, building/floor, zoom and feedback behavior in one route file.
+
+Apply SRP/KISS selectively. A reasonable target is a few product-level boundaries such as:
+
+- `MapWorkspaceSidebar`;
+- `MapViewerChrome`;
+- optionally one focused `useMapWorkspaceState()` composable if reactive coordination genuinely benefits from extraction.
+
+Do **not** split the feature into dozens of tiny files.
+
+## F13 — Durable state/reference locators are stale
+
+Older 009A notes still mention stale brand/reference state and non-canonical selector names. Normalize active state and use actual current reference locations such as `#screen-landing`, authenticated `#app-*` surfaces, `#detailDrawer`, `#searchModal`, and `#viewerModal` as locator hints where useful.
+
+## F14 — Typecheck blocker must be re-proven from a clean current branch
+
+Older state says `nuxt.config.ts` contains a pre-existing session typing blocker, but the currently pushed file no longer obviously matches that historical description.
+
+Do not inherit that blocker by assumption. From a clean checkout of current 009A, rerun typecheck and record the actual current result/error.
 
 ---
 
-# Phase 1 — Global Nuxt UI visual foundation
+# Closure Phase 0 — Reconcile branch, plan truth, and active context
 
-Goal: fix the systemic primitives before touching every page.
+No visual redesign in this phase.
 
-Inspect prototype reusable CSS/visual intent first, especially brand, card, buttons, pills, inputs, page titles, panel heads, tables, toolbars, modals, and responsive breakpoints.
+- [ ] Confirm working branch is `plan/009a-ui-prototype-fidelity-recovery` and working tree is safe.
+- [ ] Fetch latest refs and document the current 009 vs 009A divergence; do not merge Plan 009 wholesale.
+- [ ] Inspect the later Plan 009 commits for still-relevant fixes only.
+- [ ] Remove derived duplicate `app/data/prototype/map.ts` and derive map building/floor options from canonical cartography fixture data.
+- [ ] Restore any still-required accessibility fix from later Plan 009 only when 009A does not already implement an equivalent or better version.
+- [ ] Correct stale route/reference selector notes in `.agents/state.md` / session notes where they could mislead future execution.
+- [ ] Correct stale statements that canonical HTML still contains the old `S`; reference brand normalization is already complete.
+- [ ] Record that older checked 009A visual boxes are historical evidence and this closure checklist is authoritative.
+- [ ] `git diff --check`.
+- [ ] `npm run lint` for code changes.
+- [ ] commit and push Phase 0.
 
-Tasks:
-
-- [x] Audit `app/app.config.ts` button/input/card defaults against prototype semantics.
-- [x] Fix primary button default behavior so product-primary actions use the dark ink treatment represented by the prototype.
-- [x] Define secondary/ghost/accent usage consistently through Nuxt UI props/variants.
-- [x] Align input/select height, border, radius, text size and focus treatment.
-- [x] Align badge/pill height, radius, font density and semantic tone without creating a parallel component library.
-- [x] Align default card border/radius/shadow hierarchy to prototype card/soft-card intent.
-- [x] Align global background/text/border semantic tokens to the canonical values already recorded under `--explore-*` where appropriate.
-- [x] Establish reusable page-header/panel/table utility composition only where it removes real drift across multiple routes.
-- [x] Do not paste prototype CSS wholesale.
-- [x] Do not make every page maintain its own slightly different `eyebrow`, table, card, or page-title implementation.
-
-Validation focus:
-
-- buttons no longer look like the wrong hierarchy by default;
-- common cards/inputs/tables feel like one product;
-- later phases require fewer one-off corrections.
+Acceptance: branch lineage and current instructions are truthful; no missing cleanup is silently assumed to exist because it was committed to a sibling branch.
 
 ---
 
-# Phase 2 — Public landing + authentication fidelity
+# Closure Phase 1 — Global visual foundation + accessibility repair
+
+Fix systemic causes before route-specific tuning.
+
+- [ ] Re-audit `app/app.config.ts` and global semantic CSS against the current reference.
+- [ ] Keep primary/secondary/ghost/accent `UButton` hierarchy consistent with the prototype.
+- [ ] Restore accessible muted/subtle text contrast while preserving the light visual hierarchy.
+- [ ] Ensure canonical page-title utility/composition actually produces the ~30px title language and is used consistently.
+- [ ] Confirm panel heading, table header/body, card, input, select, badge/pill and toolbar density globally.
+- [ ] Ensure table rows do not gain unnecessary height from unreferenced secondary lines.
+- [ ] Preserve visible focus, skip link and reduced-motion behavior.
+- [ ] Fix tab semantics/keyboard behavior for Analytics and other true tab interfaces.
+- [ ] Do not create `BaseButton`, `BaseCard`, `BaseInput`, or a parallel design system.
+- [ ] Render at least one representative public and authenticated surface before closing this phase.
+- [ ] `git diff --check`.
+- [ ] `npm run lint`.
+- [ ] `npm run typecheck`.
+- [ ] commit and push Phase 1.
+
+---
+
+# Closure Phase 2 — Landing + Login + Register exact recovery
 
 ## Landing `/`
 
-Compare the rendered route directly with `#screen-landing`.
-
-Required fixes include:
-
-- [x] restore 1240px-style public container proportion instead of the narrower current landing container where needed;
-- [x] match hero typography/line-height/tracking/proportions closely;
-- [x] match hero two-column spacing and window preview geometry;
-- [x] match trust strip height/density;
-- [x] match feature-card padding, radius, icon spacing and typography;
-- [x] match Operations and Analytics section spacing;
-- [x] match dark CTA block dimensions and button hierarchy;
-- [x] preserve responsive behavior from canonical breakpoints;
-- [x] unauthenticated `Start prototype`, `Explore the prototype`, and equivalent prototype CTAs should enter the register flow as represented by the reference, while an already-authenticated user may continue to `/app` without fake auth.
+- [ ] Match canonical public container width/rhythm.
+- [ ] Match hero font size, line-height, tracking and copy width.
+- [ ] Match hero two-column gap and preview-window geometry.
+- [ ] Match trust strip density.
+- [ ] Match Product cards and section vertical spacing.
+- [ ] Match Operations two-column gap/composition.
+- [ ] Match Analytics stats and dark CTA block.
+- [ ] At <=800px, match the canonical single-column hero and one-column feature-grid behavior.
+- [ ] At <=520px, match phone-specific hero/action/preview behavior.
 
 ## Login `/login`
 
-Current implementation materially redesigns the auth surface. Recover:
-
-- [x] desktop 1:1 split rather than the current `.88fr / 1.12fr` bias unless measured rendering proves equivalence;
-- [x] black auth art with the same internal top/copy/bottom rhythm;
-- [x] two auth-art information cards in the reference's two-column composition;
-- [x] segmented gray auth tab control, not underline-tabs;
-- [x] auth box width/density near the canonical 410px treatment;
-- [x] canonical 30px auth heading hierarchy;
-- [x] real auth errors presented in a compact visual slot equivalent to `.form-error`, not a large unrelated callout footprint;
-- [x] keep real `/api/auth/login`, `useUserSession()`, loading state and failure behavior;
-- [x] preserve only truthful semantics for any reference-only checkbox/helper copy.
+- [ ] Desktop composition is approximately 1:1 split.
+- [ ] Auth-art mark uses canonical inverse treatment.
+- [ ] Two art information cards remain compact and two-column on desktop.
+- [ ] Login/Register navigation is a segmented gray control, not underline tabs.
+- [ ] Auth form/card width and field density match canonical treatment.
+- [ ] Real login errors stay compact and do not create unrelated alert-page composition.
+- [ ] Real login loading/success/failure behavior remains unchanged.
 
 ## Register `/register`
 
-- [x] use the same auth shell as Login; DRY the genuinely shared auth composition;
-- [x] preserve reference fields/order: first/last split, work email, password, workspace name;
-- [x] keep registration local/dummy and never create a real account/session;
-- [x] keep completion/error feedback visually within the canonical form language rather than introducing a large page-shifting success panel unless necessary.
+- [ ] Reuse the same Auth shell/composition.
+- [ ] Preserve canonical field order and first/last split.
+- [ ] Registration remains local/dummy.
+- [ ] Completion feedback stays inside the compact form language; remove large page-shifting success alert treatment.
 
 Responsive:
 
-- [x] at canonical mobile breakpoint, auth-art disappears as the reference specifies; do not retain the current partial dark art block on mobile.
+- [ ] Auth art is hidden at the canonical <=800px transition.
+- [ ] 768px rendering must not retain desktop auth art.
+- [ ] 390px rendering has no horizontal overflow.
+
+Validation:
+
+- [ ] screenshots/render review at 1440, 1024, 768 and 390 widths;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] commit and push Phase 2.
 
 ---
 
-# Phase 3 — Authenticated shell fidelity
+# Closure Phase 3 — Authenticated shell + canonical responsive breakpoints
 
-Primary file: `app/layouts/app.vue` plus small app components only if they materially improve clarity/reuse.
+Primary ownership: `app/layouts/app.vue` and small product shell components only when they materially improve SRP/readability.
 
-- [x] Sidebar width exactly follows the canonical 228px desktop contract and 208px around the reference laptop breakpoint.
-- [x] Match sidebar background, group spacing, group labels, item height, item font size, active/hover surfaces and icon footprint.
-- [x] Keep navigation labels consistent with prototype (`Map Viewer`, `Viewer settings`, etc.) unless a latest explicit user direction supersedes them.
-- [x] Rebuild account footer to match avatar + name + email + overflow affordance and separate Sign out action while using the real session/logout behavior.
-- [x] Topbar fixed/sticky behavior, height, left offset and backdrop treatment match the prototype.
-- [x] Replace current small ghost Search button with the canonical search-trigger field + keyboard hint on desktop.
-- [x] Keep Cmd/Ctrl+K working.
-- [x] Use an active Sync-style local/demo action footprint matching the prototype rather than an unrelated disabled refresh icon.
-- [x] Keep POC status truthfully worded for the current project decision, but match the canonical pill footprint/placement.
-- [x] Match mobile sidebar/backdrop/menu behavior.
-- [x] Remove authenticated-route `max-w-6xl` constraints that unnecessarily narrow pages compared with canonical `app-content`, except where a reference surface is intentionally narrower.
+Canonical breakpoint behavior to reproduce:
 
-Acceptance: every authenticated route inherits the correct visual frame before page-level tuning.
+- desktop >=~1050: 228px sidebar;
+- laptop ~800–1050: 208px sidebar;
+- <=800: sidebar becomes drawer and app main has no persistent sidebar offset;
+- <=520: compact topbar/search/action behavior.
+
+Tasks:
+
+- [ ] Remove the phantom 208px left gutter at widths where sidebar is hidden.
+- [ ] Do not rely on contradictory `lg=1024` and custom 800px behavior for the same responsibility.
+- [ ] Test explicit intermediate width `900px` in addition to 1024/768.
+- [ ] Match canonical compact sidebar group/item density and labels.
+- [ ] Match account footer: avatar/name/email/overflow + separate Sign out action, using real session/logout.
+- [ ] Match 64px topbar, breadcrumb, search trigger with keyboard hint, Sync action and compact POC status pill.
+- [ ] Preserve accessible mobile menu/backdrop, `aria-expanded`, `inert`/hidden navigation behavior and focusability.
+- [ ] App content max width/padding must match canonical rhythm with no document overflow.
+- [ ] Render an authenticated route at 1440, 1024, 900, 768 and 390 widths before close.
+- [ ] `npm run lint`.
+- [ ] `npm run typecheck`.
+- [ ] commit and push Phase 3.
 
 ---
 
-# Phase 4 — Home + Dashboard fidelity
+# Closure Phase 4 — Route-by-route product density and composition
+
+Do not redesign. Use the canonical page/state as the target.
 
 ## Home `/app`
 
-- [x] Match reference welcome card padding, gradient restraint, 23px heading scale, button placement and 14px rhythm to following content.
-- [x] Match four stat cards at 12px gaps and reference typography.
-- [x] Match `grid-2` 1.4fr/.6fr relationship for building preview vs recent activity.
-- [x] Match building-mini geometry and 245px height.
-- [x] Match panel-head/panel-foot treatment.
-- [x] Match compact activity rows.
-- [x] Match Quick Explore 3-column card composition, icon spacing and typography.
-- [x] Do not add extra status/debug UI absent from the reference.
+- [ ] Verify welcome card, four stats, 1.4/.6 content grid, building mini, activity rows and Quick Explore against rendered reference.
+- [ ] Remove any residual extra copy/spacing that changes silhouette.
 
 ## Dashboard `/app/dashboard`
 
-- [x] Page header uses canonical 30px title and action alignment.
-- [x] Match 4-stat layout and spacing.
-- [x] Match visitor chart canvas dimensions/density rather than generic dashboard spacing.
-- [x] Match system-status row density and pill hierarchy; retain real DB/Situm configuration truth but keep the same layout footprint.
-- [x] Do not present dummy `Realtime API Healthy` as real backend truth; use a visually equivalent truthful local/dummy state if needed.
-- [x] Match lower 1:1 occupancy/alarm grid, progress-bar thickness/colors and activity density.
-
----
-
-# Phase 5 — Map workspace fidelity
-
-This is a high-priority surface.
-
-The production map canvas remains the **real existing Situm Viewer**; do not replace it with prototype CSS floor art.
-
-Everything around the viewer must closely reproduce `#app-map`.
-
-- [x] Match outer `map-layout` radius/border and dominant viewport height.
-- [x] Match 320px desktop side panel and responsive 280px/laptop behavior.
-- [x] Match header density and ready/loading/error pill footprint.
-- [x] Match Explore/Route/Layers segmented tabs.
-- [x] Match POI item height/padding/font/icon geometry.
-- [x] Match route form/result compactness and action hierarchy.
-- [x] Match layers rows/switch density and two-column More Viewer Tools grid.
-- [x] Remove visually large explanatory `UAlert` blocks for local map actions when the prototype uses transient toast feedback; use a toast or compact ephemeral feedback pattern instead.
-- [x] Match top-left building/floor control composition and top-right mode control composition.
-- [x] Match map bottom controls placement/shape.
-- [x] Ensure selected POI produces a popover equivalent to canonical `#poiPopover`, with Directions + Favorite actions; do not rely only on sidebar selection state.
-- [x] Match location picker and viewer accessibility modal visual composition.
-- [x] Keep all newly introduced controls local/dummy; do not add Situm API/SDK product integration here.
-- [x] Preserve real `MAP_IS_READY`, `APP_ERROR`, initialization errors and existing viewer functionality.
-
-Acceptance: the real map occupies the space where prototype floor art was used, while the surrounding chrome is recognizably the same workspace.
-
----
-
-# Phase 6 — Cartography fidelity
+- [ ] Canonical ~30px page title/action alignment.
+- [ ] Four compact stats.
+- [ ] Visitor chart canvas/density.
+- [ ] System status footprint remains truthful for real DB/Situm while matching canonical density.
+- [ ] Lower occupancy/alarm 1:1 grid.
 
 ## Buildings `/app/buildings`
 
-- [x] Remove prominent `LOCAL FIXTURE · NO REMOTE ACTIONS` banner; canonical right-side element is a compact product pill/action footprint.
-- [x] Match canonical header/title size and single search toolbar.
-- [x] Do not keep extra status filtering if it materially changes the canonical toolbar composition.
-- [x] Match compact table typography/padding; current 14px tables are visibly too loose compared with canonical ~10/11px table language.
-- [x] Match lower Floor coverage + Cartography resources panel composition/density.
-- [x] Preserve details interaction using shared drawer.
+- [ ] Canonical page head and single-search toolbar; remove status filter if still present.
+- [ ] Compact table rows with no unreferenced second-line organization text when it changes row height.
+- [ ] Floor coverage and resources panels match canonical density.
 
 ## POIs `/app/pois`
 
-- [x] Match canonical search + category filter + single POI count pill toolbar.
-- [x] Remove extra explanatory `Local fixture · read only` copy from the toolbar.
-- [x] Match compact table rows and plain category text where the reference uses plain text; avoid gratuitous badges.
-- [x] Match favorite star treatment and details drawer behavior.
+- [ ] Canonical search + category filter + POI count.
+- [ ] Compact single-line table silhouette; remove unreferenced secondary description row text when necessary.
+- [ ] Favorite treatment and drawer trigger match reference.
 
 ## Geofences `/app/geofences`
 
-- [x] Restore canonical structure: page head -> three metrics -> table.
-- [x] Remove search/type/count toolbar that is not represented in the prototype unless user explicitly requests it later.
-- [x] Match compact six-column table and active-status pill treatment.
-- [x] Keep Show on map action.
+- [ ] Page head -> 3 metrics -> table, no extra toolbar.
+- [ ] Compact table; avoid unreferenced identifier second lines that change silhouette.
 
 ## Paths `/app/paths`
 
-- [x] Replace the current alternate SVG network visual with a high-fidelity translation of the canonical `building-mini` path-network composition.
-- [x] Match `grid-2` 1.4/.6 proportions rather than generic equal halves if the reference dictates it.
-- [x] Match route card panel-head/body and compact route-result styling.
-- [x] Keep dummy routing semantics.
-
----
-
-# Phase 7 — Operations / Organization fidelity
+- [ ] Building-mini path network language.
+- [ ] Canonical 1.4/.6 relationship.
+- [ ] Compact route result; remove explanatory local-fixture footer copy that is not represented.
+- [ ] Route step number/text density matches prototype.
 
 ## Realtime `/app/realtime`
 
-- [x] Match reference green `Auto refresh · 5s` pill footprint and Refresh now action with a safe local-only interval and cleanup; UI copy remains truthful.
-- [x] Remove persistent status `UAlert` feedback that shifts the page; use compact/transient feedback equivalent to prototype toast.
-- [x] Match 4-stat density.
-- [x] Replace alternate realtime map drawing with the canonical building-mini visual language and marker treatment.
-- [x] Match People & devices activity-row density and Follow actions.
+- [ ] Auto refresh · 5s is truthful and locally simulated with cleanup.
+- [ ] Four compact stats.
+- [ ] Building-mini live map and compact activity rows.
+- [ ] No persistent visual debug/local-preview labels beyond what reference footprint permits.
 
 ## Analytics `/app/analytics`
 
-- [x] Remove extra `Local prototype data` badge from the header.
-- [x] Match date select + Export CSV action only.
-- [x] Match prototype tab font size, spacing and selected treatment; current larger underline-tab implementation must be visually compared and corrected.
-- [x] Match visitor/positioning chart heights, bar language and panel-head structure.
-- [x] Heatmap must use canonical red/amber/yellow density language, not the current blue/yellow/red blurred interpretation.
-- [x] Match table typography/density across stay-time and positions reports.
-- [x] Match Map Viewer usage three soft-card composition.
-- [x] Replace persistent export alert with transient prototype-like feedback.
+- [ ] Replace underline report navigation with canonical compact bordered/pill-style controls and dark-filled active state.
+- [ ] Visitors/Positioning chart geometry matches canonical 250px-ish canvas/density.
+- [ ] Heatmap uses canonical grid/radial density language and approximate 260px height.
+- [ ] Stay/Positions tables use canonical compact density.
+- [ ] Viewer usage is three compact soft cards.
+- [ ] Export feedback is transient.
 
 ## Alarms `/app/alarms`
 
-- [x] Keep canonical two-filter toolbar only; remove extra right-side result count if it changes the reference composition.
-- [x] Match compact table density and pill styling.
-- [x] Remove bottom explanatory fixture paragraph absent from the reference.
+- [ ] Canonical header/open pill + two-filter toolbar.
+- [ ] Compact table and status/type pills.
 
 ## Users `/app/users`
 
-- [x] Remove prominent Local fixture badge + full-width informational alert.
-- [x] Restore canonical equal two-column Users/Groups composition rather than current 1.35/.65 split.
-- [x] Match compact panel heads, table, and group activity-list treatment.
-- [x] Preserve drawer on user selection.
+- [ ] Canonical equal Users/Groups grid.
+- [ ] Compact user rows; remove unreferenced email second line from table if it changes reference silhouette.
+- [ ] Groups activity rows match canonical density.
 
 ## Organization `/app/organization`
 
-Current project truth differs from the old prototype permission wording because the POC now allows one Read & Write-capable key. Preserve the **latest project truth**, but match canonical composition:
-
-- [x] no large synthetic-context alert above the grid;
-- [x] match canonical 1.4/.6 grid relationship;
-- [x] match detail-list density instead of large row cards;
-- [x] match credential-boundary soft-card composition;
-- [x] current permission wording may say Read & Write (POC), but must occupy the same visual role as the prototype permission pill.
+- [ ] Canonical 1.4/.6 composition and detail-list rhythm.
+- [ ] Keep truthful Read & Write (POC) wording in the same visual role as reference permission pill.
+- [ ] Credential boundary stays visually compact; do not expose key value.
 
 ## Viewer Settings `/app/settings`
 
-- [x] Remove persistent Local-only settings alert; source remains local/dummy without debug-style page banners.
-- [x] Match canonical 220px settings nav and 14px gap.
-- [x] Match 11px nav/control density rather than generic 14px settings UI.
-- [x] Match setting-section 18px padding and compact row typography.
-- [x] Match General/Navigation/Map/Styles/Images compositions state-by-state.
-- [x] Reset feedback should be transient and not insert a large callout into the page.
+- [ ] 220px settings nav + 14px gap on desktop.
+- [ ] Canonical 11px-ish nav/row density and 18px content padding.
+- [ ] General/Navigation/Map/Styles/Images state composition matches reference.
+- [ ] <=800 settings nav becomes horizontal without overflow bugs.
+
+For each route above:
+
+- [ ] rendered desktop comparison completed;
+- [ ] relevant tablet/mobile comparison completed;
+- [ ] no extra debug/local-fixture UI materially changes hierarchy.
+
+Validation:
+
+- [ ] `git diff --check`;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] commit and push Phase 4.
 
 ---
 
-# Phase 8 — Shared drawer, modal, search and transient feedback
+# Closure Phase 5 — Map workspace + shared overlay fidelity
 
-## Details drawer
+This is the highest-priority product surface. The map canvas stays the real Situm Viewer.
 
-Current `USlideover` can remain, but its rendered composition must resemble canonical drawer:
+## Map workspace `/app/map`
 
-- [x] ~380px desktop width;
-- [x] top aligned below 64px app bar where feasible;
-- [x] compact 62px header;
-- [x] no unrelated generic description text dominating the header;
-- [x] type pill, detail rows with ~115px label column, divider, full-width View on map action;
-- [x] mobile full width below mobile topbar;
-- [x] Escape/focus behavior remains accessible through Nuxt UI.
+- [ ] 320px desktop / ~280px laptop side panel where canonical applies.
+- [ ] Explore/Route/Layers segmented controls match reference.
+- [ ] POI rows match canonical size/icon/text density.
+- [ ] Route form/result is compact and does not expose persistent `dummy route data` / `Local preview` copy that changes the card footprint.
+- [ ] Route/local actions use transient feedback when reference uses toast.
+- [ ] Layers rows/switches and More Viewer Tools grid match reference.
+- [ ] Building/floor controls match canonical top-left composition.
+- [ ] Explore/Realtime/Trajectory mode controls match canonical top-right composition.
+- [ ] Center/zoom control cluster is at canonical right-bottom placement and shape.
+- [ ] Selected POI is a compact anchored ~240px popover equivalent to canonical `#poiPopover`, not a large bottom-right card.
+- [ ] Directions/Favorite behavior remains local and functional.
+- [ ] Location picker toggles an on-map marker/selection state like the reference; do not use a separate location-picker modal unless a runtime constraint requires and documents it.
+- [ ] Viewer accessibility modal remains a Nuxt UI modal but matches canonical 520px composition.
+- [ ] Real Viewer loading/ready/error lifecycle is preserved.
+- [ ] No new Situm product feature calls are introduced.
+
+## Shared details drawer
+
+- [ ] ~380px desktop width below topbar.
+- [ ] compact ~62px header.
+- [ ] type pill -> canonical compact detail-list; do not insert a large unreferenced name/subtitle hero block.
+- [ ] detail rows use ~115px fixed label column.
+- [ ] divider + full-width View on map action.
+- [ ] mobile full-width below topbar.
+- [ ] Nuxt UI focus/Escape behavior remains accessible.
 
 ## Global search
 
-- [x] Search trigger matches shell reference.
-- [x] Modal width/radius/header/body closely match canonical 520px modal.
-- [x] Results match canonical POI-list density rather than oversized command-palette styling.
-- [x] Cmd/Ctrl+K and Escape remain functional.
+- [ ] ~520px modal geometry.
+- [ ] canonical compact result rows.
+- [ ] Cmd/Ctrl+K and Escape work.
 
-## Viewer accessibility modal
+## Transient feedback
 
-- [x] Match three compact setting rows and Done footer.
-- [x] Preserve local switches.
+- [ ] Fix timer ownership so multiple callers cannot clear a newer shared message with an older caller timer.
+- [ ] Keep one small KISS-safe feedback mechanism.
+- [ ] Dark bottom-right toast footprint matches reference.
 
-## Toast / ephemeral status
+Validation:
 
-- [x] Implement one small reusable transient feedback mechanism if required by multiple local prototype actions.
-- [x] Match reference bottom-right dark toast footprint rather than inserting full-width page alerts.
-- [x] Reuse it for Sync, map tool actions, route/local actions, realtime refresh, report export and settings reset when appropriate.
-- [x] Do not build a generic notification subsystem beyond what this POC needs.
-
----
-
-# Phase 9 — Responsive + accessibility + real behavior regression
-
-Compare actual rendering at the reference breakpoints.
-
-- [x] >=1200 desktop.
-- [x] ~1024 laptop.
-- [x] ~768 tablet.
-- [x] ~390 mobile.
-- [x] Sidebar changes to drawer at the canonical breakpoint.
-- [x] Landing feature grid and hero reflow match reference.
-- [x] Auth art hides on mobile.
-- [x] App content padding matches reference mobile rhythm.
-- [x] Map side panel stacks to ~320px then viewer remains usable.
-- [x] Settings nav becomes horizontally scrollable.
-- [x] Tables scroll safely without changing desktop density.
-- [x] No horizontal document overflow.
-- [x] Keyboard/focus/labels/icon names remain accessible.
-- [x] Reduced motion is respected where animations exist.
-
-Phase 9 validation note (2026-08-12): Chromium Playwright screenshots succeeded at 1440×900, 1024×900, 768×1024, and 390×844 for public/auth representative surfaces. The configured Playwright WebKit device binary was unavailable, so WebKit-specific comparison was not run. Protected authenticated/Situm runtime states require a configured session and Situm environment and remain manual/runtime checks.
-
-Regression:
-
-- [ ] real login success/failure still works;
-- [ ] `/app/**` remains protected;
-- [ ] logout works;
-- [ ] `/api/me` remains real;
-- [ ] Situm Viewer still initializes with existing env;
-- [ ] `MAP_IS_READY` remains truthful;
-- [ ] missing-config/error handling remains truthful;
-- [ ] no new backend/Situm product-domain API work;
-- [ ] no secrets committed.
+- [ ] rendered Map Explore state;
+- [ ] rendered Route before/after calculation;
+- [ ] rendered Layers;
+- [ ] rendered selected POI popover;
+- [ ] rendered location picker marker state;
+- [ ] rendered viewer accessibility modal;
+- [ ] rendered details drawer and search modal;
+- [ ] 1440, 1024, 900, 768 and 390 width checks where applicable;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] commit and push Phase 5.
 
 ---
 
-# Phase 10 — Evidence-based final conformance signoff
+# Closure Phase 6 — Architecture / SOLID / DRY / KISS cleanup
 
-This phase exists specifically because prior checkbox signoff was too easy to mark without sufficient rendered evidence.
+Do this **after** the visual shape is correct so architecture cleanup does not become redesign.
 
-For every route/state below, open the canonical reference and the rendered Nuxt page side-by-side or compare screenshots when tooling permits:
+- [ ] Keep Nuxt 4 `app/` / root `server/` boundaries intact.
+- [ ] Keep one authenticated layout owner.
+- [ ] Remove the derived duplicate map fixture if not already removed in Phase 0.
+- [ ] Audit `app/pages/app/map.vue` against the architecture rule that pages remain route/composition focused.
+- [ ] Extract only clear product responsibilities; prefer a few boundaries such as `MapWorkspaceSidebar` and `MapViewerChrome` if they materially reduce the route file.
+- [ ] Introduce `useMapWorkspaceState()` only if it clearly improves reactive coordination; do not create a god composable.
+- [ ] Do not create generic UI wrappers for Nuxt UI primitives.
+- [ ] Do not add Pinia, event bus, generic API client, DI container, repository layer, or service layer for UI recovery.
+- [ ] Ensure fixtures stay typed and canonical under `app/data/prototype/`.
+- [ ] Ensure no app code imports `server/` source.
+- [ ] `git diff --check`.
+- [ ] `npm run lint`.
+- [ ] `npm run typecheck`.
+- [ ] `npm run build`.
+- [ ] commit and push Phase 6.
 
-- [ ] `/`
-- [ ] `/login`
-- [ ] `/register`
-- [ ] `/app`
-- [ ] `/app/dashboard`
-- [ ] `/app/map` Explore
-- [ ] `/app/map` Route before/after calculation
-- [ ] `/app/map` Layers
-- [ ] `/app/map` POI popover
-- [ ] `/app/map` location picker / accessibility modal
-- [ ] `/app/buildings`
-- [ ] `/app/pois`
-- [ ] `/app/geofences`
-- [ ] `/app/paths`
-- [ ] `/app/realtime`
-- [ ] `/app/analytics` every report tab
-- [ ] `/app/alarms`
-- [ ] `/app/users`
-- [ ] `/app/organization`
-- [ ] `/app/settings` every settings tab
-- [ ] details drawer
-- [ ] global search modal
-- [ ] desktop/laptop/tablet/mobile states
+---
 
-For each screen explicitly evaluate:
+# Closure Phase 7 — Real behavior regression from clean current branch
+
+Do not inherit historical validation results without rerunning them.
+
+Environment-sensitive checks may use local ignored `.env`; never print or commit secret values.
+
+- [ ] Start from clean current 009A checkout.
+- [ ] `git diff --check`.
+- [ ] `npm run lint`.
+- [ ] `npm run typecheck` and record the **actual current** result; do not assume the old `nuxt.config.ts` blocker still exists.
+- [ ] `npm run build`.
+- [ ] Real login success works.
+- [ ] Real login failure remains truthful/compact.
+- [ ] unauthenticated `/app` and `/app/**` redirect to `/login`.
+- [ ] logout clears session and exits protected app.
+- [ ] `/api/me` remains session-protected and uses real DB behavior.
+- [ ] `/api/situm/status` retains configuration-only semantics.
+- [ ] real Situm Viewer initializes when configured.
+- [ ] `MAP_IS_READY` remains the only ready event.
+- [ ] `APP_ERROR`, missing-config and initialization error states remain truthful.
+- [ ] no new Situm product-domain API/SDK integration was added.
+- [ ] no secrets are committed/rendered/logged.
+- [ ] update `.agents/state.md` and session trace with actual validation truth.
+- [ ] commit and push Phase 7.
+
+If credentials/environment make an actual runtime check impossible, leave only that specific check pending and state the exact blocker. Do not mark it passed from source inspection.
+
+---
+
+# Closure Phase 8 — Evidence-based rendered conformance signoff
+
+This is the mandatory final UI gate.
+
+## Required viewports
+
+At minimum:
+
+- `1440×900` desktop;
+- `1024×900` laptop;
+- `900×900` intermediate authenticated breakpoint check;
+- `768×1024` tablet;
+- `390×844` mobile.
+
+## Route/state matrix
+
+Compare canonical HTML and rendered Nuxt side-by-side or via screenshots.
+
+- [ ] `/` desktop/tablet/mobile.
+- [ ] `/login` empty/error/loading where practical + tablet/mobile.
+- [ ] `/register` empty/completed + tablet/mobile.
+- [ ] `/app`.
+- [ ] `/app/dashboard`.
+- [ ] `/app/map` loading/ready.
+- [ ] `/app/map` Explore.
+- [ ] `/app/map` Route before/after calculation.
+- [ ] `/app/map` Layers.
+- [ ] `/app/map` selected POI popover.
+- [ ] `/app/map` location picker marker.
+- [ ] `/app/map` viewer accessibility modal.
+- [ ] `/app/buildings` + drawer.
+- [ ] `/app/pois` + drawer.
+- [ ] `/app/geofences`.
+- [ ] `/app/paths` before/after preview.
+- [ ] `/app/realtime` + refresh feedback.
+- [ ] `/app/analytics` every report tab.
+- [ ] `/app/alarms`.
+- [ ] `/app/users` + drawer.
+- [ ] `/app/organization`.
+- [ ] `/app/settings` General/Navigation/Map/Styles/Images.
+- [ ] global search modal.
+- [ ] transient toast.
+- [ ] mobile sidebar/drawer behavior.
+
+For each state evaluate explicitly:
 
 - [ ] overall silhouette/proportions;
 - [ ] content width;
-- [ ] typography scale;
+- [ ] typography scale/line-height;
 - [ ] spacing rhythm;
-- [ ] borders/radius/shadows;
-- [ ] action hierarchy;
-- [ ] table/card density;
+- [ ] border/radius/shadow hierarchy;
+- [ ] button/action hierarchy;
+- [ ] table/card/stat density;
 - [ ] responsive behavior;
-- [ ] interactive state.
+- [ ] interactive state and overlays.
 
 Rules:
 
-- do **not** mark a screen complete merely because text/content is similar;
-- do **not** mark final visual conformance complete without rendered review evidence when browser tooling is available;
-- if browser tooling is unavailable, leave this phase pending and report that exact blocker for user/manual review;
-- document only genuine intentional deviations caused by truthfulness/accessibility/real SDK behavior.
+- do not sign off merely because text/data is similar;
+- do not sign off from source inspection alone while browser tooling is available;
+- do not hide major mismatch behind the label `intentional deviation`;
+- acceptable deviations are limited to real auth semantics, real Situm Viewer lifecycle, truthfulness, accessibility, or unavoidable framework behavior;
+- every accepted deviation must preserve approximately the canonical visual footprint and be documented below.
 
-Final code gates:
+### Intentional deviations accepted during final review
 
-- [ ] `git diff --check`
-- [ ] `npm run lint`
-- [ ] `npm run typecheck`
-- [ ] `npm run build`
-- [ ] plan/state/session persistence updated
-- [ ] branch pushed
-- [ ] no PR created
+Record only after rendered review:
+
+- [ ] none currently approved; add exact deviation + reason if one is genuinely required.
+
+Final gates:
+
+- [ ] all Closure Phases 0–7 complete;
+- [ ] all required route/state rendered checks complete;
+- [ ] `git diff --check` passes;
+- [ ] `npm run lint` passes;
+- [ ] `npm run typecheck` passes;
+- [ ] `npm run build` passes;
+- [ ] `.agents/state.md` and session trace reflect actual final truth;
+- [ ] branch is pushed;
+- [ ] no PR created;
+- [ ] user manual review requested.
 
 ---
-
-# Architecture constraints
-
-Recovery work still follows `ARCHITECTURE.md`.
-
-- pages stay route/composition focused;
-- reuse Nuxt UI rather than replacing it;
-- do not create a second component library;
-- extract only real repeated product composition;
-- no Pinia/global store for visual fixes;
-- no generic service/repository architecture;
-- no new Nitro endpoints;
-- no new database tables/migrations;
-- no Situm REST/SDK product expansion.
-
-A small amount of scoped CSS is acceptable when Nuxt UI/Tailwind cannot cleanly reproduce a canonical visual detail. Keep it narrow and intentional.
 
 # Completion boundary
 
 Plan 009A is complete only when:
 
-1. implementation is functionally intact;
-2. every route/state above has been visually reviewed against the canonical reference;
-3. the user-visible composition no longer contains major unreferenced additions/redesigns;
-4. any remaining deviations are small, explicit and justified;
-5. all code gates pass;
-6. the user can perform final manual review before any backend Plan 010 work starts.
+1. all closure phases above are complete;
+2. the current branch passes lint, typecheck and build from a clean checkout;
+3. real auth/DB/Situm foundation behavior remains intact;
+4. every major route/state has rendered comparison evidence at the relevant canonical viewports;
+5. no known silhouette-level mismatch remains;
+6. remaining differences are small, explicit, justified and documented;
+7. the branch is pushed;
+8. **the user explicitly accepts the recovered UI**.
 
-**Do not start Plan 010 automatically.** The user must explicitly accept the recovered UI first.
+Until then:
+
+- do not create the cumulative UI PR unless the user explicitly asks;
+- do not merge to `main`;
+- do not start Plan 010;
+- do not treat older 009/009A visual checkboxes as final acceptance.
