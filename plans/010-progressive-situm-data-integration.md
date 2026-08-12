@@ -1,8 +1,8 @@
 # Plan 010 — Situm Integration Feasibility & Contract Mapping
 
-Status: planned-later
+Status: **planned-ready**
 Branch: `plan/010-progressive-situm-data-integration`
-Depends on: Plan 009A closed baseline plus Plan 009B completed (or explicitly skipped by the user after review), integrated into the chosen cumulative UI baseline, **and explicit user acceptance of the final rendered UI**
+Depends on: Plans 009A and 009B closed, with the user's final manually corrected UI explicitly accepted as the cumulative UI baseline
 
 ## Goal
 
@@ -10,26 +10,28 @@ Prepare later Situm backend/data integration work **without replacing any UI dum
 
 Plan 010 is feasibility/contract-mapping only. Plans 011–015 own real read/data domains; Plan 016 conditionally owns any remaining accepted Viewer/settings/write actions that still need to become real. This prevents duplicate or ownerless implementation during sequential execution.
 
+## UI gate status
+
+The UI gate is satisfied.
+
+Plan 009A is historical. Automated Plan 009B work was stopped after regressions, the user then completed the difficult UI correction manually, explicitly accepted the manual result, and asked to close the UI plans so the roadmap can continue.
+
+Before creating the Plan 010 branch, perform only the normal baseline preflight:
+
+1. confirm the user's final manual UI changes are committed and pushed;
+2. identify that final cumulative UI HEAD;
+3. create `plan/010-progressive-situm-data-integration` from that HEAD, not stale `main` or an older 009A/009B baseline.
+
+Do not reopen 009B/009C as a prerequisite.
+
 ## Hard boundary
 
 During Plan 010:
 
 - do not replace dummy datasets;
-- do not redesign accepted UI;
+- do not redesign the accepted UI;
 - do not introduce remote write actions;
 - do not create broad backend infrastructure merely for future plans.
-
-## UI gate clarification after Plan 009A closure
-
-Plan 009A was intentionally closed with known UI gaps. That closure does **not** satisfy the final UI acceptance gate.
-
-Before Plan 010 can start:
-
-1. Plan 009B must be scoped from the user's concrete remaining UI punch list;
-2. Plan 009B must be completed, or the user must explicitly decide after review that it is unnecessary/skipped;
-3. the user must explicitly accept the final rendered UI baseline.
-
-Do not infer UI acceptance merely because Plan 009A is closed.
 
 ## Required reading
 
@@ -38,10 +40,9 @@ Do not infer UI acceptance merely because Plan 009A is closed.
 - `DESIGN.md`
 - `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
-- populated canonical HTML reference
-- completed Plans 004–009 implementation/state
-- closed historical `plans/009a-ui-prototype-fidelity-recovery.md`
-- completed/accepted `plans/009b-ui-final-fidelity-punch-list.md`, or explicit user decision that 009B is skipped/not needed
+- current accepted Nuxt UI implementation after the user's manual correction
+- populated canonical HTML reference as historical/reference context where still useful
+- closed Plans 009A and 009B
 - Plans 011–016 so feasibility decisions match later scopes
 - this plan
 
@@ -49,9 +50,9 @@ Do not infer UI acceptance merely because Plan 009A is closed.
 
 For every candidate dataset/action inspect:
 
-1. final accepted Nuxt route/components/types after the UI roadmap and Plan 009B boundary;
-2. corresponding current canonical HTML area or newer explicit user direction;
-3. canonical dummy fixtures/local actions that may later be replaced.
+1. the final manually accepted Nuxt route/components/types;
+2. corresponding current local fixture/action contract;
+3. canonical HTML only as secondary reference when it still agrees with the accepted manual UI.
 
 Later Situm payloads/capabilities are adapted into the accepted UI contract; external API shape does not redesign the product.
 
@@ -78,11 +79,10 @@ Rules:
 - client route middleware is not API security;
 - never create a generic unauthenticated Situm proxy.
 
-## Phase 1 — Verify current local setup and accepted UI gate
+## Phase 1 — Verify current local setup and accepted UI baseline
 
-- [ ] Confirm Plan 009A is closed and treated as historical.
-- [ ] Confirm Plan 009B is complete or explicitly skipped/not needed by the user.
-- [ ] Confirm the final rendered UI has been explicitly accepted by the user.
+- [ ] Confirm Plans 009A and 009B are closed.
+- [ ] Confirm the user's final manual UI changes are committed/pushed and record the exact cumulative baseline HEAD.
 - [ ] Confirm ignored local `.env` has the POC key without printing it.
 - [ ] If building ID is missing, follow documented `/api/v1/buildings` discovery and write only selected ID to local `.env`.
 - [ ] Do not change environment naming.
