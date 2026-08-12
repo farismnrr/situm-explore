@@ -26,3 +26,17 @@ Status: active.
 - The implementation sequence is tracked in `plans/001-web-foundation.md`.
 
 Status: active.
+
+## 2026-08-12 — Git execution workflow
+
+- Every plan must be implemented in its own dedicated `plan/<number>-<slug>` branch and linked Git worktree.
+- New plan work should start from the latest fetched `origin/main` unless an explicit dependency requires another base.
+- The main worktree is a coordination workspace; do not implement plan changes directly on `main`.
+- Every completed implementation phase must update the plan and relevant `.agents/` persistence first, then be committed and pushed to the plan branch.
+- Pull requests are user-gated: pushing a plan branch must never automatically create a PR, including a draft PR.
+- CI is intentionally deferred for now.
+- Unit tests/test-runner infrastructure are intentionally deferred for now to avoid premature complexity.
+- Once Nuxt exists, linting is mandatory for code-changing phases and should use Nuxt's maintained `@nuxt/eslint` project-aware flat-config approach.
+- Avoid force-push/destructive Git operations as normal workflow; preserve small, reviewable, phase-scoped history.
+
+Status: active.

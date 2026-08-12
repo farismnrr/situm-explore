@@ -15,6 +15,10 @@ Gather local building assets and required credentials/metadata before executing 
 - Root `AGENTS.md` acts as a short router into `.agents/`.
 - `.agents/` is the source of truth for persistent agent context.
 - Every conversation creates a concise session entry.
+- Every plan executes in its own `plan/<number>-<slug>` branch and linked worktree; do not implement plans directly on `main`.
+- After each completed implementation phase, update the plan + relevant `.agents/`, validate, commit, and push the plan branch.
+- Do not create a PR until the user explicitly authorizes it.
+- CI and unit-test infrastructure are deferred for now; Nuxt lint is mandatory once code/lint tooling exists.
 - Build web first; native/mobile remains deferred.
 - Use one full-stack Nuxt application for frontend and backend.
 - Use Nuxt UI.
@@ -41,12 +45,13 @@ Gather local building assets and required credentials/metadata before executing 
 
 ## Open loops
 
+- Execute `plans/000-resource-gathering.md` in branch/worktree `plan/000-resource-gathering` / `../situm-explore-worktrees/000-resource-gathering`.
 - Copy and normalize the two building images into `resources/buildings/building-1422/source/` while preserving originals.
 - Create the local resource manifest.
 - Configure Situm credentials locally, then discover the actual building identifier and floor metadata through Situm rather than assuming `1422` is the Situm ID.
 - Confirm local PostgreSQL connectivity and inspect existing schemas read-first.
-- After resource gathering is complete, execute `plans/001-web-foundation.md`.
+- After plan 000 is complete and pushed, start `plans/001-web-foundation.md` in a **new** branch/worktree `plan/001-web-foundation` / `../situm-explore-worktrees/001-web-foundation`; do not continue 001 in the 000 branch.
 
 ## Next likely action
 
-Have Codex execute `plans/000-resource-gathering.md` locally. Once its ready-for-implementation checklist passes, continue directly with `plans/001-web-foundation.md`.
+Have Codex execute `plans/000-resource-gathering.md` locally using `.agents/protocols/git-workflow.md`. Each completed phase must be persisted, validated, committed, and pushed. Do not create a PR until explicitly requested.

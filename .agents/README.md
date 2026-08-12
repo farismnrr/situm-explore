@@ -12,6 +12,7 @@ The root `AGENTS.md` is intentionally small. This directory contains the operati
 | `state.md` | Current focus, open loops, blockers, and next actions. |
 | `protocols/chat-lifecycle.md` | What to read and do during each conversation. |
 | `protocols/persistence.md` | Rules for deciding what gets written after a chat. |
+| `protocols/git-workflow.md` | Mandatory branch/worktree, phase commit/push, lint, and PR-gate workflow for plan implementation. |
 | `memory/` | Durable context about the user: profile, preferences, goals, decisions. |
 | `knowledge/` | Reusable external/domain knowledge and frameworks. |
 | `reflections/` | Lessons that should improve future agent behavior. |
@@ -24,8 +25,9 @@ At the start of a conversation:
 1. Read `identity.md`.
 2. Read `state.md`.
 3. Read `protocols/chat-lifecycle.md`.
-4. Read only the memory, knowledge, reflection, and session files relevant to the task.
-5. If the conversation references prior work and the durable stores are insufficient, inspect recent session notes.
+4. If executing a plan or changing repository implementation, read `protocols/git-workflow.md` before editing.
+5. Read only the memory, knowledge, reflection, plan, and session files relevant to the task.
+6. If the conversation references prior work and the durable stores are insufficient, inspect recent session notes.
 
 Do not load the entire directory blindly when it becomes large. Use indexes and targeted search.
 
@@ -49,6 +51,8 @@ Durable context answers: **what should still matter later?**
 
 It should be compact, deduplicated, and revised when newer information supersedes older information.
 
+For plan implementation, persistence is also a **pre-commit checkpoint**: relevant `.agents/` files and the active plan checklist must be updated before each completed phase is committed and pushed.
+
 ## Truth hierarchy
 
 When information conflicts, prefer:
@@ -69,7 +73,8 @@ Never silently promote inference above explicit user statements.
 - Keep provenance clear: `user-stated`, `observed`, or `inferred`.
 - If confidence is low, say so in the stored entry.
 - Never persist secrets or credentials.
+- Keep plan branches/worktrees isolated and preserve a reviewable phase-by-phase Git history.
 
 ## Current scope
 
-This is **Phase 0: agent foundation only**. No application architecture, UI, backend, database, or product implementation should be introduced unless explicitly requested.
+The project is currently gathering resources before the first web implementation plan. Web architecture is intentionally simple; native/mobile, CI, and unit-test infrastructure are deferred until requirements justify them or the user explicitly asks for them.

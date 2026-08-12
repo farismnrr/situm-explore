@@ -15,6 +15,12 @@ At minimum, every conversation must load:
 3. `.agents/protocols/chat-lifecycle.md`
 4. Any relevant files under `.agents/memory/`, `.agents/knowledge/`, and `.agents/reflections/`
 
+For any plan execution or repository implementation work, also read and follow:
+
+5. `.agents/protocols/git-workflow.md`
+
+The Git workflow protocol is mandatory. In particular, plan implementation must happen in a dedicated plan branch + Git worktree, and completed phases must be persisted, validated, committed, and pushed without opening a PR unless the user explicitly asks for one.
+
 ## Mandatory chat closeout
 
 Before finishing every conversation, run the persistence pass in `.agents/protocols/persistence.md`.
@@ -35,5 +41,5 @@ Prefer revising existing entries over adding duplicates.
 - Do not store passwords, API keys, access tokens, credentials, or unnecessary sensitive information.
 - Mark inference as inference; do not rewrite guesses as user-stated facts.
 - Do not treat session logs as permanent truth when a newer durable memory contradicts them.
-- Do not implement the product/application layer unless the user explicitly asks for it.
-- Keep agent infrastructure Markdown-first and simple until complexity is justified.
+- Keep architecture simple until requirements justify complexity.
+- Do not create pull requests for plan branches without explicit user authorization.
