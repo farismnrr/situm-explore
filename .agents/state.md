@@ -34,7 +34,7 @@ Rebuild the web UI from the user-approved interactive HTML reference, preserving
 - Current Situm POC permission boundary remains `Only Read`; do not implement remote writes.
 - Keep architecture deliberately simple until real requirements justify more complexity.
 
-## Active roadmap
+## Active UI roadmap
 
 1. `plans/004-ui-foundation-public-auth.md`
 2. `plans/005-authenticated-shell-dashboard.md`
@@ -42,7 +42,19 @@ Rebuild the web UI from the user-approved interactive HTML reference, preserving
 4. `plans/007-cartography-explorer.md`
 5. `plans/008-operations-reports-ui.md`
 6. `plans/009-ui-conformance-polish.md`
-7. `plans/010-progressive-situm-data-integration.md` — later, only after UI acceptance.
+
+These plans should be executed first. Missing backend domains stay dummy/local during this roadmap.
+
+## Later real-data roadmap
+
+- `plans/010-progressive-situm-data-integration.md` — umbrella/feasibility plan after UI acceptance.
+- `plans/011-situm-buildings-pois-read-integration.md`
+- `plans/012-situm-geofences-paths-routing-integration.md`
+- `plans/013-situm-realtime-integration.md`
+- `plans/014-situm-reports-analytics-integration.md`
+- `plans/015-situm-organization-alarms-read-integration.md`
+
+Do not start Plans 010–015 until the UI produced by Plans 004–009 is manually accepted by the user.
 
 ## Completed / closed plans
 
@@ -63,7 +75,8 @@ Rebuild the web UI from the user-approved interactive HTML reference, preserving
 
 - Execute Plan 004 from latest `origin/main` on `plan/004-ui-foundation-public-auth`.
 - Keep each subsequent UI plan narrow and reviewable.
-- Do not replace dummy product data with broad Situm API integration until the UI is accepted and Plan 010 is explicitly reached.
+- Keep currently missing domains dummy during Plans 004–009.
+- Only replace dummy data with real Situm reads after UI acceptance through Plans 010–015.
 
 ## Next likely action
 
