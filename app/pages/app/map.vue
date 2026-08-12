@@ -21,6 +21,45 @@ const highContrastCues = ref(false)
 const viewerToolStatus = ref('')
 const mapSearchFilter = ref(false)
 const savedCar = ref(false)
+const syntheticBuildings = [
+  { label: 'Main Building', floors: ['Floor 1', 'Floor 2'] },
+  { label: 'Warehouse (synthetic)', floors: ['Ground floor', 'Mezzanine'] },
+  { label: 'Demo Venue (synthetic)', floors: ['Lobby', 'Event floor'] }
+] as const
+const syntheticBuildingOptions = syntheticBuildings.map(building => building.label) as string[]
+const selectedBuilding = ref<string>(syntheticBuildings[0].label)
+const selectedFloor = ref<string>(syntheticBuildings[0].floors[0])
+const viewMode = ref<'explore' | 'realtime' | 'trajectory'>('explore')
+const zoomLevel = ref(1)
+const centerVersion = ref(0)
+
+const activeBuilding = computed(() => syntheticBuildings.find(building => building.label === selectedBuilding.value) ?? syntheticBuildings[0])
+
+function selectBuilding(building: string) {
+  selectedBuilding.value = building
+  selectedFloor.value = activeBuilding.value.floors[0]
+  showViewerToolStatus(`${building} selected locally. The real viewer remains on the configured building.`)
+}
+
+function selectFloor(floor: string) {
+  selectedFloor.value = floor
+  showViewerToolStatus(`${floor} selected locally; no viewer floor call was made.`)
+}
+
+function selectViewMode(mode: 'explore' | 'realtime' | 'trajectory') {
+  viewMode.value = mode
+  showViewerToolStatus(`${mode.charAt(0).toUpperCase() + mode.slice(1)} mode selected locally.`)
+}
+
+function adjustZoom(delta: number) {
+  zoomLevel.value = Math.min(4, Math.max(0, zoomLevel.value + delta))
+  showViewerToolStatus(`Local zoom ${zoomLevel.value === 0 ? 'minimum' : zoomLevel.value === 4 ? 'maximum' : `level ${zoomLevel.value}`}.`)
+}
+
+function centerMap() {
+  centerVersion.value += 1
+  showViewerToolStatus(`Map center reset locally (view ${centerVersion.value}).`)
+}
 
 const routeOptions = computed(() => ['My location', ...homePois.map(poi => poi.name)])
 const routeSteps = computed(() => accessibleRoute.value
@@ -180,15 +219,23 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
     <section class="relative min-h-[34rem] min-w-0 flex-1 bg-elevated sm:min-h-[38rem] lg:min-h-0">
       <div class="absolute left-4 right-4 top-4 z-10 flex flex-wrap items-center justify-between gap-2 sm:left-6 sm:right-6">
         <div class="flex items-center gap-2 rounded-lg border border-default bg-default/95 p-1 shadow-sm backdrop-blur">
-          <USelect :items="['Main Building', 'Warehouse', 'Demo Venue']" model-value="Main Building" aria-label="Building" class="w-36" size="sm" />
-          <div class="flex rounded-md bg-elevated p-0.5"><UButton label="Floor 1" color="primary" variant="soft" size="xs" /><UButton label="Floor 2" color="neutral" variant="ghost" size="xs" /></div>
+          <USelect :items="syntheticBuildingOptions" :model-value="selectedBuilding" aria-label="Synthetic building" class="w-44" size="sm" @update:model-value="selectBuilding" />
+          <div class="flex rounded-md bg-elevated p-0.5">
+            <UButton v-for="floor in activeBuilding.floors" :key="floor" :label="floor" :color="selectedFloor === floor ? 'primary' : 'neutral'" :variant="selectedFloor === floor ? 'soft' : 'ghost'" size="xs" @click="selectFloor(floor)" />
+          </div>
         </div>
-        <div class="flex rounded-lg border border-default bg-default/95 p-1 shadow-sm backdrop-blur"><UButton label="Explore" color="primary" variant="soft" size="xs" /><UButton label="Realtime" color="neutral" variant="ghost" size="xs" /><UButton label="Trajectory" color="neutral" variant="ghost" size="xs" /></div>
+        <div class="flex rounded-lg border border-default bg-default/95 p-1 shadow-sm backdrop-blur">
+          <UButton v-for="mode in (['explore', 'realtime', 'trajectory'] as const)" :key="mode" :label="mode.charAt(0).toUpperCase() + mode.slice(1)" :color="viewMode === mode ? 'primary' : 'neutral'" :variant="viewMode === mode ? 'soft' : 'ghost'" size="xs" @click="selectViewMode(mode)" />
+        </div>
       </div>
       <div class="h-full min-h-[34rem] p-2 sm:min-h-[38rem] sm:p-3 lg:min-h-0">
         <SitumViewer class="h-full" @status="handleViewerStatus" />
       </div>
-      <div class="absolute bottom-6 left-6 z-10 flex flex-col overflow-hidden rounded-lg border border-default bg-default/95 shadow-sm backdrop-blur"><UButton icon="i-lucide-locate-fixed" aria-label="Center map" color="neutral" variant="ghost" /><UButton label="+" aria-label="Zoom in" color="neutral" variant="ghost" /><UButton label="−" aria-label="Zoom out" color="neutral" variant="ghost" /></div>
+      <div class="absolute bottom-6 left-6 z-10 flex flex-col overflow-hidden rounded-lg border border-default bg-default/95 shadow-sm backdrop-blur">
+        <UButton icon="i-lucide-locate-fixed" aria-label="Center map locally" color="neutral" variant="ghost" @click="centerMap" />
+        <UButton label="+" aria-label="Zoom in locally" color="neutral" variant="ghost" :disabled="zoomLevel === 4" @click="adjustZoom(1)" />
+        <UButton label="−" aria-label="Zoom out locally" color="neutral" variant="ghost" :disabled="zoomLevel === 0" @click="adjustZoom(-1)" />
+      </div>
       <UCard v-if="selectedPoi" class="absolute bottom-6 right-6 z-10 w-72 shadow-lg" :ui="{ body: 'p-4' }">
         <div class="flex items-start justify-between gap-3">
           <div><p class="font-semibold text-highlighted">{{ selectedPoi.name }}</p><p class="mt-1 text-xs text-muted">{{ selectedPoi.category }} · {{ selectedPoi.floor }} · {{ homeBuilding.name }}</p></div>

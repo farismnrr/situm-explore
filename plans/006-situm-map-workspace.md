@@ -124,12 +124,12 @@ Implementation: completed with local layer toggles, local picker/settings overla
 
 Before implementation, inspect building/floor/mode/zoom/center controls in the current HTML.
 
-- [ ] The actual mounted viewer continues to use the real configured `NUXT_PUBLIC_SITUM_BUILDING_ID`.
-- [ ] Do not invent extra real building IDs.
-- [ ] Visual building/floor alternatives required by the reference remain synthetic/local until later integration.
-- [ ] Do not add building/floor discovery APIs to the application in this plan.
-- [ ] Zoom/center/mode buttons outside the viewer remain local UI behavior unless they are already part of the untouched existing viewer itself; no new SDK camera wiring in this plan.
-- [ ] Keep synthetic records obvious in source code.
+- [x] The actual mounted viewer continues to use the real configured `NUXT_PUBLIC_SITUM_BUILDING_ID`.
+- [x] Do not invent extra real building IDs.
+- [x] Visual building/floor alternatives required by the reference remain synthetic/local until later integration.
+- [x] Do not add building/floor discovery APIs to the application in this plan.
+- [x] Zoom/center/mode buttons outside the viewer remain local UI behavior unless they are already part of the untouched existing viewer itself; no new SDK camera wiring in this plan.
+- [x] Keep synthetic records obvious in source code.
 
 ## Phase 6 — Component/data ownership
 
