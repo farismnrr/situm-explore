@@ -1,3 +1,5 @@
+import { cartographyBuildings, cartographyPois } from './cartography'
+
 export interface HomeMetric {
   label: string
   value: string
@@ -26,13 +28,7 @@ export interface HomeExploreItem {
   to: string
 }
 
-export interface HomePoi {
-  id: string
-  name: string
-  category: string
-  floor: string
-  description: string
-}
+export type HomePoi = (typeof cartographyPois)[number]
 
 export const homeMetrics: HomeMetric[] = [
   { label: 'Buildings', value: '3', note: '5 floors available' },
@@ -42,18 +38,13 @@ export const homeMetrics: HomeMetric[] = [
 ]
 
 export const homeBuilding: HomeBuilding = {
-  name: 'Main building',
-  organization: 'PT Berjaya Inovasi Global',
-  floor: 'Floor 1',
+  name: cartographyBuildings[0]!.name,
+  organization: cartographyBuildings[0]!.organization,
+  floor: cartographyBuildings[0]!.floors[0]!.name,
   status: 'Map ready'
 }
 
-export const homePois: HomePoi[] = [
-  { id: 'reception', name: 'Reception', category: 'Services', floor: 'Floor 1', description: 'Visitor services and front desk' },
-  { id: 'meeting-room-a', name: 'Meeting Room A', category: 'Rooms', floor: 'Floor 1', description: 'Small meeting room near the workspace corridor' },
-  { id: 'training-area', name: 'Training Area', category: 'Workspace', floor: 'Floor 2', description: 'Flexible training and collaboration space' },
-  { id: 'lift-lobby', name: 'Lift Lobby', category: 'Access', floor: 'Floor 1', description: 'Lift access between building floors' }
-]
+export const homePois = cartographyPois
 
 export const homeActivity: HomeActivity[] = [
   { title: 'Map viewer ready', detail: 'Building viewer initialized successfully', time: '1m', tone: 'success' },

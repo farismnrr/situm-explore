@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { homeBuilding } from '~/data/prototype/home'
+import { cartographyBuildings, cartographyPois } from '~/data/prototype/cartography'
 
 const { user, clear } = useUserSession()
 const mobileOpen = ref(false)
@@ -20,7 +20,8 @@ const searchDestinations = [
 const searchResults = computed(() => {
   const records = [
     ...searchDestinations,
-    { label: homeBuilding.name, detail: `Building · ${homeBuilding.floor}`, to: '/app/buildings', icon: '◇' }
+    ...cartographyBuildings.map(building => ({ label: building.name, detail: `Building · ${building.floors.length} floors`, to: '/app/buildings', icon: '◇' })),
+    ...cartographyPois.map(poi => ({ label: poi.name, detail: `POI · ${poi.category} · ${poi.floor}`, to: '/app/pois', icon: '●' }))
   ]
   const query = searchQuery.value.trim().toLowerCase()
   return query ? records.filter((record) => `${record.label} ${record.detail}`.toLowerCase().includes(query)) : records

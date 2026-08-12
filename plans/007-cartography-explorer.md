@@ -51,13 +51,13 @@ These pages are UI-first and dummy-backed.
 
 Before defining data, inspect the fields actually rendered by the current HTML.
 
-- [ ] Inspect `app/data/prototype/` created by Plans 005–006 first.
-- [ ] Reuse and extend existing synthetic building/POI records instead of creating a second set for cartography pages.
-- [ ] Add only fields actually required by Buildings/Floors, POIs, Geofences, Paths, and shared details UI.
-- [ ] Keep synthetic IDs/names; do not persist private building resources or real credential-bearing metadata.
-- [ ] Keep fixture shapes straightforward to replace later.
-- [ ] Avoid speculative fields.
-- [ ] No repository/service abstraction around fixtures.
+- [x] Inspect `app/data/prototype/` created by Plans 005–006 first.
+- [x] Reuse and extend existing synthetic building/POI records instead of creating a second set for cartography pages.
+- [x] Add only fields actually required by Buildings/Floors, POIs, Geofences, Paths, and shared details UI.
+- [x] Keep synthetic IDs/names; do not persist private building resources or real credential-bearing metadata.
+- [x] Keep fixture shapes straightforward to replace later.
+- [x] Avoid speculative fields.
+- [x] No repository/service abstraction around fixtures.
 
 Acceptance: global search, map UI, and cartography pages share one canonical synthetic record per logical dummy resource.
 
