@@ -221,40 +221,40 @@ Compare the rendered route directly with `#screen-landing`.
 
 Required fixes include:
 
-- [ ] restore 1240px-style public container proportion instead of the narrower current landing container where needed;
-- [ ] match hero typography/line-height/tracking/proportions closely;
-- [ ] match hero two-column spacing and window preview geometry;
-- [ ] match trust strip height/density;
-- [ ] match feature-card padding, radius, icon spacing and typography;
-- [ ] match Operations and Analytics section spacing;
-- [ ] match dark CTA block dimensions and button hierarchy;
-- [ ] preserve responsive behavior from canonical breakpoints;
-- [ ] unauthenticated `Start prototype`, `Explore the prototype`, and equivalent prototype CTAs should enter the register flow as represented by the reference, while an already-authenticated user may continue to `/app` without fake auth.
+- [x] restore 1240px-style public container proportion instead of the narrower current landing container where needed;
+- [x] match hero typography/line-height/tracking/proportions closely;
+- [x] match hero two-column spacing and window preview geometry;
+- [x] match trust strip height/density;
+- [x] match feature-card padding, radius, icon spacing and typography;
+- [x] match Operations and Analytics section spacing;
+- [x] match dark CTA block dimensions and button hierarchy;
+- [x] preserve responsive behavior from canonical breakpoints;
+- [x] unauthenticated `Start prototype`, `Explore the prototype`, and equivalent prototype CTAs should enter the register flow as represented by the reference, while an already-authenticated user may continue to `/app` without fake auth.
 
 ## Login `/login`
 
 Current implementation materially redesigns the auth surface. Recover:
 
-- [ ] desktop 1:1 split rather than the current `.88fr / 1.12fr` bias unless measured rendering proves equivalence;
-- [ ] black auth art with the same internal top/copy/bottom rhythm;
-- [ ] two auth-art information cards in the reference's two-column composition;
-- [ ] segmented gray auth tab control, not underline-tabs;
-- [ ] auth box width/density near the canonical 410px treatment;
-- [ ] canonical 30px auth heading hierarchy;
-- [ ] real auth errors presented in a compact visual slot equivalent to `.form-error`, not a large unrelated callout footprint;
-- [ ] keep real `/api/auth/login`, `useUserSession()`, loading state and failure behavior;
-- [ ] preserve only truthful semantics for any reference-only checkbox/helper copy.
+- [x] desktop 1:1 split rather than the current `.88fr / 1.12fr` bias unless measured rendering proves equivalence;
+- [x] black auth art with the same internal top/copy/bottom rhythm;
+- [x] two auth-art information cards in the reference's two-column composition;
+- [x] segmented gray auth tab control, not underline-tabs;
+- [x] auth box width/density near the canonical 410px treatment;
+- [x] canonical 30px auth heading hierarchy;
+- [x] real auth errors presented in a compact visual slot equivalent to `.form-error`, not a large unrelated callout footprint;
+- [x] keep real `/api/auth/login`, `useUserSession()`, loading state and failure behavior;
+- [x] preserve only truthful semantics for any reference-only checkbox/helper copy.
 
 ## Register `/register`
 
-- [ ] use the same auth shell as Login; DRY the genuinely shared auth composition;
-- [ ] preserve reference fields/order: first/last split, work email, password, workspace name;
-- [ ] keep registration local/dummy and never create a real account/session;
-- [ ] keep completion/error feedback visually within the canonical form language rather than introducing a large page-shifting success panel unless necessary.
+- [x] use the same auth shell as Login; DRY the genuinely shared auth composition;
+- [x] preserve reference fields/order: first/last split, work email, password, workspace name;
+- [x] keep registration local/dummy and never create a real account/session;
+- [x] keep completion/error feedback visually within the canonical form language rather than introducing a large page-shifting success panel unless necessary.
 
 Responsive:
 
-- [ ] at canonical mobile breakpoint, auth-art disappears as the reference specifies; do not retain the current partial dark art block on mobile.
+- [x] at canonical mobile breakpoint, auth-art disappears as the reference specifies; do not retain the current partial dark art block on mobile.
 
 ---
 

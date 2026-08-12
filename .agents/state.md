@@ -120,6 +120,6 @@ Do not create a PR or merge unless the user explicitly requests it.
 
 ## Next action
 
-Phases 0–1 of Plan 009A are complete, reviewed, linted, committed, and pushed. Delegate Phase 2 public landing/authentication fidelity to the configured worker.
+Phases 0–2 of Plan 009A are complete, reviewed, linted, committed, and pushed. Delegate Phase 3 authenticated shell fidelity to the configured worker.
 
 Final visual signoff must be evidence-based. If browser/screenshot comparison is unavailable to the executing agent, do not mark final fidelity complete; leave that gate pending for user/manual review.
