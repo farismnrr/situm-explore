@@ -278,39 +278,39 @@ Reference: canonical `#app-organization`, `.grid-2`, `.panel-head`, `.panel-body
 
 ## Grid/panels
 
-- [ ] Desktop relationship is canonical 1.4fr / .6fr with 14px gap.
-- [ ] Left panel header contains `Situm organization` + plain right meta `Current organization`; remove the extra `POC context` badge.
-- [ ] Right panel header contains `POC credential boundary` + plain right meta `Prototype rule`; remove the extra `Configured` badge.
+- [x] Desktop relationship is canonical 1.4fr / .6fr with 14px gap.
+- [x] Left panel header contains `Situm organization` + plain right meta `Current organization`; remove the extra `POC context` badge.
+- [x] Right panel header contains `POC credential boundary` + plain right meta `Prototype rule`; remove the extra `Configured` badge.
 
 ## Detail list
 
-- [ ] Use `ProductDetailList` (or the same shared owner) instead of page-local `.detail-list/.detail-row` scoped CSS.
-- [ ] Rows use canonical 115px label column + remaining value column, ~12px gap, compact ~11px type.
-- [ ] Wrap the detail list in the canonical panel-body spacing rather than letting rows visually touch the card edges.
-- [ ] Remove superseded Organization-specific detail CSS after migration.
+- [x] Use `ProductDetailList` (or the same shared owner) instead of page-local `.detail-list/.detail-row` scoped CSS.
+- [x] Rows use canonical 115px label column + remaining value column, ~12px gap, compact ~11px type.
+- [x] Wrap the detail list in the canonical panel-body spacing rather than letting rows visually touch the card edges.
+- [x] Remove superseded Organization-specific detail CSS after migration.
 
 ## Permission truthfulness
 
 The old HTML says `Only Read`, but the current POC truth is a Read & Write-capable key. Do not regress truthfulness merely to copy stale text.
 
-- [ ] Use truthful `Read & Write (POC)` (or the latest project-approved equivalent) in the same compact visual role as the reference permission pill.
-- [ ] Do not hardcode `Only Read` in the credential card while the organization detail says `Read & Write (POC)`.
-- [ ] Keep the credential value secret; never render/log it.
+- [x] Use truthful `Read & Write (POC)` (or the latest project-approved equivalent) in the same compact visual role as the reference permission pill.
+- [x] Do not hardcode `Only Read` in the credential card while the organization detail says `Read & Write (POC)`.
+- [x] Keep the credential value secret; never render/log it.
 
 ## Credential boundary card
 
-- [ ] Canonical soft-card padding approximately 14px.
-- [ ] `Browser viewer key` + truthful compact permission pill on one row.
-- [ ] Explanatory text matches canonical size/line-height/footprint while remaining factually correct for the real POC.
-- [ ] Divider spacing approximately 15px.
-- [ ] Bottom context text remains compact and truthful; do not add a larger admin-warning block.
+- [x] Canonical soft-card padding approximately 14px.
+- [x] `Browser viewer key` + truthful compact permission pill on one row.
+- [x] Explanatory text matches canonical size/line-height/footprint while remaining factually correct for the real POC.
+- [x] Divider spacing approximately 15px.
+- [x] Bottom context text remains compact and truthful; do not add a larger admin-warning block.
 
 Validation:
 
-- [ ] Render `http://100.99.88.53:3000/app/organization` at 1440x900 and compare side-by-side with canonical Organization.
-- [ ] Check 1024px, 768px and 390px behavior.
-- [ ] `git diff --check`, lint, typecheck.
-- [ ] commit and push Organization closure.
+- [x] Render `http://100.99.88.53:3000/app/organization` at 1440x900 and compare side-by-side with canonical Organization.
+- [x] Check 1024px, 768px and 390px behavior.
+- [x] `git diff --check`, lint, typecheck.
+- [x] commit and push Organization closure.
 
 ---
 
