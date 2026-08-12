@@ -51,7 +51,7 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 - Execute `plans/002-foundation-hardening.md` on branch `plan/002-foundation-hardening` using the normal repository working directory.
 - Complete Phase 1's removal commit and push; the exposure policy is now explicit.
 - Continue with later foundation-hardening phases; the application and Drizzle migrations now use the fixed `situm_explore` schema.
-- Reconcile stale checkboxes in completed plans 000/001.
+- Phase 6 reconciliation is complete: Plans 000 and 001 now distinguish completed evidence from explicitly deferred/N/A optional work.
 
 ## Next likely action
 
