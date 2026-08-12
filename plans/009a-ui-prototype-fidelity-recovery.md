@@ -252,7 +252,7 @@ Fix systemic causes before route-specific tuning.
 - [x] Render at least one representative public and authenticated surface before closing this phase.
 - [x] `git diff --check`.
 - [x] `npm run lint`.
-- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] `npm run typecheck` (validated from the clean branch config during Closure Phase 7).
 - [x] commit and push Phase 1.
 
 ---
@@ -298,7 +298,7 @@ Validation:
 
 - [x] screenshots/render review at 1440, 1024, 768 and 390 widths;
 - [x] `npm run lint`;
-- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] `npm run typecheck` (validated from the clean branch config during Closure Phase 7).
 - [x] commit and push Phase 2.
 
 ---
@@ -326,7 +326,7 @@ Tasks:
 - [x] App content max width/padding must match canonical rhythm with no document overflow.
 - [x] Render an authenticated route at 1440, 1024, 900, 768 and 390 widths before close.
 - [x] `npm run lint`.
-- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] `npm run typecheck` (validated from the clean branch config during Closure Phase 7).
 - [x] commit and push Phase 3.
 
 ---
@@ -422,7 +422,7 @@ Validation:
 
 - [x] `git diff --check`;
 - [x] `npm run lint`;
-- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] `npm run typecheck` (validated from the clean branch config during Closure Phase 7).
 - [x] commit and push Phase 4.
 
 ---
@@ -482,7 +482,7 @@ Validation:
 - [ ] rendered details drawer and search modal;
 - [ ] 1440, 1024, 900, 768 and 390 width checks where applicable;
 - [x] `npm run lint`;
-- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] `npm run typecheck` (validated from the clean branch config during Closure Phase 7).
 - [x] commit and push Phase 5.
 
 ---
@@ -503,7 +503,7 @@ Do this **after** the visual shape is correct so architecture cleanup does not b
 - [x] Ensure no app code imports `server/` source.
 - [x] `git diff --check`.
 - [x] `npm run lint`.
-- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] `npm run typecheck` (validated from the clean branch config during Closure Phase 7).
 - [x] `npm run build`.
 - [x] commit and push Phase 6.
 
@@ -518,13 +518,13 @@ Environment-sensitive checks may use local ignored `.env`; never print or commit
 - [x] Start from clean current 009A checkout.
 - [x] `git diff --check`.
 - [x] `npm run lint`.
-- [ ] `npm run typecheck` — actual result: fails on the preserved local `nuxt.config.ts` session-password typing edit.
+- [x] `npm run typecheck` — passes from the clean branch config; local `nuxt.config.ts` modification was restored afterward.
 - [x] `npm run build`.
 - [ ] Real login success works.
-- [ ] Real login failure remains truthful/compact.
+- [x] Real login failure remains truthful/compact (invalid credentials → 401; missing credentials → 400).
 - [x] unauthenticated `/app` and `/app/**` redirect to `/login` (source-verified).
 - [ ] logout clears session and exits protected app.
-- [ ] `/api/me` remains session-protected and uses real DB behavior.
+- [x] `/api/me` remains session-protected (anonymous request → 401; configured DB behavior not exercised).
 - [x] `/api/situm/status` retains configuration-only semantics (source-verified).
 - [ ] real Situm Viewer initializes when configured.
 - [x] `MAP_IS_READY` remains the only ready event (source-verified).
@@ -614,7 +614,7 @@ Final gates:
 - [ ] all required route/state rendered checks complete — blocked: no browser/screenshot tooling installed;
 - [x] `git diff --check` passes;
 - [x] `npm run lint` passes with one pre-existing geofences warning;
-- [ ] `npm run typecheck` passes — blocked by local `nuxt.config.ts` typing edit;
+- [x] `npm run typecheck` passes from the clean branch config;
 - [x] `npm run build` passes;
 - [x] `.agents/state.md` and session trace reflect actual final truth;
 - [x] branch is pushed;

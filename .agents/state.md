@@ -134,6 +134,6 @@ Do not create a PR or merge unless the user explicitly requests it.
 
 ## Next action
 
-Closure Phases 0–6 are complete, reviewed, committed, and pushed. Phase 7 source/build validation is complete, but protected auth/DB/Situm checks require unavailable configured services and typecheck is blocked by the preserved local `nuxt.config.ts` session-cookie typing edit. Phase 8 rendered conformance is blocked because browser/screenshot tooling is unavailable. Do not mark Plan 009A complete until these gates are resolved and the user reviews the rendered UI.
+Closure Phases 0–6 are complete, reviewed, committed, and pushed. Phase 7 clean-config typecheck and source/API smoke checks pass; successful login/logout and configured Situm Viewer runtime checks remain pending because credentials/services/browser tooling are unavailable. Phase 8 rendered conformance is pending manual user review. Do not mark Plan 009A complete until the rendered UI is accepted.
 
 Do not start Plan 010.
