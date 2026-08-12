@@ -19,17 +19,34 @@ For any plan execution or repository implementation work, also read and follow:
 
 5. `.agents/protocols/git-workflow.md`
 6. `ARCHITECTURE.md`
+7. `plans/README.md`
 
 For any UI, UX, styling, layout, component-composition, or visual-design work, also read:
 
-7. `DESIGN.md`
-8. The active plan and only the root `design/` implementation documents explicitly linked by `DESIGN.md` or that plan
+8. `DESIGN.md`
+9. The active plan and only the root `design/` implementation documents explicitly linked by `DESIGN.md` or that plan
 
 The Git workflow protocol is mandatory. Every plan uses its own dedicated branch in the normal repository working directory. Linked Git worktrees are not required. Completed phases must be persisted, validated, committed, and pushed without opening a PR unless the user explicitly asks for one.
 
-The architecture contract is mandatory for implementation work. Use Nuxt 4 native app/server/shared boundaries, keep pages and API handlers focused, and prefer KISS over speculative abstractions. SOLID and DRY are used to clarify real responsibilities and repetition, not to manufacture layers.
+## Sequential roadmap rule
 
-For UI work, the approved HTML is a visual/interaction reference only. Production implementation must use the existing Nuxt/Vue/Nuxt UI stack; do not copy the prototype HTML/CSS/JS as application architecture.
+Roadmap plans are executed sequentially.
+
+If the active plan declares a dependency on a previous plan, that dependency must already be complete and integrated into `main` before creating the next plan branch from `origin/main`.
+
+Do not silently:
+
+- start a dependent plan from stale `main`;
+- stack a new plan branch on an unmerged dependency;
+- copy files manually from another plan branch.
+
+If the dependency is complete but still awaiting user authorization for PR/integration, stop at that boundary. Stacked plan branches are allowed only when the user explicitly requests them.
+
+The architecture contract is mandatory for implementation work. Use Nuxt 4 native app/server/shared boundaries, keep pages and API handlers focused, and prefer KISS over speculative abstractions. SOLID and DRY clarify real responsibilities/repetition; they do not justify ceremonial layers.
+
+For UI work, the populated canonical HTML is a visual/interaction reference only. Production implementation must use the existing Nuxt/Vue/Nuxt UI stack; do not copy prototype HTML/CSS/JS as application architecture.
+
+Plans 004–009 are UI-first/dummy-first for product domains that do not already have a working integration. The existing real auth/database/Situm Viewer lifecycle stays real, but new Situm product-domain integrations wait until the UI roadmap is complete and accepted.
 
 ## Mandatory chat closeout
 
@@ -50,7 +67,7 @@ Prefer revising existing entries over adding duplicates.
 
 - Do not store passwords, API keys, access tokens, credentials, or unnecessary sensitive information.
 - Mark inference as inference; do not rewrite guesses as user-stated facts.
-- Do not treat session logs as permanent truth when a newer durable memory contradicts them.
+- Do not treat session logs or historical plans as permanent truth when newer durable state/contracts contradict them.
 - Keep architecture simple until requirements justify complexity.
 - Do not implement plans directly on `main`.
 - Do not create pull requests for plan branches without explicit user authorization.
