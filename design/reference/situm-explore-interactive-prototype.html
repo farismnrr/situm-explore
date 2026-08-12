@@ -1,11 +1,1069 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Situm Explore UI Reference</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Situm Explore — Interactive Product Prototype</title>
+<meta name="description" content="Interactive UI/UX reference prototype for Situm Explore.">
+<style>
+:root{
+  --bg:#f6f7f9;
+  --surface:#ffffff;
+  --surface-subtle:#fafbfc;
+  --surface-hover:#f4f5f7;
+  --text:#16181c;
+  --text-2:#515862;
+  --text-3:#8b939e;
+  --line:#e6e8ec;
+  --line-strong:#d8dce2;
+  --ink:#111827;
+  --ink-hover:#202939;
+  --accent:#2563eb;
+  --accent-soft:#eff6ff;
+  --green:#168754;
+  --green-soft:#edf9f3;
+  --amber:#a16207;
+  --amber-soft:#fffaeb;
+  --red:#c2413b;
+  --red-soft:#fff2f0;
+  --purple:#7c3aed;
+  --purple-soft:#f5f3ff;
+  --radius-xs:7px;
+  --radius-sm:9px;
+  --radius-md:12px;
+  --radius-lg:16px;
+  --radius-xl:22px;
+  --shadow-xs:0 1px 2px rgba(16,24,40,.04);
+  --shadow-sm:0 8px 24px rgba(16,24,40,.06);
+  --shadow-md:0 18px 55px rgba(16,24,40,.10);
+  --max:1240px;
+  --sidebar:228px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  margin:0;min-height:100vh;background:var(--bg);color:var(--text);
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+svg{display:block}
+.hidden{display:none!important}
+.desktop-only{display:initial}
+.mobile-only{display:none}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---- reusable ---- */
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:760;letter-spacing:-.03em}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800;box-shadow:var(--shadow-xs)}
+.brand-sub{font-size:12px;color:var(--text-3);font-weight:600;margin-left:3px}
+.container{width:min(calc(100% - 40px),var(--max));margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--text-3);font-weight:760}
+.muted{color:var(--text-2)} .muted-2{color:var(--text-3)}
+.h1{font-size:clamp(38px,6vw,70px);line-height:.98;letter-spacing:-.065em;margin:0;font-weight:760}
+.h2{font-size:clamp(28px,4vw,42px);line-height:1.05;letter-spacing:-.05em;margin:0;font-weight:740}
+.page-title{font-size:30px;line-height:1.08;letter-spacing:-.045em;margin:4px 0 8px;font-weight:740}
+.text-sm{font-size:13px}.text-xs{font-size:12px}.text-lg{font-size:16px}
+.row{display:flex;align-items:center}.between{display:flex;align-items:center;justify-content:space-between}.wrap{flex-wrap:wrap}
+.gap-6{gap:6px}.gap-8{gap:8px}.gap-10{gap:10px}.gap-12{gap:12px}.gap-16{gap:16px}.gap-20{gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-xs)}
+.soft-card{background:var(--surface-subtle);border:1px solid var(--line);border-radius:var(--radius-md)}
+.btn{
+  appearance:none;border:1px solid transparent;min-height:40px;padding:0 14px;border-radius:10px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:680;
+  transition:background .16s ease,border-color .16s ease,color .16s ease,transform .16s ease,box-shadow .16s ease;
+}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--ink);color:#fff;box-shadow:var(--shadow-xs)}
+.btn-primary:hover{background:var(--ink-hover)}
+.btn-secondary{background:var(--surface);border-color:var(--line);color:var(--text)}
+.btn-secondary:hover{background:var(--surface-hover);border-color:var(--line-strong)}
+.btn-ghost{background:transparent;color:var(--text-2)}
+.btn-ghost:hover{background:var(--surface-hover);color:var(--text)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-sm{min-height:34px;padding:0 11px;font-size:12px;border-radius:9px}
+.icon-btn{
+  width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--text-2);
+  display:grid;place-items:center;transition:.15s ease;box-shadow:var(--shadow-xs)
+}
+.icon-btn:hover{background:var(--surface-hover);color:var(--text)}
+.pill{display:inline-flex;align-items:center;gap:7px;min-height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:11px;font-weight:680;color:var(--text-2)}
+.pill.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill.green{background:var(--green-soft);border-color:#d8efe3;color:#126d45}
+.pill.blue{background:var(--accent-soft);border-color:#dbeafe;color:#1d4ed8}
+.pill.amber{background:var(--amber-soft);border-color:#f5e7b8;color:#8a5706}
+.pill.red{background:var(--red-soft);border-color:#f6d6d2;color:#a83832}
+.dot{width:7px;height:7px;border-radius:50%;background:#a8afb8}.dot.green{background:var(--green)}.dot.blue{background:var(--accent)}.dot.amber{background:#d59a16}.dot.red{background:var(--red)}
+.field{display:grid;gap:7px}.field label{font-size:12px;color:#3e444d;font-weight:680}
+.input,.select,.textarea{
+  width:100%;border:1px solid var(--line-strong);background:#fff;color:var(--text);border-radius:10px;outline:none;
+  transition:.15s ease;
+}
+.input,.select{height:42px;padding:0 12px}.textarea{min-height:90px;padding:10px 12px;resize:vertical}
+.input::placeholder,.textarea::placeholder{color:#a2a9b2}
+.input:focus,.select:focus,.textarea:focus{border-color:#8c95a0;box-shadow:0 0 0 3px rgba(17,24,39,.065)}
+.check{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2)}
+.check input{width:15px;height:15px;accent-color:var(--ink)}
+.switch{position:relative;width:36px;height:20px;border-radius:999px;background:#d7dbe1;border:0;padding:0;transition:.16s ease}
+.switch::after{content:"";position:absolute;width:16px;height:16px;left:2px;top:2px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15);transition:.16s ease}
+.switch.on{background:var(--ink)}.switch.on::after{transform:translateX(16px)}
+.kbd{font-size:10px;border:1px solid var(--line);background:var(--surface-subtle);padding:2px 5px;border-radius:5px;color:var(--text-3)}
+.divider{height:1px;background:var(--line)}
+.toast{
+  position:fixed;right:18px;bottom:18px;z-index:200;min-width:260px;max-width:360px;background:#15171a;color:#fff;border-radius:12px;
+  padding:13px 14px;box-shadow:var(--shadow-md);font-size:12px;transform:translateY(20px);opacity:0;pointer-events:none;transition:.22s ease
+}
+.toast.show{transform:none;opacity:1}
+
+/* ---- landing ---- */
+.public-page{background:#fff}
+.public-nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(230,232,236,.8)}
+.public-nav-inner{height:66px;display:flex;align-items:center;justify-content:space-between}
+.public-links{display:flex;gap:26px;font-size:13px;color:var(--text-2)}
+.public-links a:hover{color:var(--text)}
+.public-actions{display:flex;gap:8px}
+.hero{padding:92px 0 70px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;align-items:center;gap:64px}
+.hero-copy{max-width:660px}.hero-copy p{font-size:17px;line-height:1.65;color:var(--text-2);max-width:600px;margin:24px 0 30px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.hero-note{display:flex;gap:14px;margin-top:24px;color:var(--text-3);font-size:11px}
+.hero-visual{position:relative}
+.hero-window{border:1px solid var(--line);border-radius:20px;background:var(--surface);box-shadow:0 28px 80px rgba(16,24,40,.12);overflow:hidden;transform:perspective(1000px) rotateY(-2deg) rotateX(1deg)}
+.window-bar{height:46px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:7px}.window-dot{width:8px;height:8px;border-radius:50%;background:#d9dde3}
+.window-main{display:grid;grid-template-columns:142px 1fr;min-height:430px}.window-side{border-right:1px solid var(--line);padding:13px 10px;background:#fbfbfc}
+.window-side-row{height:28px;border-radius:7px;margin-bottom:5px;background:#f3f4f6}.window-side-row.active{background:#e9ebef}
+.window-content{padding:15px}.window-heading{width:170px;height:13px;background:#dfe3e7;border-radius:4px;margin-bottom:8px}.window-sub{width:230px;height:8px;background:#eef0f2;border-radius:4px;margin-bottom:16px}
+.window-map{height:310px;border:1px solid var(--line);border-radius:13px;position:relative;overflow:hidden;background:repeating-linear-gradient(0deg,#fafbfc 0 25px,#f0f2f4 26px),repeating-linear-gradient(90deg,transparent 0 25px,#f0f2f4 26px)}
+.window-floor{position:absolute;inset:15% 12%;background:#fff;border:2px solid #d3d8de;border-radius:16px;transform:rotate(-3deg)}
+.window-floor::before{content:"";position:absolute;inset:18% 12%;border:1px solid #dde1e6;border-radius:9px;box-shadow:75px 28px 0 -10px #f4f5f7,-45px 95px 0 -14px #f4f5f7}
+.window-pin{position:absolute;width:16px;height:16px;border-radius:50% 50% 50% 2px;background:var(--accent);transform:rotate(-45deg);box-shadow:0 4px 10px rgba(37,99,235,.22)}.window-pin::after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;left:5.5px;top:5.5px}
+.window-pin.p1{left:36%;top:34%}.window-pin.p2{left:62%;top:58%;background:var(--green)}.window-pin.p3{left:70%;top:30%;background:var(--purple)}
+.trust-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fbfbfc}.trust-inner{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:20px;color:var(--text-3);font-size:12px}.trust-items{display:flex;gap:28px;flex-wrap:wrap}.trust-items span{font-weight:680;color:#676f79}
+.section{padding:92px 0}.section-head{max-width:680px;margin-bottom:38px}.section-head p{margin:14px 0 0;color:var(--text-2);line-height:1.65;font-size:15px}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature-card{padding:22px;min-height:205px}.feature-icon{width:36px;height:36px;border-radius:10px;background:#f1f3f5;border:1px solid var(--line);display:grid;place-items:center;margin-bottom:34px;font-size:15px}.feature-card h3{font-size:15px;margin:0 0 8px;letter-spacing:-.02em}.feature-card p{font-size:13px;line-height:1.55;color:var(--text-2);margin:0}
+.cta-block{margin:0 auto 92px;background:var(--ink);color:#fff;border-radius:24px;padding:54px;display:flex;align-items:center;justify-content:space-between;gap:30px}.cta-block h2{font-size:34px;letter-spacing:-.045em;margin:0 0 10px}.cta-block p{color:#b7bec8;margin:0;font-size:14px}.cta-block .btn{background:#fff;color:#111827}
+.public-footer{border-top:1px solid var(--line);padding:30px 0 42px}.footer-inner{display:flex;justify-content:space-between;gap:20px;font-size:12px;color:var(--text-3)}
+
+/* ---- auth ---- */
+.auth-page{min-height:100vh;background:var(--bg);display:grid;grid-template-columns:1fr 1fr}
+.auth-art{padding:34px;display:flex;flex-direction:column;justify-content:space-between;background:var(--ink);color:#fff;min-height:100vh}
+.auth-art .brand-mark{background:#fff;color:#111827}
+.auth-art-copy{max-width:560px;margin:auto 0;padding:60px 5vw}.auth-art-copy h2{font-size:44px;line-height:1.05;letter-spacing:-.055em;margin:10px 0 16px}.auth-art-copy p{font-size:15px;color:#b8c0cb;line-height:1.65;max-width:500px}
+.auth-art-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:34px;max-width:520px}.auth-art-card{border:1px solid #303744;background:#1b2029;border-radius:13px;padding:15px}.auth-art-card strong{display:block;font-size:13px;margin-bottom:6px}.auth-art-card span{color:#9fa8b5;font-size:11px;line-height:1.45}
+.auth-panel{display:grid;place-items:center;padding:40px}.auth-box{width:min(100%,410px)}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#eceef1;border-radius:11px;margin-bottom:25px}.auth-tab{border:0;background:transparent;min-height:36px;border-radius:8px;font-size:12px;font-weight:680;color:var(--text-2)}.auth-tab.active{background:#fff;color:var(--text);box-shadow:var(--shadow-xs)}
+.auth-box h1{font-size:30px;letter-spacing:-.045em;margin:0 0 8px}.auth-box>p{margin:0 0 24px;color:var(--text-2);font-size:13px}.auth-form{display:grid;gap:15px}.auth-form .btn-primary{width:100%;margin-top:2px}
+.form-split{display:grid;grid-template-columns:1fr 1fr;gap:10px}.auth-helper{text-align:center;margin-top:18px;font-size:11px;color:var(--text-3)}
+.form-error{background:var(--red-soft);border:1px solid #f4d3cf;border-radius:10px;padding:10px 12px;font-size:11px;color:#a33b35}
+
+/* ---- authenticated shell ---- */
+.app{min-height:100vh;background:var(--bg)}
+.sidebar{
+  position:fixed;left:0;top:0;bottom:0;width:var(--sidebar);z-index:40;background:#fbfbfc;border-right:1px solid var(--line);
+  display:flex;flex-direction:column
+}
+.sidebar-head{height:64px;padding:0 16px;display:flex;align-items:center;border-bottom:1px solid var(--line)}
+.sidebar-scroll{flex:1;overflow:auto;padding:13px 10px 20px}
+.nav-group{margin:15px 0 7px;padding:0 8px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#a0a7b0;font-weight:760}
+.nav-item{
+  width:100%;border:0;background:transparent;min-height:36px;border-radius:8px;padding:0 9px;display:flex;align-items:center;gap:9px;
+  font-size:12px;color:#555d67;text-align:left;transition:.15s ease
+}
+.nav-item:hover{background:#f1f2f4;color:#242a31}.nav-item.active{background:#e9ebee;color:#111827;font-weight:680}
+.nav-icon{width:18px;text-align:center;font-size:13px;color:#7b838d}
+.nav-item.active .nav-icon{color:#111827}
+.sidebar-foot{border-top:1px solid var(--line);padding:10px}
+.sidebar-user{display:flex;align-items:center;gap:9px;padding:8px;border-radius:9px}.sidebar-user:hover{background:#f1f2f4}
+.avatar{width:29px;height:29px;border-radius:50%;background:#e6e9ed;display:grid;place-items:center;font-size:11px;font-weight:780;color:#404752}
+.user-meta{min-width:0;flex:1}.user-meta strong{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.user-meta span{display:block;font-size:10px;color:var(--text-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app-topbar{position:fixed;left:var(--sidebar);right:0;top:0;height:64px;z-index:35;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);display:flex;align-items:center}
+.app-topbar-inner{width:100%;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.breadcrumb{font-size:12px;color:var(--text-3)}.breadcrumb strong{color:var(--text);font-weight:680}
+.top-actions{display:flex;align-items:center;gap:7px}
+.search-trigger{min-width:220px;height:34px;border:1px solid var(--line);background:#fff;border-radius:9px;display:flex;align-items:center;justify-content:space-between;padding:0 9px;color:var(--text-3);font-size:11px}
+.app-main{margin-left:var(--sidebar);padding-top:64px;min-height:100vh}
+.app-content{padding:30px 28px 50px;max-width:1480px;margin:0 auto}
+.app-content.wide{max-width:none;padding:20px}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:22px}
+.page-head p{margin:0;color:var(--text-2);font-size:13px;line-height:1.5}.page-actions{display:flex;gap:8px;flex-wrap:wrap}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.stat-card{padding:16px}.stat-card span{display:block;font-size:11px;color:var(--text-3);margin-bottom:12px}.stat-card strong{font-size:24px;letter-spacing:-.035em}.stat-card small{display:block;font-size:10px;color:var(--text-3);margin-top:5px}.delta{color:var(--green)!important}
+.grid-2{display:grid;grid-template-columns:1.4fr .6fr;gap:14px}.grid-equal{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.panel-head{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.panel-head h3{margin:0;font-size:13px;letter-spacing:-.015em}.panel-head span{font-size:10px;color:var(--text-3)}
+.panel-body{padding:16px}.panel-foot{padding:12px 16px;border-top:1px solid var(--line);background:#fbfbfc;border-radius:0 0 var(--radius-lg) var(--radius-lg)}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.quick-card{padding:15px;cursor:pointer;transition:.15s ease}.quick-card:hover{border-color:#cfd4da;transform:translateY(-1px);box-shadow:var(--shadow-sm)}.quick-card .feature-icon{margin:0 0 18px}.quick-card strong{font-size:12px;display:block;margin-bottom:5px}.quick-card span{font-size:10px;color:var(--text-3);line-height:1.4}
+.activity-list{display:grid}.activity-row{padding:11px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:8px 1fr auto;gap:9px;align-items:start}.activity-row:last-child{border-bottom:0}.activity-copy strong{font-size:11px;display:block}.activity-copy span{font-size:10px;color:var(--text-3);display:block;margin-top:3px}.activity-time{font-size:10px;color:var(--text-3)}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th{text-align:left;font-size:10px;color:var(--text-3);font-weight:700;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}.table td{font-size:11px;padding:11px 12px;border-bottom:1px solid var(--line);white-space:nowrap}.table tr:last-child td{border-bottom:0}.table tbody tr{transition:.12s ease}.table tbody tr:hover{background:#fafbfc}.table-link{font-weight:680;color:var(--text);cursor:pointer}.table-link:hover{text-decoration:underline}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.toolbar-left,.toolbar-right{display:flex;align-items:center;gap:8px}.filter-input{height:36px;width:230px}.filter-select{height:36px;width:auto;min-width:130px}
+.empty{padding:50px 20px;text-align:center}.empty-icon{width:42px;height:42px;border-radius:13px;background:#f1f3f5;margin:0 auto 14px;display:grid;place-items:center}.empty h3{font-size:13px;margin:0 0 6px}.empty p{font-size:11px;color:var(--text-3);margin:0 auto;max-width:330px;line-height:1.5}
+
+/* home */
+.welcome{padding:24px;background:linear-gradient(135deg,#fff,#fafbfc);margin-bottom:14px;display:flex;justify-content:space-between;gap:22px;align-items:center}.welcome h2{font-size:23px;letter-spacing:-.04em;margin:4px 0 8px}.welcome p{font-size:12px;color:var(--text-2);margin:0;line-height:1.5}.welcome-side{display:flex;gap:8px}
+.building-mini{height:245px;position:relative;overflow:hidden;background:repeating-linear-gradient(0deg,#fafbfc 0 26px,#f0f2f4 27px),repeating-linear-gradient(90deg,transparent 0 26px,#f0f2f4 27px)}
+.building-shape{position:absolute;inset:14% 13%;background:#fff;border:2px solid #d6dae0;border-radius:18px;transform:rotate(-2deg)}
+.building-shape:before{content:"";position:absolute;inset:15% 12%;border:1px solid #e0e3e7;border-radius:9px;box-shadow:70px 28px 0 -8px #f3f4f6,-50px 90px 0 -16px #f3f4f6}
+.mini-pin{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(37,99,235,.12)}.mini-pin.a{left:41%;top:36%}.mini-pin.b{left:62%;top:56%;background:var(--green);box-shadow:0 0 0 4px rgba(22,135,84,.12)}.mini-pin.c{left:70%;top:30%;background:var(--purple);box-shadow:0 0 0 4px rgba(124,58,237,.12)}
+
+/* map viewer */
+.map-layout{display:grid;grid-template-columns:320px minmax(0,1fr);height:calc(100vh - 104px);min-height:650px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+.map-side{border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.map-side-head{padding:13px;border-bottom:1px solid var(--line)}.map-side-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#f0f1f3;padding:4px;border-radius:10px}.map-side-tab{border:0;background:transparent;height:32px;border-radius:7px;font-size:10px;color:var(--text-2);font-weight:680}.map-side-tab.active{background:#fff;color:#111827;box-shadow:var(--shadow-xs)}
+.map-side-body{padding:12px;overflow:auto;flex:1}.poi-list{display:grid;gap:6px;margin-top:10px}.poi-item{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;gap:9px;align-items:center;cursor:pointer;background:#fff}.poi-item:hover,.poi-item.active{border-color:#cbd1d8;background:#fafbfc}.poi-icon{width:29px;height:29px;border-radius:8px;background:#f0f2f4;display:grid;place-items:center;font-size:11px}.poi-copy{flex:1;min-width:0}.poi-copy strong{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.poi-copy span{font-size:9px;color:var(--text-3);display:block;margin-top:3px}
+.route-form{display:grid;gap:10px}.route-result{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:11px;background:#fafbfc}.route-result strong{font-size:11px}.route-steps{display:grid;gap:9px;margin-top:10px}.route-step{display:grid;grid-template-columns:18px 1fr;gap:7px;font-size:10px;color:var(--text-2)}
+.map-main{position:relative;overflow:hidden;background:#eef1f3}
+.map-top-controls{position:absolute;top:12px;left:12px;right:12px;z-index:8;display:flex;justify-content:space-between;gap:10px;pointer-events:none}.map-top-controls>*{pointer-events:auto}
+.map-canvas{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,.43),rgba(255,255,255,.43)),
+    repeating-linear-gradient(0deg,transparent 0 31px,#e1e5e9 32px),
+    repeating-linear-gradient(90deg,transparent 0 31px,#e1e5e9 32px),
+    #edf0f2
+}
+.big-floor{position:absolute;left:14%;right:10%;top:14%;bottom:11%;border:2px solid #bec5cd;background:rgba(255,255,255,.91);border-radius:25px;transform:rotate(-2.4deg);box-shadow:0 22px 60px rgba(16,24,40,.09);transition:transform .18s ease}
+.big-floor::before{content:"";position:absolute;left:8%;right:8%;top:10%;height:29%;border:1px solid #d6dbe0;border-radius:13px;background:repeating-linear-gradient(90deg,#fafbfc 0 60px,#e5e8ec 61px,#fafbfc 62px 121px)}
+.big-floor::after{content:"";position:absolute;left:14%;right:12%;bottom:10%;height:39%;border:1px solid #d6dbe0;border-radius:13px;background:repeating-linear-gradient(90deg,#fafbfc 0 78px,#e5e8ec 79px,#fafbfc 80px 158px)}
+.map-pin{position:absolute;z-index:5;width:24px;height:24px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);background:var(--accent);box-shadow:0 6px 14px rgba(37,99,235,.25);cursor:pointer;transition:.15s ease}
+.map-pin:hover{scale:1.08}.map-pin::after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;left:8.5px;top:8.5px}.map-pin.p1{left:37%;top:34%}.map-pin.p2{left:60%;top:55%;background:var(--green)}.map-pin.p3{left:68%;top:31%;background:var(--purple)}.map-pin.p4{left:49%;top:67%;background:#d97706}
+.live-dot{position:absolute;width:13px;height:13px;border-radius:50%;background:#0ea5e9;border:3px solid #fff;box-shadow:0 0 0 5px rgba(14,165,233,.14);z-index:6;transition:all 1s linear}.live-dot.u1{left:45%;top:46%}.live-dot.u2{left:61%;top:40%}.live-dot.u3{left:57%;top:66%}
+.geofence-shape{position:absolute;z-index:3;border:2px dashed rgba(124,58,237,.75);background:rgba(124,58,237,.09);border-radius:28% 17% 34% 20%;width:150px;height:110px;left:54%;top:37%}
+.route-line{position:absolute;z-index:4;width:34%;height:3px;background:var(--accent);left:38%;top:49%;transform:rotate(25deg);transform-origin:left center;border-radius:999px;box-shadow:0 0 0 2px rgba(37,99,235,.08)}.route-line::after{content:"";position:absolute;right:-5px;top:-4px;border-left:9px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent}
+.map-bottom-controls{position:absolute;right:12px;bottom:12px;z-index:9;display:grid;gap:7px}.floor-switcher{display:flex;gap:4px;background:#fff;padding:4px;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow-sm)}.floor-btn{border:0;background:transparent;height:30px;padding:0 10px;border-radius:7px;font-size:10px;font-weight:680;color:var(--text-2)}.floor-btn.active{background:#111827;color:#fff}
+.map-mode-bar{display:flex;gap:6px}.map-mode{border:1px solid var(--line);background:#fff;height:34px;padding:0 10px;border-radius:9px;font-size:10px;color:var(--text-2);box-shadow:var(--shadow-xs)}.map-mode.active{background:#111827;color:#fff;border-color:#111827}
+.poi-popover{position:absolute;z-index:20;width:240px;background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow-md);padding:13px;left:calc(37% + 18px);top:calc(34% - 55px)}.poi-popover h4{font-size:12px;margin:0 0 4px}.poi-popover p{font-size:10px;color:var(--text-3);line-height:1.45;margin:0 0 11px}
+.location-picker{position:absolute;z-index:6;width:34px;height:34px;border-radius:50%;border:2px solid #fff;background:#ef4444;left:52%;top:48%;box-shadow:0 7px 22px rgba(239,68,68,.22)}.location-picker::after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;left:11px;top:11px}
+
+/* charts / reports */
+.chart{height:250px;position:relative;padding:20px 12px 28px 42px}.chart-grid{position:absolute;inset:20px 12px 28px 42px;background:repeating-linear-gradient(0deg,transparent 0 49px,#eef0f2 50px)}.chart-bars{position:absolute;inset:20px 12px 28px 42px;display:flex;align-items:flex-end;gap:10px}.bar{flex:1;background:#dfe3e8;border-radius:5px 5px 1px 1px;min-width:7px;transition:.15s ease}.bar:hover{background:#b9c0c9}.bar.accent{background:#9ebcfb}.chart-line{position:absolute;left:50px;right:20px;top:82px;height:2px;background:var(--accent);transform:rotate(-3deg);transform-origin:left;border-radius:999px}.chart-line::before,.chart-line::after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:var(--accent);top:-2.5px}.chart-line::before{left:0}.chart-line::after{right:0}
+.analytics-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}.analytics-tab{border:1px solid var(--line);background:#fff;border-radius:8px;min-height:32px;padding:0 10px;font-size:10px;color:var(--text-2)}.analytics-tab.active{background:#111827;color:#fff;border-color:#111827}
+.heatmap{height:260px;position:relative;overflow:hidden;background:repeating-linear-gradient(0deg,#fafbfc 0 27px,#eff1f3 28px),repeating-linear-gradient(90deg,transparent 0 27px,#eff1f3 28px)}.heat-spot{position:absolute;border-radius:50%;filter:blur(2px);background:radial-gradient(circle,rgba(239,68,68,.55),rgba(245,158,11,.24) 42%,rgba(250,204,21,.05) 68%,transparent 72%)}.heat-spot.h1{width:130px;height:130px;left:22%;top:20%}.heat-spot.h2{width:170px;height:170px;left:50%;top:32%}.heat-spot.h3{width:100px;height:100px;left:70%;top:10%}
+
+/* details/drawer/modal */
+.drawer{
+  position:fixed;right:0;top:64px;bottom:0;width:380px;background:#fff;border-left:1px solid var(--line);z-index:80;box-shadow:-18px 0 45px rgba(16,24,40,.08);
+  transform:translateX(100%);transition:.2s ease;display:flex;flex-direction:column
+}
+.drawer.open{transform:none}.drawer-head{height:62px;padding:0 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.drawer-head h3{margin:0;font-size:13px}.drawer-body{padding:16px;overflow:auto;flex:1}.detail-list{display:grid;gap:12px}.detail-row{display:grid;grid-template-columns:115px 1fr;gap:12px;font-size:11px}.detail-row span:first-child{color:var(--text-3)}.detail-row strong{font-weight:600}
+.modal-wrap{position:fixed;inset:0;background:rgba(17,24,39,.28);z-index:120;display:grid;place-items:center;padding:20px;backdrop-filter:blur(3px)}.modal{width:min(100%,520px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-md);overflow:hidden}.modal-head{padding:16px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.modal-head h3{margin:0;font-size:13px}.modal-body{padding:17px}.modal-foot{padding:12px 17px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+
+/* settings */
+.settings-layout{display:grid;grid-template-columns:220px 1fr;gap:14px}.settings-nav{padding:8px}.settings-nav button{width:100%;border:0;background:transparent;border-radius:8px;min-height:35px;text-align:left;padding:0 9px;font-size:11px;color:var(--text-2)}.settings-nav button.active{background:#eef0f2;color:#111827;font-weight:680}.setting-section{padding:18px}.setting-section h3{font-size:13px;margin:0 0 4px}.setting-section>p{font-size:10px;color:var(--text-3);margin:0 0 18px}.setting-row{display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-top:1px solid var(--line)}.setting-row:first-of-type{border-top:0}.setting-copy strong{font-size:11px;display:block}.setting-copy span{font-size:10px;color:var(--text-3);display:block;margin-top:4px;line-height:1.4}
+
+/* mobile */
+.mobile-menu-btn{display:none}
+.mobile-backdrop{display:none}
+@media(max-width:1050px){
+  :root{--sidebar:208px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .feature-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-grid{gap:34px}
+  .grid-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .quick-grid{grid-template-columns:repeat(2,1fr)}
+  .map-layout{grid-template-columns:280px minmax(0,1fr)}
+}
+@media(max-width:800px){
+  .desktop-only{display:none!important}.mobile-only{display:initial}
+  .container{width:min(calc(100% - 28px),var(--max))}
+  .public-links{display:none}.hero{padding:65px 0 45px}.hero-grid{grid-template-columns:1fr}.hero-copy{max-width:none}.hero-visual{margin-top:10px}.section{padding:66px 0}.feature-grid{grid-template-columns:1fr}.cta-block{margin-bottom:60px;padding:32px;display:grid}.trust-inner{padding:16px 0;align-items:flex-start;flex-direction:column}
+  .auth-page{grid-template-columns:1fr}.auth-art{display:none}.auth-panel{min-height:100vh;padding:28px 18px}
+  .sidebar{transform:translateX(-100%);transition:.18s ease;width:240px;box-shadow:var(--shadow-md)}.sidebar.open{transform:none}.mobile-backdrop.show{display:block;position:fixed;inset:0;background:rgba(17,24,39,.25);z-index:39}
+  .app-topbar{left:0}.app-main{margin-left:0}.mobile-menu-btn{display:grid}.search-trigger{min-width:150px}.app-content{padding:24px 15px 44px}
+  .page-head{display:grid}.page-actions{justify-content:flex-start}.stat-grid{grid-template-columns:1fr 1fr}.grid-equal,.grid-3{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr}
+  .map-layout{display:block;height:auto;min-height:0}.map-side{border-right:0;border-bottom:1px solid var(--line);height:320px}.map-main{height:560px}
+  .settings-layout{grid-template-columns:1fr}.settings-nav{display:flex;overflow:auto;gap:4px}.settings-nav button{min-width:max-content;width:auto}
+}
+@media(max-width:520px){
+  .public-actions .btn-secondary{display:none}.hero-note{display:grid;gap:7px}.h1{font-size:44px}.window-main{grid-template-columns:95px 1fr;min-height:330px}.window-map{height:230px}.feature-grid{gap:10px}.cta-block h2{font-size:28px}
+  .form-split{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr}.top-actions .btn-ghost{display:none}.search-trigger{display:none}
+  .app-content.wide{padding:10px}.map-main{height:500px}.map-top-controls{top:8px;left:8px;right:8px}.map-mode-bar{overflow:auto;max-width:75vw}.map-mode{white-space:nowrap}
+  .drawer{width:100%;top:58px}.app-topbar{height:58px}.app-main{padding-top:58px}
+}
+</style>
 </head>
 <body>
-  <h1>Hello World</h1>
+
+<div id="toast" class="toast">Done</div>
+
+<!-- PUBLIC LANDING -->
+<section id="screen-landing" class="screen public-page">
+  <nav class="public-nav">
+    <div class="container public-nav-inner">
+      <a class="brand" href="#" data-public-home>
+        <span class="brand-mark">S</span><span>Situm Explore</span>
+      </a>
+      <div class="public-links">
+        <a href="#features">Product</a><a href="#operations">Operations</a><a href="#analytics">Analytics</a><a href="#about">About</a>
+      </div>
+      <div class="public-actions">
+        <button class="btn btn-secondary" data-open-auth="login">Sign in</button>
+        <button class="btn btn-primary" data-open-auth="register">Start prototype</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="pill"><span class="dot green"></span> Indoor operations workspace</span>
+        <div style="height:20px"></div>
+        <h1 class="h1">Understand your indoor spaces at a glance.</h1>
+        <p>Situm Explore brings maps, live positions, cartography, routes and analytics into one calm web workspace built for fast operational decisions.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-open-auth="register">Explore the prototype →</button>
+          <button class="btn btn-secondary" data-open-auth="login">Sign in</button>
+        </div>
+        <div class="hero-note">
+          <span>✓ Interactive demo</span><span>✓ Dummy data only</span><span>✓ Light-mode product reference</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-window">
+          <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></div>
+          <div class="window-main">
+            <div class="window-side">
+              <div class="window-side-row active"></div><div class="window-side-row"></div><div class="window-side-row"></div>
+              <div style="height:15px"></div><div class="window-side-row"></div><div class="window-side-row"></div><div class="window-side-row"></div>
+            </div>
+            <div class="window-content">
+              <div class="window-heading"></div><div class="window-sub"></div>
+              <div class="window-map"><div class="window-floor"></div><span class="window-pin p1"></span><span class="window-pin p2"></span><span class="window-pin p3"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="trust-strip">
+    <div class="container trust-inner">
+      <span>One read-only POC workspace for</span>
+      <div class="trust-items"><span>Indoor maps</span><span>POIs</span><span>Geofences</span><span>Realtime</span><span>Routing</span><span>Reports</span></div>
+    </div>
+  </div>
+
+  <section id="features" class="section">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Product</span><h2 class="h2" style="margin-top:8px">Everything important, without dashboard clutter.</h2><p>The UI keeps the indoor map primary while the rest of Situm’s operational data stays easy to reach when you need it.</p></div>
+      <div class="feature-grid">
+        <article class="card feature-card"><div class="feature-icon">⌖</div><h3>Map Viewer workspace</h3><p>Switch buildings and floors, search POIs, pick locations, preview routes, favorites, realtime overlays and trajectories.</p></article>
+        <article class="card feature-card"><div class="feature-icon">◇</div><h3>Cartography explorer</h3><p>Browse buildings, floors, POIs, categories, geofences and path networks from one consistent information model.</p></article>
+        <article class="card feature-card"><div class="feature-icon">●</div><h3>Realtime operations</h3><p>See current people and device locations, online state, building context and live movement with clean operational status.</p></article>
+        <article class="card feature-card"><div class="feature-icon">↗</div><h3>Directions & navigation</h3><p>Build routes between indoor points, compare accessible routing options and surface step-by-step directions.</p></article>
+        <article class="card feature-card"><div class="feature-icon">▥</div><h3>Analytics & reports</h3><p>Explore visitors, heatmaps, geofence stay time, positioning time, user positions and map viewer usage.</p></article>
+        <article class="card feature-card"><div class="feature-icon">⚙</div><h3>Organization context</h3><p>Keep user, group, alarm, viewer configuration and organization metadata visible without turning the POC into an admin suite.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="operations" class="section" style="background:#fafbfc;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="container grid-equal">
+      <div class="section-head" style="margin:0"><span class="eyebrow">Operations</span><h2 class="h2" style="margin-top:8px">Map-first by design.</h2><p>The map carries the spatial task. Everything else supports it: POI discovery, route planning, realtime position overlays, geofence context and trajectory playback.</p><button class="btn btn-primary" style="margin-top:20px" data-open-auth="register">Open map prototype</button></div>
+      <div class="card" style="padding:16px"><div class="building-mini"><div class="building-shape"></div><span class="mini-pin a"></span><span class="mini-pin b"></span><span class="mini-pin c"></span></div></div>
+    </div>
+  </section>
+
+  <section id="analytics" class="section">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Analytics</span><h2 class="h2" style="margin-top:8px">Operational answers, not vanity charts.</h2><p>Reports are grouped around concrete questions: who visited, where people stayed, how long positioning was active, where activity concentrates, and how the map viewer is used.</p></div>
+      <div class="grid-3">
+        <div class="card stat-card"><span>Visitors today</span><strong>128</strong><small class="delta">↑ 8.4% vs yesterday</small></div>
+        <div class="card stat-card"><span>Active positions</span><strong>24</strong><small>across 2 floors</small></div>
+        <div class="card stat-card"><span>Avg. stay time</span><strong>18m</strong><small>main workspace geofence</small></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container cta-block">
+    <div><h2>Ready to click through it?</h2><p>Use any dummy credentials. Nothing leaves this HTML file.</p></div>
+    <button class="btn" data-open-auth="register">Launch interactive prototype →</button>
+  </div>
+
+  <footer id="about" class="public-footer"><div class="container footer-inner"><span>Situm Explore · Interactive reference prototype</span><span>Dummy data · No API calls</span></div></footer>
+</section>
+
+<!-- AUTH -->
+<section id="screen-auth" class="screen auth-page hidden">
+  <aside class="auth-art">
+    <button class="brand btn-ghost" style="border:0;color:#fff;justify-content:flex-start;padding:0" data-public-home>
+      <span class="brand-mark">S</span><span>Situm Explore</span>
+    </button>
+    <div class="auth-art-copy">
+      <span class="eyebrow" style="color:#7f8997">Indoor operations, simplified</span>
+      <h2>One workspace for maps, movement and spatial context.</h2>
+      <p>This prototype is intentionally dummy-only. Sign in with anything to explore the full product flow.</p>
+      <div class="auth-art-cards">
+        <div class="auth-art-card"><strong>Map-first</strong><span>Viewer, POIs, directions, floors and realtime overlays.</span></div>
+        <div class="auth-art-card"><strong>Read-only POC</strong><span>Operational exploration without destructive actions.</span></div>
+      </div>
+    </div>
+    <span class="text-xs" style="color:#6f7987">UI reference · 2026</span>
+  </aside>
+  <main class="auth-panel">
+    <div class="auth-box">
+      <div class="auth-tabs">
+        <button id="authTabLogin" class="auth-tab active">Sign in</button>
+        <button id="authTabRegister" class="auth-tab">Create account</button>
+      </div>
+
+      <div id="loginPane">
+        <h1>Welcome back</h1><p>Use any non-empty credentials to enter the prototype.</p>
+        <form id="loginForm" class="auth-form">
+          <div class="field"><label>Email</label><input id="loginEmail" class="input" type="email" value="owner@example.com"></div>
+          <div class="field"><label>Password</label><input id="loginPassword" class="input" type="password" placeholder="Anything works"></div>
+          <label class="check"><input type="checkbox" checked> Keep me signed in on this prototype</label>
+          <div id="loginError" class="form-error hidden">Fill in both fields first.</div>
+          <button class="btn btn-primary" type="submit">Sign in →</button>
+        </form>
+        <div class="auth-helper">Prototype mode · no real authentication request is sent.</div>
+      </div>
+
+      <div id="registerPane" class="hidden">
+        <h1>Create your workspace</h1><p>Any values work. This only demonstrates the product flow.</p>
+        <form id="registerForm" class="auth-form">
+          <div class="form-split">
+            <div class="field"><label>First name</label><input id="regFirst" class="input" value="Faris"></div>
+            <div class="field"><label>Last name</label><input id="regLast" class="input" value="Munir"></div>
+          </div>
+          <div class="field"><label>Work email</label><input id="regEmail" class="input" type="email" value="faris@example.com"></div>
+          <div class="field"><label>Password</label><input id="regPassword" class="input" type="password" placeholder="Anything works"></div>
+          <div class="field"><label>Workspace name</label><input id="regWorkspace" class="input" value="Situm Explore POC"></div>
+          <div id="registerError" class="form-error hidden">Complete the required fields first.</div>
+          <button class="btn btn-primary" type="submit">Create account →</button>
+        </form>
+        <div class="auth-helper">By continuing, you enter a local dummy workspace.</div>
+      </div>
+    </div>
+  </main>
+</section>
+
+<!-- APP -->
+<section id="screen-app" class="screen app hidden">
+  <div id="mobileBackdrop" class="mobile-backdrop"></div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-head"><button class="brand" style="border:0;background:transparent;padding:0" data-app-nav="home"><span class="brand-mark">S</span><span>Situm Explore</span></button></div>
+    <div class="sidebar-scroll">
+      <div class="nav-group">Workspace</div>
+      <button class="nav-item active" data-app-nav="home"><span class="nav-icon">⌂</span>Home</button>
+      <button class="nav-item" data-app-nav="dashboard"><span class="nav-icon">▦</span>Dashboard</button>
+      <button class="nav-item" data-app-nav="map"><span class="nav-icon">⌖</span>Map Viewer</button>
+
+      <div class="nav-group">Cartography</div>
+      <button class="nav-item" data-app-nav="buildings"><span class="nav-icon">◇</span>Buildings & floors</button>
+      <button class="nav-item" data-app-nav="pois"><span class="nav-icon">●</span>Points of interest</button>
+      <button class="nav-item" data-app-nav="geofences"><span class="nav-icon">⬡</span>Geofences</button>
+      <button class="nav-item" data-app-nav="paths"><span class="nav-icon">↗</span>Paths & routing</button>
+
+      <div class="nav-group">Operations</div>
+      <button class="nav-item" data-app-nav="realtime"><span class="nav-icon">◉</span>Realtime</button>
+      <button class="nav-item" data-app-nav="analytics"><span class="nav-icon">▥</span>Analytics & reports</button>
+      <button class="nav-item" data-app-nav="alarms"><span class="nav-icon">!</span>Alarms</button>
+
+      <div class="nav-group">Organization</div>
+      <button class="nav-item" data-app-nav="users"><span class="nav-icon">◎</span>Users & groups</button>
+      <button class="nav-item" data-app-nav="organization"><span class="nav-icon">◫</span>Organization</button>
+      <button class="nav-item" data-app-nav="settings"><span class="nav-icon">⚙</span>Viewer settings</button>
+    </div>
+    <div class="sidebar-foot">
+      <button id="sidebarUser" class="sidebar-user" style="width:100%;border:0;background:transparent;text-align:left">
+        <span class="avatar">FM</span><span class="user-meta"><strong id="sidebarName">Faris Munir</strong><span id="sidebarEmail">owner@example.com</span></span><span class="muted-2">⋯</span>
+      </button>
+      <button id="signOut" class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px">Sign out</button>
+    </div>
+  </aside>
+
+  <header class="app-topbar">
+    <div class="app-topbar-inner">
+      <div class="row gap-10">
+        <button id="mobileMenu" class="icon-btn mobile-menu-btn">☰</button>
+        <div class="breadcrumb">Workspace / <strong id="breadcrumbCurrent">Home</strong></div>
+      </div>
+      <div class="top-actions">
+        <button id="globalSearch" class="search-trigger"><span>Search anything…</span><span class="kbd">⌘ K</span></button>
+        <button class="btn btn-ghost" id="simulateSync">Sync</button>
+        <span class="pill green desktop-only"><span class="dot green"></span>Only Read POC</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- HOME -->
+    <div id="app-home" class="app-page app-content">
+      <section class="card welcome">
+        <div><span class="eyebrow">Good afternoon</span><h2 id="welcomeName">Welcome back, Faris.</h2><p>Your indoor workspace is healthy. Pick up from the map, check live positions, or explore cartography.</p></div>
+        <div class="welcome-side"><button class="btn btn-secondary" data-app-nav="realtime">View realtime</button><button class="btn btn-primary" data-app-nav="map">Open map →</button></div>
+      </section>
+
+      <div class="stat-grid">
+        <div class="card stat-card"><span>Buildings</span><strong>3</strong><small>5 floors available</small></div>
+        <div class="card stat-card"><span>Points of interest</span><strong>42</strong><small>across 8 categories</small></div>
+        <div class="card stat-card"><span>Live positions</span><strong>24</strong><small class="delta">21 currently online</small></div>
+        <div class="card stat-card"><span>Open alarms</span><strong>2</strong><small>1 assistance · 1 stay time</small></div>
+      </div>
+
+      <div class="grid-2">
+        <section class="card">
+          <div class="panel-head"><div><h3>Main building</h3><span>PT Berjaya Inovasi Global · Floor 1</span></div><button class="btn btn-secondary btn-sm" data-app-nav="map">Open viewer</button></div>
+          <div class="building-mini"><div class="building-shape"></div><span class="mini-pin a"></span><span class="mini-pin b"></span><span class="mini-pin c"></span></div>
+          <div class="panel-foot between"><span class="text-xs muted-2">Viewer status</span><span class="pill green"><span class="dot green"></span>Map ready</span></div>
+        </section>
+        <section class="card">
+          <div class="panel-head"><h3>Recent activity</h3><span>Today</span></div>
+          <div class="panel-body activity-list">
+            <div class="activity-row"><span class="dot green"></span><div class="activity-copy"><strong>Map viewer ready</strong><span>Building viewer initialized successfully</span></div><span class="activity-time">1m</span></div>
+            <div class="activity-row"><span class="dot blue"></span><div class="activity-copy"><strong>Realtime refreshed</strong><span>24 positions returned</span></div><span class="activity-time">3m</span></div>
+            <div class="activity-row"><span class="dot"></span><div class="activity-copy"><strong>Report loaded</strong><span>Visitors · last 24 hours</span></div><span class="activity-time">18m</span></div>
+            <div class="activity-row"><span class="dot amber"></span><div class="activity-copy"><strong>Geofence alert</strong><span>Meeting room max stay time</span></div><span class="activity-time">32m</span></div>
+          </div>
+        </section>
+      </div>
+
+      <div style="height:14px"></div>
+      <section class="card">
+        <div class="panel-head"><div><h3>Quick explore</h3><span>Common Situm web surfaces</span></div></div>
+        <div class="panel-body quick-grid">
+          <div class="card quick-card" data-app-nav="buildings"><div class="feature-icon">◇</div><strong>Buildings & floors</strong><span>Browse venue and floor metadata.</span></div>
+          <div class="card quick-card" data-app-nav="pois"><div class="feature-icon">●</div><strong>POIs</strong><span>Search destinations and categories.</span></div>
+          <div class="card quick-card" data-app-nav="realtime"><div class="feature-icon">◉</div><strong>Realtime</strong><span>Track current positions.</span></div>
+          <div class="card quick-card" data-app-nav="paths"><div class="feature-icon">↗</div><strong>Directions</strong><span>Preview routes and accessibility.</span></div>
+          <div class="card quick-card" data-app-nav="analytics"><div class="feature-icon">▥</div><strong>Reports</strong><span>Visitors, heatmaps and stay time.</span></div>
+          <div class="card quick-card" data-app-nav="settings"><div class="feature-icon">⚙</div><strong>Viewer config</strong><span>Preview map behavior preferences.</span></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="app-dashboard" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Overview</span><h1 class="page-title">Dashboard</h1><p>Operational snapshot of the indoor workspace.</p></div><div class="page-actions"><button class="btn btn-secondary" data-app-nav="analytics">Open reports</button><button class="btn btn-primary" data-app-nav="map">Open map</button></div></div>
+      <div class="stat-grid">
+        <div class="card stat-card"><span>Visitors today</span><strong>128</strong><small class="delta">↑ 8.4% vs yesterday</small></div>
+        <div class="card stat-card"><span>Active devices</span><strong>24</strong><small>3 floors represented</small></div>
+        <div class="card stat-card"><span>Avg. stay time</span><strong>18m</strong><small>main workspace geofence</small></div>
+        <div class="card stat-card"><span>Viewer sessions</span><strong>76</strong><small>last 24 hours</small></div>
+      </div>
+      <div class="grid-2">
+        <section class="card">
+          <div class="panel-head"><div><h3>Visitor trend</h3><span>Last 7 days</span></div><button class="btn btn-ghost btn-sm" data-app-nav="analytics">Full report →</button></div>
+          <div class="chart"><div class="chart-grid"></div><div class="chart-bars"><div class="bar" style="height:42%"></div><div class="bar" style="height:58%"></div><div class="bar" style="height:51%"></div><div class="bar" style="height:69%"></div><div class="bar" style="height:64%"></div><div class="bar accent" style="height:82%"></div><div class="bar accent" style="height:76%"></div></div></div>
+        </section>
+        <section class="card">
+          <div class="panel-head"><h3>System status</h3><span>Just now</span></div>
+          <div class="panel-body metric-list" style="display:grid;gap:13px">
+            <div class="between text-sm"><span class="muted">Map Viewer</span><span class="pill green"><span class="dot green"></span>Ready</span></div>
+            <div class="between text-sm"><span class="muted">Database</span><span class="pill green"><span class="dot green"></span>Connected</span></div>
+            <div class="between text-sm"><span class="muted">Realtime API</span><span class="pill green"><span class="dot green"></span>Healthy</span></div>
+            <div class="between text-sm"><span class="muted">Credential role</span><span class="pill blue">Only Read</span></div>
+            <div class="between text-sm"><span class="muted">Open alarms</span><span class="pill amber">2 active</span></div>
+          </div>
+        </section>
+      </div>
+      <div style="height:14px"></div>
+      <div class="grid-equal">
+        <section class="card"><div class="panel-head"><h3>Occupancy by floor</h3><span>Realtime</span></div><div class="panel-body"><div class="between text-sm"><span class="muted">Floor 1</span><strong>15 people</strong></div><div style="height:8px"></div><div style="height:7px;background:#eef0f2;border-radius:999px;overflow:hidden"><div style="width:68%;height:100%;background:#9ebcfb"></div></div><div style="height:16px"></div><div class="between text-sm"><span class="muted">Floor 2</span><strong>9 people</strong></div><div style="height:8px"></div><div style="height:7px;background:#eef0f2;border-radius:999px;overflow:hidden"><div style="width:42%;height:100%;background:#b7dec9"></div></div></div></section>
+        <section class="card"><div class="panel-head"><h3>Alarm summary</h3><span>Today</span></div><div class="panel-body activity-list"><div class="activity-row"><span class="dot red"></span><div class="activity-copy"><strong>Assistance request</strong><span>Floor 2 · Training room</span></div><span class="activity-time">8m</span></div><div class="activity-row"><span class="dot amber"></span><div class="activity-copy"><strong>Max stay time</strong><span>Floor 1 · Meeting room</span></div><span class="activity-time">32m</span></div></div></section>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div id="app-map" class="app-page app-content wide hidden">
+      <div class="map-layout">
+        <aside class="map-side">
+          <div class="map-side-head">
+            <div class="between" style="margin-bottom:10px"><div><strong class="text-sm">Indoor map</strong><div class="text-xs muted-2" style="margin-top:3px">Main building · live viewer</div></div><span class="pill green"><span class="dot green"></span>Ready</span></div>
+            <div class="map-side-tabs">
+              <button class="map-side-tab active" data-map-tab="search">Explore</button>
+              <button class="map-side-tab" data-map-tab="route">Route</button>
+              <button class="map-side-tab" data-map-tab="layers">Layers</button>
+            </div>
+          </div>
+          <div class="map-side-body">
+            <div id="mapTab-search">
+              <input id="poiSearch" class="input" placeholder="Search POIs or categories…">
+              <div class="poi-list" id="poiList">
+                <div class="poi-item active" data-poi="Reception"><div class="poi-icon">R</div><div class="poi-copy"><strong>Reception</strong><span>Services · Floor 1</span></div><span class="muted-2">›</span></div>
+                <div class="poi-item" data-poi="Meeting Room A"><div class="poi-icon">M</div><div class="poi-copy"><strong>Meeting Room A</strong><span>Rooms · Floor 1</span></div><span class="muted-2">›</span></div>
+                <div class="poi-item" data-poi="Training Area"><div class="poi-icon">T</div><div class="poi-copy"><strong>Training Area</strong><span>Workspace · Floor 2</span></div><span class="muted-2">›</span></div>
+                <div class="poi-item" data-poi="Lift Lobby"><div class="poi-icon">L</div><div class="poi-copy"><strong>Lift Lobby</strong><span>Access · Floor 1</span></div><span class="muted-2">›</span></div>
+              </div>
+              <div class="divider" style="margin:12px 0"></div>
+              <div class="between text-xs"><span class="muted">Favorite POIs</span><button id="favoriteToggle" class="btn btn-ghost btn-sm">Show favorites</button></div>
+            </div>
+
+            <div id="mapTab-route" class="hidden">
+              <div class="route-form">
+                <div class="field"><label>Start</label><select id="routeStart" class="select"><option>Reception</option><option>My location</option><option>Lift Lobby</option></select></div>
+                <div class="field"><label>Destination</label><select id="routeEnd" class="select"><option>Meeting Room A</option><option>Training Area</option><option>Lift Lobby</option></select></div>
+                <label class="check"><input id="accessibleRoute" type="checkbox"> Prefer accessible floor changes</label>
+                <button id="calculateRoute" class="btn btn-primary">Calculate route</button>
+              </div>
+              <div id="routeResult" class="route-result hidden">
+                <div class="between"><strong>4 min · 86 m</strong><span class="pill blue">Shortest</span></div>
+                <div class="route-steps">
+                  <div class="route-step"><span>1</span><span>Walk straight past reception for 28 m</span></div>
+                  <div class="route-step"><span>2</span><span>Turn right at the workspace corridor</span></div>
+                  <div class="route-step"><span>3</span><span>Meeting Room A is on your left</span></div>
+                </div>
+                <button id="startNav" class="btn btn-accent btn-sm" style="width:100%;margin-top:12px">Start navigation</button>
+              </div>
+            </div>
+
+            <div id="mapTab-layers" class="hidden">
+              <div class="setting-row"><div class="setting-copy"><strong>Realtime positions</strong><span>Live people/device overlay</span></div><button class="switch on" data-toggle-layer="realtime"></button></div>
+              <div class="setting-row"><div class="setting-copy"><strong>Geofences</strong><span>Spatial zones and boundaries</span></div><button class="switch" data-toggle-layer="geofence"></button></div>
+              <div class="setting-row"><div class="setting-copy"><strong>Trajectory</strong><span>Playback a recent route</span></div><button class="switch" data-toggle-layer="trajectory"></button></div>
+              <div class="setting-row"><div class="setting-copy"><strong>Follow user</strong><span>Keep selected realtime user centered</span></div><button class="switch" data-toggle-layer="follow"></button></div>
+              <button id="openLocationPicker" class="btn btn-secondary btn-sm" style="width:100%;margin-top:12px">Open location picker</button>
+              <button id="showUserSettings" class="btn btn-secondary btn-sm" style="width:100%;margin-top:7px">Viewer accessibility settings</button>
+              <div class="divider" style="margin:12px 0"></div>
+              <div class="text-xs muted" style="margin-bottom:8px">More viewer tools</div>
+              <div class="grid-equal" style="gap:7px">
+                <button class="btn btn-secondary btn-sm" data-toast="Car position saved locally">Save car</button>
+                <button class="btn btn-secondary btn-sm" data-toast="Dummy navigation to saved car started">Navigate to car</button>
+                <button class="btn btn-secondary btn-sm" data-toast="Flight selection opened">Select flight</button>
+                <button class="btn btn-secondary btn-sm" data-toast="Search filter applied">Search filter</button>
+                <button class="btn btn-secondary btn-sm" data-toast="Viewer font size increased">Font size +</button>
+                <button class="btn btn-secondary btn-sm" data-toast="User location updated locally">Set user location</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="map-main">
+          <div class="map-canvas">
+            <div id="bigFloor" class="big-floor"></div>
+            <div id="routeLine" class="route-line hidden"></div>
+            <div id="geofenceOverlay" class="geofence-shape hidden"></div>
+            <span class="map-pin p1" data-map-poi="Reception"></span>
+            <span class="map-pin p2" data-map-poi="Meeting Room A"></span>
+            <span class="map-pin p3" data-map-poi="Training Area"></span>
+            <span class="map-pin p4" data-map-poi="Lift Lobby"></span>
+            <span id="live1" class="live-dot u1"></span><span id="live2" class="live-dot u2"></span><span id="live3" class="live-dot u3"></span>
+            <div id="locationPickerMarker" class="location-picker hidden"></div>
+          </div>
+
+          <div class="map-top-controls">
+            <div class="map-mode-bar">
+              <select id="mapBuilding" class="select" style="height:34px;width:180px;font-size:10px;box-shadow:var(--shadow-xs)"><option>Main Building</option><option>Warehouse</option><option>Demo Venue</option></select>
+              <div class="floor-switcher"><button class="floor-btn active" data-floor="Floor 1">Floor 1</button><button class="floor-btn" data-floor="Floor 2">Floor 2</button></div>
+            </div>
+            <div class="map-mode-bar"><button id="mapSearchMode" class="map-mode active">Explore</button><button id="mapRealtimeMode" class="map-mode">Realtime</button><button id="mapTrajectoryMode" class="map-mode">Trajectory</button></div>
+          </div>
+
+          <div id="poiPopover" class="poi-popover">
+            <div class="between"><div><h4 id="poiPopoverTitle">Reception</h4><p id="poiPopoverMeta">Services · Floor 1 · Main Building</p></div><button id="closePoiPopover" class="btn btn-ghost btn-sm">×</button></div>
+            <div class="row gap-6"><button id="directionsToPoi" class="btn btn-primary btn-sm">Directions</button><button id="favoritePoi" class="btn btn-secondary btn-sm">☆ Favorite</button></div>
+          </div>
+
+          <div class="map-bottom-controls">
+            <button id="centerMap" class="icon-btn" title="Center map">⌖</button>
+            <button id="zoomIn" class="icon-btn">＋</button>
+            <button id="zoomOut" class="icon-btn">−</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- BUILDINGS -->
+    <div id="app-buildings" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Cartography</span><h1 class="page-title">Buildings & floors</h1><p>Read-only inventory of venue and floor metadata.</p></div><span class="pill blue">GET /buildings</span></div>
+      <div class="toolbar"><div class="toolbar-left"><input class="input filter-input" id="buildingSearch" placeholder="Search buildings…"></div><div class="toolbar-right"><span class="text-xs muted-2">3 buildings · 5 floors</span></div></div>
+      <section class="card table-wrap">
+        <table class="table" id="buildingTable"><thead><tr><th>Building</th><th>ID</th><th>Floors</th><th>Map status</th><th>POIs</th><th></th></tr></thead><tbody>
+          <tr><td><span class="table-link" data-detail="building" data-name="PT Berjaya Inovasi Global">PT Berjaya Inovasi Global</span></td><td>19866</td><td>2</td><td><span class="pill green">Ready</span></td><td>26</td><td>›</td></tr>
+          <tr><td><span class="table-link" data-detail="building" data-name="Warehouse Demo">Warehouse Demo</span></td><td>20112</td><td>2</td><td><span class="pill green">Ready</span></td><td>11</td><td>›</td></tr>
+          <tr><td><span class="table-link" data-detail="building" data-name="Training Venue">Training Venue</span></td><td>20548</td><td>1</td><td><span class="pill amber">Partial</span></td><td>5</td><td>›</td></tr>
+        </tbody></table>
+      </section>
+      <div style="height:14px"></div>
+      <div class="grid-equal">
+        <section class="card"><div class="panel-head"><h3>Floor coverage</h3><span>Main Building</span></div><div class="panel-body activity-list"><div class="activity-row"><span class="dot green"></span><div class="activity-copy"><strong>Floor 1 · lt 1</strong><span>Georeferenced floorplan · 17 POIs · 2 geofences</span></div><span class="pill green">Ready</span></div><div class="activity-row"><span class="dot green"></span><div class="activity-copy"><strong>Floor 2 · lt 2</strong><span>Georeferenced floorplan · 9 POIs · 1 geofence</span></div><span class="pill green">Ready</span></div></div></section>
+        <section class="card"><div class="panel-head"><h3>Cartography resources</h3><span>Read only</span></div><div class="panel-body"><div class="between text-sm"><span class="muted">Vector map</span><span class="pill green">Available</span></div><div class="divider" style="margin:12px 0"></div><div class="between text-sm"><span class="muted">Map style</span><strong>Default profile</strong></div><div class="divider" style="margin:12px 0"></div><div class="between text-sm"><span class="muted">Raster tiles</span><strong>Available</strong></div></div></section>
+      </div>
+    </div>
+
+    <!-- POIS -->
+    <div id="app-pois" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Cartography</span><h1 class="page-title">Points of interest</h1><p>Search destinations, categories and floor placement.</p></div><button class="btn btn-primary" data-app-nav="map">View on map</button></div>
+      <div class="toolbar"><div class="toolbar-left"><input id="poisSearch" class="input filter-input" placeholder="Search POIs…"><select id="poiCategoryFilter" class="select filter-select"><option>All categories</option><option>Services</option><option>Rooms</option><option>Workspace</option><option>Access</option></select></div><div class="toolbar-right"><span class="pill">42 POIs</span></div></div>
+      <section class="card table-wrap">
+        <table class="table" id="poiTable"><thead><tr><th>Name</th><th>Category</th><th>Building</th><th>Floor</th><th>External ID</th><th>Favorite</th></tr></thead><tbody>
+          <tr><td><span class="table-link" data-detail="poi" data-name="Reception">Reception</span></td><td>Services</td><td>Main Building</td><td>Floor 1</td><td>poi-reception</td><td>★</td></tr>
+          <tr><td><span class="table-link" data-detail="poi" data-name="Meeting Room A">Meeting Room A</span></td><td>Rooms</td><td>Main Building</td><td>Floor 1</td><td>room-a</td><td>☆</td></tr>
+          <tr><td><span class="table-link" data-detail="poi" data-name="Training Area">Training Area</span></td><td>Workspace</td><td>Main Building</td><td>Floor 2</td><td>training-area</td><td>☆</td></tr>
+          <tr><td><span class="table-link" data-detail="poi" data-name="Lift Lobby">Lift Lobby</span></td><td>Access</td><td>Main Building</td><td>Floor 1</td><td>lift-01</td><td>☆</td></tr>
+          <tr><td><span class="table-link" data-detail="poi" data-name="Pantry">Pantry</span></td><td>Services</td><td>Main Building</td><td>Floor 2</td><td>pantry-02</td><td>★</td></tr>
+        </tbody></table>
+      </section>
+    </div>
+
+    <!-- GEOFENCES -->
+    <div id="app-geofences" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Cartography</span><h1 class="page-title">Geofences</h1><p>Spatial zones used for occupancy, visit and stay-time context.</p></div><button class="btn btn-primary" data-app-nav="map">Show on map</button></div>
+      <div class="grid-3">
+        <section class="card stat-card"><span>Active zones</span><strong>5</strong><small>across 2 buildings</small></section>
+        <section class="card stat-card"><span>Sessions today</span><strong>214</strong><small>enter / exit matches</small></section>
+        <section class="card stat-card"><span>Longest avg. stay</span><strong>34m</strong><small>Training Area</small></section>
+      </div>
+      <div style="height:14px"></div>
+      <section class="card table-wrap"><table class="table"><thead><tr><th>Geofence</th><th>Building</th><th>Floor</th><th>Type</th><th>Avg. stay</th><th>Status</th></tr></thead><tbody>
+        <tr><td><span class="table-link" data-detail="geofence" data-name="Main Workspace">Main Workspace</span></td><td>Main Building</td><td>Floor 1</td><td>Workspace</td><td>18m</td><td><span class="pill green">Active</span></td></tr>
+        <tr><td><span class="table-link" data-detail="geofence" data-name="Meeting Room Zone">Meeting Room Zone</span></td><td>Main Building</td><td>Floor 1</td><td>Room</td><td>26m</td><td><span class="pill green">Active</span></td></tr>
+        <tr><td><span class="table-link" data-detail="geofence" data-name="Training Area">Training Area</span></td><td>Main Building</td><td>Floor 2</td><td>Workspace</td><td>34m</td><td><span class="pill green">Active</span></td></tr>
+      </tbody></table></section>
+    </div>
+
+    <!-- PATHS -->
+    <div id="app-paths" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Routing</span><h1 class="page-title">Paths & directions</h1><p>Inspect walkable networks and preview shortest or accessible routes.</p></div><button class="btn btn-primary" data-app-nav="map">Open route planner</button></div>
+      <div class="grid-2">
+        <section class="card"><div class="panel-head"><h3>Path network</h3><span>Main Building</span></div><div class="building-mini" style="height:360px"><div class="building-shape"></div><div style="position:absolute;left:27%;top:45%;width:48%;height:3px;background:#aab2bc;transform:rotate(-10deg);border-radius:999px"></div><div style="position:absolute;left:44%;top:28%;width:3px;height:46%;background:#aab2bc;transform:rotate(8deg);border-radius:999px"></div><span class="mini-pin a"></span><span class="mini-pin b"></span><span class="mini-pin c"></span></div></section>
+        <section class="card"><div class="panel-head"><h3>Route preview</h3><span>Dummy directions</span></div><div class="panel-body route-form"><div class="field"><label>From</label><select class="select"><option>Reception</option><option>My location</option></select></div><div class="field"><label>To</label><select class="select"><option>Training Area</option><option>Meeting Room A</option></select></div><label class="check"><input type="checkbox"> Only accessible floor changes</label><button class="btn btn-primary" id="pathPreviewBtn">Preview shortest route</button><div id="pathPreviewResult" class="route-result hidden"><div class="between"><strong>6 min · 114 m</strong><span class="pill blue">Accessible</span></div><div class="route-steps"><div class="route-step"><span>1</span><span>Walk to lift lobby</span></div><div class="route-step"><span>2</span><span>Take lift to Floor 2</span></div><div class="route-step"><span>3</span><span>Continue 42 m to Training Area</span></div></div></div></div></section>
+      </div>
+    </div>
+
+    <!-- REALTIME -->
+    <div id="app-realtime" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Operations</span><h1 class="page-title">Realtime positions</h1><p>Current user and device locations across the indoor workspace.</p></div><div class="page-actions"><span class="pill green"><span class="dot green"></span>Auto refresh · 5s</span><button id="realtimeRefresh" class="btn btn-secondary">Refresh now</button></div></div>
+      <div class="stat-grid">
+        <div class="card stat-card"><span>Online</span><strong>21</strong><small class="delta">of 24 tracked devices</small></div><div class="card stat-card"><span>Floor 1</span><strong>12</strong><small>current positions</small></div><div class="card stat-card"><span>Floor 2</span><strong>9</strong><small>current positions</small></div><div class="card stat-card"><span>Outside building</span><strong>3</strong><small>last known status</small></div>
+      </div>
+      <div class="grid-2">
+        <section class="card"><div class="panel-head"><h3>Live map</h3><span id="realtimeTimestamp">Updated just now</span></div><div class="building-mini" style="height:420px"><div class="building-shape"></div><span id="rtA" class="mini-pin a" style="background:#0ea5e9"></span><span id="rtB" class="mini-pin b" style="background:#0ea5e9"></span><span id="rtC" class="mini-pin c" style="background:#0ea5e9"></span></div></section>
+        <section class="card"><div class="panel-head"><h3>People & devices</h3><span>24 total</span></div><div class="panel-body activity-list">
+          <div class="activity-row"><span class="dot green"></span><div class="activity-copy"><strong>Faris M.</strong><span>Floor 1 · Reception corridor</span></div><button class="btn btn-ghost btn-sm" data-follow-user="Faris M.">Follow</button></div>
+          <div class="activity-row"><span class="dot green"></span><div class="activity-copy"><strong>Demo Device 02</strong><span>Floor 2 · Training Area</span></div><button class="btn btn-ghost btn-sm" data-follow-user="Demo Device 02">Follow</button></div>
+          <div class="activity-row"><span class="dot green"></span><div class="activity-copy"><strong>Operator A</strong><span>Floor 1 · Meeting Room A</span></div><button class="btn btn-ghost btn-sm" data-follow-user="Operator A">Follow</button></div>
+          <div class="activity-row"><span class="dot"></span><div class="activity-copy"><strong>Tracker 04</strong><span>Last seen 12 min ago</span></div><span class="pill">Offline</span></div>
+        </div></section>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div id="app-analytics" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Reports</span><h1 class="page-title">Analytics & reports</h1><p>Visitors, geofencing, positioning, trajectories and map viewer usage.</p></div><div class="page-actions"><select class="select" style="width:150px"><option>Last 24 hours</option><option>Last 7 days</option><option>Last 30 days</option></select><button id="exportReport" class="btn btn-secondary">Export CSV</button></div></div>
+      <div class="analytics-tabs">
+        <button class="analytics-tab active" data-report="visitors">Visitors</button><button class="analytics-tab" data-report="heatmap">Heatmap</button><button class="analytics-tab" data-report="stay">Geofence stay time</button><button class="analytics-tab" data-report="positioning">Positioning time</button><button class="analytics-tab" data-report="positions">User positions</button><button class="analytics-tab" data-report="viewer">Map viewer usage</button>
+      </div>
+      <section class="card">
+        <div id="report-visitors" class="report-pane"><div class="panel-head"><h3>Visitors</h3><span>Unique indoor visitors</span></div><div class="chart"><div class="chart-grid"></div><div class="chart-bars"><div class="bar" style="height:38%"></div><div class="bar" style="height:55%"></div><div class="bar" style="height:48%"></div><div class="bar" style="height:69%"></div><div class="bar accent" style="height:78%"></div><div class="bar accent" style="height:66%"></div><div class="bar accent" style="height:84%"></div></div></div></div>
+        <div id="report-heatmap" class="report-pane hidden"><div class="panel-head"><h3>Heatmap</h3><span>Position density</span></div><div class="heatmap"><span class="heat-spot h1"></span><span class="heat-spot h2"></span><span class="heat-spot h3"></span></div></div>
+        <div id="report-stay" class="report-pane hidden"><div class="panel-head"><h3>Geofencing stay time</h3><span>Average duration</span></div><div class="panel-body"><table class="table"><thead><tr><th>Zone</th><th>Sessions</th><th>Avg stay</th><th>Max</th></tr></thead><tbody><tr><td>Main Workspace</td><td>94</td><td>18m</td><td>1h 14m</td></tr><tr><td>Meeting Room Zone</td><td>42</td><td>26m</td><td>54m</td></tr><tr><td>Training Area</td><td>36</td><td>34m</td><td>1h 38m</td></tr></tbody></table></div></div>
+        <div id="report-positioning" class="report-pane hidden"><div class="panel-head"><h3>Positioning time</h3><span>Tracked duration by user</span></div><div class="chart"><div class="chart-grid"></div><div class="chart-bars"><div class="bar accent" style="height:72%"></div><div class="bar" style="height:58%"></div><div class="bar" style="height:64%"></div><div class="bar" style="height:48%"></div><div class="bar" style="height:81%"></div></div></div></div>
+        <div id="report-positions" class="report-pane hidden"><div class="panel-head"><h3>User positions</h3><span>Latest report rows</span></div><div class="panel-body"><table class="table"><thead><tr><th>User</th><th>Building</th><th>Floor</th><th>Timestamp</th></tr></thead><tbody><tr><td>Faris M.</td><td>Main Building</td><td>Floor 1</td><td>13:42:08</td></tr><tr><td>Operator A</td><td>Main Building</td><td>Floor 1</td><td>13:42:04</td></tr><tr><td>Demo Device 02</td><td>Main Building</td><td>Floor 2</td><td>13:41:58</td></tr></tbody></table></div></div>
+        <div id="report-viewer" class="report-pane hidden"><div class="panel-head"><h3>Map viewer usage</h3><span>Sessions & interactions</span></div><div class="panel-body grid-3"><div class="soft-card stat-card"><span>Sessions</span><strong>76</strong><small>last 24 hours</small></div><div class="soft-card stat-card"><span>POI selections</span><strong>184</strong><small>2.4 per session</small></div><div class="soft-card stat-card"><span>Directions requested</span><strong>31</strong><small>41% of sessions</small></div></div></div>
+      </section>
+    </div>
+
+    <!-- ALARMS -->
+    <div id="app-alarms" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Operations</span><h1 class="page-title">Alarms</h1><p>Read-only view of operational alarms associated with tracked users and spaces.</p></div><span class="pill amber">2 open</span></div>
+      <div class="toolbar"><div class="toolbar-left"><select class="select filter-select"><option>All types</option><option>Assistance request</option><option>Danger</option><option>Deadman</option><option>Geofence max stay</option></select><select class="select filter-select"><option>All statuses</option><option>Open</option><option>Resolved</option></select></div></div>
+      <section class="card table-wrap"><table class="table"><thead><tr><th>Type</th><th>User</th><th>Location</th><th>Triggered</th><th>Status</th></tr></thead><tbody>
+        <tr><td><span class="pill red">Assistance request</span></td><td>Operator A</td><td>Floor 2 · Training Room</td><td>8 min ago</td><td><span class="pill amber">Open</span></td></tr>
+        <tr><td><span class="pill amber">Geofence max stay</span></td><td>Demo Device 02</td><td>Floor 1 · Meeting Room</td><td>32 min ago</td><td><span class="pill amber">Open</span></td></tr>
+        <tr><td>Danger</td><td>Operator B</td><td>Floor 1 · Lobby</td><td>Yesterday</td><td><span class="pill green">Resolved</span></td></tr>
+      </tbody></table></section>
+    </div>
+
+    <!-- USERS -->
+    <div id="app-users" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Organization</span><h1 class="page-title">Users & groups</h1><p>Read-only directory context for people and device grouping.</p></div><span class="pill blue">Only Read</span></div>
+      <div class="grid-equal">
+        <section class="card"><div class="panel-head"><h3>Users</h3><span>8 members</span></div><div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Role</th><th>Groups</th><th>Status</th></tr></thead><tbody><tr><td><span class="table-link" data-detail="user" data-name="Faris Munir">Faris Munir</span></td><td>Admin</td><td>Operations</td><td><span class="pill green">Active</span></td></tr><tr><td><span class="table-link" data-detail="user" data-name="Operator A">Operator A</span></td><td>User</td><td>Field Team</td><td><span class="pill green">Active</span></td></tr><tr><td><span class="table-link" data-detail="user" data-name="Operator B">Operator B</span></td><td>User</td><td>Field Team</td><td><span class="pill">Offline</span></td></tr></tbody></table></div></section>
+        <section class="card"><div class="panel-head"><h3>Groups</h3><span>3 groups</span></div><div class="panel-body activity-list"><div class="activity-row"><span class="dot blue"></span><div class="activity-copy"><strong>Operations</strong><span>3 users · 4 devices</span></div><span>›</span></div><div class="activity-row"><span class="dot green"></span><div class="activity-copy"><strong>Field Team</strong><span>4 users · 6 devices</span></div><span>›</span></div><div class="activity-row"><span class="dot"></span><div class="activity-copy"><strong>Demo</strong><span>1 user · 3 devices</span></div><span>›</span></div></div></section>
+      </div>
+    </div>
+
+    <!-- ORGANIZATION -->
+    <div id="app-organization" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Organization</span><h1 class="page-title">Organization</h1><p>Account context, current permission boundary and available resources.</p></div></div>
+      <div class="grid-2">
+        <section class="card"><div class="panel-head"><h3>Situm organization</h3><span>Current organization</span></div><div class="panel-body detail-list"><div class="detail-row"><span>Name</span><strong>POC Organization</strong></div><div class="detail-row"><span>Organization ID</span><strong>org-demo-001</strong></div><div class="detail-row"><span>API permission</span><strong><span class="pill blue">Only Read</span></strong></div><div class="detail-row"><span>Buildings</span><strong>3</strong></div><div class="detail-row"><span>Users</span><strong>8</strong></div><div class="detail-row"><span>Devices</span><strong>13</strong></div></div></section>
+        <section class="card"><div class="panel-head"><h3>POC credential boundary</h3><span>Prototype rule</span></div><div class="panel-body"><div class="soft-card" style="padding:14px"><div class="between"><strong class="text-sm">Browser viewer key</strong><span class="pill green">Only Read</span></div><p class="text-xs muted" style="line-height:1.55;margin:9px 0 0">One read-only key is enough for this POC reference. No destructive cartography or account actions are represented as active operations.</p></div><div class="divider" style="margin:15px 0"></div><span class="text-xs muted-2">This screen is product context only. The prototype never contains or sends a real key.</span></div></section>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="app-settings" class="app-page app-content hidden">
+      <div class="page-head"><div><span class="eyebrow">Viewer</span><h1 class="page-title">Viewer settings</h1><p>Prototype the map viewer configuration, accessibility and appearance controls.</p></div><button id="resetSettings" class="btn btn-secondary">Reset demo</button></div>
+      <div class="settings-layout">
+        <aside class="card settings-nav"><button class="active" data-setting-tab="general">General</button><button data-setting-tab="navigation">Navigation</button><button data-setting-tab="map">Map configuration</button><button data-setting-tab="styles">Map styles</button><button data-setting-tab="images">Images</button></aside>
+        <section class="card">
+          <div id="settings-general" class="setting-pane setting-section"><h3>General viewer behavior</h3><p>Local dummy settings representing viewer actions/configuration.</p>
+            <div class="setting-row"><div class="setting-copy"><strong>Light UI mode</strong><span>Keep Situm Explore light-only for this product phase.</span></div><button class="switch on"></button></div>
+            <div class="setting-row"><div class="setting-copy"><strong>Show user settings</strong><span>Expose viewer accessibility controls.</span></div><button class="switch on"></button></div>
+            <div class="setting-row"><div class="setting-copy"><strong>Follow user by default</strong><span>Center the map on the selected realtime position.</span></div><button class="switch"></button></div>
+            <div class="setting-row"><div class="setting-copy"><strong>Language</strong><span>Map Viewer interface language.</span></div><select class="select" style="width:160px"><option>English</option><option>Bahasa Indonesia</option></select></div>
+          </div>
+          <div id="settings-navigation" class="setting-pane setting-section hidden"><h3>Navigation</h3><p>Route behavior reflected from viewer directions/navigation controls.</p>
+            <div class="setting-row"><div class="setting-copy"><strong>Prefer shortest route</strong><span>Default directions strategy.</span></div><button class="switch on"></button></div>
+            <div class="setting-row"><div class="setting-copy"><strong>Accessible routes</strong><span>Avoid stairs when accessibility is requested.</span></div><button class="switch"></button></div>
+            <div class="setting-row"><div class="setting-copy"><strong>Excluded tags</strong><span>Dummy path tags excluded from directions.</span></div><input class="input" style="width:220px" value="staff-only"></div>
+          </div>
+          <div id="settings-map" class="setting-pane setting-section hidden"><h3>Map configuration</h3><p>Configuration profile and viewer interaction defaults.</p>
+            <div class="setting-row"><div class="setting-copy"><strong>Configuration profile</strong><span>Map behavior profile.</span></div><select class="select" style="width:170px"><option>default</option><option>poc-workspace</option></select></div>
+            <div class="setting-row"><div class="setting-copy"><strong>Default building</strong><span>Building selected when opening the viewer.</span></div><select class="select" style="width:190px"><option>Main Building</option><option>Warehouse Demo</option></select></div>
+            <div class="setting-row"><div class="setting-copy"><strong>Default floor</strong><span>Initial floor when available.</span></div><select class="select" style="width:150px"><option>Floor 1</option><option>Floor 2</option></select></div>
+          </div>
+          <div id="settings-styles" class="setting-pane setting-section hidden"><h3>Map styles</h3><p>Read-only preview of style profiles; no upload action in this Only Read POC.</p><div class="grid-3"><div class="soft-card" style="padding:13px"><strong class="text-sm">Default light</strong><div style="height:80px;margin-top:10px;border-radius:9px;background:linear-gradient(135deg,#f8fafc,#e9eef4)"></div></div><div class="soft-card" style="padding:13px"><strong class="text-sm">High contrast</strong><div style="height:80px;margin-top:10px;border-radius:9px;background:linear-gradient(135deg,#fff,#d7dce2)"></div></div><div class="soft-card" style="padding:13px"><strong class="text-sm">Brand neutral</strong><div style="height:80px;margin-top:10px;border-radius:9px;background:linear-gradient(135deg,#fbfbfc,#eef1f4)"></div></div></div></div>
+          <div id="settings-images" class="setting-pane setting-section hidden"><h3>Images</h3><p>Read-only image references for POIs, categories and floor resources.</p><div class="activity-list"><div class="activity-row"><span class="dot blue"></span><div class="activity-copy"><strong>poi-reception.svg</strong><span>POI icon · 6 KB</span></div><span class="pill">Referenced</span></div><div class="activity-row"><span class="dot"></span><div class="activity-copy"><strong>category-workspace.svg</strong><span>POI category icon · 5 KB</span></div><span class="pill">Referenced</span></div><div class="activity-row"><span class="dot green"></span><div class="activity-copy"><strong>floor-1-map.png</strong><span>Floor resource · 842 KB</span></div><span class="pill green">Active</span></div></div></div>
+        </section>
+      </div>
+    </div>
+
+  </main>
+</section>
+
+<!-- DRAWER -->
+<aside id="detailDrawer" class="drawer">
+  <div class="drawer-head"><h3 id="drawerTitle">Details</h3><button id="closeDrawer" class="icon-btn">×</button></div>
+  <div class="drawer-body">
+    <span id="drawerType" class="pill">Resource</span>
+    <div style="height:18px"></div>
+    <div class="detail-list">
+      <div class="detail-row"><span>Name</span><strong id="drawerName">—</strong></div>
+      <div class="detail-row"><span>Identifier</span><strong id="drawerId">19866</strong></div>
+      <div class="detail-row"><span>Building</span><strong>Main Building</strong></div>
+      <div class="detail-row"><span>Floor</span><strong>Floor 1</strong></div>
+      <div class="detail-row"><span>Access</span><strong><span class="pill blue">Read only</span></strong></div>
+      <div class="detail-row"><span>Last synced</span><strong>Just now</strong></div>
+    </div>
+    <div class="divider" style="margin:18px 0"></div>
+    <button class="btn btn-primary" style="width:100%" data-app-nav="map" id="drawerMapBtn">View on map</button>
+  </div>
+</aside>
+
+<!-- SEARCH MODAL -->
+<div id="searchModal" class="modal-wrap hidden">
+  <div class="modal">
+    <div class="modal-head"><h3>Search Situm Explore</h3><button class="icon-btn" data-close-modal="searchModal">×</button></div>
+    <div class="modal-body">
+      <input id="globalSearchInput" class="input" autofocus placeholder="Search buildings, POIs, users, reports…">
+      <div id="searchResults" class="poi-list" style="margin-top:12px">
+        <div class="poi-item" data-search-target="map"><div class="poi-icon">⌖</div><div class="poi-copy"><strong>Indoor Map Viewer</strong><span>Workspace</span></div></div>
+        <div class="poi-item" data-search-target="pois"><div class="poi-icon">R</div><div class="poi-copy"><strong>Reception</strong><span>POI · Floor 1</span></div></div>
+        <div class="poi-item" data-search-target="buildings"><div class="poi-icon">◇</div><div class="poi-copy"><strong>Main Building</strong><span>Building · 2 floors</span></div></div>
+        <div class="poi-item" data-search-target="analytics"><div class="poi-icon">▥</div><div class="poi-copy"><strong>Visitor report</strong><span>Analytics</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VIEWER SETTINGS MODAL -->
+<div id="viewerModal" class="modal-wrap hidden">
+  <div class="modal">
+    <div class="modal-head"><h3>Viewer accessibility settings</h3><button class="icon-btn" data-close-modal="viewerModal">×</button></div>
+    <div class="modal-body">
+      <div class="setting-row"><div class="setting-copy"><strong>Accessible navigation</strong><span>Prefer lifts and accessible floor changes.</span></div><button class="switch"></button></div>
+      <div class="setting-row"><div class="setting-copy"><strong>Large interface text</strong><span>Increase viewer font size.</span></div><button class="switch"></button></div>
+      <div class="setting-row"><div class="setting-copy"><strong>High contrast cues</strong><span>Increase visual distinction of controls.</span></div><button class="switch"></button></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-primary" data-close-modal="viewerModal" data-toast="Viewer preferences saved locally">Done</button></div>
+  </div>
+</div>
+
+<script>
+const screens = [...document.querySelectorAll('.screen')];
+const appPages = [...document.querySelectorAll('.app-page')];
+const navItems = [...document.querySelectorAll('.nav-item')];
+const breadcrumbs = {
+  home:'Home',dashboard:'Dashboard',map:'Map Viewer',buildings:'Buildings & floors',pois:'Points of interest',
+  geofences:'Geofences',paths:'Paths & routing',realtime:'Realtime',analytics:'Analytics & reports',alarms:'Alarms',
+  users:'Users & groups',organization:'Organization',settings:'Viewer settings'
+};
+
+function showScreen(name){
+  screens.forEach(s=>s.classList.toggle('hidden',s.id!==`screen-${name}`));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toast(message){
+  const t=document.getElementById('toast'); t.textContent=message; t.classList.add('show');
+  clearTimeout(window.__toast); window.__toast=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function openAuth(mode='login'){
+  showScreen('auth'); setAuthMode(mode);
+}
+function setAuthMode(mode){
+  const login=mode==='login';
+  document.getElementById('authTabLogin').classList.toggle('active',login);
+  document.getElementById('authTabRegister').classList.toggle('active',!login);
+  document.getElementById('loginPane').classList.toggle('hidden',!login);
+  document.getElementById('registerPane').classList.toggle('hidden',login);
+}
+function enterApp(name='Faris Munir',email='owner@example.com'){
+  document.getElementById('sidebarName').textContent=name;
+  document.getElementById('sidebarEmail').textContent=email;
+  document.getElementById('welcomeName').textContent=`Welcome back, ${name.split(' ')[0]}.`;
+  showScreen('app'); navigateApp('home');
+}
+function navigateApp(page){
+  appPages.forEach(p=>p.classList.toggle('hidden',p.id!==`app-${page}`));
+  navItems.forEach(n=>n.classList.toggle('active',n.dataset.appNav===page));
+  document.getElementById('breadcrumbCurrent').textContent=breadcrumbs[page]||page;
+  document.getElementById('detailDrawer').classList.remove('open');
+  closeMobileMenu();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.querySelectorAll('[data-open-auth]').forEach(el=>el.addEventListener('click',()=>openAuth(el.dataset.openAuth)));
+document.querySelectorAll('[data-public-home]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();showScreen('landing')}));
+document.getElementById('authTabLogin').onclick=()=>setAuthMode('login');
+document.getElementById('authTabRegister').onclick=()=>setAuthMode('register');
+
+document.getElementById('loginForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const email=document.getElementById('loginEmail').value.trim(),pass=document.getElementById('loginPassword').value.trim();
+  const err=document.getElementById('loginError');
+  if(!email||!pass){err.classList.remove('hidden');return}
+  err.classList.add('hidden'); enterApp('Faris Munir',email);
+});
+document.getElementById('registerForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const first=document.getElementById('regFirst').value.trim(),last=document.getElementById('regLast').value.trim(),email=document.getElementById('regEmail').value.trim(),pass=document.getElementById('regPassword').value.trim();
+  const err=document.getElementById('registerError');
+  if(!first||!email||!pass){err.classList.remove('hidden');return}
+  err.classList.add('hidden'); enterApp(`${first} ${last}`.trim(),email);
+});
+document.querySelectorAll('[data-app-nav]').forEach(el=>el.addEventListener('click',()=>navigateApp(el.dataset.appNav)));
+
+document.getElementById('sidebarUser').onclick=()=>{toast('Prototype account menu · choose Viewer settings or sign out');};
+document.getElementById('simulateSync').onclick=()=>toast('Dummy Situm data synced');
+document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',()=>toast(el.dataset.toast)));
+
+const sidebar=document.getElementById('sidebar'),backdrop=document.getElementById('mobileBackdrop');
+function closeMobileMenu(){sidebar.classList.remove('open');backdrop.classList.remove('show')}
+document.getElementById('mobileMenu').onclick=()=>{sidebar.classList.toggle('open');backdrop.classList.toggle('show')};
+backdrop.onclick=closeMobileMenu;
+
+/* global search */
+document.getElementById('globalSearch').onclick=()=>document.getElementById('searchModal').classList.remove('hidden');
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('searchModal').classList.remove('hidden');document.getElementById('globalSearchInput').focus()}
+  if(e.key==='Escape'){document.querySelectorAll('.modal-wrap').forEach(m=>m.classList.add('hidden'));document.getElementById('detailDrawer').classList.remove('open')}
+});
+document.querySelectorAll('[data-close-modal]').forEach(el=>el.onclick=()=>document.getElementById(el.dataset.closeModal).classList.add('hidden'));
+document.querySelectorAll('[data-search-target]').forEach(el=>el.onclick=()=>{document.getElementById('searchModal').classList.add('hidden');navigateApp(el.dataset.searchTarget)});
+document.getElementById('globalSearchInput').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase();document.querySelectorAll('#searchResults .poi-item').forEach(x=>x.classList.toggle('hidden',!x.textContent.toLowerCase().includes(q)));
+});
+
+/* drawer */
+document.getElementById('closeDrawer').onclick=()=>document.getElementById('detailDrawer').classList.remove('open');
+document.querySelectorAll('[data-detail]').forEach(el=>el.addEventListener('click',()=>{
+  document.getElementById('drawerTitle').textContent=`${el.dataset.detail[0].toUpperCase()+el.dataset.detail.slice(1)} details`;
+  document.getElementById('drawerType').textContent=el.dataset.detail;
+  document.getElementById('drawerName').textContent=el.dataset.name;
+  document.getElementById('drawerId').textContent=String(Math.floor(10000+Math.random()*89999));
+  document.getElementById('detailDrawer').classList.add('open');
+}));
+
+/* filter tables */
+function wireTableSearch(inputId,tableId){
+  const input=document.getElementById(inputId),table=document.getElementById(tableId); if(!input||!table)return;
+  input.addEventListener('input',()=>{const q=input.value.toLowerCase();[...table.querySelectorAll('tbody tr')].forEach(r=>r.classList.toggle('hidden',!r.textContent.toLowerCase().includes(q)))});
+}
+wireTableSearch('buildingSearch','buildingTable');wireTableSearch('poisSearch','poiTable');
+document.getElementById('poiCategoryFilter').addEventListener('change',e=>{
+  const v=e.target.value;[...document.querySelectorAll('#poiTable tbody tr')].forEach(r=>r.classList.toggle('hidden',v!=='All categories'&&!r.textContent.includes(v)));
+});
+
+/* map tabs */
+document.querySelectorAll('[data-map-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('[data-map-tab]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+  ['search','route','layers'].forEach(t=>document.getElementById(`mapTab-${t}`).classList.toggle('hidden',t!==btn.dataset.mapTab));
+}));
+document.getElementById('poiSearch').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase();document.querySelectorAll('#poiList .poi-item').forEach(x=>x.classList.toggle('hidden',!x.textContent.toLowerCase().includes(q)));
+});
+function showPoi(name){
+  document.getElementById('poiPopoverTitle').textContent=name;
+  document.getElementById('poiPopoverMeta').textContent=`${name==='Reception'?'Services':'Destination'} · Floor 1 · Main Building`;
+  document.getElementById('poiPopover').classList.remove('hidden');
+  document.querySelectorAll('.poi-item[data-poi]').forEach(x=>x.classList.toggle('active',x.dataset.poi===name));
+}
+document.querySelectorAll('[data-poi]').forEach(x=>x.onclick=()=>showPoi(x.dataset.poi));
+document.querySelectorAll('[data-map-poi]').forEach(x=>x.onclick=()=>showPoi(x.dataset.mapPoi));
+document.getElementById('closePoiPopover').onclick=()=>document.getElementById('poiPopover').classList.add('hidden');
+document.getElementById('directionsToPoi').onclick=()=>{
+  document.querySelector('[data-map-tab="route"]').click();document.getElementById('routeEnd').value='Meeting Room A';toast('Destination added to route planner');
+};
+document.getElementById('favoritePoi').onclick=e=>{e.currentTarget.textContent=e.currentTarget.textContent.includes('☆')?'★ Favorited':'☆ Favorite';toast('Favorite POI updated locally')};
+document.getElementById('favoriteToggle').onclick=()=>toast('Showing 2 favorite POIs');
+
+/* map route */
+document.getElementById('calculateRoute').onclick=()=>{
+  document.getElementById('routeResult').classList.remove('hidden');document.getElementById('routeLine').classList.remove('hidden');toast('Dummy route calculated');
+};
+document.getElementById('startNav').onclick=()=>{document.getElementById('startNav').textContent='Navigation active';toast('Dummy navigation started')};
+document.querySelectorAll('[data-floor]').forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll('[data-floor]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('bigFloor').style.transform=btn.dataset.floor==='Floor 2'?'rotate(1.2deg) scale(.94)':'rotate(-2.4deg) scale(1)';
+  toast(`${btn.dataset.floor} selected`);
+});
+let zoom=1;
+function setZoom(){document.getElementById('bigFloor').style.scale=zoom}
+document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.2,zoom+.05);setZoom()};
+document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(.82,zoom-.05);setZoom()};
+document.getElementById('centerMap').onclick=()=>{zoom=1;setZoom();toast('Map centered')};
+document.getElementById('openLocationPicker').onclick=()=>{document.getElementById('locationPickerMarker').classList.toggle('hidden');toast('Location picker toggled')};
+document.getElementById('showUserSettings').onclick=()=>document.getElementById('viewerModal').classList.remove('hidden');
+document.querySelectorAll('[data-toggle-layer]').forEach(sw=>sw.onclick=()=>{
+  sw.classList.toggle('on');
+  const layer=sw.dataset.toggleLayer;
+  if(layer==='realtime')document.querySelectorAll('.live-dot').forEach(x=>x.classList.toggle('hidden',!sw.classList.contains('on')));
+  if(layer==='geofence')document.getElementById('geofenceOverlay').classList.toggle('hidden',!sw.classList.contains('on'));
+  if(layer==='trajectory')document.getElementById('routeLine').classList.toggle('hidden',!sw.classList.contains('on'));
+  toast(`${layer} layer ${sw.classList.contains('on')?'enabled':'disabled'}`);
+});
+document.querySelectorAll('.switch:not([data-toggle-layer])').forEach(sw=>sw.onclick=()=>sw.classList.toggle('on'));
+document.getElementById('mapSearchMode').onclick=()=>{document.querySelectorAll('.map-mode').forEach(x=>x.classList.remove('active'));document.getElementById('mapSearchMode').classList.add('active')};
+document.getElementById('mapRealtimeMode').onclick=()=>{document.querySelectorAll('.map-mode').forEach(x=>x.classList.remove('active'));document.getElementById('mapRealtimeMode').classList.add('active');document.querySelectorAll('.live-dot').forEach(x=>x.classList.remove('hidden'));toast('Realtime viewer mode')};
+document.getElementById('mapTrajectoryMode').onclick=()=>{document.querySelectorAll('.map-mode').forEach(x=>x.classList.remove('active'));document.getElementById('mapTrajectoryMode').classList.add('active');document.getElementById('routeLine').classList.remove('hidden');toast('Trajectory overlay loaded')};
+
+/* realtime */
+function moveRealtime(){
+  ['rtA','rtB','rtC'].forEach((id,i)=>{
+    const el=document.getElementById(id);el.style.left=(32+i*16+Math.random()*8)+'%';el.style.top=(30+i*10+Math.random()*12)+'%';
+  });document.getElementById('realtimeTimestamp').textContent='Updated just now';
+}
+document.getElementById('realtimeRefresh').onclick=()=>{moveRealtime();toast('Realtime positions refreshed')};
+document.querySelectorAll('[data-follow-user]').forEach(b=>b.onclick=()=>{navigateApp('map');document.getElementById('mapRealtimeMode').click();toast(`Following ${b.dataset.followUser}`)});
+
+/* reports */
+document.querySelectorAll('[data-report]').forEach(tab=>tab.onclick=()=>{
+  document.querySelectorAll('[data-report]').forEach(x=>x.classList.remove('active'));tab.classList.add('active');
+  document.querySelectorAll('.report-pane').forEach(p=>p.classList.toggle('hidden',p.id!==`report-${tab.dataset.report}`));
+});
+document.getElementById('exportReport').onclick=()=>toast('Dummy CSV export prepared');
+
+/* paths */
+document.getElementById('pathPreviewBtn').onclick=()=>{document.getElementById('pathPreviewResult').classList.remove('hidden');toast('Accessible route preview generated')};
+
+/* settings */
+document.querySelectorAll('[data-setting-tab]').forEach(tab=>tab.onclick=()=>{
+  document.querySelectorAll('[data-setting-tab]').forEach(x=>x.classList.remove('active'));tab.classList.add('active');
+  document.querySelectorAll('.setting-pane').forEach(p=>p.classList.toggle('hidden',p.id!==`settings-${tab.dataset.settingTab}`));
+});
+document.getElementById('resetSettings').onclick=()=>{document.querySelectorAll('#app-settings .switch').forEach((x,i)=>x.classList.toggle('on',i<2));toast('Demo viewer settings reset')};
+
+/* direct dummy signout through sidebar user double-click */
+document.getElementById('signOut').onclick=()=>{showScreen('landing');toast('Signed out of prototype')};
+document.getElementById('sidebarUser').addEventListener('dblclick',()=>{showScreen('landing');toast('Signed out of prototype')});
+
+/* gentle live movement while realtime/map visible */
+setInterval(()=>{
+  const page=[...appPages].find(p=>!p.classList.contains('hidden'))?.id;
+  if(page==='app-realtime')moveRealtime();
+  if(page==='app-map'){
+    document.querySelectorAll('.live-dot').forEach((el,i)=>{
+      if(!el.classList.contains('hidden')){el.style.left=(43+i*8+Math.random()*3)+'%';el.style.top=(43+i*8+Math.random()*3)+'%'}
+    });
+  }
+},5000);
+
+showScreen('landing');
+</script>
 </body>
 </html>

@@ -45,17 +45,17 @@ server/api/**                   -> unchanged routes
 
 Tasks:
 
-- [ ] Read `ARCHITECTURE.md` and inspect the current tree before moving files.
-- [ ] Migrate the Vue application files into Nuxt 4's `app/` structure using file moves/renames rather than duplicate copies.
-- [ ] Keep `server/`, `shared/`, `public/`, `drizzle/`, `nuxt.config.ts`, and `drizzle.config.ts` at repository root as appropriate.
-- [ ] Move the real Situm viewer into `app/components/situm/SitumViewer.vue` without changing its SDK lifecycle.
-- [ ] Move the current shell into `app/components/app/AppShell.vue` only as an interim location; Plan 005 replaces it with the authenticated app layout. Do not keep both shell architectures afterward.
-- [ ] Move DB initialization from `server/utils/db.ts` to `server/db/client.ts` and update server imports. Keep `server/db/schema.ts` and the Drizzle tooling path stable.
-- [ ] Keep existing API URLs unchanged: `/api/auth/login`, `/api/me`, `/api/situm/status`.
-- [ ] Do not add `server/services/`, `server/repositories/`, `shared/`, Pinia, a generic API client, or Nuxt layers unless a concrete current need is discovered. Empty architecture folders are not required.
-- [ ] Ensure `nuxt.config.ts` continues to resolve `~/assets/css/main.css` after `~` points at the Nuxt 4 `app/` source directory.
-- [ ] Preserve the current `/` and `/dashboard` routes during this architecture-only phase.
-- [ ] Verify auth middleware, login, `/api/me`, and Situm Viewer imports still resolve after moves.
+- [x] Read `ARCHITECTURE.md` and inspect the current tree before moving files.
+- [x] Migrate the Vue application files into Nuxt 4's `app/` structure using file moves/renames rather than duplicate copies.
+- [x] Keep `server/`, `shared/`, `public/`, `drizzle/`, `nuxt.config.ts`, and `drizzle.config.ts` at repository root as appropriate.
+- [x] Move the real Situm viewer into `app/components/situm/SitumViewer.vue` without changing its SDK lifecycle.
+- [x] Move the current shell into `app/components/app/AppShell.vue` only as an interim location; Plan 005 replaces it with the authenticated app layout. Do not keep both shell architectures afterward.
+- [x] Move DB initialization from `server/utils/db.ts` to `server/db/client.ts` and update server imports. Keep `server/db/schema.ts` and the Drizzle tooling path stable.
+- [x] Keep existing API URLs unchanged: `/api/auth/login`, `/api/me`, `/api/situm/status`.
+- [x] Do not add `server/services/`, `server/repositories/`, `shared/`, Pinia, a generic API client, or Nuxt layers unless a concrete current need is discovered. Empty architecture folders are not required.
+- [x] Ensure `nuxt.config.ts` continues to resolve `~/assets/css/main.css` after `~` points at the Nuxt 4 `app/` source directory.
+- [x] Preserve the current `/` and `/dashboard` routes during this architecture-only phase.
+- [x] Verify auth middleware, login, `/api/me`, and Situm Viewer imports still resolve after moves.
 
 ### Optional local Situm building discovery
 
@@ -72,10 +72,10 @@ The discovery is setup only. Do not turn it into a new application endpoint or U
 
 Validation:
 
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [x] `npm run typecheck`.
+- [x] `npm run build`.
 
 Acceptance:
 

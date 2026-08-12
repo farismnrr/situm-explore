@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { appSettings } from '../db/schema'
-import { getDb } from '../utils/db'
+import { getDb } from '../db/client'
 
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
