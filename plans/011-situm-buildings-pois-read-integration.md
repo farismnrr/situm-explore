@@ -2,62 +2,98 @@
 
 Status: planned-later
 Branch: `plan/011-situm-buildings-pois-read-integration`
-Depends on: UI accepted through Plan 009; Plan 010 feasibility decisions
+Depends on: Plan 010 complete, reviewed, and integrated into `main`
 
 ## Goal
 
-Replace only the approved Buildings/Floors and POI dummy fixtures with real read-only Situm data while preserving the accepted UI contracts.
+Replace only the accepted Buildings/Floors and POI dummy fixtures with real Situm **read data** while preserving the UI contract produced by Plans 004–009.
 
-## Mandatory HTML-first UI reference
+The single POC API key may have Read & Write permission, but this plan intentionally performs read behavior only.
 
-Canonical visual/interaction reference:
+## Required reading
 
-`design/reference/situm-explore-interactive-prototype.html`
+- `AGENTS.md`
+- `ARCHITECTURE.md`
+- `DESIGN.md`
+- `design/IMPLEMENTATION.md`
+- `design/data-source-matrix.md`
+- populated canonical HTML reference
+- accepted Nuxt Buildings/POIs/Map implementation
+- completed Plan 010 capability/mapping notes
+- this plan
 
-Before implementation, read these exact sections:
+## Mandatory UI-preservation reference
 
-- `#app-buildings` for building/floor inventory, table density, statuses and lower resource panels;
-- `#app-pois` for POI search/filter/table/favorite presentation;
-- `#detailDrawer` for details behavior;
-- `#app-map` for building/floor/POI selection context.
+Before implementation, inspect the current canonical HTML areas corresponding to:
 
-This plan swaps dummy data for real reads. **Do not redesign these screens.** Map Situm responses into the already accepted Nuxt UI contracts from Plans 004–009.
+- Buildings/Floors inventory;
+- POI search/filter/table/favorite presentation;
+- shared details drawer;
+- Map building/floor/POI selection context.
 
-## Scope
+Map Situm responses into accepted Nuxt types/components. Do not redesign screens around external payload shape.
 
-- buildings;
-- floors;
-- POIs;
-- POI categories if useful to current filters;
-- mapping selected building/floor/POI into existing Map Viewer navigation where supported.
+## Credential/data-path rules
 
-## Rules
-
-- `Only Read` permission only.
-- Verify current official Situm SDK/REST API before implementation.
-- Prefer one simple data access path; do not duplicate browser SDK + Nitro proxy for the same dataset without reason.
-- Preserve existing UI types and map API responses into them.
-- No page redesign.
-- No database persistence/cache unless a real need appears.
-- No POI/building/floor writes.
+- Reuse `NUXT_PUBLIC_SITUM_API_KEY`; do not create a second key/env variable.
+- Never print/log/render/commit the key value.
+- Use the access path chosen by Plan 010.
+- If Nitro REST access is chosen, add only the smallest Situm integration helper needed by this plan under the `server/integrations/situm/` boundary from `ARCHITECTURE.md`.
+- Do not create a generic repository/service layer unless actual orchestration requires it.
+- No DB cache/persistence unless a new explicit requirement appears.
 
 ## Phases
 
-1. [ ] Re-read `#app-buildings`, `#app-pois`, `#detailDrawer`, and relevant `#app-map` controls before defining API mappings.
-2. [ ] Document current official endpoints/SDK calls and response fields required by the existing UI.
-3. [ ] Choose browser SDK or Nitro read route based on official credential/security guidance.
-4. [ ] Integrate buildings/floors with loading/empty/error states without changing accepted table/panel composition.
-5. [ ] Integrate POIs/categories and preserve accepted local search/filter/favorite presentation.
-6. [ ] Connect safe `View on map` selection only if current Viewer API supports it reliably.
-7. [ ] Remove only dummy fixtures actually replaced by real data.
-8. [ ] Compare real-data pages against the same HTML sections after integration.
-9. [ ] Smoke test with current POC key without printing/logging the key.
-10. [ ] diff-check/lint/typecheck/build + phase commits/pushes.
+### Phase 1 — Revalidate API mapping
+
+- [ ] Re-read relevant HTML and accepted Nuxt implementation.
+- [ ] Re-check current official endpoints/SDK contracts identified by Plan 010.
+- [ ] Confirm the exact response fields needed by existing UI types.
+- [ ] Safe local GET smoke uses the current POC key without printing it.
+
+### Phase 2 — Buildings & Floors
+
+- [ ] Load real buildings/floors using the single chosen data path.
+- [ ] Adapt payloads to existing UI types.
+- [ ] Preserve accepted loading/empty/error/table/detail composition.
+- [ ] Keep configured Map Viewer building behavior working.
+- [ ] Remove only building/floor dummy records actually replaced.
+
+### Phase 3 — POIs & Categories
+
+- [ ] Load real POIs/categories required by existing filters.
+- [ ] Adapt to existing POI type rather than redesigning the type/page around the API.
+- [ ] Keep search/filter client-side unless real dataset size proves that inadequate.
+- [ ] Preserve accepted details/favorite presentation; favorites may remain local unless a later explicit write plan makes them remote.
+- [ ] Remove only POI/category dummy records actually replaced.
+
+### Phase 4 — Map context
+
+- [ ] Connect `View on map` / building-floor-POI selection only where the chosen official Viewer/API capability is reliable.
+- [ ] If a specific interaction cannot be wired cleanly, leave that interaction local/dummy and document it rather than expanding architecture.
+- [ ] Do not add remote writes.
+
+### Phase 5 — Validation
+
+- [ ] Plan 010 is integrated in main before this branch starts.
+- [ ] Buildings/POIs still match accepted canonical reference composition.
+- [ ] loading/empty/error states are truthful.
+- [ ] no duplicate real + dummy records for a replaced logical resource.
+- [ ] no credential leakage.
+- [ ] no remote write request.
+- [ ] `git diff --check`.
+- [ ] `npm run lint`.
+- [ ] `npm run typecheck`.
+- [ ] `npm run build`.
+- [ ] manual API/viewer smoke.
+- [ ] update plan + `.agents/`, commit/push phases.
+- [ ] no PR until authorized.
 
 ## Non-goals
 
 - geofences/paths;
 - realtime;
-- analytics/reports;
-- writes;
-- new app DB tables.
+- reports;
+- POI/building/floor mutations;
+- new application DB tables;
+- credential redesign.
