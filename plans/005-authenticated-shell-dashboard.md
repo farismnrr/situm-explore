@@ -2,11 +2,13 @@
 
 Status: planned
 Branch: `plan/005-authenticated-shell-dashboard`
-Depends on: Plan 004
+Depends on: Plan 004 complete, reviewed, and integrated into `main`
 
 ## Goal
 
-Implement the approved authenticated application chrome and dashboard while reusing real session/database state and keeping non-existent product metrics dummy.
+Atomically migrate the authenticated entry flow from the legacy `/dashboard` surface into the approved `/app/**` route tree, implement the authenticated application chrome/Home/Dashboard, preserve the already-working auth/database/Situm Viewer, and keep missing product data dummy.
+
+This plan must start from `main` **after Plan 004 is integrated**. Do not run it from a stale main branch or silently stack it on an unmerged Plan 004 branch.
 
 ## Mandatory HTML-first implementation protocol
 
@@ -14,165 +16,178 @@ Canonical visual/interaction reference:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-**Read the canonical HTML before editing the authenticated Nuxt shell or dashboard.**
+Read the canonical HTML before editing the authenticated shell or dashboard.
 
-For every phase:
+For every visual phase:
 
 1. Open the canonical HTML reference.
-2. Locate the exact prototype sections listed below.
-3. Inspect structure, CSS dimensions/density, responsive behavior and JS interaction.
-4. Translate the visual behavior into real Nuxt routes/components rather than copying prototype screen-switching JavaScript.
-5. Reuse real session/database behavior where it already exists.
-6. Use typed dummy data only where the backend does not exist.
-7. Compare implementation to the same HTML section before phase completion.
+2. Locate the relevant authenticated shell/Home/Dashboard section in the **current** HTML. Selector names listed below are locator hints, not permission to reconstruct a missing section from memory.
+3. Inspect structure, proportions/density, responsive behavior, and interaction intent.
+4. Translate the result into real Nuxt routes/layouts/components; never copy prototype screen-switching JavaScript.
+5. Reuse existing real session/database/viewer behavior.
+6. Use typed dummy data where the backend does not exist.
+7. Compare implementation with the same HTML section before phase completion.
 
-### Prototype sections required for this plan
+Reference areas from the approved prototype include:
 
-- Authenticated shell: `#screen-app`, `.sidebar`, `.sidebar-head`, `.sidebar-scroll`, `.nav-group`, `.nav-item`, `.sidebar-foot`, `.app-topbar`, `.app-main`.
-- Mobile shell: `.mobile-menu-btn`, `.mobile-backdrop`, sidebar mobile media-query behavior.
-- Home: `#app-home`, `.welcome`, `.stat-grid`, main-building preview, recent activity, `.quick-grid`.
-- Dashboard: `#app-dashboard`, stat cards, visitor chart, system status, occupancy and alarm summary.
-- Global search: `#globalSearch`, `#searchModal`, `#globalSearchInput`, search result interactions and `Cmd/Ctrl + K` behavior.
-
-The prototype's client-side `navigateApp()` is not production architecture. Nuxt must use real routes while matching the visual/interaction result.
+- authenticated shell (`#screen-app`, sidebar, topbar, nav groups/items, account block);
+- mobile shell/drawer behavior;
+- Home (`#app-home`);
+- Dashboard (`#app-dashboard`);
+- global search/command modal (`#globalSearch`, `#searchModal`) when those IDs still exist.
 
 ## Required reading
 
 - `AGENTS.md`
+- `ARCHITECTURE.md`
 - `DESIGN.md`
-- `design/reference/situm-explore-interactive-prototype.html`
 - `design/IMPLEMENTATION.md`
-- Plan 004 implementation/state.
+- `design/data-source-matrix.md`
+- `design/reference/situm-explore-interactive-prototype.html`
+- completed Plan 004 implementation/state
+- this plan
 
-## Phase 1 — Authenticated layout
+## Phase 1 — Authenticated layout and auth navigation contract
 
-Target layout: `layouts/app.vue` or equivalent concrete Nuxt layout.
+Target layout: `app/layouts/app.vue`.
 
-**Before implementation, inspect the full authenticated shell in `#screen-app` from `<aside id="sidebar">` through `.app-topbar`.**
-
-Match these reference qualities intentionally:
-
-- sidebar width/density and section grouping;
-- navigation-arrow brand treatment;
-- quiet neutral active state;
-- compact account block at the bottom;
-- topbar height and breadcrumb hierarchy;
-- search trigger placement;
-- restrained status pill;
-- mobile sidebar/drawer behavior.
+Before implementation, inspect the authenticated shell and its mobile state in the current HTML.
 
 Tasks:
 
-- [ ] Replace Plan 003 topbar-only `AppShell` direction with approved desktop sidebar + topbar.
-- [ ] Keep sidebar about 220–230px as shown by the reference unless framework rounding requires a small documented difference.
-- [ ] Use grouped navigation and neutral active-state styling matching the HTML.
-- [ ] Mobile sidebar becomes drawer/sheet; topbar gets menu action.
-- [ ] Use real Nuxt routes, not client-only tab switching.
-- [ ] Preserve auth middleware for every `/app/**` route.
-- [ ] Account email comes from `useUserSession()`.
-- [ ] Logout uses existing `clear()` and returns to `/` or `/login`.
-- [ ] Add approved navigation-arrow brand mark.
-- [ ] Compare desktop and mobile shell against the HTML before phase completion.
+- [ ] Replace the interim Plan 003/Plan 004 `AppShell` direction with one authenticated Nuxt layout using the approved sidebar + topbar composition.
+- [ ] Use shallow product components under `app/components/app/` only when they improve readability/reuse.
+- [ ] Use real Nuxt routes and active-route state.
+- [ ] Account identity comes from `useUserSession()`.
+- [ ] Logout uses existing `clear()` and returns to `/` or `/login` consistently.
+- [ ] Keep the navigation-arrow brand mark from the approved reference.
+- [ ] Update `app/middleware/auth.ts` so unauthenticated `/app/**` navigation goes to `/login`, not to the public landing page.
+- [ ] Keep API authorization server-side as it already exists; client middleware remains navigation UX only.
+- [ ] Do not add Pinia/global-store architecture for shell state; local layout state/composables are enough.
+- [ ] Match desktop and mobile shell behavior against the HTML.
 
-## Phase 2 — Route skeleton
+Acceptance: the authenticated chrome has one owner (`app/layouts/app.vue`) and the interim old shell is no longer a competing architecture.
 
-Create route destinations represented by the reference sidebar.
+## Phase 2 — `/app/**` route migration and compatibility
 
-Before adding routes, re-read the `.nav-group` and `.nav-item` ordering in the canonical HTML so route labels/grouping remain identical unless a real Nuxt constraint requires otherwise.
+Create the route tree using Nuxt 4 paths:
 
-- [ ] `/app`
-- [ ] `/app/dashboard`
-- [ ] `/app/map`
-- [ ] `/app/buildings`
-- [ ] `/app/pois`
-- [ ] `/app/geofences`
-- [ ] `/app/paths`
-- [ ] `/app/realtime`
-- [ ] `/app/analytics`
-- [ ] `/app/alarms`
-- [ ] `/app/users`
-- [ ] `/app/organization`
-- [ ] `/app/settings`
+```text
+app/pages/app/index.vue
+app/pages/app/dashboard.vue
+app/pages/app/map.vue
+app/pages/app/buildings.vue
+app/pages/app/pois.vue
+app/pages/app/geofences.vue
+app/pages/app/paths.vue
+app/pages/app/realtime.vue
+app/pages/app/analytics.vue
+app/pages/app/alarms.vue
+app/pages/app/users.vue
+app/pages/app/organization.vue
+app/pages/app/settings.vue
+```
 
-Only Home and Dashboard need full content in this plan. Other routes may contain a small intentional placeholder pointing to their dedicated later plan. Do not build their feature UI early.
+Rules:
 
-## Phase 3 — Authenticated Home
+- [ ] Every `/app/**` page uses the authenticated app layout and auth middleware, e.g. `definePageMeta({ layout: 'app', middleware: 'auth' })` or an equally explicit Nuxt-native equivalent.
+- [ ] `/app` and `/app/dashboard` receive full content in this plan.
+- [ ] Other routes receive only intentional lightweight placeholders for their later plan; do not implement future feature phases early.
+- [ ] `/app/map` is the one exception to a blank placeholder: mount the **existing real `SitumViewer` unchanged** in a minimal temporary composition so the working viewer remains reachable between Plans 005 and 006.
+- [ ] Update the real login continuation created by Plan 004 from `/dashboard` to `/app` only after `/app` exists in this phase.
+- [ ] Logged-in `/login` continuation should also move to `/app` at the same time.
+- [ ] Keep legacy `/dashboard` as a small compatibility redirect to `/app/map` during this migration, or remove it only if all internal references are proven migrated and the real viewer remains reachable. Do not leave the old Plan 003 dashboard UI as a second product surface.
+- [ ] Update internal links/CTAs that still point at the legacy dashboard.
 
-**Before implementation, inspect `#app-home` in the canonical HTML in full.**
+Acceptance: there is no moment at phase completion where login points at a missing route, and the real Situm Viewer remains reachable.
 
-Match:
+## Phase 3 — Authenticated Home `/app`
 
-- welcome card proportions and CTA placement;
-- four-card metrics density;
-- main-building preview size;
-- recent-activity hierarchy;
-- Quick Explore card grid, icon treatment and routing behavior.
+Before implementation, inspect the Home composition in the current HTML.
 
 Implementation rules:
 
-- [ ] welcome block uses real session identity;
-- [ ] real `Open map` route;
-- [ ] four compact metric cards using typed dummy fixture values;
-- [ ] main-building preview may be a restrained visual placeholder matching HTML, not duplicated Situm SDK instance;
-- [ ] recent activity uses dummy fixture data;
-- [ ] quick-explore cards route to actual app pages;
-- [ ] keep dummy fixtures centralized and typed;
-- [ ] compare completed Home against `#app-home` desktop/mobile output.
+- [ ] welcome identity uses the real session;
+- [ ] map CTA routes to `/app/map`;
+- [ ] metric cards use typed local dummy values;
+- [ ] main-building preview is a restrained local visual, not a second Situm Viewer instance;
+- [ ] recent activity uses typed dummy data;
+- [ ] Quick Explore routes to actual `/app/**` destinations;
+- [ ] keep dummy fixtures under `app/data/prototype/` according to `ARCHITECTURE.md`.
 
-## Phase 4 — Dashboard
+### Fixture ownership rule
 
-**Before implementation, inspect `#app-dashboard`, including `.stat-grid`, visitor chart, system-status panel, occupancy panels and alarm summary.**
+Do not create multiple copies of the same synthetic building/POI records across search, map, and later cartography pages.
 
-Real data:
+If Home/global search needs building or POI records before Plan 007, create the minimal typed records in a canonical prototype fixture file under `app/data/prototype/` and have Plans 006–007 extend/reuse those records rather than recreating them.
 
-- [ ] session identity from `useUserSession()` where needed;
-- [ ] database/application state from existing `/api/me`;
-- [ ] Situm configuration/readiness truth remains represented accurately; if real viewer readiness is unavailable outside map route, label it accordingly instead of faking `Ready`.
+Compare desktop/mobile Home against the HTML before completion.
 
-Dummy data matching the prototype:
+## Phase 4 — Dashboard `/app/dashboard`
 
-- [ ] visitors today;
-- [ ] active-device count unless real source already exists;
-- [ ] average stay;
-- [ ] viewer sessions;
-- [ ] chart series;
-- [ ] occupancy breakdown;
-- [ ] alarm summary.
+Before implementation, inspect the Dashboard composition in the current HTML.
 
-- [ ] Match card density, simple chart style, status-pill sizing and panel hierarchy from HTML.
-- [ ] Make dummy metrics visually production-like but keep source clearly prototype-local in code.
-- [ ] Do not add backend endpoints for these metrics.
-- [ ] Avoid chart dependency; simple CSS/SVG is enough and should resemble the HTML chart.
-- [ ] Compare completed Dashboard against `#app-dashboard` before phase completion.
+Real existing sources:
 
-## Phase 5 — Search shell
+- [ ] session identity where needed;
+- [ ] database/application state from `/api/me`;
+- [ ] Situm configuration state only when it can be represented truthfully from existing integration state.
 
-**Before implementation, inspect `#globalSearch`, `#searchModal`, `#searchResults` and the canonical JavaScript handling keyboard search/open/close/navigation.**
+Do not claim the viewer is `Ready` on Dashboard merely because `/api/situm/status` says configuration exists. Real viewer readiness remains `MAP_IS_READY` on the map route.
 
-- [ ] Add visual command/search trigger matching the reference.
-- [ ] Implement client-side navigation search only.
-- [ ] Search known app destinations and local dummy POIs/buildings.
-- [ ] Implement `Cmd/Ctrl + K` when straightforward, matching reference behavior.
-- [ ] Escape closes the modal when practical.
+Dummy product values may include:
+
+- visitors;
+- device count;
+- average stay;
+- viewer sessions;
+- chart series;
+- occupancy;
+- alarm summary.
+
+Rules:
+
+- [ ] Match the reference hierarchy/density with Nuxt UI.
+- [ ] Keep dummy data obvious in source but production-like in the rendered UI.
+- [ ] Do not add backend endpoints or database tables for metrics.
+- [ ] Avoid a chart dependency solely for these prototype charts; simple CSS/SVG is enough.
+- [ ] Compare the Dashboard with the current HTML before completion.
+
+## Phase 5 — Global search shell
+
+Before implementation, inspect the current reference search trigger/modal/keyboard behavior.
+
+- [ ] Add the approved search/command trigger.
+- [ ] Search only local known app destinations and canonical typed prototype fixture records.
+- [ ] Implement `Cmd/Ctrl + K` and Escape when straightforward.
+- [ ] Navigation uses Nuxt routing.
 - [ ] No backend/global indexing.
+- [ ] Do not duplicate building/POI fixture objects created for other screens.
 
-## Validation
+## Phase 6 — Validation and documentation
 
-- [ ] existing auth still protects all `/app/**` pages;
-- [ ] login -> `/app` works;
+- [ ] existing login success/failure works;
+- [ ] login now enters `/app`;
+- [ ] all `/app/**` routes are protected;
+- [ ] unauthenticated `/app/**` routes go to `/login`;
 - [ ] logout works;
-- [ ] `/api/me` still reaches current DB behavior;
-- [ ] mobile sidebar works;
-- [ ] shell/Home/Dashboard/search visually compare against their exact HTML sections;
-- [ ] deliberate deviations are documented;
+- [ ] `/api/me` still reaches the existing database behavior;
+- [ ] the real Situm Viewer remains reachable at `/app/map` and preserves `MAP_IS_READY` / error behavior;
+- [ ] legacy `/dashboard` does not render a competing old UI;
+- [ ] shell/Home/Dashboard/search compare against their HTML reference areas;
+- [ ] update `README.md` if route/setup wording still describes the old dashboard as the primary map surface;
+- [ ] document deliberate deviations;
 - [ ] `git diff --check`;
-- [ ] lint/typecheck/build;
-- [ ] phase commits + pushes;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] `npm run build`;
+- [ ] update plan + `.agents/`, commit, and push each completed phase;
 - [ ] no PR until explicit authorization.
 
 ## Non-goals
 
-- real Situm cartography discovery;
+- real Situm cartography discovery/product API integration;
+- new Situm SDK feature wiring beyond preserving the existing viewer;
 - realtime API integration;
 - reports API integration;
 - registration backend;
