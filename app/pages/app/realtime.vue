@@ -40,26 +40,14 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
 
 <template>
   <div class="operations-page space-y-6">
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Operations</p>
-        <h1 class="mt-2 text-2xl font-semibold tracking-tight text-highlighted">Realtime positions</h1>
-        <p class="mt-1 text-sm text-muted">Current user and device locations across the indoor workspace.</p>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <UBadge color="success" variant="soft"><span class="mr-1.5 size-1.5 rounded-full bg-success" />Auto refresh · 5s</UBadge>
-        <UButton label="Refresh now" icon="i-lucide-refresh-cw" color="neutral" variant="ghost" @click="refreshPositions" />
-      </div>
-    </div>
+    <ProductPageHeader eyebrow="Operations" title="Realtime positions" description="Current user and device locations across the indoor workspace.">
+      <template #actions><ProductStatusBadge label="Auto refresh · 5s" tone="success" dot /><UButton label="Refresh now" icon="i-lucide-refresh-cw" color="neutral" variant="ghost" @click="refreshPositions" /></template>
+    </ProductPageHeader>
 
     <p v-if="statusMessage" class="sr-only" role="status">{{ statusMessage }}</p>
 
     <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-      <UCard v-for="stat in realtimeStats" :key="stat.label" :ui="{ body: 'p-4' }">
-        <p class="text-xs text-muted">{{ stat.label }}</p>
-        <p class="mt-2 text-2xl font-semibold text-highlighted">{{ stat.value }}</p>
-        <p class="mt-1 text-[11px] text-muted">{{ stat.note }}</p>
-      </UCard>
+      <ProductStatCard v-for="stat in realtimeStats" :key="stat.label" :label="stat.label" :value="stat.value" :note="stat.note" />
     </div>
 
     <div class="grid gap-4 xl:grid-cols-2">

@@ -457,20 +457,24 @@ For every current public/authenticated route:
 /app/settings
 ```
 
-- [ ] Replace route-local button styling that duplicates or contradicts the canonical shared button system.
-- [ ] Replace route-local card/surface styling with the shared card/soft-card foundation when semantics match.
-- [ ] Replace duplicated page headers/stats/status/toolbars/detail lists with the reusable product components identified in Phase 0/2.
-- [ ] Replace repeated logic with Phase 3 shared logic where semantics match.
-- [ ] Remove stale one-off classes/variants after migration.
-- [ ] Do not flatten genuinely unique components into a giant configurable abstraction.
-- [ ] Preserve page data, interactions and real runtime behavior.
-- [ ] Do not add backend/Situm product-domain integration.
-- [ ] Search the codebase again after migration and document intentional remaining exceptions.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
+- [x] Replace route-local button styling that duplicates or contradicts the canonical shared button system.
+- [x] Replace route-local card/surface styling with the shared card/soft-card foundation when semantics match.
+- [x] Replace duplicated page headers/stats/status/toolbars/detail lists with the reusable product components identified in Phase 0/2.
+- [x] Replace repeated logic with Phase 3 shared logic where semantics match.
+- [x] Remove stale one-off classes/variants after migration.
+- [x] Do not flatten genuinely unique components into a giant configurable abstraction.
+- [x] Preserve page data, interactions and real runtime behavior.
+- [x] Do not add backend/Situm product-domain integration.
+- [x] Search the codebase again after migration and document intentional remaining exceptions.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [x] `npm run typecheck`.
+- [x] `npm run build`.
 - [ ] commit and push Phase 4.
+
+### Intentional remaining exceptions
+
+The migration keeps these route-local patterns intentionally local because their semantics or interaction model are unique: the real Situm Viewer loading/ready/error presentation and map-tool feedback; map floorplan, POI popover, route preview, layer controls and viewer-settings controls; analytics/dashboard chart bars and grids; table markup and responsive row layouts; auth artwork, form error/success callouts and landing-page preview illustration; settings-specific tab content and setting rows; and home/building preview compositions. Shared `UCard`, `UButton`, `UInput`, `USelect`, `UBadge`, `USwitch`, overlay primitives, `ProductPageHeader`, `ProductStatCard`, `ProductStatusBadge`, `ProductDetailList`, `CartographyDetailsDrawer`, and `useTabKeyboard` remain the owners wherever the semantic role is repeated.
 
 Acceptance: the same semantic UI role renders from the same component/theme/logic owner throughout the product.
 

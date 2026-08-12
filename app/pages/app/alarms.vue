@@ -25,14 +25,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Alarms' })
 
 <template>
   <div class="operations-page space-y-6">
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Operations</p>
-        <h1 class="mt-2 text-2xl font-semibold tracking-tight text-highlighted">Alarms</h1>
-        <p class="mt-1 text-sm text-muted">Read-only view of operational alarms associated with tracked users and spaces.</p>
-      </div>
-      <UBadge color="warning" variant="soft" class="w-fit">{{ openCount }} open</UBadge>
-    </div>
+    <ProductPageHeader eyebrow="Operations" title="Alarms" description="Read-only view of operational alarms associated with tracked users and spaces.">
+      <template #actions><ProductStatusBadge :label="`${openCount} open`" tone="warning" /></template>
+    </ProductPageHeader>
 
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
       <USelect v-model="typeFilter" :items="alarmTypes" aria-label="Filter alarms by type" class="w-full sm:w-52" />

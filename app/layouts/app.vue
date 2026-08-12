@@ -127,7 +127,7 @@ function syncWorkspace() {
         <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <button class="search-trigger hidden sm:flex" type="button" aria-haspopup="dialog" @click="openSearch"><span class="flex items-center gap-2"><UIcon name="i-lucide-search" />Search anything…</span><kbd>⌘ K</kbd></button>
           <UButton label="Sync" color="neutral" variant="ghost" size="sm" class="hidden sm:inline-flex" @click="syncWorkspace" />
-          <UBadge color="success" variant="soft" class="hidden sm:inline-flex"><span class="mr-1.5 size-1.5 rounded-full bg-success" />POC configured</UBadge>
+          <ProductStatusBadge label="POC configured" tone="success" dot class="hidden sm:inline-flex" />
         </div>
       </header>
       <p v-if="syncStatus" class="sr-only" role="status">{{ syncStatus }}</p>

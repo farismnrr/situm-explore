@@ -42,14 +42,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
 
 <template>
   <div class="operations-page space-y-6">
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Viewer</p>
-        <h1 class="mt-2 text-2xl font-semibold tracking-tight text-highlighted">Viewer settings</h1>
-        <p class="mt-1 max-w-2xl text-sm text-muted">Preview map viewer configuration, accessibility and appearance preferences.</p>
-      </div>
-      <UButton label="Reset demo" icon="i-lucide-rotate-ccw" color="neutral" variant="outline" class="w-fit" @click="resetSettings" />
-    </div>
+    <ProductPageHeader eyebrow="Viewer" title="Viewer settings" description="Preview map viewer configuration, accessibility and appearance preferences.">
+      <template #actions><UButton label="Reset demo" icon="i-lucide-rotate-ccw" color="neutral" variant="outline" @click="resetSettings" /></template>
+    </ProductPageHeader>
 
     <p v-if="resetMessage" class="sr-only" role="status">{{ resetMessage }}</p>
 
@@ -97,7 +92,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
 
         <section v-else class="p-[18px]">
           <h2 class="text-base font-semibold text-highlighted">Images</h2><p class="mt-1 text-xs text-muted">Referenced POI, category and floor resources.</p>
-          <div class="mt-5 divide-y divide-default rounded-lg border border-default"><div v-for="image in [{ name: 'poi-reception.svg', detail: 'POI icon · 6 KB', status: 'Referenced' }, { name: 'category-workspace.svg', detail: 'POI category icon · 5 KB', status: 'Referenced' }, { name: 'floor-1-map.png', detail: 'Floor resource · 842 KB', status: 'Active' }]" :key="image.name" class="flex items-center gap-3 p-4"><span class="size-2.5 shrink-0 rounded-full" :class="image.status === 'Active' ? 'bg-success' : 'bg-primary'" /><div class="min-w-0 flex-1"><strong class="block text-sm text-highlighted">{{ image.name }}</strong><span class="mt-1 block text-xs text-muted">{{ image.detail }}</span></div><UBadge :color="image.status === 'Active' ? 'success' : 'neutral'" variant="soft">{{ image.status }}</UBadge></div></div>
+          <div class="mt-5 divide-y divide-default rounded-lg border border-default"><div v-for="image in [{ name: 'poi-reception.svg', detail: 'POI icon · 6 KB', status: 'Referenced' }, { name: 'category-workspace.svg', detail: 'POI category icon · 5 KB', status: 'Referenced' }, { name: 'floor-1-map.png', detail: 'Floor resource · 842 KB', status: 'Active' }]" :key="image.name" class="flex items-center gap-3 p-4"><span class="size-2.5 shrink-0 rounded-full" :class="image.status === 'Active' ? 'bg-success' : 'bg-info'" /><div class="min-w-0 flex-1"><strong class="block text-sm text-highlighted">{{ image.name }}</strong><span class="mt-1 block text-xs text-muted">{{ image.detail }}</span></div><ProductStatusBadge :label="image.status" :tone="image.status === 'Active' ? 'success' : 'neutral'" /></div></div>
         </section>
       </UCard>
     </div>

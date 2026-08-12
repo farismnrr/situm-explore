@@ -19,14 +19,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Paths & routing' })
 
 <template>
   <div class="cartography-page space-y-6">
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
-      <div>
-        <p class="eyebrow">Routing</p>
-        <h1 class="mt-2 text-2xl font-semibold tracking-tight text-highlighted">Paths &amp; directions</h1>
-        <p class="mt-1 max-w-2xl text-sm text-muted">Inspect walkable networks and preview shortest or accessible routes.</p>
-      </div>
-      <UButton to="/app/map?tab=route" icon="i-lucide-route" label="Open route planner" class="shrink-0" />
-    </div>
+    <ProductPageHeader eyebrow="Routing" title="Paths & directions" description="Inspect walkable networks and preview shortest or accessible routes.">
+      <template #actions><UButton to="/app/map?tab=route" icon="i-lucide-route" label="Open route planner" /></template>
+    </ProductPageHeader>
 
     <div class="grid gap-4 lg:grid-cols-[1.4fr_.6fr]">
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
@@ -58,7 +53,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Paths & routing' })
             </div>
             <ol class="mt-4 space-y-3">
               <li v-for="(step, index) in cartographyRoutePreview.steps" :key="step" class="flex items-start gap-3 text-sm text-muted">
-                <span class="grid size-6 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">{{ index + 1 }}</span>
+                <span class="grid size-6 shrink-0 place-items-center rounded-full bg-info/10 text-xs font-semibold text-info">{{ index + 1 }}</span>
                 <span class="pt-0.5">{{ step }}</span>
               </li>
             </ol>

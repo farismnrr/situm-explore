@@ -24,11 +24,7 @@ const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/
     </UCard>
 
     <div class="stat-grid mb-4">
-      <UCard v-for="metric in homeMetrics" :key="metric.label" :ui="{ body: 'p-4' }">
-        <span class="text-xs text-muted">{{ metric.label }}</span>
-        <strong class="mt-2 block text-2xl tracking-tight text-highlighted">{{ metric.value }}</strong>
-        <small class="mt-1 block text-xs" :class="metric.positive ? 'text-success' : 'text-muted'">{{ metric.note }}</small>
-      </UCard>
+      <ProductStatCard v-for="metric in homeMetrics" :key="metric.label" :label="metric.label" :value="metric.value" :note="metric.note" :positive="metric.positive" />
     </div>
 
     <div class="content-grid mb-4">
@@ -40,7 +36,7 @@ const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/
         <div class="building-preview" aria-label="Local preview of the main building floor">
           <div class="building-floor" /><i class="preview-pin pin-a" /><i class="preview-pin pin-b" /><i class="preview-pin pin-c" />
         </div>
-        <div class="flex items-center justify-between border-t border-default px-4 py-3 text-xs text-muted"><span>Viewer status</span><UBadge color="success" variant="soft"><span class="mr-1.5 size-1.5 rounded-full bg-success" />{{ homeBuilding.status }}</UBadge></div>
+        <div class="flex items-center justify-between border-t border-default px-4 py-3 text-xs text-muted"><span>Viewer status</span><ProductStatusBadge :label="homeBuilding.status" tone="success" dot /></div>
       </UCard>
 
       <UCard :ui="{ body: 'p-0' }">

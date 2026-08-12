@@ -9,13 +9,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
 
 <template>
   <div class="operations-page space-y-6">
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Organization</p>
-        <h1 class="mt-2 text-2xl font-semibold tracking-tight text-highlighted">Users &amp; groups</h1>
-        <p class="mt-1 max-w-2xl text-sm text-muted">Local directory context for people and device grouping.</p>
-      </div>
-    </div>
+    <ProductPageHeader eyebrow="Organization" title="Users & groups" description="Local directory context for people and device grouping." />
 
     <div class="grid gap-4 lg:grid-cols-2">
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
@@ -25,10 +19,10 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
         <div class="hidden overflow-x-auto md:block">
           <table class="table-density w-full min-w-[620px] text-left">
             <thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Name</th><th class="px-4 py-3 font-medium">Role</th><th class="px-4 py-3 font-medium">Groups</th><th class="px-4 py-3 font-medium">Status</th></tr></thead>
-            <tbody class="divide-y divide-default"><tr v-for="user in prototypeDirectoryUsers" :key="user.id" class="transition hover:bg-elevated/40"><td class="px-5 py-4"><button class="text-left font-medium text-primary hover:underline" @click="selectedUser = user">{{ user.name }}</button><p class="mt-1 text-xs text-muted">{{ user.email }}</p></td><td class="px-4 py-4 text-muted">{{ user.role }}</td><td class="px-4 py-4 text-muted">{{ user.groups.join(', ') }}</td><td class="px-4 py-4"><UBadge :color="user.status === 'Active' ? 'success' : 'neutral'" variant="soft">{{ user.status }}</UBadge></td></tr></tbody>
+            <tbody class="divide-y divide-default"><tr v-for="user in prototypeDirectoryUsers" :key="user.id" class="transition hover:bg-elevated/40"><td class="px-5 py-4"><button class="text-left font-medium text-info hover:underline" @click="selectedUser = user">{{ user.name }}</button><p class="mt-1 text-xs text-muted">{{ user.email }}</p></td><td class="px-4 py-4 text-muted">{{ user.role }}</td><td class="px-4 py-4 text-muted">{{ user.groups.join(', ') }}</td><td class="px-4 py-4"><ProductStatusBadge :label="user.status" :tone="user.status === 'Active' ? 'success' : 'neutral'" /></td></tr></tbody>
           </table>
         </div>
-        <div class="divide-y divide-default md:hidden"><article v-for="user in prototypeDirectoryUsers" :key="user.id" class="space-y-3 p-4"><div class="flex items-start justify-between gap-3"><div><button class="text-left font-medium text-primary hover:underline" @click="selectedUser = user">{{ user.name }}</button><p class="mt-1 text-xs text-muted">{{ user.email }}</p></div><UBadge :color="user.status === 'Active' ? 'success' : 'neutral'" variant="soft">{{ user.status }}</UBadge></div><p class="text-xs text-muted">{{ user.role }} · {{ user.groups.join(', ') }}</p></article></div>
+        <div class="divide-y divide-default md:hidden"><article v-for="user in prototypeDirectoryUsers" :key="user.id" class="space-y-3 p-4"><div class="flex items-start justify-between gap-3"><div><button class="text-left font-medium text-info hover:underline" @click="selectedUser = user">{{ user.name }}</button><p class="mt-1 text-xs text-muted">{{ user.email }}</p></div><ProductStatusBadge :label="user.status" :tone="user.status === 'Active' ? 'success' : 'neutral'" /></div><p class="text-xs text-muted">{{ user.role }} · {{ user.groups.join(', ') }}</p></article></div>
       </UCard>
 
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">

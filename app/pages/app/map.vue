@@ -254,7 +254,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
           <UButton icon="i-lucide-x" aria-label="Close POI details" color="neutral" variant="ghost" size="xs" @click="selectedPoiId = null" />
         </div>
         <p class="mt-3 text-xs text-muted">{{ selectedPoi.description }}</p>
-        <div class="mt-4 flex flex-wrap gap-2"><UButton label="Directions" color="primary" size="sm" @click="openDirections(selectedPoi.name)" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
+        <div class="mt-4 flex flex-wrap gap-2"><UButton label="Directions" color="info" size="sm" @click="openDirections(selectedPoi.name)" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
       </UCard>
       <button v-if="locationPickerActive" type="button" class="map-location-marker" aria-label="Selected map location" @click="locationPickerActive = false; showViewerToolStatus('Location marker cleared.')" />
     </section>

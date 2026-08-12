@@ -48,9 +48,9 @@ function openDetails(building: PrototypeBuilding) {
           </thead>
           <tbody class="divide-y divide-default">
             <tr v-for="building in filteredBuildings" :key="building.id" class="group transition hover:bg-elevated/40">
-              <td><button class="text-left font-semibold text-highlighted hover:text-primary" @click="openDetails(building)">{{ building.name }}<span class="mt-0.5 block text-[10px] font-normal text-muted">{{ building.organization }}</span></button></td>
+              <td><button class="text-left font-semibold text-highlighted hover:text-info" @click="openDetails(building)">{{ building.name }}<span class="mt-0.5 block text-[10px] font-normal text-muted">{{ building.organization }}</span></button></td>
               <td class="font-mono text-[10px] text-muted">{{ building.id }}</td><td class="text-muted">{{ building.floors.length }}</td>
-              <td><UBadge :color="building.status === 'Ready' ? 'success' : 'warning'" variant="soft">{{ building.status }}</UBadge></td>
+              <td><ProductStatusBadge :label="building.status" :tone="building.status === 'Ready' ? 'success' : 'warning'" /></td>
               <td class="text-muted">{{ building.poiCount }}</td><td><UButton icon="i-lucide-chevron-right" color="neutral" variant="ghost" size="xs" aria-label="Open building details" @click="openDetails(building)" /></td>
             </tr>
           </tbody>
@@ -58,7 +58,7 @@ function openDetails(building: PrototypeBuilding) {
       </div>
       <div class="divide-y divide-default md:hidden">
         <button v-for="building in filteredBuildings" :key="building.id" class="flex w-full items-center gap-3 p-4 text-left transition hover:bg-elevated/40" @click="openDetails(building)">
-          <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary"><UIcon name="i-lucide-building-2" /></span><span class="min-w-0 flex-1"><strong class="block truncate text-sm text-highlighted">{{ building.name }}</strong><span class="mt-1 block text-xs text-muted">{{ building.floors.length }} floors · {{ building.poiCount }} POIs</span></span><UBadge :color="building.status === 'Ready' ? 'success' : 'warning'" variant="soft">{{ building.status }}</UBadge><UIcon name="i-lucide-chevron-right" class="text-muted" />
+          <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-info/10 text-info"><UIcon name="i-lucide-building-2" /></span><span class="min-w-0 flex-1"><strong class="block truncate text-sm text-highlighted">{{ building.name }}</strong><span class="mt-1 block text-xs text-muted">{{ building.floors.length }} floors · {{ building.poiCount }} POIs</span></span><ProductStatusBadge :label="building.status" :tone="building.status === 'Ready' ? 'success' : 'warning'" /><UIcon name="i-lucide-chevron-right" class="text-muted" />
         </button>
       </div>
       <p v-if="filteredBuildings.length === 0" class="px-5 py-10 text-center text-sm text-muted">No buildings match your filters.</p>
@@ -67,7 +67,7 @@ function openDetails(building: PrototypeBuilding) {
     <div class="mt-4 grid gap-4 lg:grid-cols-2">
       <UCard :ui="{ body: 'p-0 sm:p-0' }">
         <div class="flex items-center justify-between border-b border-default px-5 py-4"><div><h2 class="font-semibold text-highlighted">Floor coverage</h2><span class="text-xs text-muted">{{ coverageBuilding.name }}</span></div><UBadge color="neutral" variant="soft">{{ coverageBuilding.floors.length }} floors</UBadge></div>
-        <div class="divide-y divide-default"><div v-for="floor in coverageBuilding.floors" :key="floor.id" class="flex items-center gap-3 px-5 py-3"><span class="size-2 rounded-full" :class="floor.mapStatus === 'Ready' ? 'bg-success' : 'bg-warning'" /><div class="min-w-0 flex-1"><strong class="block text-sm text-highlighted">{{ floor.name }} · {{ floor.id }}</strong><span class="block text-xs text-muted">{{ floor.floorplan }} floorplan · {{ floor.poiCount }} POIs · {{ floor.geofenceCount }} geofences</span></div><UBadge :color="floor.mapStatus === 'Ready' ? 'success' : 'warning'" variant="soft" size="sm">{{ floor.mapStatus }}</UBadge></div></div>
+        <div class="divide-y divide-default"><div v-for="floor in coverageBuilding.floors" :key="floor.id" class="flex items-center gap-3 px-5 py-3"><span class="size-2 rounded-full" :class="floor.mapStatus === 'Ready' ? 'bg-success' : 'bg-warning'" /><div class="min-w-0 flex-1"><strong class="block text-sm text-highlighted">{{ floor.name }} · {{ floor.id }}</strong><span class="block text-xs text-muted">{{ floor.floorplan }} floorplan · {{ floor.poiCount }} POIs · {{ floor.geofenceCount }} geofences</span></div><ProductStatusBadge :label="floor.mapStatus" :tone="floor.mapStatus === 'Ready' ? 'success' : 'warning'" /></div></div>
       </UCard>
       <UCard>
         <div class="flex items-center justify-between border-b border-default pb-4"><h2 class="font-semibold text-highlighted">Cartography resources</h2></div>

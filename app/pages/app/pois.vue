@@ -37,14 +37,9 @@ function toggleFavorite(poi: PrototypePoi) {
 
 <template>
   <div class="cartography-page">
-    <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-      <div>
-        <p class="eyebrow">Cartography</p>
-        <h1 class="mt-1 text-2xl font-semibold tracking-tight text-highlighted">Points of interest</h1>
-        <p class="mt-2 text-sm text-muted">Search destinations, categories and floor placement.</p>
-      </div>
-      <UButton to="/app/map" icon="i-lucide-map" class="w-fit">View on map</UButton>
-    </div>
+    <ProductPageHeader eyebrow="Cartography" title="Points of interest" description="Search destinations, categories and floor placement.">
+      <template #actions><UButton to="/app/map" icon="i-lucide-map">View on map</UButton></template>
+    </ProductPageHeader>
 
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex flex-col gap-2 sm:flex-row">
@@ -60,7 +55,7 @@ function toggleFavorite(poi: PrototypePoi) {
           <thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Name</th><th class="px-4 py-3 font-medium">Category</th><th class="px-4 py-3 font-medium">Building</th><th class="px-4 py-3 font-medium">Floor</th><th class="px-4 py-3 font-medium">External ID</th><th class="w-14 px-4 py-3 text-center">Favorite</th></tr></thead>
           <tbody class="divide-y divide-default">
             <tr v-for="poi in filteredPois" :key="poi.id" class="group transition hover:bg-elevated/40">
-              <td><button class="text-left font-semibold text-highlighted hover:text-primary" @click="openDetails(poi)">{{ poi.name }}<span class="mt-0.5 block text-[10px] font-normal text-muted">{{ poi.description }}</span></button></td>
+              <td><button class="text-left font-semibold text-highlighted hover:text-info" @click="openDetails(poi)">{{ poi.name }}<span class="mt-0.5 block text-[10px] font-normal text-muted">{{ poi.description }}</span></button></td>
               <td class="text-muted">{{ poi.category }}</td><td class="text-muted">{{ buildingNames.get(poi.buildingId) }}</td><td class="text-muted">{{ poi.floor }}</td><td class="font-mono text-[10px] text-muted">{{ poi.externalId }}</td>
               <td class="text-center"><UButton :icon="favoriteIds.has(poi.id) ? 'i-lucide-star' : 'i-lucide-star-off'" :color="favoriteIds.has(poi.id) ? 'warning' : 'neutral'" variant="ghost" size="xs" :aria-label="favoriteIds.has(poi.id) ? `Remove ${poi.name} from favorites` : `Add ${poi.name} to favorites`" @click="toggleFavorite(poi)" /></td>
             </tr>
@@ -69,7 +64,7 @@ function toggleFavorite(poi: PrototypePoi) {
       </div>
       <div class="divide-y divide-default md:hidden">
         <div v-for="poi in filteredPois" :key="poi.id" class="flex items-center gap-3 p-4">
-          <button class="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary" :aria-label="`Open ${poi.name} details`" @click="openDetails(poi)"><UIcon name="i-lucide-map-pin" /></button>
+          <button class="grid size-9 shrink-0 place-items-center rounded-lg bg-info/10 text-info" :aria-label="`Open ${poi.name} details`" @click="openDetails(poi)"><UIcon name="i-lucide-map-pin" /></button>
           <button class="min-w-0 flex-1 text-left" @click="openDetails(poi)"><strong class="block truncate text-sm text-highlighted">{{ poi.name }}</strong><span class="mt-1 block truncate text-xs text-muted">{{ poi.category }} · {{ poi.floor }}</span></button>
           <UButton :icon="favoriteIds.has(poi.id) ? 'i-lucide-star' : 'i-lucide-star-off'" :color="favoriteIds.has(poi.id) ? 'warning' : 'neutral'" variant="ghost" size="xs" :aria-label="favoriteIds.has(poi.id) ? `Remove ${poi.name} from favorites` : `Add ${poi.name} to favorites`" @click="toggleFavorite(poi)" />
         </div>
