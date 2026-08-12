@@ -8,7 +8,7 @@ Execute a gap-free sequential Situm Explore POC roadmap: Nuxt 4 architecture ali
 
 ## Phase
 
-**Plan 004 Phase 4 is complete on its plan branch; responsive/accessibility validation Phase 5 is next.**
+**Plan 004 is complete on its plan branch; integration into `main` is the next gate before Plan 005.**
 
 ## Active contracts
 
@@ -142,4 +142,4 @@ The only intentional visual blocker is the user-populated canonical HTML.
 
 ## Next action
 
-Continue Plan 004 with Phase 5 responsive/accessibility validation. No dependent plan starts until the previous plan is reviewed, explicitly authorized for integration, and landed in `main`.
+Review and integrate Plan 004 into `main`; do not start dependent Plan 005 until that integration is complete.

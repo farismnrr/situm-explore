@@ -216,22 +216,22 @@ There is no registration/account backend in current scope.
 
 ## Phase 5 — Responsive/accessibility/final validation
 
-- [ ] Re-check populated HTML desktop/mobile behavior.
-- [ ] Mobile landing/auth layout has no overflow.
-- [ ] Keyboard/focus behavior works.
-- [ ] CTA links use real Nuxt navigation.
-- [ ] Login still succeeds into `/dashboard` at the end of this plan.
-- [ ] Existing `/dashboard` remains authenticated and the real Situm Viewer remains reachable.
-- [ ] Nuxt output materially matches the populated HTML without copying its code architecture.
-- [ ] Architecture still follows `ARCHITECTURE.md`.
-- [ ] Document deliberate accessibility/framework deviations.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
-- [ ] Update plan + `.agents/` before each completed phase commit.
-- [ ] Commit/push each completed phase.
-- [ ] No PR until explicit authorization.
+- [x] Re-check populated HTML desktop/mobile behavior.
+- [x] Mobile landing/auth layout has no overflow.
+- [x] Keyboard/focus behavior works.
+- [x] CTA links use real Nuxt navigation.
+- [x] Login still succeeds into `/dashboard` at the end of this plan.
+- [x] Existing `/dashboard` remains authenticated and the real Situm Viewer remains reachable.
+- [x] Nuxt output materially matches the populated HTML without copying its code architecture.
+- [x] Architecture still follows `ARCHITECTURE.md`.
+- [x] Document deliberate accessibility/framework deviations.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [x] `npm run typecheck`.
+- [x] `npm run build`.
+- [x] Update plan + `.agents/` before each completed phase commit.
+- [x] Commit/push each completed phase.
+- [x] No PR until explicit authorization.
 
 ## Non-goals
 
