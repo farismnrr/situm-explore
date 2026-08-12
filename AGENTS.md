@@ -18,13 +18,16 @@ At minimum, every conversation must load:
 For any plan execution or repository implementation work, also read and follow:
 
 5. `.agents/protocols/git-workflow.md`
+6. `ARCHITECTURE.md`
 
 For any UI, UX, styling, layout, component-composition, or visual-design work, also read:
 
-6. `DESIGN.md`
-7. The active plan and only the root `design/` implementation documents explicitly linked by `DESIGN.md` or that plan
+7. `DESIGN.md`
+8. The active plan and only the root `design/` implementation documents explicitly linked by `DESIGN.md` or that plan
 
 The Git workflow protocol is mandatory. Every plan uses its own dedicated branch in the normal repository working directory. Linked Git worktrees are not required. Completed phases must be persisted, validated, committed, and pushed without opening a PR unless the user explicitly asks for one.
+
+The architecture contract is mandatory for implementation work. Use Nuxt 4 native app/server/shared boundaries, keep pages and API handlers focused, and prefer KISS over speculative abstractions. SOLID and DRY are used to clarify real responsibilities and repetition, not to manufacture layers.
 
 For UI work, the approved HTML is a visual/interaction reference only. Production implementation must use the existing Nuxt/Vue/Nuxt UI stack; do not copy the prototype HTML/CSS/JS as application architecture.
 
