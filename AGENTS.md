@@ -19,7 +19,14 @@ For any plan execution or repository implementation work, also read and follow:
 
 5. `.agents/protocols/git-workflow.md`
 
-The Git workflow protocol is mandatory. In particular, every plan uses its own dedicated branch in the normal repository working directory. Linked Git worktrees are not required. Completed phases must be persisted, validated, committed, and pushed without opening a PR unless the user explicitly asks for one.
+For any UI, UX, styling, layout, component-composition, or visual-design work, also read:
+
+6. `DESIGN.md`
+7. `.agents/design/README.md` and the design guides it routes to
+
+The Git workflow protocol is mandatory. Every plan uses its own dedicated branch in the normal repository working directory. Linked Git worktrees are not required. Completed phases must be persisted, validated, committed, and pushed without opening a PR unless the user explicitly asks for one.
+
+The design guidance is mandatory for UI work. Prefer the repository's design principles and Nuxt UI semantic system over ad-hoc styling or copying a reference product literally.
 
 ## Mandatory chat closeout
 

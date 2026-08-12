@@ -13,8 +13,8 @@ Status: active.
 ## 2026-08-12 — Web foundation implementation
 
 - Use `nuxt-auth-utils` for sealed sessions and its scrypt password utilities; the first slice authenticates one configured owner credential rather than introducing account management.
-- Use `@situm/sdk-js` Map Viewer in the browser. Its documented browser initialization requires the Situm API key client-side, so the integration uses an explicitly public `NUXT_PUBLIC_SITUM_API_KEY`; no server-only secret is exposed through runtime configuration.
-- Drizzle owns only the `situm_explore` PostgreSQL schema and its initial `app_settings` table.
+- Use `@situm/sdk-js` Map Viewer in the browser with the dedicated read-only viewer credential boundary established during hardening.
+- Drizzle owns only the fixed `situm_explore` PostgreSQL schema and its application-owned tables.
 
 Status: active.
 
@@ -50,8 +50,21 @@ Status: active.
 
 ## 2026-08-12 — Foundation hardening before product work
 
-- Run one narrow hardening plan before introducing self-improvement product/domain features.
-- Hardening should address public-resource exposure policy, least-privilege Situm browser credentials, reproducible Nuxt ESLint setup, truthful Situm viewer readiness, fixed `situm_explore` schema ownership, and stale completed-plan checklist state.
-- Keep this as foundation cleanup only; do not expand it into product architecture, CI, tests, or native/mobile work.
+- One narrow hardening plan was completed before further product/UI work.
+- Hardening addressed public-resource exposure policy, least-privilege Situm browser credentials, reproducible Nuxt ESLint setup, truthful Situm viewer readiness, fixed `situm_explore` schema ownership, and stale completed-plan checklist state.
+- Manual authenticated/API and Situm browser checks were confirmed complete by the user after integration.
+
+Status: complete.
+
+## 2026-08-12 — UI/UX design direction
+
+- Refresh the existing web UI before introducing broader self-improvement product features.
+- Target a clean minimalist SaaS visual language.
+- Support light mode only for now; do not add a theme toggle or spend complexity on dark variants.
+- Keep Nuxt UI as the design/component foundation rather than creating a parallel custom design system.
+- Introduce root `DESIGN.md` plus `.agents/design/` as persistent design guidance that Codex must read for UI/UX work.
+- Prefer a compact top bar and content canvas for the current information architecture; do not add a sidebar until real navigation destinations justify it.
+- Treat Linear, Vercel, Notion, and Stripe Dashboard as principle references only: borrow restraint, hierarchy, whitespace, and operational clarity without copying their exact layouts or brands.
+- Preserve working auth, PostgreSQL, and Situm behavior during the visual refresh.
 
 Status: active.

@@ -13,6 +13,7 @@ The root `AGENTS.md` is intentionally small. This directory contains the operati
 | `protocols/chat-lifecycle.md` | What to read and do during each conversation. |
 | `protocols/persistence.md` | Rules for deciding what gets written after a chat. |
 | `protocols/git-workflow.md` | Mandatory plan-branch, phase commit/push, lint, and PR-gate workflow. |
+| `design/` | Persistent design principles, UI implementation guide, and reference protocol for UI/UX work. |
 | `memory/` | Durable context about the user: profile, preferences, goals, decisions. |
 | `knowledge/` | Reusable external/domain knowledge and frameworks. |
 | `reflections/` | Lessons that should improve future agent behavior. |
@@ -26,8 +27,9 @@ At the start of a conversation:
 2. Read `state.md`.
 3. Read `protocols/chat-lifecycle.md`.
 4. If executing a plan or changing repository implementation, read `protocols/git-workflow.md` before editing.
-5. Read only the memory, knowledge, reflection, plan, and session files relevant to the task.
-6. If the conversation references prior work and the durable stores are insufficient, inspect recent session notes.
+5. If doing UI/UX/styling/layout/component-composition work, read root `DESIGN.md` and relevant `design/` guidance before editing.
+6. Read only the memory, knowledge, reflection, plan, and session files relevant to the task.
+7. If the conversation references prior work and the durable stores are insufficient, inspect recent session notes.
 
 Do not load the entire directory blindly when it becomes large. Use indexes and targeted search.
 
@@ -45,7 +47,7 @@ They are chronological and may include context that later becomes stale.
 
 ### 2. Durable context
 
-Memory, knowledge, reflections, decisions, and state are updated only when there is a meaningful durable change.
+Memory, knowledge, reflections, decisions, design guidance, and state are updated only when there is a meaningful durable change.
 
 Durable context answers: **what should still matter later?**
 
@@ -58,7 +60,7 @@ For plan implementation, persistence is also a **pre-commit checkpoint**: releva
 When information conflicts, prefer:
 
 1. The user's latest explicit statement.
-2. Current durable files under `.agents/`.
+2. Current durable files under `.agents/` and root routers such as `DESIGN.md`.
 3. Recent session notes.
 4. Agent inference.
 
@@ -75,7 +77,8 @@ Never silently promote inference above explicit user statements.
 - Never persist secrets or credentials.
 - Keep each plan isolated on its own branch and preserve a reviewable phase-by-phase Git history.
 - Use the normal repository working directory; linked Git worktrees are optional only when explicitly requested.
+- For UI work, use the persistent design context rather than inventing a new visual direction in each session.
 
 ## Current scope
 
-The Nuxt web foundation is complete. The current next step is a narrow foundation-hardening plan before starting self-improvement product/domain features. Native/mobile, CI, and unit-test infrastructure remain deferred until requirements justify them or the user explicitly asks for them.
+The Nuxt web foundation and foundation hardening are complete. The active next step is `plans/003-ui-ux-refresh.md`: refresh the existing login/dashboard into a clean minimalist SaaS, light-only interface while preserving current auth, database, and Situm behavior. Native/mobile, CI, and unit-test infrastructure remain deferred until requirements justify them or the user explicitly asks for them.

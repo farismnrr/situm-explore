@@ -4,11 +4,11 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Harden the completed Nuxt web foundation before starting the first self-improvement product/domain plan.
+Refresh the existing Nuxt web UI/UX into a clean minimalist SaaS experience while preserving the hardened foundation behavior.
 
 ## Phase
 
-**Phase 7 — Foundation hardening validation blocked**
+**Phase 3 — UI/UX refresh planned**
 
 ## Active decisions
 
@@ -24,35 +24,38 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 - Build web first; native/mobile remains deferred.
 - Use one full-stack Nuxt application for frontend and backend.
 - Use Nuxt UI.
-- Integrate Situm on web first.
-- Reuse the existing PostgreSQL database with the dedicated Situm Explore schema.
+- UI direction is clean minimalist SaaS, light mode only.
+- Use `DESIGN.md` and `.agents/design/` as mandatory persistent design context for UI/UX work.
+- Keep current navigation minimal: top bar + content canvas; no sidebar until real destinations justify it.
+- Integrate Situm on web first and preserve truthful viewer readiness.
+- Reuse the existing PostgreSQL database with the fixed `situm_explore` application schema.
 - Use Drizzle ORM.
 - Use `nuxt-auth-utils` for the current simple owner authentication/session flow.
 - Keep architecture deliberately simple until real requirements justify more complexity.
 
 ## Active plan
 
-- `plans/002-foundation-hardening.md` is merged to `main`; final manual authenticated/API and browser readiness checks remain documented as blocked.
+- `plans/003-ui-ux-refresh.md` — planned next implementation on branch `plan/003-ui-ux-refresh`.
 
 ## Completed plans
 
 - `plans/000-resource-gathering.md`
 - `plans/001-web-foundation.md`
+- `plans/002-foundation-hardening.md` — merged through PR #3; manual authenticated/API and Situm browser checks were later confirmed complete by the user.
 
 ## Known foundation state
 
-- Nuxt full-stack foundation is merged to `main`.
-- Local PostgreSQL `situm_explore` schema has been migrated without touching unrelated database objects.
-- Building floorplan JPEGs and related metadata were removed from the current tree after the user decided they must not remain public; historical Git blobs remain because history rewrite was not authorized.
+- Nuxt full-stack foundation and foundation hardening are merged to `main`.
+- Login, authenticated `/api/me`, PostgreSQL access, and Situm browser readiness have been manually tested by the user after hardening.
+- Local PostgreSQL `situm_explore` schema is application-owned; unrelated database objects remain out of scope.
+- Building floorplan resources are not present in the current public tree; historical Git blobs remain because history rewrite was not authorized.
 - Local credentials remain ignored and must never be committed.
 
 ## Open loops
 
-- Complete the documented manual authenticated/API and browser readiness checks if the project continues hardening.
-- Continue with later foundation-hardening phases; the application and Drizzle migrations now use the fixed `situm_explore` schema.
-- Phase 6 reconciliation is complete: Plans 000 and 001 now distinguish completed evidence from explicitly deferred/N/A optional work.
-- Automated Phase 7 validation passes. Remaining blockers are manual authenticated `/api/me` verification and browser confirmation of Situm's real `MAP_IS_READY` event.
+- Execute Plan 003 without changing auth/database/Situm behavior beyond UI composition and feedback presentation.
+- Keep light-mode-only scope and avoid premature navigation/design-system complexity.
 
 ## Next likely action
 
-From a clean, up-to-date `main`, create/switch to `plan/002-foundation-hardening` in the normal repository directory and execute the plan phase by phase. Commit and push each completed phase; do not open a PR until explicitly authorized.
+From a clean, up-to-date `main`, create/switch to `plan/003-ui-ux-refresh` in the normal repository directory and execute `plans/003-ui-ux-refresh.md` phase by phase. Read `DESIGN.md` and `.agents/design/` before editing UI. Commit and push each completed phase; do not create a PR until explicitly authorized.
