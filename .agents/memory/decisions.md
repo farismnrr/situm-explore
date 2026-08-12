@@ -15,9 +15,10 @@ Status: active.
 - Use Nuxt UI v4 semantic aliases with a restrained blue primary and zinc neutral palette; keep success, info, warning, and error semantic.
 - Use Nuxt UI semantic text, background, and border utilities as the shared surface language instead of a parallel hard-coded palette.
 - Set the shared radius to `0.5rem` and the application container to Nuxt UI's `5xl` container token.
-- Preserve the existing/system sans font stack and the intentionally small top-bar-plus-content-canvas information architecture; no sidebar is justified by current destinations.
+- Preserve the existing/system sans font stack.
+- The earlier top-bar-only / no-sidebar conclusion from Plan 003 is no longer authoritative.
 
-Status: active.
+Status: superseded by the approved interactive UI reference for composition/information architecture; reusable token lessons may remain where they match the reference.
 
 ## 2026-08-12 — Web foundation implementation
 
@@ -47,7 +48,7 @@ Status: active.
 - Every plan must be implemented on its own dedicated `plan/<number>-<slug>` branch.
 - Use the normal repository working directory. Linked Git worktrees are no longer required and should not be created unless the user explicitly requests them.
 - New plan work should start from the latest fetched `origin/main` unless an explicit dependency requires another base.
-- Never implement plan changes directly on `main`.
+- Never implement a plan directly on `main`.
 - Every completed implementation phase must update the plan and relevant `.agents/` persistence first, then be validated, committed, and pushed to the plan branch.
 - Pull requests are user-gated: pushing a plan branch must never automatically create a PR, including a draft PR.
 - CI is intentionally deferred for now.
@@ -67,13 +68,26 @@ Status: complete.
 
 ## 2026-08-12 — UI/UX design direction
 
-- Refresh the existing web UI before introducing broader self-improvement product features.
-- Target a clean minimalist SaaS visual language.
-- Support light mode only for now; do not add a theme toggle or spend complexity on dark variants.
+- Target a clean minimalist SaaS visual language with light mode only.
 - Keep Nuxt UI as the design/component foundation rather than creating a parallel custom design system.
-- Introduce root `DESIGN.md` plus `.agents/design/` as persistent design guidance that Codex must read for UI/UX work.
-- Prefer a compact top bar and content canvas for the current information architecture; do not add a sidebar until real navigation destinations justify it.
-- Treat Linear, Vercel, Notion, and Stripe Dashboard as principle references only: borrow restraint, hierarchy, whitespace, and operational clarity without copying their exact layouts or brands.
-- Preserve working auth, PostgreSQL, and Situm behavior during the visual refresh.
+- Root `DESIGN.md` plus `.agents/design/` remain persistent design guidance.
+- Generic references such as Linear, Vercel, Notion, and Stripe are secondary principle references only.
+- Preserve working auth, PostgreSQL, and Situm behavior during UI work.
+
+Status: active, as refined by the approved interactive reference below.
+
+## 2026-08-12 — Approved interactive UI reference and rebuild roadmap
+
+- Plan 003 was closed because its rendered UI was too far from the user's expectation; closing/merging it did not mean that visual direction was accepted.
+- `design/reference/situm-explore-interactive-prototype.html` is the canonical visual and interaction source of truth for the rebuild.
+- `design/ui-reference.html` is only a compatibility wrapper to the canonical reference.
+- Use the approved navigation-arrow mark; do not restore the `S` lettermark.
+- The approved product reference includes enough destinations to justify a compact authenticated desktop sidebar and mobile drawer, superseding Plan 003's no-sidebar conclusion.
+- Translate the prototype into Nuxt/Vue/Nuxt UI rather than copying its raw HTML/CSS/JS architecture.
+- Plans 004–009 implement the approved UI first. Existing integrations stay real; missing product domains use typed local dummy data so UI scope does not expand the backend.
+- Plans 010–015 are later read-only Situm integration work and must not start until the user manually accepts the UI produced by Plans 004–009.
+- During UI-first work, keep real: login/session/logout, auth middleware, `/api/me`, PostgreSQL behavior, `/api/situm/status` configuration semantics, and the existing Situm Viewer `MAP_IS_READY` / `APP_ERROR` lifecycle.
+- During UI-first work, keep dummy/local: registration, business metrics, cartography lists not yet exposed by the app, route previews around the viewer, realtime, reports/analytics, alarms, organization/users, and viewer settings not already wired.
+- Current POC Situm permission boundary remains one `Only Read` browser-visible viewer credential; never expose its value and do not add remote write operations.
 
 Status: active.
