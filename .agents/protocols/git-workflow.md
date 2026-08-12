@@ -18,6 +18,7 @@ The goals are isolation, reviewability, recoverability, and low process overhead
 10. Never commit secrets, `.env`, API keys, database credentials, tokens, or generated credential files.
 11. Prefer small, phase-scoped commits with clear Conventional Commit-style messages.
 12. Do not force-push or destructively rewrite branch history as normal workflow.
+13. **Sequential plan dependencies must be integrated into `main` before the dependent plan starts**, unless the user explicitly requests stacked branches.
 
 ## 1. Start a plan safely
 
@@ -30,17 +31,32 @@ git fetch origin
 
 Do not silently discard local changes. If the current working directory contains unrelated changes, preserve them safely before switching branches; never use destructive reset/clean as a shortcut.
 
-For a new plan, synchronize `main` first:
+### Check dependencies before creating the branch
+
+Read the active plan's `Depends on:` line.
+
+If it depends on an earlier roadmap plan:
+
+1. confirm that dependency is complete;
+2. confirm it has been reviewed/accepted as required by the roadmap;
+3. confirm its implementation is already integrated into `main`;
+4. only then create the dependent plan branch from updated `origin/main`.
+
+If the dependency is complete but still exists only on its plan branch because PR/integration authorization is pending, **stop**. Do not silently branch from stale `main`, cherry-pick dependency commits, copy files manually, or create a stacked branch.
+
+Stacked plan branches are allowed only when the user explicitly asks for that workflow and the active plan records the non-main base clearly.
+
+For a normal new sequential plan, synchronize `main` first:
 
 ```bash
 git switch main
 git pull --ff-only origin main
 ```
 
-For a plan such as `plans/002-foundation-hardening.md`, create its branch from the latest `origin/main`:
+For a plan such as `plans/004-ui-foundation-public-auth.md`:
 
 ```bash
-git switch -c plan/002-foundation-hardening origin/main
+git switch -c plan/004-ui-foundation-public-auth origin/main
 ```
 
 Then verify:
@@ -56,16 +72,16 @@ Examples:
 
 ```bash
 # existing local branch
-git switch plan/002-foundation-hardening
+git switch plan/004-ui-foundation-public-auth
 
 # remote branch not yet tracked locally
-git switch --track origin/plan/002-foundation-hardening
+git switch --track origin/plan/004-ui-foundation-public-auth
 ```
 
 Rules:
 
-- A new plan branch normally starts from the latest fetched `origin/main`.
-- If a plan explicitly depends on another unmerged plan, document that dependency before using a different base.
+- A new independent plan normally starts from the latest fetched `origin/main`.
+- A sequential dependent plan also starts from latest `origin/main`, **after its dependency has landed there**.
 - Do not use `git switch -C`, `git checkout -B`, `git reset --hard`, `git clean -fd`, or `--force` as routine shortcuts.
 - Only one plan needs to be checked out in the normal working directory at a time.
 
@@ -80,9 +96,9 @@ plan/<plan-number>-<short-slug>
 Examples:
 
 ```text
-plan/000-resource-gathering
-plan/001-web-foundation
-plan/002-foundation-hardening
+plan/004-ui-foundation-public-auth
+plan/005-authenticated-shell-dashboard
+plan/006-situm-map-workspace
 ```
 
 Non-plan maintenance may use conventional prefixes such as `docs/`, `chore/`, `fix/`, or `refactor/`, but plan execution uses the `plan/` convention.
@@ -161,10 +177,9 @@ Commit only after the phase is complete, persistence is updated, and required va
 Use clear Conventional Commit-style subjects, for example:
 
 ```text
-chore: gather building resources
-feat: bootstrap Nuxt web foundation
-fix: make Situm viewer readiness truthful
-chore: harden foundation configuration
+refactor: align Nuxt app directories
+feat: add authenticated app shell
+feat: build Situm map workspace
 ```
 
 Guidelines:
@@ -180,7 +195,7 @@ Guidelines:
 The first push for a plan branch sets upstream explicitly:
 
 ```bash
-git push -u origin plan/002-foundation-hardening
+git push -u origin plan/004-ui-foundation-public-auth
 ```
 
 Later phase commits:
@@ -200,19 +215,21 @@ Expected state: the working tree is clean and the local branch is synchronized w
 
 Do not push plan commits directly to `main`.
 
-## 8. Pull request gate
+## 8. Pull request / integration gate
 
-Pushing a branch does **not** authorize opening a PR.
+Pushing a branch does **not** authorize opening a PR or integrating it into `main`.
 
-Until the user explicitly asks for a PR:
+Until the user explicitly asks:
 
 - do not run `gh pr create`;
-- do not call a GitHub PR creation tool;
+- do not call a PR creation tool;
 - do not auto-open a draft PR;
 - do not merge the branch into `main`;
-- keep the pushed branch available for review and follow-up changes.
+- keep the pushed branch available for review.
 
-When the user asks for a PR, review the full branch diff, validation results, active plan, and `.agents/` state before creating it.
+When the user asks for a PR/integration, review the full branch diff, validation results, active plan, and `.agents/` state first.
+
+For a sequential roadmap, the next dependent plan stays blocked until this integration gate is completed and `main` contains the dependency.
 
 ## 9. CI and tests policy
 
@@ -235,14 +252,14 @@ This does not prohibit manual verification, lint, typecheck, build checks, migra
 
 ## 10. Branch lifecycle
 
-While a plan is awaiting review or PR authorization, keep its pushed branch intact.
+While a plan is awaiting review or PR/integration authorization, keep its pushed branch intact.
 
 After the plan is merged/integrated:
 
 ```bash
 git switch main
 git pull --ff-only origin main
-git branch -d plan/002-foundation-hardening
+git branch -d plan/004-ui-foundation-public-auth
 ```
 
 Delete a remote branch only when it is clearly no longer needed.
@@ -263,4 +280,5 @@ Before saying a phase is complete, all applicable items must be true:
 - [ ] Any additional validation required by the plan passes.
 - [ ] Changes are committed with a clear phase-scoped message.
 - [ ] Commit is pushed to the plan branch/upstream.
-- [ ] No PR was created unless the user explicitly requested it.
+- [ ] No PR/integration happened unless the user explicitly requested it.
+- [ ] A dependent next plan is not started until this plan is integrated into `main`, unless the user explicitly requested stacked branches.
