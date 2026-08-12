@@ -2,7 +2,7 @@
 
 Status: planned-later
 Branch: `plan/010-progressive-situm-data-integration`
-Depends on: Plan 009 integrated into `main` **and** explicit user acceptance of the completed UI roadmap
+Depends on: Plan 009A UI fidelity recovery completed, integrated into the chosen cumulative UI baseline, **and explicit user acceptance of the recovered UI**
 
 ## Goal
 
@@ -28,6 +28,7 @@ During Plan 010:
 - `design/data-source-matrix.md`
 - populated canonical HTML reference
 - completed/accepted Plans 004–009 implementation/state
+- completed and **user-accepted** `plans/009a-ui-prototype-fidelity-recovery.md`
 - Plans 011–016 so feasibility decisions match later scopes
 - this plan
 
@@ -35,7 +36,7 @@ During Plan 010:
 
 For every candidate dataset/action inspect:
 
-1. accepted Nuxt route/components/types from Plans 004–009;
+1. accepted Nuxt route/components/types after Plan 009A;
 2. corresponding current canonical HTML area;
 3. canonical dummy fixtures/local actions that may later be replaced.
 
@@ -64,9 +65,9 @@ Rules:
 - client route middleware is not API security;
 - never create a generic unauthenticated Situm proxy.
 
-## Phase 1 — Verify current local setup
+## Phase 1 — Verify current local setup and accepted UI gate
 
-- [ ] Confirm Plan 009 is integrated and UI explicitly accepted.
+- [ ] Confirm Plan 009A is complete and the recovered UI has been explicitly accepted by the user.
 - [ ] Confirm ignored local `.env` has the POC key without printing it.
 - [ ] If building ID is missing, follow documented `/api/v1/buildings` discovery and write only selected ID to local `.env`.
 - [ ] Do not change environment naming.
