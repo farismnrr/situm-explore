@@ -139,16 +139,16 @@ Small deviations are allowed only for real usability/accessibility reasons and m
 
 Inspect the corresponding HTML interaction intent before each review.
 
-- [ ] route links use Nuxt routing;
-- [ ] auth remains real while matching approved visual states;
-- [ ] global search open/filter/navigate/close works locally;
-- [ ] drawers/modals close clearly and Escape works when supported by Nuxt UI primitives;
-- [ ] dummy filters/search work;
-- [ ] map Explore/Route/Layers states remain local/dummy except the pre-existing real viewer lifecycle;
-- [ ] analytics tabs work locally;
-- [ ] settings tabs/switch/reset work locally;
-- [ ] no dead controls unless intentionally disabled in the reference;
-- [ ] no dummy action claims a remote Situm mutation.
+- [x] route links use Nuxt routing;
+- [x] auth remains real while matching approved visual states;
+- [x] global search open/filter/navigate/close works locally;
+- [x] drawers/modals close clearly and Escape works when supported by Nuxt UI primitives;
+- [x] dummy filters/search work;
+- [x] map Explore/Route/Layers states remain local/dummy except the pre-existing real viewer lifecycle;
+- [x] analytics tabs work locally;
+- [x] settings tabs/switch/reset work locally;
+- [x] no dead controls unless intentionally disabled in the reference;
+- [x] no dummy action claims a remote Situm mutation.
 
 Do not add new Situm REST/SDK feature integration as part of polishing.
 

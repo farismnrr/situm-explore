@@ -74,6 +74,13 @@ function selectPoi(id: string) {
   selectedPoiId.value = id
 }
 
+function openDirections(poiName: string) {
+  routeDestination.value = poiName
+  activeTab.value = 'route'
+  routeCalculated.value = false
+  routeStatus.value = 'Destination selected locally. Calculate a route preview to continue.'
+}
+
 function toggleFavorite(id: string) {
   favoritePoiIds.value = favoritePoiIds.value.includes(id)
     ? favoritePoiIds.value.filter(poiId => poiId !== id)
@@ -238,13 +245,16 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
           <UButton icon="i-lucide-x" aria-label="Close POI details" color="neutral" variant="ghost" size="xs" @click="selectedPoiId = null" />
         </div>
         <p class="mt-3 text-xs text-muted">{{ selectedPoi.description }}</p>
-        <div class="mt-4 flex flex-wrap gap-2"><UButton label="Directions" color="primary" size="sm" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
+        <div class="mt-4 flex flex-wrap gap-2"><UButton label="Directions" color="primary" size="sm" @click="openDirections(selectedPoi.name)" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
       </UCard>
-      <UCard v-if="locationPickerOpen" class="absolute left-1/2 top-1/2 z-20 w-72 -translate-x-1/2 -translate-y-1/2 shadow-lg" :ui="{ body: 'p-4' }">
-        <div class="flex items-start justify-between gap-3"><div><p class="font-semibold text-highlighted">Location picker</p><p class="mt-1 text-xs text-muted">Choose a local preview point on Floor 1.</p></div><UButton icon="i-lucide-x" aria-label="Close location picker" color="neutral" variant="ghost" size="xs" @click="locationPickerOpen = false" /></div>
-        <div class="mt-4 rounded-lg border border-dashed border-primary bg-elevated p-4 text-center text-xs text-muted">Local map point · 41.387, 2.169</div>
-        <UButton class="mt-3 w-full" label="Use this location" size="sm" @click="locationPickerOpen = false; showViewerToolStatus('Selected map location stored locally.')" />
-      </UCard>
+      <UModal v-model:open="locationPickerOpen" title="Location picker" description="Choose a local preview point on Floor 1.">
+        <template #body>
+          <div class="rounded-lg border border-dashed border-primary bg-elevated p-4 text-center text-xs text-muted">Local map point · 41.387, 2.169</div>
+        </template>
+        <template #footer>
+          <UButton class="ml-auto" label="Use this location" size="sm" @click="locationPickerOpen = false; showViewerToolStatus('Selected map location stored locally.')" />
+        </template>
+      </UModal>
     </section>
   <UModal v-model:open="viewerSettingsOpen" title="Viewer accessibility settings">
     <template #body>
