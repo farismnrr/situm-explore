@@ -6,6 +6,14 @@ const dateRange = ref('Last 24 hours')
 const exportMessage = ref('')
 const { showFeedback } = useExploreFeedback()
 
+function moveReportTab(event: KeyboardEvent, index: number) {
+  if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return
+  event.preventDefault()
+  const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? analyticsTabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + analyticsTabs.length) % analyticsTabs.length
+  activeReport.value = analyticsTabs[nextIndex]!.id
+  requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(`[data-report-tab="${activeReport.value}"]`)?.focus())
+}
+
 function exportCsv() {
   const rows = activeReport.value === 'stay'
     ? [['Zone', 'Sessions', 'Average stay', 'Maximum stay'], ...stayRecords.map(row => [row.zone, String(row.sessions), row.average, row.maximum])]
@@ -38,7 +46,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Analytics & reports'
     <p v-if="exportMessage" class="sr-only" role="status">{{ exportMessage }}</p>
 
     <div class="analytics-tabs flex gap-1 overflow-x-auto border-b border-default" role="tablist" aria-label="Analytics reports">
-      <button v-for="tab in analyticsTabs" :key="tab.id" type="button" role="tab" :aria-selected="activeReport === tab.id" :tabindex="activeReport === tab.id ? 0 : -1" class="analytics-tab shrink-0 border-b-2 px-3 py-2.5 text-xs font-medium transition" :class="activeReport === tab.id ? 'border-primary text-highlighted' : 'border-transparent text-muted hover:text-highlighted'" @click="activeReport = tab.id">{{ tab.label }}</button>
+      <button v-for="(tab, index) in analyticsTabs" :key="tab.id" :data-report-tab="tab.id" type="button" role="tab" :aria-selected="activeReport === tab.id" :tabindex="activeReport === tab.id ? 0 : -1" class="analytics-tab shrink-0 border-b-2 px-3 py-2.5 text-xs font-medium transition" :class="activeReport === tab.id ? 'border-primary text-highlighted' : 'border-transparent text-muted hover:text-highlighted'" @keydown="moveReportTab($event, index)" @click="activeReport = tab.id">{{ tab.label }}</button>
     </div>
 
     <UCard :ui="{ body: 'p-0' }">

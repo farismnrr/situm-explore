@@ -240,20 +240,20 @@ Acceptance: branch lineage and current instructions are truthful; no missing cle
 
 Fix systemic causes before route-specific tuning.
 
-- [ ] Re-audit `app/app.config.ts` and global semantic CSS against the current reference.
-- [ ] Keep primary/secondary/ghost/accent `UButton` hierarchy consistent with the prototype.
-- [ ] Restore accessible muted/subtle text contrast while preserving the light visual hierarchy.
-- [ ] Ensure canonical page-title utility/composition actually produces the ~30px title language and is used consistently.
-- [ ] Confirm panel heading, table header/body, card, input, select, badge/pill and toolbar density globally.
-- [ ] Ensure table rows do not gain unnecessary height from unreferenced secondary lines.
-- [ ] Preserve visible focus, skip link and reduced-motion behavior.
-- [ ] Fix tab semantics/keyboard behavior for Analytics and other true tab interfaces.
-- [ ] Do not create `BaseButton`, `BaseCard`, `BaseInput`, or a parallel design system.
-- [ ] Render at least one representative public and authenticated surface before closing this phase.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] commit and push Phase 1.
+- [x] Re-audit `app/app.config.ts` and global semantic CSS against the current reference.
+- [x] Keep primary/secondary/ghost/accent `UButton` hierarchy consistent with the prototype.
+- [x] Restore accessible muted/subtle text contrast while preserving the light visual hierarchy.
+- [x] Ensure canonical page-title utility/composition actually produces the ~30px title language and is used consistently.
+- [x] Confirm panel heading, table header/body, card, input, select, badge/pill and toolbar density globally.
+- [x] Ensure table rows do not gain unnecessary height from unreferenced secondary lines.
+- [x] Preserve visible focus, skip link and reduced-motion behavior.
+- [x] Fix tab semantics/keyboard behavior for Analytics and other true tab interfaces.
+- [x] Do not create `BaseButton`, `BaseCard`, `BaseInput`, or a parallel design system.
+- [x] Render at least one representative public and authenticated surface before closing this phase.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] commit and push Phase 1.
 
 ---
 

@@ -10,9 +10,9 @@ export default defineAppConfig({
     },
     button: {
       defaultVariants: {
-        color: 'neutral',
+        color: 'primary',
         variant: 'solid',
-        size: 'md'
+        size: 'sm'
       }
     },
     input: {
