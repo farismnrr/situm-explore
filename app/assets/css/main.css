@@ -162,6 +162,11 @@ body {
   line-height: 1.2;
 }
 
+.app-shell-main { padding-left: 14.25rem; }
+.app-sidebar { width: 14.25rem; transform: translateX(0); }
+.shell-menu-button,
+.shell-menu-backdrop { display: none; }
+
 @media (max-width: 1023px) {
   .app-content { padding-inline: 1rem; }
 }
@@ -190,9 +195,17 @@ body {
   font-size: 0.625rem;
 }
 
-@media (min-width: 640px) and (max-width: 1100px) {
+@media (min-width: 801px) and (max-width: 1049px) {
   .app-sidebar { width: 208px; }
   .app-shell-main { padding-left: 208px; }
+}
+
+@media (max-width: 800px) {
+  .app-shell-main { padding-left: 0; }
+  .app-sidebar { width: min(228px, calc(100vw - 2rem)); transform: translateX(-100%); }
+  .app-sidebar.translate-x-0 { transform: translateX(0); }
+  .shell-menu-button { display: inline-flex; }
+  .shell-menu-backdrop { display: block; }
 }
 
 @media (max-width: 639px) {

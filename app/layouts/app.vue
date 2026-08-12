@@ -61,7 +61,7 @@ function updateDesktopState() {
 }
 
 onMounted(() => {
-  desktopMedia = window.matchMedia('(min-width: 1024px)')
+  desktopMedia = window.matchMedia('(min-width: 801px)')
   updateDesktopState()
   desktopMedia.addEventListener('change', updateDesktopState)
 })
@@ -92,8 +92,8 @@ function syncWorkspace() {
   <div>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="app-shell flex min-h-screen bg-default text-default">
-    <button v-if="mobileOpen" class="fixed inset-0 z-30 bg-gray-950/25 lg:hidden" aria-label="Close navigation" @click="mobileOpen = false" />
-    <aside id="workspace-navigation" class="app-sidebar fixed inset-y-0 left-0 z-40 flex w-[228px] -translate-x-full flex-col border-r border-default bg-default transition-transform lg:translate-x-0" :class="{ 'translate-x-0': mobileOpen }" :aria-hidden="navigationHidden ? 'true' : undefined" :inert="navigationHidden">
+    <button v-if="mobileOpen" class="shell-menu-backdrop fixed inset-0 z-30 bg-gray-950/25" aria-label="Close navigation" @click="mobileOpen = false" />
+    <aside id="workspace-navigation" class="app-sidebar fixed inset-y-0 left-0 z-40 flex w-[228px] flex-col border-r border-default bg-default transition-transform" :class="{ 'translate-x-0': mobileOpen }" :aria-hidden="navigationHidden ? 'true' : undefined" :inert="navigationHidden">
       <div class="flex h-16 items-center border-b border-default px-4">
         <NuxtLink to="/" class="flex items-center gap-2 text-sm font-semibold tracking-tight text-highlighted" @click="mobileOpen = false">
           <BrandMark size="sm" /><span>Situm Explore</span>
@@ -118,10 +118,10 @@ function syncWorkspace() {
       </div>
     </aside>
 
-    <div class="app-shell-main min-w-0 flex-1 lg:pl-[228px]">
+    <div class="app-shell-main min-w-0 flex-1">
       <header class="sticky top-0 z-20 flex h-16 min-w-0 items-center justify-between gap-2 border-b border-default bg-default/90 px-3 backdrop-blur sm:gap-3 sm:px-[22px]">
         <div class="flex min-w-0 items-center gap-3">
-          <UButton icon="i-lucide-menu" aria-label="Open navigation" aria-controls="workspace-navigation" :aria-expanded="mobileOpen" color="neutral" variant="ghost" class="lg:hidden" @click="mobileOpen = true" />
+          <UButton icon="i-lucide-menu" aria-label="Open navigation" aria-controls="workspace-navigation" :aria-expanded="mobileOpen" color="neutral" variant="ghost" class="shell-menu-button" @click="mobileOpen = true" />
           <p class="truncate text-xs text-muted">Workspace <span class="px-1">/</span> <span class="text-highlighted">{{ $route.meta.title || 'Home' }}</span></p>
         </div>
         <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">

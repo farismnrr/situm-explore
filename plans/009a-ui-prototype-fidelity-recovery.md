@@ -316,18 +316,18 @@ Canonical breakpoint behavior to reproduce:
 
 Tasks:
 
-- [ ] Remove the phantom 208px left gutter at widths where sidebar is hidden.
-- [ ] Do not rely on contradictory `lg=1024` and custom 800px behavior for the same responsibility.
-- [ ] Test explicit intermediate width `900px` in addition to 1024/768.
-- [ ] Match canonical compact sidebar group/item density and labels.
-- [ ] Match account footer: avatar/name/email/overflow + separate Sign out action, using real session/logout.
-- [ ] Match 64px topbar, breadcrumb, search trigger with keyboard hint, Sync action and compact POC status pill.
-- [ ] Preserve accessible mobile menu/backdrop, `aria-expanded`, `inert`/hidden navigation behavior and focusability.
-- [ ] App content max width/padding must match canonical rhythm with no document overflow.
-- [ ] Render an authenticated route at 1440, 1024, 900, 768 and 390 widths before close.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] commit and push Phase 3.
+- [x] Remove the phantom 208px left gutter at widths where sidebar is hidden.
+- [x] Do not rely on contradictory `lg=1024` and custom 800px behavior for the same responsibility.
+- [x] Test explicit intermediate width `900px` in addition to 1024/768.
+- [x] Match canonical compact sidebar group/item density and labels.
+- [x] Match account footer: avatar/name/email/overflow + separate Sign out action, using real session/logout.
+- [x] Match 64px topbar, breadcrumb, search trigger with keyboard hint, Sync action and compact POC status pill.
+- [x] Preserve accessible mobile menu/backdrop, `aria-expanded`, `inert`/hidden navigation behavior and focusability.
+- [x] App content max width/padding must match canonical rhythm with no document overflow.
+- [x] Render an authenticated route at 1440, 1024, 900, 768 and 390 widths before close.
+- [x] `npm run lint`.
+- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] commit and push Phase 3.
 
 ---
 
