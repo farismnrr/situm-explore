@@ -241,34 +241,34 @@ Reference: canonical `#app-users`, `.grid-equal`, `.panel-head`, `.table`, `.act
 
 ## Page/grid
 
-- [ ] Keep `ProductPageHeader` with the compact `Only Read` action pill.
-- [ ] Desktop Users/Groups cards use equal columns with canonical 14px gap.
+- [x] Keep `ProductPageHeader` with the compact `Only Read` action pill.
+- [x] Desktop Users/Groups cards use equal columns with canonical 14px gap.
 
 ## Users card
 
-- [ ] Use shared panel header: title `Users`, right meta `<count> members` on the same compact header line.
-- [ ] Remove the second-line header paragraph footprint.
-- [ ] Desktop table rows use canonical compact shared table density only.
-- [ ] Remove route-level `px-5 py-4`, `px-4 py-4`, `py-3`, etc. that override shared 10/11px table sizing.
-- [ ] Name cell is single-line in the canonical table. Do not render email as a second line in the desktop row.
-- [ ] User name link uses canonical dark text/weight/underline-on-hover language, not blue `text-info` link styling.
-- [ ] Preserve user selection and details drawer behavior.
-- [ ] Mobile fallback may expose email if useful, but must remain compact and must not redefine desktop density.
+- [x] Use shared panel header: title `Users`, right meta `<count> members` on the same compact header line.
+- [x] Remove the second-line header paragraph footprint.
+- [x] Desktop table rows use canonical compact shared table density only.
+- [x] Remove route-level `px-5 py-4`, `px-4 py-4`, `py-3`, etc. that override shared 10/11px table sizing.
+- [x] Name cell is single-line in the canonical table. Do not render email as a second line in the desktop row.
+- [x] User name link uses canonical dark text/weight/underline-on-hover language, not blue `text-info` link styling.
+- [x] Preserve user selection and details drawer behavior.
+- [x] Mobile fallback may expose email if useful, but must remain compact and must not redefine desktop density.
 
 ## Groups card
 
-- [ ] Use shared panel header: title `Groups`, right meta `<count> groups`.
-- [ ] Each group row matches canonical dot + title + one metadata line + trailing chevron.
-- [ ] Remove the extra group description line from the canonical card footprint.
-- [ ] Use canonical dot tones and compact 11px/10px activity typography.
+- [x] Use shared panel header: title `Groups`, right meta `<count> groups`.
+- [x] Each group row matches canonical dot + title + one metadata line + trailing chevron.
+- [x] Remove the extra group description line from the canonical card footprint.
+- [x] Use canonical dot tones and compact 11px/10px activity typography.
 
 Validation:
 
-- [ ] Render `http://100.99.88.53:3000/app/users` at 1440x900 and compare side-by-side with canonical Users.
-- [ ] Verify drawer open state separately.
-- [ ] Check 1024px, 768px and 390px behavior.
-- [ ] `git diff --check`, lint, typecheck.
-- [ ] commit and push Users closure.
+- [x] Render `http://100.99.88.53:3000/app/users` at 1440x900 and compare side-by-side with canonical Users.
+- [x] Verify drawer open state separately.
+- [x] Check 1024px, 768px and 390px behavior.
+- [x] `git diff --check`, lint, typecheck.
+- [x] commit and push Users closure.
 
 ---
 

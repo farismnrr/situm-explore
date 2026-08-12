@@ -13,23 +13,21 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
       <template #actions><ProductStatusBadge label="Only Read" tone="info" /></template>
     </ProductPageHeader>
 
-    <div class="grid gap-4 lg:grid-cols-2">
+    <div class="grid gap-[14px] lg:grid-cols-2">
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
-        <div class="flex items-center justify-between gap-3 border-b border-default px-5 py-4">
-          <div><h2 class="font-semibold text-highlighted">Users</h2><p class="mt-1 text-xs text-muted">{{ prototypeDirectoryUsers.length }} members</p></div>
-        </div>
+        <ProductPanelHeader title="Users" :meta="`${prototypeDirectoryUsers.length} members`" />
         <div class="hidden overflow-x-auto md:block">
           <table class="table-density w-full min-w-[620px] text-left">
-            <thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Name</th><th class="px-4 py-3 font-medium">Role</th><th class="px-4 py-3 font-medium">Groups</th><th class="px-4 py-3 font-medium">Status</th></tr></thead>
-            <tbody class="divide-y divide-default"><tr v-for="user in prototypeDirectoryUsers" :key="user.id" class="transition hover:bg-elevated/40"><td class="px-5 py-4"><button class="text-left font-medium text-info hover:underline" @click="selectedUser = user">{{ user.name }}</button><p class="mt-1 text-xs text-muted">{{ user.email }}</p></td><td class="px-4 py-4 text-muted">{{ user.role }}</td><td class="px-4 py-4 text-muted">{{ user.groups.join(', ') }}</td><td class="px-4 py-4"><ProductStatusBadge :label="user.status" :tone="user.status === 'Active' ? 'success' : 'neutral'" /></td></tr></tbody>
+            <thead class="border-b border-default bg-elevated/40"><tr><th class="font-medium">Name</th><th class="font-medium">Role</th><th class="font-medium">Groups</th><th class="font-medium">Status</th></tr></thead>
+            <tbody class="divide-y divide-default"><tr v-for="user in prototypeDirectoryUsers" :key="user.id" class="transition hover:bg-elevated/40"><td><button class="text-left font-medium text-highlighted hover:underline" @click="selectedUser = user">{{ user.name }}</button></td><td class="text-muted">{{ user.role }}</td><td class="text-muted">{{ user.groups.join(', ') }}</td><td><ProductStatusBadge :label="user.status" :tone="user.status === 'Active' ? 'success' : 'neutral'" /></td></tr></tbody>
           </table>
         </div>
-        <div class="divide-y divide-default md:hidden"><article v-for="user in prototypeDirectoryUsers" :key="user.id" class="space-y-3 p-4"><div class="flex items-start justify-between gap-3"><div><button class="text-left font-medium text-info hover:underline" @click="selectedUser = user">{{ user.name }}</button><p class="mt-1 text-xs text-muted">{{ user.email }}</p></div><ProductStatusBadge :label="user.status" :tone="user.status === 'Active' ? 'success' : 'neutral'" /></div><p class="text-xs text-muted">{{ user.role }} · {{ user.groups.join(', ') }}</p></article></div>
+        <div class="divide-y divide-default md:hidden"><article v-for="user in prototypeDirectoryUsers" :key="user.id" class="space-y-2 p-3"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><button class="truncate text-left font-medium text-highlighted hover:underline" @click="selectedUser = user">{{ user.name }}</button><p class="mt-0.5 truncate text-[10px] text-muted">{{ user.email }}</p></div><ProductStatusBadge :label="user.status" :tone="user.status === 'Active' ? 'success' : 'neutral'" /></div><p class="text-[10px] text-muted">{{ user.role }} · {{ user.groups.join(', ') }}</p></article></div>
       </UCard>
 
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
-        <div class="flex items-center justify-between gap-3 border-b border-default px-5 py-4"><div><h2 class="font-semibold text-highlighted">Groups</h2><p class="mt-1 text-xs text-muted">{{ prototypeDirectoryGroups.length }} groups</p></div></div>
-        <div class="panel-body activity-list"><article v-for="group in prototypeDirectoryGroups" :key="group.id" class="activity-row flex items-start gap-3"><span class="mt-1 size-2 shrink-0 rounded-full" :class="group.color === 'info' ? 'bg-info' : group.color === 'success' ? 'bg-success' : 'bg-neutral'" /><div class="min-w-0"><h3 class="text-xs font-medium text-highlighted">{{ group.name }}</h3><p class="mt-1 text-[10px] text-muted">{{ group.userCount }} users · {{ group.deviceCount }} devices</p><p class="mt-1 text-[10px] text-muted">{{ group.description }}</p></div></article></div>
+        <ProductPanelHeader title="Groups" :meta="`${prototypeDirectoryGroups.length} groups`" />
+        <div class="panel-body activity-list"><article v-for="group in prototypeDirectoryGroups" :key="group.id" class="activity-row grid grid-cols-[auto_1fr_auto] items-start gap-2"><span class="mt-1 size-1.5 shrink-0 rounded-full" :class="group.color === 'info' ? 'bg-info' : group.color === 'success' ? 'bg-success' : 'bg-neutral'" /><div class="min-w-0"><h3 class="text-[11px] font-medium text-highlighted">{{ group.name }}</h3><p class="mt-0.5 text-[10px] text-muted">{{ group.userCount }} users · {{ group.deviceCount }} devices</p></div><UIcon name="i-lucide-chevron-right" class="mt-0.5 size-3.5 text-muted" aria-hidden="true" /></article></div>
       </UCard>
     </div>
 
