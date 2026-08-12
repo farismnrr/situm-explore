@@ -6,7 +6,7 @@ This matrix is mandatory context for Plans 004–010.
 
 **Use existing real integrations where they already exist. Use typed client-side dummy data where they do not.**
 
-Do not add server APIs, database tables, migrations, or Situm write permissions merely to populate the approved UI reference.
+Do not add server APIs, database tables, migrations, or Situm-backed feature work merely to populate the approved UI reference.
 
 | Surface | Source during UI implementation | Mode | Rule |
 | --- | --- | --- | --- |
@@ -31,7 +31,7 @@ Do not add server APIs, database tables, migrations, or Situm write permissions 
 | Users/groups | no app endpoint | DUMMY | Keep separate from app authentication identity. |
 | Organization | no app endpoint | DUMMY/STATIC | Generic POC context only. |
 | Viewer config/styles/images/settings | no app endpoint | DUMMY | Local toggles/selects only during UI plans. |
-| API-key permission label | project decision | STATIC CONTEXT | `Only Read` may be displayed; never key value. |
+| Situm API-key permission label | project decision | STATIC CONTEXT | POC may use one Read & Write key; never render the key value. |
 
 ## Real integration invariants
 
@@ -49,7 +49,9 @@ The actual viewer is ready only after its SDK event. `/api/situm/status` must no
 
 ### Credentials
 
-The POC currently uses an `Only Read` browser viewer credential. Never commit, render, fingerprint, or log its value.
+The POC uses one Situm API key through `NUXT_PUBLIC_SITUM_API_KEY`. It may temporarily have Read & Write permission for speed during the POC. Never commit, render, fingerprint, or log its value. Revoke or replace it after the POC.
+
+This credential decision does **not** change the UI roadmap: Plans 004–009 remain UI-first and dummy-first for product domains that do not already have a working integration.
 
 ## Dummy-data implementation rules
 
@@ -64,4 +66,4 @@ The POC currently uses an `Only Read` browser viewer credential. Never commit, r
 
 ## Later replacement
 
-Plan 010 may evaluate replacing selected dummy read-only datasets with real Situm data **after the UI is accepted**. Until then, the UI implementation plans should not expand backend scope.
+After the UI is accepted, separate backend/integration plans may replace selected dummy datasets with real Situm-backed behavior. Until then, the UI implementation plans should not expand backend scope.
