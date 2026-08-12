@@ -191,12 +191,12 @@ Reuse existing production behavior:
 
 Rules:
 
-- [ ] Match layout, hierarchy, fields, feedback, and responsive behavior with Nuxt UI form primitives.
-- [ ] Keep labels/autocomplete accessible.
-- [ ] Preserve submit loading/disabled behavior and real inline auth errors.
-- [ ] **During Plan 004, successful login continues to existing `/dashboard`.** Plan 005 owns the atomic migration to `/app`.
-- [ ] Logged-in visitors to `/login` should continue to `/dashboard` rather than seeing a fake login.
-- [ ] Never copy dummy `anything works` authentication from the HTML.
+- [x] Match layout, hierarchy, fields, feedback, and responsive behavior with Nuxt UI form primitives.
+- [x] Keep labels/autocomplete accessible.
+- [x] Preserve submit loading/disabled behavior and real inline auth errors.
+- [x] **During Plan 004, successful login continues to existing `/dashboard`.** Plan 005 owns the atomic migration to `/app`.
+- [x] Logged-in visitors to `/login` should continue to `/dashboard` rather than seeing a fake login.
+- [x] Never copy dummy `anything works` authentication from the HTML.
 
 Do not modify the authentication backend unless a real regression is discovered.
 
