@@ -128,6 +128,27 @@ body {
   letter-spacing: -0.015em;
 }
 
+.panel-body {
+  padding: 1rem;
+}
+
+.activity-list {
+  display: grid;
+}
+
+.activity-row {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  align-items: start;
+  gap: 0.5625rem;
+  padding: 0.6875rem 0;
+  border-bottom: 1px solid var(--explore-border);
+}
+
+.activity-row:last-child {
+  border-bottom: 0;
+}
+
 .table-density th {
   padding: 0.625rem 0.75rem;
   color: var(--explore-foreground-subtle);

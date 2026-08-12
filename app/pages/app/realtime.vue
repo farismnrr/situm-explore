@@ -41,7 +41,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
 <template>
   <div class="operations-page space-y-6">
     <ProductPageHeader eyebrow="Operations" title="Realtime positions" description="Current user and device locations across the indoor workspace.">
-      <template #actions><ProductStatusBadge label="Auto refresh · 5s" tone="success" dot /><UButton label="Refresh now" icon="i-lucide-refresh-cw" color="neutral" variant="ghost" @click="refreshPositions" /></template>
+      <template #actions><ProductStatusBadge label="Auto refresh · 5s" tone="success" dot /><UButton label="Refresh now" icon="i-lucide-refresh-cw" color="neutral" variant="outline" @click="refreshPositions" /></template>
     </ProductPageHeader>
 
     <p v-if="statusMessage" class="sr-only" role="status">{{ statusMessage }}</p>

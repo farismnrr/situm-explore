@@ -30,14 +30,14 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Organization' })
         <div class="panel-body p-4"><ProductDetailList :items="organizationDetails"><template #value="{ item }"><ProductStatusBadge v-if="item.kind === 'permission'" :label="item.value ?? ''" tone="info" /><span v-else>{{ item.value }}</span></template></ProductDetailList></div>
       </UCard>
 
-      <UCard :ui="{ body: 'p-0 sm:p-0' }">
+      <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
         <ProductPanelHeader title="POC credential boundary" meta="Prototype rule" />
         <div class="panel-body p-4">
         <div class="soft-card p-3.5">
           <div class="flex items-center justify-between gap-3"><strong class="text-[11px] text-highlighted">Browser viewer key</strong><ProductStatusBadge label="Read &amp; Write (POC)" tone="info" /></div>
           <p class="mt-3 text-[10px] leading-relaxed text-muted">The current POC key permits Read &amp; Write access for viewer validation. No destructive cartography or account actions are represented as active operations.</p>
         </div>
-        <div class="my-5 border-t border-default" />
+        <div class="my-[15px] border-t border-default" />
         <p class="text-[10px] text-muted">This screen is product context only. No account, organization, cartography, or credential-management actions are available.</p>
         </div>
       </UCard>

@@ -31,7 +31,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Analytics & reports'
     <ProductPageHeader eyebrow="Reports" title="Analytics & reports" description="Visitors, geofencing, positioning, trajectories and map viewer usage.">
       <template #actions>
         <USelect v-model="dateRange" :items="['Last 24 hours', 'Last 7 days', 'Last 30 days']" class="w-[150px]" aria-label="Report date range" />
-        <UButton label="Export CSV" color="neutral" variant="ghost" @click="exportCsv" />
+        <UButton label="Export CSV" class="bg-[var(--explore-ink)] text-white hover:bg-[var(--explore-ink-hover)]" @click="exportCsv" />
       </template>
     </ProductPageHeader>
 
@@ -41,10 +41,10 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Analytics & reports'
           <button v-for="(tab, index) in analyticsTabs" :key="tab.id" :data-report-tab="tab.id" type="button" role="tab" :aria-selected="activeReport === tab.id" :tabindex="activeReport === tab.id ? 0 : -1" class="analytics-tab rounded-lg border px-2.5 text-[10px] font-medium transition" :class="activeReport === tab.id ? 'border-[var(--explore-ink)] bg-[var(--explore-ink)] text-white' : 'border-default bg-default text-muted hover:text-highlighted'" @keydown="handleTabKey($event, index, analyticsTabs.length, nextIndex => activeReport = analyticsTabs[nextIndex]!.id, '[data-report-tab]')" @click="activeReport = tab.id">{{ tab.label }}</button>
     </div>
 
-    <UCard class="analytics-card" :ui="{ body: 'p-0' }">
+    <UCard class="analytics-card" :ui="{ body: 'p-0 sm:p-0' }">
       <div v-if="activeReport === 'visitors' || activeReport === 'positioning'">
         <ProductPanelHeader :title="activeReport === 'visitors' ? 'Visitors' : 'Positioning time'" :meta="activeReport === 'visitors' ? 'Unique indoor visitors' : 'Tracked duration by user'" />
-        <div class="analytics-chart" :aria-label="activeReport === 'visitors' ? 'Visitors by time' : 'Positioning time by user'" role="img"><div class="analytics-grid" /><div class="flex h-full items-end justify-between gap-2 px-2 sm:px-5"><div v-for="(bar, index) in (activeReport === 'visitors' ? visitorBars : positioningBars)" :key="bar.label" class="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2"><span class="analytics-bar w-full max-w-12 rounded-t-sm" :class="index > 3 ? 'bg-info' : 'bg-info/35'" :style="{ height: `${bar.value}%` }" /><span class="truncate text-[10px] text-muted">{{ bar.label }}</span></div></div></div>
+        <div class="analytics-chart" :aria-label="activeReport === 'visitors' ? 'Visitors by time' : 'Positioning time by user'" role="img"><div class="analytics-grid" /><div class="flex h-full w-full items-end justify-between gap-2 px-2 sm:px-5"><div v-for="(bar, index) in (activeReport === 'visitors' ? visitorBars : positioningBars)" :key="bar.label" class="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2"><span class="analytics-bar w-full max-w-12 rounded-t-sm" :class="index > 3 ? 'bg-info' : 'bg-info/35'" :style="{ height: `${bar.value}%` }" /><span class="truncate text-[11px] font-medium text-muted">{{ bar.label }}</span></div></div></div>
       </div>
 
       <div v-else-if="activeReport === 'heatmap'"><ProductPanelHeader title="Heatmap" meta="Position density" /><div class="panel-body"><div class="analytics-heatmap relative h-[260px] overflow-hidden rounded-lg border border-default" aria-label="Local position density heatmap" role="img"><span class="heat-spot heat-one" /><span class="heat-spot heat-two" /><span class="heat-spot heat-three" /></div></div></div>
@@ -59,12 +59,12 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Analytics & reports'
 </template>
 
 <style scoped>
-.analytics-chart { position: relative; height: 15.625rem; display: flex; align-items: stretch; }
+.analytics-chart { position: relative; height: 17rem; display: flex; align-items: stretch; }
 .analytics-tabs { margin-bottom: 0.75rem; }
 .analytics-tab { min-height: 32px; }
 .analytics-card :deep(.panel-head) { margin: 0; }
 .analytics-card :deep(.panel-body) { padding: 16px; }
-.analytics-card > :deep(.analytics-chart) { box-sizing: border-box; padding: 16px; }
+.analytics-card :deep(.analytics-chart) { box-sizing: border-box; padding: 16px 16px 28px; }
 .analytics-grid { position: absolute; inset: 0 0 1.5rem; background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(25% - 1px), var(--ui-border) 25%); }
 .analytics-bar { position: relative; z-index: 1; max-width: 2rem; border-radius: 0.3rem 0.3rem 0.1rem 0.1rem; background: #dfe3e8; transition: height .2s ease; }
 .analytics-bar.bg-info\/35 { background: #dfe3e8; }.analytics-bar.bg-info { background: #9ebcfb; }

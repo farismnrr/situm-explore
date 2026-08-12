@@ -16,8 +16,8 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
     <div class="grid gap-[14px] lg:grid-cols-2">
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
         <ProductPanelHeader title="Users" :meta="`${prototypeDirectoryUsers.length} members`" />
-        <div class="hidden overflow-x-auto md:block">
-          <table class="table-density w-full min-w-[620px] text-left">
+        <div class="hidden md:block">
+          <table class="table-density w-full table-fixed text-left [&_td]:whitespace-normal [&_th]:whitespace-normal">
             <thead class="border-b border-default bg-elevated/40"><tr><th class="font-medium">Name</th><th class="font-medium">Role</th><th class="font-medium">Groups</th><th class="font-medium">Status</th></tr></thead>
             <tbody class="divide-y divide-default"><tr v-for="user in prototypeDirectoryUsers" :key="user.id" class="transition hover:bg-elevated/40"><td><button class="text-left font-medium text-highlighted hover:underline" @click="selectedUser = user">{{ user.name }}</button></td><td class="text-muted">{{ user.role }}</td><td class="text-muted">{{ user.groups.join(', ') }}</td><td><ProductStatusBadge :label="user.status" :tone="user.status === 'Active' ? 'success' : 'neutral'" /></td></tr></tbody>
           </table>

@@ -11,10 +11,10 @@ defineProps<{
 </script>
 
 <template>
-  <dl class="divide-y divide-default border-y border-default text-[11px]">
-    <div v-for="item in items" :key="item.label" class="grid grid-cols-[115px_minmax(0,1fr)] gap-3 py-2.5">
+  <dl class="grid gap-3 text-[11px]">
+    <div v-for="item in items" :key="item.label" class="grid grid-cols-[115px_1fr] gap-3">
       <dt class="text-muted">{{ item.label }}</dt>
-      <dd class="max-w-[65%] text-right font-medium text-highlighted">
+      <dd class="font-semibold text-highlighted">
         <slot name="value" :item="item">{{ item.value }}</slot>
       </dd>
     </div>
