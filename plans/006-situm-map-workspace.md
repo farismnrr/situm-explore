@@ -61,14 +61,14 @@ Target: `/app/map`.
 
 Before implementation, inspect the complete Map Viewer reference composition and responsive sizing.
 
-- [ ] Replace the temporary Plan 005 map-page composition with the approved workspace composition.
-- [ ] Keep the existing real `SitumViewer` lifecycle intact.
-- [ ] Viewer occupies the approved dominant map area.
-- [ ] Left/secondary panel matches the approved Explore / Route / Layers hierarchy when present in the current HTML.
-- [ ] Header/building/floor/mode controls match reference placement/density.
-- [ ] Preserve stable loading dimensions and truthful map error state.
-- [ ] Never display `Ready` before actual `MAP_IS_READY`.
-- [ ] Match desktop/mobile proportions from the current HTML.
+- [x] Replace the temporary Plan 005 map-page composition with the approved workspace composition.
+- [x] Keep the existing real `SitumViewer` lifecycle intact.
+- [x] Viewer occupies the approved dominant map area.
+- [x] Left/secondary panel matches the approved Explore / Route / Layers hierarchy when present in the current HTML.
+- [x] Header/building/floor/mode controls match reference placement/density.
+- [x] Preserve stable loading dimensions and truthful map error state.
+- [x] Never display `Ready` before actual `MAP_IS_READY`.
+- [x] Match desktop/mobile proportions from the current HTML.
 
 ## Phase 2 — Explore UI, dummy/local
 

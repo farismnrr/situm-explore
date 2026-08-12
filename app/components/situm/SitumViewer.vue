@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import SitumSDK, { ViewerEventType } from '@situm/sdk-js'
 
+const emit = defineEmits<{
+  status: [state: 'loading' | 'ready' | 'error', message?: string]
+}>()
+
 const config = useRuntimeConfig()
 const container = ref<HTMLElement | null>(null)
 const state = ref<'loading' | 'ready' | 'error'>('loading')
@@ -10,6 +14,7 @@ onMounted(() => {
   if (!config.public.situmApiKey || !config.public.situmBuildingId) {
     state.value = 'error'
     message.value = 'The map viewer is not configured.'
+    emit('status', state.value, message.value)
     return
   }
   try {
@@ -17,14 +22,17 @@ onMounted(() => {
     const viewer = sdk.viewer.create({ domElement: container.value!, buildingId: Number(config.public.situmBuildingId) })
     viewer.on(ViewerEventType.MAP_IS_READY, () => {
       state.value = 'ready'
+      emit('status', state.value)
     })
     viewer.on(ViewerEventType.APP_ERROR, (payload) => {
       state.value = 'error'
       message.value = payload.message ? 'The map viewer could not finish loading.' : 'The map viewer encountered an error.'
+      emit('status', state.value, message.value)
     })
   } catch (error: unknown) {
     state.value = 'error'
     message.value = error instanceof Error ? 'The map viewer could not be initialized.' : 'The map viewer encountered an error.'
+    emit('status', state.value, message.value)
   }
 })
 </script>
