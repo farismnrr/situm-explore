@@ -53,6 +53,16 @@ const continuePath = computed(() => loggedIn.value ? '/app' : '/register')
 </style>
 
 <style scoped>
-.landing-container { width: min(1240px, calc(100% - 40px)); }
-@media (max-width: 600px) { .landing-container { width: min(calc(100% - 28px), 1240px); } }
+.landing-container { width: min(1180px, calc(100% - 40px)); }
+.landing-copy h1 { max-width: 600px; }
+@media (max-width: 800px) {
+  .landing-hero-grid { gap: 28px; }
+  .landing-copy > p { max-width: 36rem; }
+}
+@media (max-width: 520px) {
+  .landing-container { width: min(calc(100% - 28px), 1180px); }
+  .landing-copy h1 { font-size: 44px; }
+  .landing-copy > p { font-size: 15px; }
+  .landing-actions .u-button:first-child { display: none; }
+}
 </style>

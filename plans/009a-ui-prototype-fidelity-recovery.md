@@ -261,45 +261,45 @@ Fix systemic causes before route-specific tuning.
 
 ## Landing `/`
 
-- [ ] Match canonical public container width/rhythm.
-- [ ] Match hero font size, line-height, tracking and copy width.
-- [ ] Match hero two-column gap and preview-window geometry.
-- [ ] Match trust strip density.
-- [ ] Match Product cards and section vertical spacing.
-- [ ] Match Operations two-column gap/composition.
-- [ ] Match Analytics stats and dark CTA block.
-- [ ] At <=800px, match the canonical single-column hero and one-column feature-grid behavior.
-- [ ] At <=520px, match phone-specific hero/action/preview behavior.
+- [x] Match canonical public container width/rhythm.
+- [x] Match hero font size, line-height, tracking and copy width.
+- [x] Match hero two-column gap and preview-window geometry.
+- [x] Match trust strip density.
+- [x] Match Product cards and section vertical spacing.
+- [x] Match Operations two-column gap/composition.
+- [x] Match Analytics stats and dark CTA block.
+- [x] At <=800px, match the canonical single-column hero and one-column feature-grid behavior.
+- [x] At <=520px, match phone-specific hero/action/preview behavior.
 
 ## Login `/login`
 
-- [ ] Desktop composition is approximately 1:1 split.
-- [ ] Auth-art mark uses canonical inverse treatment.
-- [ ] Two art information cards remain compact and two-column on desktop.
-- [ ] Login/Register navigation is a segmented gray control, not underline tabs.
-- [ ] Auth form/card width and field density match canonical treatment.
-- [ ] Real login errors stay compact and do not create unrelated alert-page composition.
-- [ ] Real login loading/success/failure behavior remains unchanged.
+- [x] Desktop composition is approximately 1:1 split.
+- [x] Auth-art mark uses canonical inverse treatment.
+- [x] Two art information cards remain compact and two-column on desktop.
+- [x] Login/Register navigation is a segmented gray control, not underline tabs.
+- [x] Auth form/card width and field density match canonical treatment.
+- [x] Real login errors stay compact and do not create unrelated alert-page composition.
+- [x] Real login loading/success/failure behavior remains unchanged.
 
 ## Register `/register`
 
-- [ ] Reuse the same Auth shell/composition.
-- [ ] Preserve canonical field order and first/last split.
-- [ ] Registration remains local/dummy.
-- [ ] Completion feedback stays inside the compact form language; remove large page-shifting success alert treatment.
+- [x] Reuse the same Auth shell/composition.
+- [x] Preserve canonical field order and first/last split.
+- [x] Registration remains local/dummy.
+- [x] Completion feedback stays inside the compact form language; remove large page-shifting success alert treatment.
 
 Responsive:
 
-- [ ] Auth art is hidden at the canonical <=800px transition.
-- [ ] 768px rendering must not retain desktop auth art.
-- [ ] 390px rendering has no horizontal overflow.
+- [x] Auth art is hidden at the canonical <=800px transition.
+- [x] 768px rendering must not retain desktop auth art.
+- [x] 390px rendering has no horizontal overflow.
 
 Validation:
 
-- [ ] screenshots/render review at 1440, 1024, 768 and 390 widths;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] commit and push Phase 2.
+- [x] screenshots/render review at 1440, 1024, 768 and 390 widths;
+- [x] `npm run lint`;
+- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] commit and push Phase 2.
 
 ---
 

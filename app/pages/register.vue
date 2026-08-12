@@ -21,9 +21,7 @@ function submit() {
 <template>
   <AuthShell active="register" title="Create your workspace" intro="Set up a local demo workspace to preview the product flow." art-description="This local demo lets you explore the product flow without creating an account." art-context="Explore the product flow with local demo data.">
         <p v-if="errorMessage" class="form-error" role="alert">{{ errorMessage }}</p>
-        <UAlert v-if="submitted" color="success" variant="soft" title="Local demo ready" description="No account was created. Continue to real sign in when you have an existing account." class="mb-5" role="status">
-          <template #actions><UButton to="/login" color="success" variant="solid" size="sm">Go to sign in</UButton></template>
-        </UAlert>
+        <div v-if="submitted" class="auth-success" role="status"><div><strong>Local demo ready</strong><p>No account was created.</p></div><UButton to="/login" color="success" variant="solid" size="sm">Sign in</UButton></div>
         <form class="auth-form" @submit.prevent="submit">
           <div class="auth-form-split">
             <UFormField label="First name" name="firstName" required><UInput v-model="firstName" autocomplete="given-name" required class="w-full" /></UFormField>
