@@ -2,7 +2,7 @@
 
 `.agents/` is the persistent context layer for Situm Explore.
 
-The root `AGENTS.md` is intentionally small. This directory contains the operating rules and durable context that Codex should read and maintain across conversations.
+The root `AGENTS.md` is intentionally small. This directory contains operating rules and durable context that Codex should read and maintain across conversations.
 
 ## Directory map
 
@@ -13,11 +13,17 @@ The root `AGENTS.md` is intentionally small. This directory contains the operati
 | `protocols/chat-lifecycle.md` | What to read and do during each conversation. |
 | `protocols/persistence.md` | Rules for deciding what gets written after a chat. |
 | `protocols/git-workflow.md` | Mandatory plan-branch, phase commit/push, lint, and PR-gate workflow. |
-| `design/` | Persistent design principles, UI implementation guide, and reference protocol for UI/UX work. |
 | `memory/` | Durable context about the user: profile, preferences, goals, decisions. |
 | `knowledge/` | Reusable external/domain knowledge and frameworks. |
 | `reflections/` | Lessons that should improve future agent behavior. |
 | `sessions/` | Concise chronological records of conversations. |
+
+Design guidance intentionally lives outside `.agents/` to avoid duplicate sources of truth:
+
+- root `DESIGN.md` is the design router;
+- `design/IMPLEMENTATION.md` is the Nuxt implementation contract;
+- `design/data-source-matrix.md` defines real-vs-dummy data boundaries;
+- `design/reference/situm-explore-interactive-prototype.html` is the single visual/interaction reference once populated by the user.
 
 ## Read order
 
@@ -27,7 +33,7 @@ At the start of a conversation:
 2. Read `state.md`.
 3. Read `protocols/chat-lifecycle.md`.
 4. If executing a plan or changing repository implementation, read `protocols/git-workflow.md` before editing.
-5. If doing UI/UX/styling/layout/component-composition work, read root `DESIGN.md` and relevant `design/` guidance before editing.
+5. If doing UI/UX/styling/layout/component-composition work, read root `DESIGN.md`, the active plan, and only the root `design/` documents they require.
 6. Read only the memory, knowledge, reflection, plan, and session files relevant to the task.
 7. If the conversation references prior work and the durable stores are insufficient, inspect recent session notes.
 
@@ -35,7 +41,7 @@ Do not load the entire directory blindly when it becomes large. Use indexes and 
 
 ## Write model
 
-There are two persistence layers:
+There are two persistence layers.
 
 ### 1. Session history
 
@@ -47,13 +53,13 @@ They are chronological and may include context that later becomes stale.
 
 ### 2. Durable context
 
-Memory, knowledge, reflections, decisions, design guidance, and state are updated only when there is a meaningful durable change.
+Memory, knowledge, reflections, decisions, and state are updated only when there is a meaningful durable change.
 
 Durable context answers: **what should still matter later?**
 
 It should be compact, deduplicated, and revised when newer information supersedes older information.
 
-For plan implementation, persistence is also a **pre-commit checkpoint**: relevant `.agents/` files and the active plan checklist must be updated before each completed phase is committed and pushed.
+For plan implementation, persistence is also a pre-commit checkpoint: relevant `.agents/` files and the active plan checklist must be updated before each completed phase is committed and pushed.
 
 ## Truth hierarchy
 
@@ -77,8 +83,8 @@ Never silently promote inference above explicit user statements.
 - Never persist secrets or credentials.
 - Keep each plan isolated on its own branch and preserve a reviewable phase-by-phase Git history.
 - Use the normal repository working directory; linked Git worktrees are optional only when explicitly requested.
-- For UI work, use the persistent design context rather than inventing a new visual direction in each session.
+- For UI work, do not invent a new visual direction when the canonical HTML reference is populated.
 
 ## Current scope
 
-The Nuxt web foundation and foundation hardening are complete. The active next step is `plans/003-ui-ux-refresh.md`: refresh the existing login/dashboard into a clean minimalist SaaS, light-only interface while preserving current auth, database, and Situm behavior. Native/mobile, CI, and unit-test infrastructure remain deferred until requirements justify them or the user explicitly asks for them.
+The Nuxt foundation and hardening are complete. Plan 003 is closed but its rendered UI was not accepted. The next implementation roadmap starts at `plans/004-ui-foundation-public-auth.md` and must use the single canonical HTML reference once the user has replaced its placeholder content. Native/mobile, CI, and unit-test infrastructure remain deferred.
