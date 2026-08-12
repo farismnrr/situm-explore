@@ -1,9 +1,17 @@
 {
   "name": "situm-explore",
   "version": "1.0.0",
-  "description": "Situm Explore is a repo-native workspace for building a personal self-improvement agent with Codex.",
+  "description": "Situm Explore is a Nuxt-based indoor mapping and operations proof of concept.",
   "private": true,
-  "scripts": { "dev": "nuxt dev", "build": "nuxt build", "preview": "nuxt preview", "typecheck": "nuxt typecheck", "lint": "eslint .", "db:generate": "drizzle-kit generate", "db:migrate": "drizzle-kit migrate" },
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "typecheck": "nuxt typecheck",
+    "lint": "eslint .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
