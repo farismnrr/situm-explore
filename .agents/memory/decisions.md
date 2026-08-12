@@ -22,7 +22,7 @@ Status: superseded by the canonical interactive UI reference for composition/inf
 ## 2026-08-12 — Web foundation implementation
 
 - Use `nuxt-auth-utils` for sealed sessions and its scrypt password utilities; the first slice authenticates one configured owner credential rather than introducing account management.
-- Use `@situm/sdk-js` Map Viewer in the browser with the dedicated read-only viewer credential boundary established during hardening.
+- Use `@situm/sdk-js` Map Viewer in the browser with the current POC Situm API-key configuration.
 - Drizzle owns only the fixed `situm_explore` PostgreSQL schema and its application-owned tables.
 
 Status: active.
@@ -63,7 +63,7 @@ Status: active.
 - Hardening addressed public-resource exposure policy, least-privilege Situm browser credentials, reproducible Nuxt ESLint setup, truthful Situm viewer readiness, fixed `situm_explore` schema ownership, and stale completed-plan checklist state.
 - Manual authenticated/API and Situm browser checks were confirmed complete by the user after integration.
 
-Status: complete.
+Status: complete; the later POC credential decision below intentionally relaxes the earlier least-privilege setup for speed.
 
 ## 2026-08-12 — UI/UX design direction
 
@@ -83,10 +83,9 @@ Status: active.
 - The populated HTML is visual/interaction intent only; production must translate it into Nuxt/Vue/Nuxt UI rather than copying raw HTML/CSS/JS architecture.
 - `DESIGN.md` is the design router; `design/IMPLEMENTATION.md` is the Nuxt translation contract; `design/data-source-matrix.md` defines real-vs-dummy boundaries.
 - Plans 004–009 implement the approved UI first. Existing integrations stay real; missing product domains use typed local dummy data so UI scope does not expand the backend.
-- Plans 010–015 are later read-only Situm integration work and must not start until the user manually accepts the UI produced by Plans 004–009.
 - During UI-first work, keep real: login/session/logout, auth middleware, `/api/me`, PostgreSQL behavior, `/api/situm/status` configuration semantics, and the existing Situm Viewer `MAP_IS_READY` / `APP_ERROR` lifecycle.
 - During UI-first work, keep dummy/local: registration, business metrics, cartography lists not yet exposed by the app, route previews around the viewer, realtime, reports/analytics, alarms, organization/users, and viewer settings not already wired.
-- Current POC Situm permission boundary remains one `Only Read` browser-visible viewer credential; never expose its value and do not add remote write operations.
+- Additional Situm backend/API integrations happen only after Plans 004–009 are complete and manually accepted, in later dedicated plans.
 
 Status: active.
 
@@ -99,5 +98,15 @@ Status: active.
 - KISS is the default tie-breaker. SOLID is applied to real responsibilities/dependencies, and DRY follows proven repetition rather than speculative abstraction.
 - Do not create generic repositories/services, DI containers, Pinia stores, Nuxt layers, generic API clients, or empty architecture folders without a concrete current requirement.
 - Plan 004 Phase 0 performs the one-time migration from the current backwards-compatible root Vue structure into Nuxt 4 `app/` before the UI surface expands. Existing URLs/auth/DB/Situm behavior must remain unchanged during that migration.
+
+Status: active.
+
+## 2026-08-12 — Time-boxed Situm POC credential and discovery
+
+- Use one environment variable, `NUXT_PUBLIC_SITUM_API_KEY`, for the Situm POC credential.
+- The user may provision that one key with Read & Write permission to maximize implementation speed during the POC; revoke or replace it after the POC.
+- Plans 004–009 remain UI-first and dummy-first for missing product domains despite the broader key permission.
+- If `NUXT_PUBLIC_SITUM_BUILDING_ID` is missing locally, the agent may discover accessible buildings via `GET https://api.situm.com/api/v1/buildings` with the `X-API-KEY` header and write only the selected building ID to ignored local `.env`.
+- Backend/API integrations that use broader Situm capabilities belong in later dedicated plans after UI acceptance, not inside the UI roadmap.
 
 Status: active.
