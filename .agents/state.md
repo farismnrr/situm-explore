@@ -8,7 +8,7 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 
 ## Phase
 
-**Phase 4 — Foundation hardening planned**
+**Phase 7 — Foundation hardening validation blocked**
 
 ## Active decisions
 
@@ -52,6 +52,7 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 - Complete Phase 1's removal commit and push; the exposure policy is now explicit.
 - Continue with later foundation-hardening phases; the application and Drizzle migrations now use the fixed `situm_explore` schema.
 - Phase 6 reconciliation is complete: Plans 000 and 001 now distinguish completed evidence from explicitly deferred/N/A optional work.
+- Automated Phase 7 validation passes. Remaining blockers are manual authenticated `/api/me` verification and browser confirmation of Situm's real `MAP_IS_READY` event.
 
 ## Next likely action
 
