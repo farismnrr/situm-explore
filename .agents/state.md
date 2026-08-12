@@ -120,6 +120,6 @@ Do not create a PR or merge unless the user explicitly requests it.
 
 ## Next action
 
-Phases 0–5 of Plan 009A are complete, reviewed, linted, committed, and pushed. Delegate Phase 6 cartography fidelity to the configured worker.
+Phases 0–6 of Plan 009A are complete, reviewed, linted, committed, and pushed. Delegate Phase 7 operations/organization fidelity to the configured worker.
 
 Final visual signoff must be evidence-based. If browser/screenshot comparison is unavailable to the executing agent, do not mark final fidelity complete; leave that gate pending for user/manual review.

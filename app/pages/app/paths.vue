@@ -18,7 +18,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Paths & routing' })
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="cartography-page space-y-6">
     <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
       <div>
         <p class="eyebrow">Routing</p>
@@ -28,19 +28,14 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Paths & routing' })
       <UButton to="/app/map?tab=route" icon="i-lucide-route" label="Open route planner" class="shrink-0" />
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-2">
+    <div class="grid gap-4 lg:grid-cols-[1.4fr_.6fr]">
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
         <div class="flex items-center justify-between gap-3 border-b border-default px-5 py-4">
           <h2 class="text-sm font-semibold text-highlighted">Path network</h2>
           <span class="text-xs text-muted">{{ building.name }}</span>
         </div>
         <div class="network-canvas" role="img" aria-label="Local path network diagram for Main Building">
-          <svg viewBox="0 0 520 360" class="size-full" aria-hidden="true">
-            <path class="network-room" d="M76 70h150v90H76zM276 70h168v90H276zM76 218h170v76H76zM296 218h148v76H296z" />
-            <path class="network-line" d="M110 182h300M258 64v242M110 182l70-64M258 182l92-70M258 182l-95 70M258 182l88 72" />
-            <circle class="network-node network-node--start" cx="110" cy="182" r="9" /><circle class="network-node network-node--middle" cx="258" cy="182" r="9" /><circle class="network-node network-node--end" cx="346" cy="254" r="9" />
-            <text x="91" y="52">Reception</text><text x="318" y="316">Training Area</text>
-          </svg>
+          <div class="network-floor"><span class="network-line network-line--horizontal" /><span class="network-line network-line--vertical" /><span class="network-line network-line--diagonal-one" /><span class="network-line network-line--diagonal-two" /><i class="network-pin network-pin--one" /><i class="network-pin network-pin--two" /><i class="network-pin network-pin--three" /></div>
           <span class="network-caption">{{ path.name }} · {{ path.accessible ? 'Accessible network' : 'Standard network' }}</span>
         </div>
       </UCard>
@@ -77,14 +72,16 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Paths & routing' })
 
 <style scoped>
 .eyebrow { color: var(--ui-text-muted); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
-.network-canvas { position: relative; height: 360px; background: radial-gradient(circle at 50% 45%, rgb(248 250 252), rgb(241 245 249)); }
-.network-canvas svg { padding: 2.5rem 1.5rem; }
-.network-room { fill: rgb(255 255 255 / 0.8); stroke: var(--ui-border); stroke-width: 2; }
-.network-line { fill: none; stroke: rgb(148 163 184); stroke-linecap: round; stroke-linejoin: round; stroke-width: 5; }
-.network-node { stroke: white; stroke-width: 4; }
-.network-node--start { fill: rgb(14 165 233); }
-.network-node--middle { fill: rgb(100 116 139); }
-.network-node--end { fill: rgb(16 185 129); }
-.network-canvas text { fill: var(--ui-text-muted); font-size: 12px; font-weight: 600; }
+.cartography-page { max-width: 1480px; }
+.network-canvas { position: relative; height: 360px; overflow: hidden; background: repeating-linear-gradient(0deg,#fafbfc 0 26px,#f0f2f4 27px),repeating-linear-gradient(90deg,transparent 0 26px,#f0f2f4 27px); }
+.network-floor { position: absolute; inset: 14% 13%; border: 2px solid #d6dae0; border-radius: 18px; background: #fff; transform: rotate(-2deg); }
+.network-floor::before { content: ''; position: absolute; inset: 15% 12%; border: 1px solid #e0e3e7; border-radius: 9px; }
+.network-line { position: absolute; z-index: 1; display: block; height: 3px; border-radius: 999px; background: #aab2bc; transform-origin: left center; }
+.network-line--horizontal { left: 24%; top: 51%; width: 52%; }
+.network-line--vertical { left: 51%; top: 25%; width: 3px; height: 53%; transform: none; }
+.network-line--diagonal-one { left: 51%; top: 51%; width: 30%; transform: rotate(-38deg); }
+.network-line--diagonal-two { left: 51%; top: 51%; width: 28%; transform: rotate(38deg); }
+.network-pin { position: absolute; z-index: 2; width: 10px; height: 10px; border-radius: 999px; background: #2563eb; box-shadow: 0 0 0 4px #2563eb1f; }
+.network-pin--one { left: 35%; top: 48%; }.network-pin--two { left: 51%; top: 48%; background: #7c8794; }.network-pin--three { left: 69%; top: 65%; background: #168754; }
 .network-caption { position: absolute; bottom: 1rem; left: 1.25rem; font-size: 0.6875rem; color: var(--ui-text-muted); }
 </style>

@@ -29,14 +29,13 @@ function openDetails(building: PrototypeBuilding) {
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl">
+  <div class="cartography-page">
     <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
       <div>
         <p class="eyebrow">Cartography</p>
         <h1 class="mt-1 text-2xl font-semibold tracking-tight text-highlighted">Buildings &amp; floors</h1>
         <p class="mt-2 text-sm text-muted">Local inventory of venue and floor metadata.</p>
       </div>
-      <UBadge color="info" variant="soft" class="w-fit font-mono text-xs">LOCAL FIXTURE · NO REMOTE ACTIONS</UBadge>
     </div>
 
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -49,16 +48,16 @@ function openDetails(building: PrototypeBuilding) {
 
     <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
       <div class="hidden overflow-x-auto md:block">
-        <table class="w-full text-left text-sm">
+        <table class="table-density w-full text-left">
           <thead class="border-b border-default bg-elevated/40 text-xs text-muted">
             <tr><th class="px-5 py-3 font-medium">Building</th><th class="px-4 py-3 font-medium">ID</th><th class="px-4 py-3 font-medium">Floors</th><th class="px-4 py-3 font-medium">Map status</th><th class="px-4 py-3 font-medium">POIs</th><th class="w-12 px-4 py-3" /></tr>
           </thead>
           <tbody class="divide-y divide-default">
             <tr v-for="building in filteredBuildings" :key="building.id" class="group transition hover:bg-elevated/40">
-              <td class="px-5 py-4"><button class="text-left font-medium text-highlighted hover:text-primary" @click="openDetails(building)">{{ building.name }}<span class="mt-0.5 block text-xs font-normal text-muted">{{ building.organization }}</span></button></td>
-              <td class="px-4 py-4 font-mono text-xs text-muted">{{ building.id }}</td><td class="px-4 py-4 text-muted">{{ building.floors.length }}</td>
-              <td class="px-4 py-4"><UBadge :color="building.status === 'Ready' ? 'success' : 'warning'" variant="soft">{{ building.status }}</UBadge></td>
-              <td class="px-4 py-4 text-muted">{{ building.poiCount }}</td><td class="px-4 py-4"><UButton icon="i-lucide-chevron-right" color="neutral" variant="ghost" size="xs" aria-label="Open building details" @click="openDetails(building)" /></td>
+              <td><button class="text-left font-semibold text-highlighted hover:text-primary" @click="openDetails(building)">{{ building.name }}<span class="mt-0.5 block text-[10px] font-normal text-muted">{{ building.organization }}</span></button></td>
+              <td class="font-mono text-[10px] text-muted">{{ building.id }}</td><td class="text-muted">{{ building.floors.length }}</td>
+              <td><UBadge :color="building.status === 'Ready' ? 'success' : 'warning'" variant="soft">{{ building.status }}</UBadge></td>
+              <td class="text-muted">{{ building.poiCount }}</td><td><UButton icon="i-lucide-chevron-right" color="neutral" variant="ghost" size="xs" aria-label="Open building details" @click="openDetails(building)" /></td>
             </tr>
           </tbody>
         </table>
@@ -90,4 +89,5 @@ function openDetails(building: PrototypeBuilding) {
 
 <style scoped>
 .eyebrow { color: var(--ui-text-muted); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.cartography-page { max-width: 1480px; }
 </style>

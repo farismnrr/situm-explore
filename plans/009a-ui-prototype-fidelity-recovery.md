@@ -333,33 +333,33 @@ Acceptance: the real map occupies the space where prototype floor art was used, 
 
 ## Buildings `/app/buildings`
 
-- [ ] Remove prominent `LOCAL FIXTURE · NO REMOTE ACTIONS` banner; canonical right-side element is a compact product pill/action footprint.
-- [ ] Match canonical header/title size and single search toolbar.
-- [ ] Do not keep extra status filtering if it materially changes the canonical toolbar composition.
-- [ ] Match compact table typography/padding; current 14px tables are visibly too loose compared with canonical ~10/11px table language.
-- [ ] Match lower Floor coverage + Cartography resources panel composition/density.
-- [ ] Preserve details interaction using shared drawer.
+- [x] Remove prominent `LOCAL FIXTURE · NO REMOTE ACTIONS` banner; canonical right-side element is a compact product pill/action footprint.
+- [x] Match canonical header/title size and single search toolbar.
+- [x] Do not keep extra status filtering if it materially changes the canonical toolbar composition.
+- [x] Match compact table typography/padding; current 14px tables are visibly too loose compared with canonical ~10/11px table language.
+- [x] Match lower Floor coverage + Cartography resources panel composition/density.
+- [x] Preserve details interaction using shared drawer.
 
 ## POIs `/app/pois`
 
-- [ ] Match canonical search + category filter + single POI count pill toolbar.
-- [ ] Remove extra explanatory `Local fixture · read only` copy from the toolbar.
-- [ ] Match compact table rows and plain category text where the reference uses plain text; avoid gratuitous badges.
-- [ ] Match favorite star treatment and details drawer behavior.
+- [x] Match canonical search + category filter + single POI count pill toolbar.
+- [x] Remove extra explanatory `Local fixture · read only` copy from the toolbar.
+- [x] Match compact table rows and plain category text where the reference uses plain text; avoid gratuitous badges.
+- [x] Match favorite star treatment and details drawer behavior.
 
 ## Geofences `/app/geofences`
 
-- [ ] Restore canonical structure: page head -> three metrics -> table.
-- [ ] Remove search/type/count toolbar that is not represented in the prototype unless user explicitly requests it later.
-- [ ] Match compact six-column table and active-status pill treatment.
-- [ ] Keep Show on map action.
+- [x] Restore canonical structure: page head -> three metrics -> table.
+- [x] Remove search/type/count toolbar that is not represented in the prototype unless user explicitly requests it later.
+- [x] Match compact six-column table and active-status pill treatment.
+- [x] Keep Show on map action.
 
 ## Paths `/app/paths`
 
-- [ ] Replace the current alternate SVG network visual with a high-fidelity translation of the canonical `building-mini` path-network composition.
-- [ ] Match `grid-2` 1.4/.6 proportions rather than generic equal halves if the reference dictates it.
-- [ ] Match route card panel-head/body and compact route-result styling.
-- [ ] Keep dummy routing semantics.
+- [x] Replace the current alternate SVG network visual with a high-fidelity translation of the canonical `building-mini` path-network composition.
+- [x] Match `grid-2` 1.4/.6 proportions rather than generic equal halves if the reference dictates it.
+- [x] Match route card panel-head/body and compact route-result styling.
+- [x] Keep dummy routing semantics.
 
 ---
 
