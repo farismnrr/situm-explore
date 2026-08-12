@@ -103,7 +103,7 @@ Status: complete
 
 Do not mark the viewer ready just because `viewer.create(...)` returned without a synchronous exception.
 
-- [ ] Inspect the current Situm SDK viewer lifecycle/events.
+- [x] Inspect the current Situm SDK viewer lifecycle/events; installed `@situm/sdk-js` exposes `ViewerEventType.MAP_IS_READY` (`app.map_is_ready`) and `APP_ERROR` events via `viewer.on(...)`.
 - [x] Wait for the current supported viewer/map-ready event before setting UI state to `ready`.
 - [x] Keep a clear loading state until the viewer is actually ready.
 - [x] Surface initialization/runtime errors clearly with Nuxt UI.
@@ -142,19 +142,21 @@ Acceptance:
 
 # Phase 6 — Reconcile completed plan history
 
+Status: complete
+
 Plans 000 and 001 are marked complete but contain stale unchecked items. Plans are persistent execution history, so status and checkboxes should not contradict each other.
 
-- [ ] Review unchecked items in `plans/000-resource-gathering.md` against actual implementation/session evidence.
-- [ ] Review unchecked vertical-slice items in `plans/001-web-foundation.md` against actual smoke-test evidence.
-- [ ] Mark items complete only when evidence supports it.
-- [ ] Mark intentionally skipped/non-applicable optional items explicitly as deferred/N/A.
-- [ ] Keep historical blockers/discovery truthful; do not rewrite history to look cleaner.
-- [ ] Update `.agents/state.md` so only current work is presented as active.
+- [x] Review unchecked items in `plans/000-resource-gathering.md` against actual implementation/session evidence.
+- [x] Review unchecked vertical-slice items in `plans/001-web-foundation.md` against actual smoke-test evidence; none remained unchecked.
+- [x] Mark items complete only when evidence supports it.
+- [x] Mark intentionally skipped/non-applicable optional items explicitly as deferred/N/A.
+- [x] Keep historical blockers/discovery truthful; do not rewrite history to look cleaner.
+- [x] Update `.agents/state.md` so only current work is presented as active.
 
 Acceptance:
 
-- [ ] Completed plans no longer contain misleading status/checklist contradictions.
-- [ ] Deferred optional work remains explicitly visible.
+- [x] Completed plans no longer contain misleading status/checklist contradictions.
+- [x] Deferred optional work remains explicitly visible.
 
 ---
 
