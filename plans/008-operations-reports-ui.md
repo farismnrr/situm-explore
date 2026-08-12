@@ -56,13 +56,13 @@ Do not add:
 
 Before implementation, inspect the complete Realtime reference state and its refresh/follow interaction intent.
 
-- [ ] Stats use typed dummy fixture data.
-- [ ] Live-map preview uses local visual markers; do not instantiate a second Situm viewer.
-- [ ] Refresh locally updates/repositions dummy records.
-- [ ] Follow routes into `/app/map` and may set only local/query UI context; do not claim real user-follow capability.
-- [ ] Reuse canonical fixture identities if the same dummy users/devices appear elsewhere.
-- [ ] No realtime Situm API/SDK integration in this plan.
-- [ ] Compare desktop/mobile output with current HTML.
+- [x] Stats use typed dummy fixture data.
+- [x] Live-map preview uses local visual markers; do not instantiate a second Situm viewer.
+- [x] Refresh locally updates/repositions dummy records.
+- [x] Follow routes into `/app/map` and may set only local/query UI context; do not claim real user-follow capability.
+- [x] Reuse canonical fixture identities if the same dummy users/devices appear elsewhere.
+- [x] No realtime Situm API/SDK integration in this plan.
+- [x] Compare desktop/mobile output with current HTML.
 
 ## Phase 2 — Analytics & Reports `/app/analytics`
 
