@@ -2,64 +2,93 @@
 
 Status: planned-later
 Branch: `plan/014-situm-reports-analytics-integration`
-Depends on: UI accepted; Plan 010 feasibility decisions
+Depends on: Plan 013 complete, reviewed, and integrated into `main`
 
 ## Goal
 
-Replace dummy analytics datasets one report at a time with real Situm report data while keeping the accepted UI stable.
+Replace dummy analytics datasets one report at a time with real Situm report data while preserving the accepted Analytics UI.
 
-## Mandatory HTML-first UI reference
+Reuse the same single POC Situm API key. The key may have Read & Write permission, but this plan only reads report/analytics data.
 
-Canonical visual/interaction reference:
+## Required reading
 
-`design/reference/situm-explore-interactive-prototype.html`
+- `AGENTS.md`
+- `ARCHITECTURE.md`
+- `DESIGN.md`
+- `design/IMPLEMENTATION.md`
+- `design/data-source-matrix.md`
+- current canonical Analytics/report reference areas
+- accepted Nuxt Analytics implementation
+- Plan 010 mapping notes and completed Plans 011–013
+- this plan
 
-Before integrating any report, read `#app-analytics` and the exact `.report-pane` for that report.
+## UI-preservation rule
 
-The accepted tab structure, chart/heatmap/table density, date-range control and report hierarchy must remain stable. Real API data should be adapted into the accepted UI, not the other way around.
+Before each report, read the corresponding current canonical HTML report state and accepted Nuxt implementation.
+
+The accepted tab structure, chart/heatmap/table density, date-range controls, and metric hierarchy remain stable. Real API payloads are adapted to that contract; extra fields do not automatically become UI.
+
+## Credential/data-path rules
+
+- Reuse `NUXT_PUBLIC_SITUM_API_KEY`.
+- Do not create a second credential/env variable.
+- Never log/render/commit the key.
+- Use the report access path selected by Plan 010.
+- No report persistence in PostgreSQL for the POC.
 
 ## Integration order
+
+Integrate only report states present in the accepted UI, normally one phase at a time:
 
 1. Visitors.
 2. Geofence stay time.
 3. Positioning time.
 4. User positions.
 5. Map Viewer usage.
-6. Heatmap only if current API/support and data volume make it practical.
+6. Heatmap only if the current API/data volume makes it practical.
 
-## Rules
-
-- Re-read the relevant canonical HTML report pane immediately before each report phase.
-- Verify current official report endpoints/SDK first.
-- One report per phase; do not integrate everything in one diff.
-- Map server/API responses into existing typed UI contracts.
-- Preserve date-range/loading/empty/error states.
-- Never silently mix dummy and real values inside the same metric group.
-- No chart library unless the accepted UI truly requires capabilities impossible with current CSS/SVG approach.
-- No background-job/queue infrastructure unless report API behavior proves it necessary.
-- No report persistence in PostgreSQL during POC.
-- Do not add new report cards/metrics simply because the API returns them.
+If Plan 010 marked a report unsupported/not valuable, leave that report dummy/local rather than blocking the whole plan.
 
 ## Per-report workflow
 
-For each report in the integration order:
+For each report:
 
-1. [ ] Open `design/reference/situm-explore-interactive-prototype.html`.
-2. [ ] Inspect `#app-analytics` and that report's `.report-pane`.
-3. [ ] Inspect the current accepted Nuxt implementation.
-4. [ ] Document the minimal API-response -> existing-UI-type mapping.
-5. [ ] Replace only the relevant dummy fixture/data source.
-6. [ ] Add truthful loading/empty/error handling within the existing composition.
-7. [ ] Compare the real-data state against the canonical HTML after integration.
-8. [ ] Validate before moving to the next report.
+1. [ ] Re-open the current canonical HTML report state.
+2. [ ] Inspect accepted Nuxt component/type/fixture.
+3. [ ] Revalidate the official report endpoint/SDK identified by Plan 010.
+4. [ ] Document minimal response -> existing UI type mapping.
+5. [ ] Replace only that report's dummy data source.
+6. [ ] Add truthful loading/empty/error behavior inside existing composition.
+7. [ ] Never silently mix dummy and real values in the same metric group.
+8. [ ] Compare the resulting real-data state against the accepted reference.
+9. [ ] Validate before moving to the next report.
+
+## Complexity rules
+
+- no chart library unless accepted UI cannot reasonably be produced with current approach;
+- no background jobs/queues unless actual API behavior proves them necessary and the user approves expanded scope;
+- no generic reports repository/service merely because multiple endpoints exist;
+- reuse a small integration helper only when actual repeated behavior is proven.
 
 ## Validation
 
-- [ ] permission remains read-only;
-- [ ] API failures are visible and do not fall back to fake success data;
-- [ ] date ranges behave truthfully;
-- [ ] accepted `#app-analytics` composition is unchanged;
-- [ ] each integrated report still matches its canonical HTML pane;
-- [ ] no credentials logged;
-- [ ] lint/typecheck/build + manual report smoke;
-- [ ] phase commits/pushes; no PR until authorized.
+- [ ] Plan 013 is integrated in main before branch creation.
+- [ ] accepted Analytics composition remains stable.
+- [ ] real failures do not fall back silently to fake success values.
+- [ ] date ranges behave truthfully.
+- [ ] no remote mutation is performed.
+- [ ] no credentials logged/rendered/committed.
+- [ ] `git diff --check`.
+- [ ] `npm run lint`.
+- [ ] `npm run typecheck`.
+- [ ] `npm run build`.
+- [ ] manual report smoke for each integrated report.
+- [ ] update plan + `.agents/`, commit/push phases.
+- [ ] no PR until authorized.
+
+## Non-goals
+
+- UI redesign;
+- report writes;
+- report persistence/background processing;
+- new credential architecture.
