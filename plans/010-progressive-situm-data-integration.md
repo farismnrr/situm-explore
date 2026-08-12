@@ -2,7 +2,7 @@
 
 Status: planned-later
 Branch: `plan/010-progressive-situm-data-integration`
-Depends on: Plan 009A UI fidelity recovery completed, integrated into the chosen cumulative UI baseline, **and explicit user acceptance of the recovered UI**
+Depends on: Plan 009A closed baseline plus Plan 009B completed (or explicitly skipped by the user after review), integrated into the chosen cumulative UI baseline, **and explicit user acceptance of the final rendered UI**
 
 ## Goal
 
@@ -19,6 +19,18 @@ During Plan 010:
 - do not introduce remote write actions;
 - do not create broad backend infrastructure merely for future plans.
 
+## UI gate clarification after Plan 009A closure
+
+Plan 009A was intentionally closed with known UI gaps. That closure does **not** satisfy the final UI acceptance gate.
+
+Before Plan 010 can start:
+
+1. Plan 009B must be scoped from the user's concrete remaining UI punch list;
+2. Plan 009B must be completed, or the user must explicitly decide after review that it is unnecessary/skipped;
+3. the user must explicitly accept the final rendered UI baseline.
+
+Do not infer UI acceptance merely because Plan 009A is closed.
+
 ## Required reading
 
 - `AGENTS.md`
@@ -27,8 +39,9 @@ During Plan 010:
 - `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
 - populated canonical HTML reference
-- completed/accepted Plans 004–009 implementation/state
-- completed and **user-accepted** `plans/009a-ui-prototype-fidelity-recovery.md`
+- completed Plans 004–009 implementation/state
+- closed historical `plans/009a-ui-prototype-fidelity-recovery.md`
+- completed/accepted `plans/009b-ui-final-fidelity-punch-list.md`, or explicit user decision that 009B is skipped/not needed
 - Plans 011–016 so feasibility decisions match later scopes
 - this plan
 
@@ -36,8 +49,8 @@ During Plan 010:
 
 For every candidate dataset/action inspect:
 
-1. accepted Nuxt route/components/types after Plan 009A;
-2. corresponding current canonical HTML area;
+1. final accepted Nuxt route/components/types after the UI roadmap and Plan 009B boundary;
+2. corresponding current canonical HTML area or newer explicit user direction;
 3. canonical dummy fixtures/local actions that may later be replaced.
 
 Later Situm payloads/capabilities are adapted into the accepted UI contract; external API shape does not redesign the product.
@@ -67,7 +80,9 @@ Rules:
 
 ## Phase 1 — Verify current local setup and accepted UI gate
 
-- [ ] Confirm Plan 009A is complete and the recovered UI has been explicitly accepted by the user.
+- [ ] Confirm Plan 009A is closed and treated as historical.
+- [ ] Confirm Plan 009B is complete or explicitly skipped/not needed by the user.
+- [ ] Confirm the final rendered UI has been explicitly accepted by the user.
 - [ ] Confirm ignored local `.env` has the POC key without printing it.
 - [ ] If building ID is missing, follow documented `/api/v1/buildings` discovery and write only selected ID to local `.env`.
 - [ ] Do not change environment naming.
@@ -81,7 +96,7 @@ Using current official Situm docs and safe local read probes, map **every accept
 - Realtime positions and any device metadata required by the accepted Realtime UI;
 - Reports/Analytics;
 - Organization/Users/Groups/Alarms;
-- accepted Map Viewer tools represented in the final UI, such as POI selection/favorites, location picker, follow/trajectory/navigation, save-car/navigation-to-car, search/accessibility settings, or other tools actually present in the populated reference;
+- accepted Map Viewer tools represented in the final UI, such as POI selection/favorites, location picker, follow/trajectory/navigation, save-car/navigation-to-car, search/accessibility settings, or other tools actually present in the accepted UI;
 - Viewer/map configuration, styles, images, or other settings actually represented by the accepted Settings UI;
 - any accepted action that would require a remote mutation.
 
