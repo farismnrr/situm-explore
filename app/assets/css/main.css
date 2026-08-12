@@ -3,13 +3,36 @@
 
 :root {
   color-scheme: light;
-  --ui-radius: 0.5rem;
+  --ui-radius: 0.625rem;
   --ui-container: var(--container-5xl);
+
+  /* Situm Explore visual tokens: cool neutrals, border-first surfaces, and a restrained blue accent. */
+  --explore-background: #f6f7f9;
+  --explore-surface: #ffffff;
+  --explore-surface-subtle: #fafbfc;
+  --explore-surface-hover: #f4f5f7;
+  --explore-foreground: #16181c;
+  --explore-foreground-muted: #515862;
+  --explore-foreground-subtle: #8b939e;
+  --explore-border: #e6e8ec;
+  --explore-border-strong: #d8dce2;
+  --explore-accent: #2563eb;
+  --explore-accent-soft: #eff6ff;
+  --explore-radius-xs: 0.4375rem;
+  --explore-radius-sm: 0.5625rem;
+  --explore-radius-md: 0.75rem;
+  --explore-radius-lg: 1rem;
+  --explore-radius-xl: 1.375rem;
+  --explore-shadow-xs: 0 1px 2px rgb(16 24 40 / 4%);
+  --explore-shadow-sm: 0 8px 24px rgb(16 24 40 / 6%);
+  --explore-shadow-md: 0 18px 55px rgb(16 24 40 / 10%);
 }
 
 html,
 body {
-  @apply bg-default text-default;
+  @apply bg-default text-default antialiased;
+  background-color: var(--explore-background);
+  color: var(--explore-foreground);
   overflow-x: clip;
 }
 

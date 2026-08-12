@@ -147,13 +147,13 @@ Selector/class names may change when the user replaces the placeholder. Do not a
 
 ## Phase 1 — Visual tokens and brand
 
-- [ ] Confirm the canonical HTML is populated.
-- [ ] Audit `app/app.config.ts` and `app/assets/css/main.css` after Phase 0.
-- [ ] Preserve light-only behavior.
-- [ ] Extract the reference's neutral hierarchy, semantic accents, border treatment, radii, typography scale, spacing rhythm, and restrained shadows.
-- [ ] Express those decisions primarily through Nuxt UI semantic configuration/app config and existing utilities.
-- [ ] Add the navigation-arrow product mark as a small Vue/local SVG component if it remains in the populated reference.
-- [ ] Do not create a second design system or copy prototype stylesheet blocks.
+- [x] Confirm the canonical HTML is populated.
+- [x] Audit `app/app.config.ts` and `app/assets/css/main.css` after Phase 0.
+- [x] Preserve light-only behavior.
+- [x] Extract the reference's neutral hierarchy, semantic accents, border treatment, radii, typography scale, spacing rhythm, and restrained shadows.
+- [x] Express those decisions primarily through Nuxt UI semantic configuration/app config and existing utilities.
+- [x] Add the navigation-arrow product mark as a small Vue/local SVG component if it remains in the populated reference.
+- [x] Do not create a second design system or copy prototype stylesheet blocks.
 
 Acceptance: common Nuxt UI primitives reproduce the reference language without page-by-page styling drift.
 

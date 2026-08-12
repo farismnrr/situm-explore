@@ -8,7 +8,7 @@ Execute a gap-free sequential Situm Explore POC roadmap: Nuxt 4 architecture ali
 
 ## Phase
 
-**Plan 004 Phase 0 architecture/setup is complete on its plan branch; visual Phase 1+ remains blocked until the user replaces the canonical `Hello World` HTML placeholder.**
+**Plan 004 Phase 1 is complete on its plan branch; landing page Phase 2 is next.**
 
 ## Active contracts
 
@@ -142,4 +142,4 @@ The only intentional visual blocker is the user-populated canonical HTML.
 
 ## Next action
 
-Review/integrate Plan 004 Phase 0, then continue with visual Phase 1+ only after the user populates the canonical HTML. No dependent plan starts until the previous plan is reviewed, explicitly authorized for integration, and landed in `main`.
+Continue Plan 004 with Phase 2 landing page. No dependent plan starts until the previous plan is reviewed, explicitly authorized for integration, and landed in `main`.
