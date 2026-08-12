@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SitumSDK, { ViewerEventType } from '@situm/sdk-js'
+import SitumSDK from '@situm/sdk-js'
 
 const config = useRuntimeConfig()
 const container = ref<HTMLElement | null>(null)
@@ -14,14 +14,8 @@ onMounted(() => {
   }
   try {
     const sdk = new SitumSDK({ auth: { apiKey: config.public.situmViewerApiKey } })
-    const viewer = sdk.viewer.create({ domElement: container.value!, buildingId: Number(config.public.situmBuildingId) })
-    viewer.on(ViewerEventType.MAP_IS_READY, () => {
-      state.value = 'ready'
-    })
-    viewer.on(ViewerEventType.APP_ERROR, (payload) => {
-      state.value = 'error'
-      message.value = payload.message || 'Situm Map Viewer reported a runtime error.'
-    })
+    sdk.viewer.create({ domElement: container.value!, buildingId: Number(config.public.situmBuildingId) })
+    state.value = 'ready'
   } catch (error: unknown) {
     state.value = 'error'
     message.value = error instanceof Error ? error.message : 'Situm Map Viewer failed to initialize.'

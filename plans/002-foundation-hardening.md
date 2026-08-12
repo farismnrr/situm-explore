@@ -99,21 +99,19 @@ Acceptance:
 
 # Phase 4 — Make Situm viewer readiness truthful
 
-Status: complete
-
 Do not mark the viewer ready just because `viewer.create(...)` returned without a synchronous exception.
 
 - [ ] Inspect the current Situm SDK viewer lifecycle/events.
-- [x] Wait for the current supported viewer/map-ready event before setting UI state to `ready`.
-- [x] Keep a clear loading state until the viewer is actually ready.
-- [x] Surface initialization/runtime errors clearly with Nuxt UI.
-- [x] Avoid adding a generalized event bus or abstraction layer.
-- [x] If `/api/situm/status` remains, make its semantics explicit: configuration-present is not viewer-ready.
+- [ ] Wait for the current supported viewer/map-ready event before setting UI state to `ready`.
+- [ ] Keep a clear loading state until the viewer is actually ready.
+- [ ] Surface initialization/runtime errors clearly with Nuxt UI.
+- [ ] Avoid adding a generalized event bus or abstraction layer.
+- [ ] If `/api/situm/status` remains, make its semantics explicit: configuration-present is not viewer-ready.
 
 Acceptance:
 
-- [x] Dashboard reports Situm ready only after the SDK signals real readiness.
-- [x] Missing config, initialization failure, runtime failure, and ready states are distinguishable.
+- [ ] Dashboard reports Situm ready only after the SDK signals real readiness.
+- [ ] Missing config, initialization failure, and ready states are distinguishable.
 
 ---
 
