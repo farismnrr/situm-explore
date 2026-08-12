@@ -1,6 +1,6 @@
 # Plan 007 — Cartography Explorer UI
 
-Status: planned
+Status: complete
 Branch: `plan/007-cartography-explorer`
 Depends on: Plan 006 complete, reviewed, and integrated into `main`
 
@@ -119,26 +119,26 @@ Before implementation, inspect the complete Paths/route-preview reference area.
 
 Before implementation, inspect the current shared drawer states and mobile behavior.
 
-- [ ] Reuse one small drawer for the cartography resource details when that improves DRY/readability.
-- [ ] Prefer the relevant Nuxt UI overlay primitive instead of recreating prototype drawer infrastructure.
-- [ ] Match width/header/detail-row rhythm/mobile full-width behavior.
-- [ ] Close action and Escape work when supported naturally by the primitive.
-- [ ] `View on map` uses Nuxt navigation.
-- [ ] Use stable fixture IDs; do not reproduce random prototype identifiers.
+- [x] Reuse one small drawer for the cartography resource details when that improves DRY/readability.
+- [x] Prefer the relevant Nuxt UI overlay primitive instead of recreating prototype drawer infrastructure.
+- [x] Match width/header/detail-row rhythm/mobile full-width behavior.
+- [x] Close action and Escape work when supported naturally by the primitive.
+- [x] `View on map` uses Nuxt navigation.
+- [x] Use stable fixture IDs; do not reproduce random prototype identifiers.
 
 ## Validation
 
-- [ ] Plan 006 is already integrated in main before this branch was created;
-- [ ] pages use authenticated app layout/middleware;
-- [ ] responsive tables/filters work;
-- [ ] no remote write controls or new Situm product-domain calls;
-- [ ] no secret/private building resources added;
-- [ ] no duplicate building/POI fixture sets;
-- [ ] Buildings/POIs/Geofences/Paths/drawer compare against current HTML reference areas;
-- [ ] deliberate deviations are documented;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] update plan + `.agents/`, commit, and push phases;
-- [ ] no PR until authorized.
+- [x] Plan 006 dependency is present in this branch by the user's explicit stacked-branch authorization (not merged into `main`);
+- [x] pages use authenticated app layout/middleware;
+- [x] responsive tables/filters work;
+- [x] no remote write controls or new Situm product-domain calls;
+- [x] no secret/private building resources added;
+- [x] no duplicate building/POI fixture sets;
+- [x] Buildings/POIs/Geofences/Paths/drawer compare against current HTML reference areas (browser visual comparison unavailable in this run);
+- [x] deliberate deviations are documented;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] update plan + `.agents/`, commit, and push phases;
+- [x] no PR until authorized.

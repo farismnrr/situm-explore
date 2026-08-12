@@ -33,9 +33,6 @@ function toggleFavorite(poi: PrototypePoi) {
   favoriteIds.value = next
 }
 
-function closeDetails() {
-  drawerOpen.value = false
-}
 </script>
 
 <template>
@@ -80,15 +77,7 @@ function closeDetails() {
       <p v-if="filteredPois.length === 0" class="px-5 py-10 text-center text-sm text-muted">No POIs match your filters.</p>
     </UCard>
 
-    <USlideover v-model:open="drawerOpen" title="POI details" description="Local cartography fixture details." :ui="{ content: 'sm:max-w-md' }">
-      <template #body>
-        <div v-if="selectedPoi" class="space-y-6">
-          <div><UBadge color="neutral" variant="soft">{{ selectedPoi.category }}</UBadge><h2 class="mt-3 text-xl font-semibold text-highlighted">{{ selectedPoi.name }}</h2><p class="mt-1 text-sm text-muted">{{ selectedPoi.description }}</p></div>
-          <dl class="divide-y divide-default border-y border-default text-sm"><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Identifier</dt><dd class="font-mono text-xs text-highlighted">{{ selectedPoi.id }}</dd></div><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Building</dt><dd class="text-right text-highlighted">{{ buildingNames.get(selectedPoi.buildingId) }}</dd></div><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Floor</dt><dd class="text-highlighted">{{ selectedPoi.floor }}</dd></div><div class="flex justify-between gap-4 py-3"><dt class="text-muted">External ID</dt><dd class="font-mono text-xs text-highlighted">{{ selectedPoi.externalId }}</dd></div><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Access</dt><dd><UBadge color="neutral" variant="soft">Read only</UBadge></dd></div></dl>
-          <UButton to="/app/map" block @click="closeDetails">View on map</UButton>
-        </div>
-      </template>
-    </USlideover>
+    <CartographyDetailsDrawer v-if="selectedPoi" v-model:open="drawerOpen" title="POI details" :type="selectedPoi.category" :name="selectedPoi.name" :subtitle="selectedPoi.description" map-to="/app/map" :details="[{ label: 'Identifier', value: selectedPoi.id }, { label: 'Building', value: buildingNames.get(selectedPoi.buildingId) ?? 'Unknown building' }, { label: 'Floor', value: selectedPoi.floor }, { label: 'External ID', value: selectedPoi.externalId }, { label: 'Access', value: 'Read only' }]" />
   </div>
 </template>
 

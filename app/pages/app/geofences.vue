@@ -77,16 +77,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Geofences' })
       <p v-if="filteredGeofences.length === 0" class="px-5 py-10 text-center text-sm text-muted">No geofences match your filters.</p>
     </UCard>
 
-    <USlideover :open="Boolean(selectedGeofence)" title="Geofence details" description="Local cartography fixture details." :ui="{ content: 'sm:max-w-md' }" @update:open="value => !value && closeDetails()">
-      <template #body>
-        <div v-if="selectedGeofence" class="space-y-6">
-          <div><UBadge color="neutral" variant="soft">{{ selectedGeofence.type }}</UBadge><h2 class="mt-3 text-xl font-semibold text-highlighted">{{ selectedGeofence.name }}</h2><p class="mt-1 text-sm text-muted">{{ buildingName(selectedGeofence.buildingId) }} · {{ selectedGeofence.floor }}</p></div>
-          <dl class="divide-y divide-default border-y border-default text-sm"><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Identifier</dt><dd class="font-mono text-xs text-highlighted">{{ selectedGeofence.id }}</dd></div><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Average stay</dt><dd class="font-medium text-highlighted">{{ selectedGeofence.averageStay }}</dd></div><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Status</dt><dd><UBadge color="success" variant="soft">{{ selectedGeofence.status }}</UBadge></dd></div></dl>
-          <UAlert color="info" variant="soft" title="Dummy data" description="Session and stay-time context is local fixture data for this UI preview." />
-          <UButton to="/app/map?overlay=geofences" block label="View on map" @click="closeDetails" />
-        </div>
-      </template>
-    </USlideover>
+    <CartographyDetailsDrawer v-if="selectedGeofence" :open="true" title="Geofence details" :type="selectedGeofence.type" :name="selectedGeofence.name" :subtitle="`${buildingName(selectedGeofence.buildingId)} · ${selectedGeofence.floor}`" map-to="/app/map?overlay=geofences" :details="[{ label: 'Identifier', value: selectedGeofence.id }, { label: 'Average stay', value: selectedGeofence.averageStay }, { label: 'Status', value: selectedGeofence.status }]" @update:open="closeDetails">
+      <UAlert color="info" variant="soft" title="Dummy data" description="Session and stay-time context is local fixture data for this UI preview." />
+    </CartographyDetailsDrawer>
   </div>
 </template>
 

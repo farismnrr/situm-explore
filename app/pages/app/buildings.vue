@@ -26,9 +26,6 @@ function openDetails(building: PrototypeBuilding) {
   drawerOpen.value = true
 }
 
-function closeDetails() {
-  drawerOpen.value = false
-}
 </script>
 
 <template>
@@ -85,16 +82,9 @@ function closeDetails() {
       </UCard>
     </div>
 
-    <USlideover v-model:open="drawerOpen" title="Building details" description="Local cartography fixture details." :ui="{ content: 'sm:max-w-md' }">
-      <template #body>
-        <div v-if="selectedBuilding" class="space-y-6">
-          <div><UBadge color="neutral" variant="soft">Building</UBadge><h2 class="mt-3 text-xl font-semibold text-highlighted">{{ selectedBuilding.name }}</h2><p class="mt-1 text-sm text-muted">{{ selectedBuilding.organization }}</p></div>
-          <dl class="divide-y divide-default border-y border-default text-sm"><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Identifier</dt><dd class="font-mono text-xs text-highlighted">{{ selectedBuilding.id }}</dd></div><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Map status</dt><dd><UBadge :color="selectedBuilding.status === 'Ready' ? 'success' : 'warning'" variant="soft">{{ selectedBuilding.status }}</UBadge></dd></div><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Floors</dt><dd class="font-medium text-highlighted">{{ selectedBuilding.floors.length }}</dd></div><div class="flex justify-between gap-4 py-3"><dt class="text-muted">Points of interest</dt><dd class="font-medium text-highlighted">{{ selectedBuilding.poiCount }}</dd></div></dl>
-          <div><h3 class="mb-3 text-sm font-semibold text-highlighted">Floor inventory</h3><div class="space-y-2"><div v-for="floor in selectedBuilding.floors" :key="floor.id" class="rounded-lg border border-default p-3"><div class="flex items-center justify-between"><strong class="text-sm text-highlighted">{{ floor.name }}</strong><UBadge :color="floor.mapStatus === 'Ready' ? 'success' : 'warning'" variant="soft" size="sm">{{ floor.mapStatus }}</UBadge></div><p class="mt-1 text-xs text-muted">{{ floor.poiCount }} POIs · {{ floor.geofenceCount }} geofences</p></div></div></div>
-          <UButton to="/app/map" block @click="closeDetails">View on map</UButton>
-        </div>
-      </template>
-    </USlideover>
+    <CartographyDetailsDrawer v-if="selectedBuilding" v-model:open="drawerOpen" title="Building details" type="Building" :name="selectedBuilding.name" :subtitle="selectedBuilding.organization" :map-to="'/app/map'" :details="[{ label: 'Identifier', value: selectedBuilding.id }, { label: 'Map status', value: selectedBuilding.status }, { label: 'Floors', value: String(selectedBuilding.floors.length) }, { label: 'Points of interest', value: String(selectedBuilding.poiCount) }]">
+      <div><h3 class="mb-3 text-sm font-semibold text-highlighted">Floor inventory</h3><div class="space-y-2"><div v-for="floor in selectedBuilding.floors" :key="floor.id" class="rounded-lg border border-default p-3"><div class="flex items-center justify-between"><strong class="text-sm text-highlighted">{{ floor.name }}</strong><UBadge :color="floor.mapStatus === 'Ready' ? 'success' : 'warning'" variant="soft" size="sm">{{ floor.mapStatus }}</UBadge></div><p class="mt-1 text-xs text-muted">{{ floor.poiCount }} POIs · {{ floor.geofenceCount }} geofences</p></div></div></div>
+    </CartographyDetailsDrawer>
   </div>
 </template>
 
