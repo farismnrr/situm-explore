@@ -1,0 +1,1 @@
+import { pgSchema, timestamp, varchar } from 'drizzle-orm/pg-core'; const app = pgSchema(process.env.DB_SCHEMA || 'situm_explore'); export const appSettings = app.table('app_settings', { key: varchar('key', { length: 100 }).primaryKey(), value: varchar('value', { length: 500 }), createdAt: timestamp('created_at').defaultNow().notNull() })

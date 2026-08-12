@@ -20,6 +20,12 @@ Source: observed from Situm API discovery during resource gathering on 2026-08-1
 
 Source: observed from the local Compose file, running container, and read-only PostgreSQL inspection on 2026-08-12.
 
+### Situm web SDK credential boundary
+
+- The installed official `@situm/sdk-js` browser integration initializes `SitumSDK` with `auth.apiKey` and creates a viewer against a DOM element and building ID. This means the chosen web slice must use a clearly named public browser credential rather than pretending a server-only key can initialize the browser SDK.
+
+Source: observed in the installed SDK README during web-foundation implementation on 2026-08-12.
+
 ### Repo-native Codex context pattern
 
 - Keep root `AGENTS.md` concise and navigational rather than turning it into a large encyclopedia.
