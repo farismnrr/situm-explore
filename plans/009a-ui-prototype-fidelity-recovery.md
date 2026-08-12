@@ -282,23 +282,23 @@ Acceptance: every authenticated route inherits the correct visual frame before p
 
 ## Home `/app`
 
-- [ ] Match reference welcome card padding, gradient restraint, 23px heading scale, button placement and 14px rhythm to following content.
-- [ ] Match four stat cards at 12px gaps and reference typography.
-- [ ] Match `grid-2` 1.4fr/.6fr relationship for building preview vs recent activity.
-- [ ] Match building-mini geometry and 245px height.
-- [ ] Match panel-head/panel-foot treatment.
-- [ ] Match compact activity rows.
-- [ ] Match Quick Explore 3-column card composition, icon spacing and typography.
-- [ ] Do not add extra status/debug UI absent from the reference.
+- [x] Match reference welcome card padding, gradient restraint, 23px heading scale, button placement and 14px rhythm to following content.
+- [x] Match four stat cards at 12px gaps and reference typography.
+- [x] Match `grid-2` 1.4fr/.6fr relationship for building preview vs recent activity.
+- [x] Match building-mini geometry and 245px height.
+- [x] Match panel-head/panel-foot treatment.
+- [x] Match compact activity rows.
+- [x] Match Quick Explore 3-column card composition, icon spacing and typography.
+- [x] Do not add extra status/debug UI absent from the reference.
 
 ## Dashboard `/app/dashboard`
 
-- [ ] Page header uses canonical 30px title and action alignment.
-- [ ] Match 4-stat layout and spacing.
-- [ ] Match visitor chart canvas dimensions/density rather than generic dashboard spacing.
-- [ ] Match system-status row density and pill hierarchy; retain real DB/Situm configuration truth but keep the same layout footprint.
-- [ ] Do not present dummy `Realtime API Healthy` as real backend truth; use a visually equivalent truthful local/dummy state if needed.
-- [ ] Match lower 1:1 occupancy/alarm grid, progress-bar thickness/colors and activity density.
+- [x] Page header uses canonical 30px title and action alignment.
+- [x] Match 4-stat layout and spacing.
+- [x] Match visitor chart canvas dimensions/density rather than generic dashboard spacing.
+- [x] Match system-status row density and pill hierarchy; retain real DB/Situm configuration truth but keep the same layout footprint.
+- [x] Do not present dummy `Realtime API Healthy` as real backend truth; use a visually equivalent truthful local/dummy state if needed.
+- [x] Match lower 1:1 occupancy/alarm grid, progress-bar thickness/colors and activity density.
 
 ---
 
