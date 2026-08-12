@@ -1,51 +1,45 @@
 # Current State
 
-_Last reviewed: 2026-08-12_
+_Last reviewed: 2026-08-13_
 
 ## Current focus
 
-**Automated UI planning and execution are paused.**
+The UI stage is **closed and accepted by the user after manual correction**.
 
-The user has decided to take over the UI manually after the latest 009B changes made the rendered result worse instead of reliably converging on the prototype.
+Automated Plan 009B work was stopped because it regressed the rendered UI. The user took over the difficult UI work manually, completed it, and explicitly asked to close the UI plans so the roadmap can continue without the UI blocker.
 
-Do not continue Plan 009B, its targeted closure addendum, or create Plan 009C unless the user explicitly asks to resume automated UI work.
+Do not reopen Plan 009B, its targeted addendum, or create Plan 009C from old audit findings unless the user explicitly requests new UI work.
 
 ## UI roadmap state
 
 - Plan 009A: closed historically with known UI gaps.
-- Plan 009B: **stopped-manual-takeover**.
-- Plan 009B targeted Analytics/Users/Organization/Settings addendum: **stopped-manual-takeover**.
-- No Plan 009C is active or authorized.
-- The user now owns manual UI correction and visual acceptance.
+- Plan 009B: **closed-manual-accepted**.
+- Plan 009B Analytics/Users/Organization/Settings addendum: **closed-manual-accepted**.
+- No Plan 009C is active or required.
+- Final UI acceptance authority is the user's manual result and explicit acceptance, not the old automated 009B checklists.
 
-Stopping 009B is not a statement that the current UI is correct, complete, or accepted.
+## Branch / baseline rule
 
-## Branch state
-
-Current UI branch:
+Current cumulative UI branch:
 
 `plan/009b-ui-final-fidelity-punch-list`
 
-Last implementation baseline before stop/closure docs:
+Before starting Plan 010, confirm the user's final manual UI changes are committed and pushed. Create the Plan 010 branch from that final cumulative UI HEAD, not stale `main` and not an older 009A/009B implementation baseline.
 
-`4779d8da0f70833e6052fe0b26cfa3b59a46c142`
+Do not reset, rebase, or rewrite accepted manual UI merely to match old automated plan assumptions.
 
-Do not reset, rebase, merge, or rewrite the branch solely to satisfy the stopped plans. Preserve the user's manual work and follow their next explicit instruction.
+No PR or merge is implied by UI closure.
 
-No PR or merge is authorized.
+## Accepted UI preservation contract
 
-## Manual takeover contract
+For later backend/Situm work:
 
-Until the user explicitly reopens automated UI work:
+- treat the current manually accepted Nuxt UI as the product presentation contract;
+- adapt external Situm/API data into the accepted UI rather than redesigning screens around API shapes;
+- do not revive old 009B abstractions unless the user explicitly asks;
+- small UI changes required for truthful loading/empty/error/runtime states are allowed only when necessary and should preserve the accepted composition.
 
-- do not run another broad prototype-fidelity refactor;
-- do not automatically add/rework reusable UI abstractions;
-- do not normalize page-local CSS/components merely because an older 009B checklist asked for it;
-- do not create a new UI plan from previous audit findings;
-- do not overwrite manual UI decisions using old plan authority;
-- if the user later asks for help on one UI issue, treat their latest explicit direction and current manual implementation as authority.
-
-## Runtime/data boundary remains unchanged
+## Runtime/data boundary
 
 Keep real and protected:
 
@@ -56,19 +50,22 @@ Keep real and protected:
 - real Situm Viewer initialization and lifecycle;
 - `MAP_IS_READY` / `APP_ERROR` / missing-config behavior.
 
-Keep later product-domain integration deferred unless the user explicitly resumes the roadmap.
+Product-domain data remains local/dummy until its assigned later integration plan replaces it.
 
 ## Backend roadmap gate
 
-**Do not start Plan 010 or later Situm/backend integration plans.**
+**Plan 010 is now unblocked and may start when the user requests it.**
 
-The backend roadmap may resume only when the user explicitly:
+Plan 010 is feasibility/contract mapping only; it must preserve the accepted UI and must not replace dummy datasets yet.
 
-1. states that the manually revised UI baseline is accepted; and
-2. authorizes moving past the UI stage / starting Plan 010.
+Normal preflight before execution:
 
-Until then, there is no active automated implementation plan.
+1. fetch latest refs;
+2. confirm final manual UI changes are committed/pushed;
+3. create `plan/010-progressive-situm-data-integration` from the final cumulative UI HEAD;
+4. follow Plan 010 sequentially;
+5. do not create a PR or merge unless explicitly authorized.
 
 ## Next action
 
-Wait for the user's next explicit instruction while they work on the UI manually.
+Plan 010 is the next roadmap plan and is ready to start on explicit user instruction.
