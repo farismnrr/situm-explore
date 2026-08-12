@@ -77,6 +77,7 @@ export default defineAppConfig({
       },
       variants: {
         variant: {
+          outline: { root: '!rounded-[var(--explore-radius-lg)] !border !border-default !bg-default !ring-0 !divide-y-0 !shadow-[var(--explore-shadow-xs)]' },
           soft: { root: 'rounded-[var(--explore-radius-md)] border border-default bg-muted shadow-none' },
           subtle: { root: 'rounded-[var(--explore-radius-md)] border border-default bg-muted shadow-none' }
         }
