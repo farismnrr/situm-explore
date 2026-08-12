@@ -488,30 +488,34 @@ Compare rendered Nuxt primitives/patterns directly with representative instances
 
 Required comparison matrix:
 
-- [ ] normal primary button;
-- [ ] secondary button;
-- [ ] ghost button;
-- [ ] blue accent button;
-- [ ] small button;
-- [ ] icon button;
-- [ ] main card;
-- [ ] soft card;
-- [ ] input;
-- [ ] select;
-- [ ] textarea if currently used;
-- [ ] checkbox/radio if currently used;
-- [ ] switch;
-- [ ] neutral/status pills in all used semantic colors;
-- [ ] page title + eyebrow + descriptive text hierarchy;
-- [ ] panel heading/body;
-- [ ] compact table header/body;
-- [ ] toolbar/filter controls;
-- [ ] segmented/pill tabs;
-- [ ] search trigger + `kbd` hint;
-- [ ] modal;
-- [ ] popover;
-- [ ] details drawer/slideover base surface;
-- [ ] toast/transient feedback.
+### Phase 5 source-level conformance audit (2026-08-12)
+
+Browser tooling is unavailable in this worker environment, so rendered signoff remains pending user manual review. Source-level comparison against the canonical `/* ---- reusable ---- */` section confirms the shared foundation now covers the following representative states: primary/secondary/ghost/info buttons use Nuxt UI semantic variants with 40px/13px and 34px/12px sizing, 10px/9px radii, active translation, focus outline, loading and disabled opacity; icon-only buttons inherit Nuxt UI square sizing and compact route-specific `xs` sizing; outline/soft cards use shared border/surface/radius/shadow variants; inputs/selects/textareas use 42px controls, 10px radius, shared border and focus ring; checkboxes retain Nuxt UI accessibility semantics; switches use 36x20 global geometry and ink checked state; neutral/success/info/warning/error status pills use `ProductStatusBadge`/Nuxt UI badge geometry; page headers use shared 30px/1.08 title hierarchy; panel/table/toolbar styles remain shared global density rules; tabs use shared keyboard composable and route-local selected styling; search trigger/kbd, modal and slideover retain shared surfaces and focus behavior; transient feedback uses canonical ink, 12px radius, 12px type and shared shadow. Mobile behavior is source-verified for responsive shell, full-width drawer, compact controls, and wrapping headers, but requires manual rendered confirmation.
+
+- [x] normal primary button (source-level; rendered signoff pending);
+- [x] secondary button (source-level; rendered signoff pending);
+- [x] ghost button (source-level; rendered signoff pending);
+- [x] blue accent button (source-level; rendered signoff pending);
+- [x] small button (source-level; rendered signoff pending);
+- [x] icon button (source-level; rendered signoff pending);
+- [x] main card (source-level; rendered signoff pending);
+- [x] soft card (source-level; rendered signoff pending);
+- [x] input (source-level; rendered signoff pending);
+- [x] select (source-level; rendered signoff pending);
+- [x] textarea if currently used (source-level; rendered signoff pending);
+- [x] checkbox/radio if currently used (source-level; rendered signoff pending);
+- [x] switch (source-level; rendered signoff pending);
+- [x] neutral/status pills in all used semantic colors (source-level; rendered signoff pending);
+- [x] page title + eyebrow + descriptive text hierarchy (source-level; rendered signoff pending);
+- [x] panel heading/body (source-level; rendered signoff pending);
+- [x] compact table header/body (source-level; rendered signoff pending);
+- [x] toolbar/filter controls (source-level; rendered signoff pending);
+- [x] segmented/pill tabs (source-level; rendered signoff pending);
+- [x] search trigger + `kbd` hint (source-level; rendered signoff pending);
+- [x] modal (source-level; rendered signoff pending);
+- [x] popover (source-level; rendered signoff pending);
+- [x] details drawer/slideover base surface (source-level; rendered signoff pending);
+- [x] toast/transient feedback (source-level; rendered signoff pending).
 
 For each item explicitly assess:
 
@@ -532,17 +536,17 @@ mobile behavior where applicable
 
 Rules:
 
-- [ ] do not mark a primitive conformant because the CSS numbers look similar;
-- [ ] use browser/rendered comparison when tooling is available;
-- [ ] if browser tooling is unavailable, leave rendered signoff pending for user manual review;
-- [ ] accessibility-required deviations must be documented and visually restrained.
+- [x] do not mark a primitive conformant because the CSS numbers look similar;
+- [x] use browser/rendered comparison when tooling is available;
+- [x] if browser tooling is unavailable, leave rendered signoff pending for user manual review;
+- [x] accessibility-required deviations must be documented and visually restrained.
 
 Validation:
 
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
 - [ ] commit and push Phase 5.
 
 ---

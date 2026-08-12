@@ -74,6 +74,12 @@ export default defineAppConfig({
         header: 'p-4 sm:px-5',
         body: 'p-4 sm:p-5',
         footer: 'p-4 sm:px-5'
+      },
+      variants: {
+        variant: {
+          soft: { root: 'rounded-xl bg-muted/50 ring ring-default shadow-none' },
+          subtle: { root: 'rounded-xl bg-muted/50 ring ring-default shadow-none' }
+        }
       }
     },
     modal: {
