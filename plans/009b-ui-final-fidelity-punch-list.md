@@ -555,20 +555,20 @@ Validation:
 
 Perform a final source audit specifically for future maintainability.
 
-- [ ] Search all route/components for repeated semantic button/card/pill/header/stat/toolbar/detail-list recipes that should use the shared foundation.
-- [ ] Search for repeated interactive logic that should use an existing composable/utility.
-- [ ] Search for arbitrary local hex colors/radii/shadows that duplicate canonical tokens.
-- [ ] Search for direct route-local overrides that fight `app.config.ts` or global semantic tokens.
-- [ ] Remove dead styles/components/composables left by migration.
-- [ ] Keep intentional exceptions documented in this plan.
-- [ ] Pages remain route composition focused; do not move everything into abstract configuration objects merely to reduce line count.
-- [ ] No app code imports server source.
-- [ ] No new backend endpoints/database/Situm integration.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
-- [ ] update `.agents/state.md` and session trace.
+- [x] Search all route/components for repeated semantic button/card/pill/header/stat/toolbar/detail-list recipes that should use the shared foundation.
+- [x] Search for repeated interactive logic that should use an existing composable/utility.
+- [x] Search for arbitrary local hex colors/radii/shadows that duplicate canonical tokens.
+- [x] Search for direct route-local overrides that fight `app.config.ts` or global semantic tokens.
+- [x] Remove dead styles/components/composables left by migration.
+- [x] Keep intentional exceptions documented in this plan.
+- [x] Pages remain route composition focused; do not move everything into abstract configuration objects merely to reduce line count.
+- [x] No app code imports server source.
+- [x] No new backend endpoints/database/Situm integration.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [x] `npm run typecheck`.
+- [x] `npm run build`.
+- [x] update `.agents/state.md` and session trace.
 - [ ] commit and push Phase 6.
 
 ---

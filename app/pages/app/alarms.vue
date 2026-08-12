@@ -42,18 +42,18 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Alarms' })
           </thead>
           <tbody class="divide-y divide-default">
             <tr v-for="alarm in filteredAlarms" :key="alarm.id" class="transition hover:bg-elevated/40">
-              <td class="px-5 py-4"><UBadge :color="alarmTypeColor(alarm.type)" variant="soft">{{ alarm.type }}</UBadge></td>
+              <td class="px-5 py-4"><ProductStatusBadge :label="alarm.type" :tone="alarmTypeColor(alarm.type)" /></td>
               <td class="px-4 py-4 font-medium text-highlighted">{{ alarm.user }}</td>
               <td class="px-4 py-4 text-muted">{{ alarm.location }}</td>
               <td class="px-4 py-4 text-muted">{{ alarm.triggered }}</td>
-              <td class="px-4 py-4"><UBadge :color="statusColor(alarm.status)" variant="soft">{{ alarm.status }}</UBadge></td>
+              <td class="px-4 py-4"><ProductStatusBadge :label="alarm.status" :tone="statusColor(alarm.status)" /></td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="divide-y divide-default md:hidden">
         <article v-for="alarm in filteredAlarms" :key="alarm.id" class="space-y-3 p-4">
-          <div class="flex items-start justify-between gap-3"><UBadge :color="alarmTypeColor(alarm.type)" variant="soft">{{ alarm.type }}</UBadge><UBadge :color="statusColor(alarm.status)" variant="soft">{{ alarm.status }}</UBadge></div>
+          <div class="flex items-start justify-between gap-3"><ProductStatusBadge :label="alarm.type" :tone="alarmTypeColor(alarm.type)" /><ProductStatusBadge :label="alarm.status" :tone="statusColor(alarm.status)" /></div>
           <div><p class="text-sm font-medium text-highlighted">{{ alarm.user }}</p><p class="mt-1 text-xs text-muted">{{ alarm.location }}</p></div>
           <p class="text-xs text-muted">Triggered {{ alarm.triggered }}</p>
         </article>

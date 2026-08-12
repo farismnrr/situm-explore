@@ -188,6 +188,8 @@ Plan 010 and later Situm integration plans remain blocked until:
 
 ## Next action
 
+Phase 6 source reuse-enforcement audit is the current completed worker scope; parent review/phase status remains authoritative. The remaining roadmap gate is unchanged: Plan 010 stays blocked pending shared-foundation acceptance and final rendered UI acceptance.
+
 When the user starts 009B:
 
 1. fetch latest refs;
