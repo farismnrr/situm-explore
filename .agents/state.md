@@ -4,11 +4,11 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Refresh the existing Nuxt web UI/UX into a clean minimalist SaaS experience while preserving the hardened foundation behavior.
+Plan 003 is closed; await the user's direction for the next major revision.
 
 ## Phase
 
-**Phase 8 — UI/UX refresh validation blocked**
+**No active plan**
 
 ## Active decisions
 
@@ -35,13 +35,14 @@ Refresh the existing Nuxt web UI/UX into a clean minimalist SaaS experience whil
 
 ## Active plan
 
-- `plans/003-ui-ux-refresh.md` — active implementation on branch `plan/003-ui-ux-refresh`; automated Phase 8 validation is complete, but browser/credential-dependent checks remain blocked.
+- None. Plan 003 is closed after PR #5 merged to `main`; browser/credential-dependent checks were explicitly deferred.
 
 ## Completed plans
 
 - `plans/000-resource-gathering.md`
 - `plans/001-web-foundation.md`
 - `plans/002-foundation-hardening.md` — merged through PR #3; manual authenticated/API and Situm browser checks were later confirmed complete by the user.
+- `plans/003-ui-ux-refresh.md` — merged through PR #5; automated validation passed, with browser/credential-dependent checks deferred at closeout.
 
 ## Known foundation state
 
@@ -53,9 +54,8 @@ Refresh the existing Nuxt web UI/UX into a clean minimalist SaaS experience whil
 
 ## Open loops
 
-- Execute Plan 003 without changing auth/database/Situm behavior beyond UI composition and feedback presentation; Phases 1–7 are complete. Finish the remaining browser/credential-dependent Phase 8 checks when an appropriate environment is available.
-- Keep light-mode-only scope and avoid premature navigation/design-system complexity.
+- Await the user's requirements for the next major revision.
 
 ## Next likely action
 
-From a clean, up-to-date `main`, create/switch to `plan/003-ui-ux-refresh` in the normal repository directory and execute `plans/003-ui-ux-refresh.md` phase by phase. Read `DESIGN.md` and `.agents/design/` before editing UI. Commit and push each completed phase; do not create a PR until explicitly authorized.
+Wait for the user's next revision brief; start a new dedicated plan branch when requirements are provided.
