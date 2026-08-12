@@ -8,6 +8,15 @@ const organization = {
   devices: 13,
 }
 
+const organizationDetails = [
+  { label: 'Name', value: organization.name },
+  { label: 'Organization ID', value: organization.id },
+  { label: 'API permission', value: organization.permission, kind: 'permission' },
+  { label: 'Buildings', value: String(organization.buildings) },
+  { label: 'Users', value: String(organization.users) },
+  { label: 'Devices', value: String(organization.devices) },
+] as const
+
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Organization' })
 </script>
 
@@ -17,32 +26,16 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Organization' })
 
     <div class="grid gap-4 lg:grid-cols-[1.4fr_.6fr]">
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
-        <div class="panel-head">
-          <div>
-            <h2 class="font-semibold text-highlighted">Situm organization</h2>
-            <p class="mt-1 text-xs text-muted">Current organization</p>
-          </div>
-          <ProductStatusBadge label="POC context" />
-        </div>
-        <dl class="detail-list divide-y divide-default">
-          <div class="detail-row"><dt class="text-muted">Name</dt><dd class="font-medium text-highlighted">{{ organization.name }}</dd></div>
-          <div class="detail-row"><dt class="text-muted">Organization ID</dt><dd class="font-medium text-highlighted">{{ organization.id }}</dd></div>
-          <div class="detail-row"><dt class="text-muted">API permission</dt><dd><ProductStatusBadge :label="organization.permission" tone="info" /></dd></div>
-          <div class="detail-row"><dt class="text-muted">Buildings</dt><dd class="font-medium text-highlighted">{{ organization.buildings }}</dd></div>
-          <div class="detail-row"><dt class="text-muted">Users</dt><dd class="font-medium text-highlighted">{{ organization.users }}</dd></div>
-          <div class="detail-row"><dt class="text-muted">Devices</dt><dd class="font-medium text-highlighted">{{ organization.devices }}</dd></div>
-        </dl>
+        <ProductPanelHeader title="Situm organization" meta="Current organization" />
+        <div class="panel-body"><ProductDetailList :items="organizationDetails"><template #value="{ item }"><ProductStatusBadge v-if="item.kind === 'permission'" :label="item.value ?? ''" tone="info" /><span v-else>{{ item.value }}</span></template></ProductDetailList></div>
       </UCard>
 
       <UCard :ui="{ body: 'p-0 sm:p-0' }">
-        <div class="panel-head">
-          <div><h2 class="font-semibold text-highlighted">POC credential boundary</h2><p class="mt-1 text-xs text-muted">Prototype rule</p></div>
-          <ProductStatusBadge label="Configured" tone="success" />
-        </div>
-        <div class="p-4 sm:p-4">
+        <ProductPanelHeader title="POC credential boundary" meta="Prototype rule" />
+        <div class="panel-body">
         <div class="soft-card p-3">
-          <div class="flex items-center justify-between gap-3"><strong class="text-sm text-highlighted">Browser viewer key</strong><ProductStatusBadge label="Only Read" tone="info" /></div>
-          <p class="mt-3 text-xs leading-relaxed text-muted">One read-only key is enough for this POC reference. No destructive cartography or account actions are represented as active operations.</p>
+          <div class="flex items-center justify-between gap-3"><strong class="text-sm text-highlighted">Browser viewer key</strong><ProductStatusBadge label="Read &amp; Write (POC)" tone="info" /></div>
+          <p class="mt-3 text-xs leading-relaxed text-muted">The current POC key permits Read &amp; Write access for viewer validation. No destructive cartography or account actions are represented as active operations.</p>
         </div>
         <div class="my-5 border-t border-default" />
         <p class="text-xs text-muted">This screen is product context only. No account, organization, cartography, or credential-management actions are available.</p>
@@ -52,9 +45,4 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Organization' })
   </div>
 </template>
 
-<style scoped>
-.operations-page { max-width: 1480px; }
-.detail-list { font-size: .6875rem; }
-.detail-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.6875rem 0; }
-.detail-row dt { font-size:.6875rem; }.detail-row dd { text-align:right; }
-</style>
+<style scoped>.operations-page { max-width: 1480px; }</style>

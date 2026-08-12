@@ -60,28 +60,28 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
           <h2 class="text-base font-semibold text-highlighted">General viewer behavior</h2>
           <p class="mt-1 text-xs text-muted">Viewer behavior and accessibility preferences.</p>
           <div class="mt-5 divide-y divide-default">
-            <div class="setting-row"><div><strong class="block text-sm text-highlighted">Light UI mode</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Keep Situm Explore light-only for this product phase.</span></div><USwitch :model-value="true" disabled aria-label="Light UI mode locked on" /></div>
-            <div class="setting-row"><div><strong class="block text-sm text-highlighted">Show user settings</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Expose viewer accessibility controls.</span></div><USwitch v-model="showUserSettings" aria-label="Show user settings" /></div>
-            <div class="setting-row"><div><strong class="block text-sm text-highlighted">Follow user by default</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Center the map on the selected realtime position.</span></div><USwitch v-model="followUser" aria-label="Follow user by default" /></div>
-            <div class="setting-row"><div><strong class="block text-sm text-highlighted">Language</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Map Viewer interface language.</span></div><USelect v-model="language" :items="['English', 'Bahasa Indonesia']" aria-label="Map Viewer interface language" class="w-full sm:w-44" /></div>
+            <ProductSettingRow title="Light UI mode" description="Keep Situm Explore light-only for this product phase."><USwitch :model-value="true" disabled aria-label="Light UI mode locked on" /></ProductSettingRow>
+            <ProductSettingRow title="Show user settings" description="Expose viewer accessibility controls."><USwitch v-model="showUserSettings" aria-label="Show user settings" /></ProductSettingRow>
+            <ProductSettingRow title="Follow user by default" description="Center the map on the selected realtime position."><USwitch v-model="followUser" aria-label="Follow user by default" /></ProductSettingRow>
+            <ProductSettingRow title="Language" description="Map Viewer interface language."><USelect v-model="language" :items="['English', 'Bahasa Indonesia']" aria-label="Map Viewer interface language" class="w-full sm:w-44" /></ProductSettingRow>
           </div>
         </section>
 
         <section v-else-if="activeTab === 'navigation'" class="p-[18px]">
           <h2 class="text-base font-semibold text-highlighted">Navigation</h2><p class="mt-1 text-xs text-muted">Route behavior reflected from local directions preferences.</p>
           <div class="mt-5 divide-y divide-default">
-            <div class="flex items-center justify-between gap-5 py-4 first:pt-0"><div><strong class="block text-sm text-highlighted">Prefer shortest route</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Default directions strategy.</span></div><USwitch v-model="preferShortestRoute" aria-label="Prefer shortest route" /></div>
-            <div class="flex items-center justify-between gap-5 py-4"><div><strong class="block text-sm text-highlighted">Accessible routes</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Avoid stairs when accessibility is requested.</span></div><USwitch v-model="accessibleRoutes" aria-label="Accessible routes" /></div>
-            <div class="flex items-center justify-between gap-5 py-4 last:pb-0"><div><strong class="block text-sm text-highlighted">Excluded tags</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Local path tags excluded from directions.</span></div><UInput v-model="excludedTags" aria-label="Excluded path tags" class="w-56" /></div>
+            <ProductSettingRow title="Prefer shortest route" description="Default directions strategy."><USwitch v-model="preferShortestRoute" aria-label="Prefer shortest route" /></ProductSettingRow>
+            <ProductSettingRow title="Accessible routes" description="Avoid stairs when accessibility is requested."><USwitch v-model="accessibleRoutes" aria-label="Accessible routes" /></ProductSettingRow>
+            <ProductSettingRow title="Excluded tags" description="Local path tags excluded from directions."><UInput v-model="excludedTags" aria-label="Excluded path tags" class="w-56" /></ProductSettingRow>
           </div>
         </section>
 
         <section v-else-if="activeTab === 'map'" class="p-[18px]">
           <h2 class="text-base font-semibold text-highlighted">Map configuration</h2><p class="mt-1 text-xs text-muted">Configuration profile and viewer interaction defaults.</p>
           <div class="mt-5 divide-y divide-default">
-            <div class="flex items-center justify-between gap-5 py-4 first:pt-0"><div><strong class="block text-sm text-highlighted">Configuration profile</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Map behavior profile.</span></div><USelect v-model="configurationProfile" :items="['default', 'poc-workspace']" aria-label="Configuration profile" class="w-48" /></div>
-            <div class="flex items-center justify-between gap-5 py-4"><div><strong class="block text-sm text-highlighted">Default building</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Building selected when opening the viewer.</span></div><USelect v-model="defaultBuilding" :items="['Main Building', 'Warehouse Demo']" aria-label="Default building" class="w-48" /></div>
-            <div class="flex items-center justify-between gap-5 py-4 last:pb-0"><div><strong class="block text-sm text-highlighted">Default floor</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Initial floor when available.</span></div><USelect v-model="defaultFloor" :items="['Floor 1', 'Floor 2']" aria-label="Default floor" class="w-48" /></div>
+            <ProductSettingRow title="Configuration profile" description="Map behavior profile."><USelect v-model="configurationProfile" :items="['default', 'poc-workspace']" aria-label="Configuration profile" class="w-48" /></ProductSettingRow>
+            <ProductSettingRow title="Default building" description="Building selected when opening the viewer."><USelect v-model="defaultBuilding" :items="['Main Building', 'Warehouse Demo']" aria-label="Default building" class="w-48" /></ProductSettingRow>
+            <ProductSettingRow title="Default floor" description="Initial floor when available."><USelect v-model="defaultFloor" :items="['Floor 1', 'Floor 2']" aria-label="Default floor" class="w-48" /></ProductSettingRow>
           </div>
         </section>
 
@@ -102,5 +102,4 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
 <style scoped>
 .operations-page { max-width: 1480px; }
 .settings-layout :deep(button) { font-size: 0.6875rem; }
-.settings-layout :deep(.setting-row) { min-height: 3.25rem; }
 </style>

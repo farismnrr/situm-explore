@@ -164,19 +164,19 @@ Do not preserve duplicate route-level padding recipes.
 
 Do this before route-specific tuning.
 
-- [ ] Confirm current branch is `plan/009b-ui-final-fidelity-punch-list` and start from latest pushed 009B HEAD.
-- [ ] Read the canonical CSS for `.panel-head`, `.panel-body`, `.activity-row`, `.table`, `.detail-row`, `.analytics-tab`, `.chart`, `.heatmap`, `.settings-layout`, `.settings-nav`, `.setting-section`, `.setting-row`.
-- [ ] Reconcile one shared product panel/header owner for canonical panel title + right metadata.
-- [ ] Reconcile `ProductDetailList` so Organization can use it without route-local detail-row CSS.
-- [ ] Add/reconcile a compact reusable settings-row component for repeated title/description/control rows.
-- [ ] Add/reconcile shared activity-row ownership only if it cleanly covers Users Groups + Settings Images (and optionally other proven identical rows).
+- [x] Confirm current branch is `plan/009b-ui-final-fidelity-punch-list` and start from latest pushed 009B HEAD.
+- [x] Read the canonical CSS for `.panel-head`, `.panel-body`, `.activity-row`, `.table`, `.detail-row`, `.analytics-tab`, `.chart`, `.heatmap`, `.settings-layout`, `.settings-nav`, `.setting-section`, `.setting-row`.
+- [x] Reconcile one shared product panel/header owner for canonical panel title + right metadata.
+- [x] Reconcile `ProductDetailList` so Organization can use it without route-local detail-row CSS.
+- [x] Add/reconcile a compact reusable settings-row component for repeated title/description/control rows.
+- [x] Add/reconcile shared activity-row ownership only if it cleanly covers Users Groups + Settings Images (and optionally other proven identical rows).
 - [ ] Keep `ProductPageHeader`, `ProductStatusBadge`, `useExploreFeedback`, `useTabKeyboard` as existing owners where applicable.
 - [ ] Do not add `BaseCard`, `BaseTable`, `BaseRow`, generic config-driven UI engines, Pinia, event bus, or a god composable.
-- [ ] Remove/stop using route-level sizes/padding that directly contradict the shared owner.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] commit and push this phase.
+- [x] Remove/stop using route-level sizes/padding that directly contradict the shared owner.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [x] `npm run typecheck`.
+- [x] commit and push this phase.
 
 Acceptance: the four focused pages can be tuned mostly by content/composition rather than each defining its own repeated visual primitives.
 
