@@ -320,28 +320,28 @@ Reference: canonical `#app-settings`, `.settings-layout`, `.settings-nav`, `.set
 
 ## Page head/layout
 
-- [ ] Keep `ProductPageHeader`.
-- [ ] `Reset demo` matches canonical secondary **text-only** button; remove the unreferenced rotate icon.
-- [ ] Desktop settings layout is exactly 220px + 1fr with 14px gap.
+- [x] Keep `ProductPageHeader`.
+- [x] `Reset demo` matches canonical secondary **text-only** button; remove the unreferenced rotate icon.
+- [x] Desktop settings layout is exactly 220px + 1fr with 14px gap.
 
 ## Settings navigation
 
-- [ ] Card padding 8px.
-- [ ] Each item min-height ~35px, horizontal padding ~9px, font ~11px, radius ~8px.
-- [ ] Active item uses canonical neutral `#eef0f2`-like surface + dark text, not a generic oversized nav state.
-- [ ] Preserve tab semantics and `useTabKeyboard` behavior.
-- [ ] At <=800px, navigation becomes the canonical horizontal scroll row.
+- [x] Card padding 8px.
+- [x] Each item min-height ~35px, horizontal padding ~9px, font ~11px, radius ~8px.
+- [x] Active item uses canonical neutral `#eef0f2`-like surface + dark text, not a generic oversized nav state.
+- [x] Preserve tab semantics and `useTabKeyboard` behavior.
+- [x] At <=800px, navigation becomes the canonical horizontal scroll row.
 
 ## Setting section typography/density
 
-- [ ] Section padding 18px.
-- [ ] Section heading ~13px, not current `text-base`/16px.
-- [ ] Section intro ~10px, not current `text-xs`/12px.
-- [ ] Use the shared compact setting-row component for every compatible row.
-- [ ] Row padding ~13px 0 and gap ~18px.
-- [ ] Row title ~11px.
-- [ ] Row description ~10px with canonical 1.4 line-height.
-- [ ] Do not keep `py-4`, `text-sm`, `text-xs` route-local sizing that makes the entire page visibly taller than the prototype.
+- [x] Section padding 18px.
+- [x] Section heading ~13px, not current `text-base`/16px.
+- [x] Section intro ~10px, not current `text-xs`/12px.
+- [x] Use the shared compact setting-row component for every compatible row.
+- [x] Row padding ~13px 0 and gap ~18px.
+- [x] Row title ~11px.
+- [x] Row description ~10px with canonical 1.4 line-height.
+- [x] Do not keep `py-4`, `text-sm`, `text-xs` route-local sizing that makes the entire page visibly taller than the prototype.
 
 ## Control widths
 
@@ -355,21 +355,21 @@ Default building         ~190px
 Default floor            ~150px
 ```
 
-- [ ] Control height/radius still comes from shared Nuxt UI primitive theme.
+- [x] Control height/radius still comes from shared Nuxt UI primitive theme.
 
 ## Styles / Images tabs
 
-- [ ] Map style soft cards use canonical ~13px padding, 80px preview height and ~9px preview radius.
-- [ ] Images uses canonical activity-list row grammar rather than a large nested soft-card/list block if that changes silhouette.
-- [ ] Image rows show dot + filename + one metadata line + trailing status pill with canonical density.
+- [x] Map style soft cards use canonical ~13px padding, 80px preview height and ~9px preview radius.
+- [x] Images uses canonical activity-list row grammar rather than a large nested soft-card/list block if that changes silhouette.
+- [x] Image rows show dot + filename + one metadata line + trailing status pill with canonical density.
 
 Validation:
 
-- [ ] Render `http://100.99.88.53:3000/app/settings` at 1440x900 and compare side-by-side with canonical Settings.
-- [ ] Review **General, Navigation, Map configuration, Map styles, Images** tabs individually.
-- [ ] Check 1024px, 768px and 390px behavior.
-- [ ] `git diff --check`, lint, typecheck.
-- [ ] commit and push Settings closure.
+- [x] Render `http://100.99.88.53:3000/app/settings` at 1440x900 and compare side-by-side with canonical Settings.
+- [x] Review **General, Navigation, Map configuration, Map styles, Images** tabs individually.
+- [x] Check 1024px, 768px and 390px behavior.
+- [x] `git diff --check`, lint, typecheck.
+- [x] commit and push Settings closure.
 
 ---
 
