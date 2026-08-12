@@ -6,7 +6,7 @@ Principle: gather what we already have, discover what the APIs/database can tell
 
 ## Goal
 
-Prepare the minimum local resources needed to execute `plans/001-web-foundation.md` without prematurely building product features.
+Prepare the minimum local resources needed to execute `plans/001-web-foundation.md` without prematurely building product features. The gathered building files were later removed from the public repository current tree by explicit user decision; this historical plan records the original intake only.
 
 This phase is complete when Codex has local access to the building floorplan assets, Situm credentials through `.env`, PostgreSQL access through `.env`, and enough Situm/database metadata to start the web foundation safely.
 
@@ -22,7 +22,7 @@ The user currently has these source files on the local development machine:
 ```
 
 - [x] Confirm both source files exist before touching them.
-- [ ] Create a repository-local resource directory:
+- [x] Create a repository-local resource directory during intake (the directory and manifests were later removed from the public tree by explicit Phase 1 policy decision):
 
 ```text
 resources/
@@ -58,12 +58,12 @@ resources/buildings/building-1422/source/floor-2.jpeg
 
 The user already has a Situm API key locally.
 
-- [ ] Never commit the real API key.
-- [ ] Put the real value only in the developer's local `.env` when the Nuxt project is initialized.
-- [ ] Keep only a placeholder in `.env.example`.
-- [ ] Verify the current Situm JS SDK / REST authentication requirements during implementation.
-- [ ] Treat the API key as a secret credential unless Situm documentation explicitly provides a browser-safe mechanism for the intended integration.
-- [ ] Prefer server-side API calls for discovery/administrative metadata when possible.
+- [x] Never commit the real API key.
+- [x] Put the real value only in the developer's local `.env` when the Nuxt project is initialized.
+- [x] Keep only a placeholder in `.env.example`.
+- [x] Verify the current Situm JS SDK / REST authentication requirements during implementation.
+- [x] Treat the API key as a secret credential for storage; expose it in the browser only through the documented viewer boundary and user-confirmed read-only credential.
+- [x] Prefer server-side API calls for discovery/administrative metadata when possible.
 
 Candidate environment input:
 
@@ -87,8 +87,8 @@ Once local credentials are configured:
 - [x] Fetch floors for the selected building.
 - [x] Record floor identifiers, names/numbers, order, and other metadata needed by the web viewer.
 - [x] Check whether floorplan/cartography is already configured in Situm.
-- [ ] Check whether POIs, geofences, paths, or map configuration already exist, but do not import/model them in our database yet unless the first web slice requires them.
-- [ ] Save reusable non-secret discoveries in `.agents/knowledge/` when they materially affect implementation.
+- [x] Check whether POIs, geofences, paths, or map configuration already exist, but do not import/model them in our database yet unless the first web slice requires them; no additional import was needed for the first web slice.
+- [x] Save reusable non-secret discoveries in `.agents/knowledge/` when they materially affect implementation.
 
 ### Resource we likely do **not** need from the user yet
 
@@ -104,12 +104,12 @@ Needed locally:
 
 ```dotenv
 DATABASE_URL=
-DB_SCHEMA=situm_explore
+ # Application schema is fixed as situm_explore; no runtime schema variable is required.
 ```
 
 - [x] User supplies/maintains the real `DATABASE_URL` locally; never commit it.
 - [x] Codex connects read-first and inventories existing schemas.
-- [x] Confirm `DB_SCHEMA` does not collide with an unrelated schema.
+- [x] Confirm the intended application schema did not collide with an unrelated schema; the later hardening phase fixed the runtime contract to `situm_explore` and removed `DB_SCHEMA` configurability.
 - [x] Do not create or alter anything until the existing database layout has been inspected.
 - [x] Record only non-sensitive architectural discoveries.
 
@@ -123,10 +123,10 @@ Authentication implementation remains part of `plans/001-web-foundation.md`.
 
 For resource gathering only:
 
-- [ ] Prefer an auth approach that does not require unnecessary third-party infrastructure.
-- [ ] If the selected maintained Nuxt auth integration needs an `AUTH_SECRET`, generate it locally during setup and never commit it.
-- [ ] If an OAuth provider is eventually selected, add its client ID/secret placeholders to `.env.example` only when actually needed.
-- [ ] Do not block resource gathering on OAuth credentials.
+- [x] Prefer an auth approach that does not require unnecessary third-party infrastructure.
+- [x] The selected maintained Nuxt auth integration does not require an `AUTH_SECRET`; this item is N/A.
+- [x] No OAuth provider was selected; OAuth client placeholders remain deferred/N/A.
+- [x] Do not block resource gathering on OAuth credentials.
 
 ---
 
@@ -134,11 +134,11 @@ For resource gathering only:
 
 These are useful later but **not blockers** for the web foundation:
 
-- [ ] Product logo/icon, if one already exists.
-- [ ] Preferred app name/branding copy beyond `Situm Explore`.
-- [ ] Building display name if it cannot be unambiguously discovered from Situm.
-- [ ] Any preferred floor labels if Situm metadata is not human-friendly.
-- [ ] Reference screenshots for the desired map/dashboard UX.
+- [x] Product logo/icon, if one already exists — deferred/N/A; none was required for the foundation.
+- [x] Preferred app name/branding copy beyond `Situm Explore` — deferred/N/A.
+- [x] Building display name if it cannot be unambiguously discovered from Situm — N/A; discovery provided an unambiguous display name.
+- [x] Any preferred floor labels if Situm metadata is not human-friendly — deferred/N/A; the first slice uses Situm metadata.
+- [x] Reference screenshots for the desired map/dashboard UX — deferred/N/A; no screenshots were required for the foundation.
 
 Do not stop implementation just because these optional resources are absent.
 

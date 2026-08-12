@@ -8,7 +8,7 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 
 ## Phase
 
-**Phase 2 — Foundation hardening planned**
+**Phase 7 — Foundation hardening validation blocked**
 
 ## Active decisions
 
@@ -32,7 +32,7 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 
 ## Active plan
 
-- `plans/002-foundation-hardening.md`
+- `plans/002-foundation-hardening.md` is merged to `main`; final manual authenticated/API and browser readiness checks remain documented as blocked.
 
 ## Completed plans
 
@@ -43,19 +43,15 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 
 - Nuxt full-stack foundation is merged to `main`.
 - Local PostgreSQL `situm_explore` schema has been migrated without touching unrelated database objects.
-- Situm building discovery identified building `19866` and floors `69904`/`69905`.
-- Building floorplan JPEGs and related non-secret metadata are currently committed in a public repository; visibility/exposure must be treated as an explicit policy decision during hardening.
+- Building floorplan JPEGs and related metadata were removed from the current tree after the user decided they must not remain public; historical Git blobs remain because history rewrite was not authorized.
 - Local credentials remain ignored and must never be committed.
 
 ## Open loops
 
-- Execute `plans/002-foundation-hardening.md` on branch `plan/002-foundation-hardening` using the normal repository working directory.
-- Resolve the public-resource exposure decision before treating the foundation as fully hardened.
-- Verify least-privilege Situm browser credential usage.
-- Make Nuxt ESLint clean-clone reproducible.
-- Make Situm viewer ready-state reflect the SDK's actual ready event.
-- Remove false PostgreSQL schema configurability and keep `situm_explore` explicit.
-- Reconcile stale checkboxes in completed plans 000/001.
+- Complete the documented manual authenticated/API and browser readiness checks if the project continues hardening.
+- Continue with later foundation-hardening phases; the application and Drizzle migrations now use the fixed `situm_explore` schema.
+- Phase 6 reconciliation is complete: Plans 000 and 001 now distinguish completed evidence from explicitly deferred/N/A optional work.
+- Automated Phase 7 validation passes. Remaining blockers are manual authenticated `/api/me` verification and browser confirmation of Situm's real `MAP_IS_READY` event.
 
 ## Next likely action
 

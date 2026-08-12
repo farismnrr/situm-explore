@@ -1,6 +1,6 @@
 # Plan 002 — Foundation Hardening
 
-Status: planned
+Status: in progress
 Scope: harden the completed web foundation before starting product/self-improvement features
 Principle: fix concrete foundation risks without expanding architecture.
 
@@ -44,127 +44,138 @@ The repository is currently public and contains committed building floorplan JPE
 
 Do not silently assume this exposure is acceptable.
 
-- [ ] Confirm current repository visibility before changing anything.
-- [ ] Inventory committed building resources and metadata that are publicly reachable.
-- [ ] Confirm the intended policy: intentionally public, or must be protected/removed.
-- [ ] If public exposure is approved, persist the decision and avoid unnecessary file churn.
-- [ ] If public exposure is not approved, stop product work and prepare the smallest safe remediation path.
-- [ ] Remember: deleting a file in a new commit does not remove its historical Git blob.
-- [ ] Do not rewrite Git history or change repository visibility without explicit user authorization.
+- [x] Confirm current repository visibility before changing anything: the repository is public.
+- [x] Inventory committed building resources and metadata that were publicly reachable.
+- [x] Confirm the intended policy: building floorplans and related metadata must not remain public (user-stated, 2026-08-12).
+- [x] Remove the current-tree resources and add an ignore rule to prevent accidental recommit.
+- [x] Remember: deleting a file in a new commit does not remove its historical Git blob.
+- [x] Do not rewrite Git history or change repository visibility without explicit user authorization.
 
 Acceptance:
 
-- [ ] Resource visibility policy is explicit and persisted.
-- [ ] No destructive history rewrite or visibility change happened implicitly.
+- [x] Resource visibility policy is explicit and persisted.
+- [x] No destructive history rewrite or visibility change happened implicitly.
 
 ---
 
 # Phase 2 — Situm browser credential boundary
 
+Status: complete (2026-08-12)
+
 The browser Map Viewer requires a client-visible credential, but the browser should not receive a broad discovery/admin key if a least-privilege viewer key is available.
 
-- [ ] Inspect local Situm credential usage without printing or persisting credential values.
-- [ ] Verify current official Situm Map Viewer/browser key guidance.
-- [ ] Determine whether the configured browser key is dedicated/least-privilege for Map Viewer use.
-- [ ] Prefer a dedicated read-only/browser-safe viewer credential for `NUXT_PUBLIC_SITUM_API_KEY`.
-- [ ] Keep discovery/admin/server credentials out of `runtimeConfig.public`.
-- [ ] If a new viewer key requires a manual user action, document exactly what is needed; do not expose the existing secret.
-- [ ] Update `.env.example`, README, and `.agents/knowledge/` only if the credential model changes.
+- [x] Inspect local Situm credential usage without printing or persisting credential values.
+- [x] Verify current official Situm Map Viewer/browser key guidance: the SDK requires an API key in browser initialization and exposes viewer readiness events.
+- [x] Confirm the configured local key as read-only and approved for browser use (user-stated, 2026-08-12).
+- [x] Use the confirmed read-only credential under `NUXT_PUBLIC_SITUM_VIEWER_API_KEY`.
+- [x] Keep discovery/admin/server credentials out of `runtimeConfig.public`.
+- [x] Document that no manual key action is required; the existing credential was not copied or exposed.
+- [x] Update `.env.example`, README, and runtime references for the explicit viewer credential boundary.
 
 Acceptance:
 
-- [ ] Browser credential exposure is intentional and least-privilege.
-- [ ] No broad server/admin credential is exposed to the browser.
+- [x] Browser credential exposure is intentional and least-privilege; the user confirmed the existing configured key is read-only and approved for the browser viewer.
+- [x] No broad server/admin credential is exposed to the browser by the application configuration.
 
 ---
 
 # Phase 3 — Make Nuxt ESLint reproducible from a clean clone
 
+Status: complete
+
 The foundation uses `@nuxt/eslint` and imports generated `.nuxt/eslint.config.mjs`. Make sure the Nuxt module actually generates that config reliably.
 
-- [ ] Register `@nuxt/eslint` in `nuxt.config.ts` using the current recommended Nuxt setup.
-- [ ] Keep one flat-config ESLint setup; do not introduce a parallel legacy config.
-- [ ] Verify a clean generated state can produce the expected Nuxt ESLint config.
-- [ ] Run `npm run lint` and require zero lint errors.
+- [x] Register `@nuxt/eslint` in `nuxt.config.ts` using the current recommended Nuxt setup.
+- [x] Keep one flat-config ESLint setup; do not introduce a parallel legacy config.
+- [x] Verify a clean generated state can produce the expected Nuxt ESLint config.
+- [x] Run `npm run lint` and require zero lint errors.
 
 Acceptance:
 
-- [ ] Fresh clone/install does not rely on stale local `.nuxt` output for lint configuration.
-- [ ] `npm run lint` passes.
+- [x] Fresh clone/install does not rely on stale local `.nuxt` output for lint configuration.
+- [x] `npm run lint` passes.
 
 ---
 
 # Phase 4 — Make Situm viewer readiness truthful
 
+Status: complete
+
 Do not mark the viewer ready just because `viewer.create(...)` returned without a synchronous exception.
 
-- [ ] Inspect the current Situm SDK viewer lifecycle/events.
-- [ ] Wait for the current supported viewer/map-ready event before setting UI state to `ready`.
-- [ ] Keep a clear loading state until the viewer is actually ready.
-- [ ] Surface initialization/runtime errors clearly with Nuxt UI.
-- [ ] Avoid adding a generalized event bus or abstraction layer.
-- [ ] If `/api/situm/status` remains, make its semantics explicit: configuration-present is not viewer-ready.
+- [x] Inspect the current Situm SDK viewer lifecycle/events; installed `@situm/sdk-js` exposes `ViewerEventType.MAP_IS_READY` (`app.map_is_ready`) and `APP_ERROR` events via `viewer.on(...)`.
+- [x] Wait for the current supported viewer/map-ready event before setting UI state to `ready`.
+- [x] Keep a clear loading state until the viewer is actually ready.
+- [x] Surface initialization/runtime errors clearly with Nuxt UI.
+- [x] Avoid adding a generalized event bus or abstraction layer.
+- [x] If `/api/situm/status` remains, make its semantics explicit: configuration-present is not viewer-ready.
 
 Acceptance:
 
-- [ ] Dashboard reports Situm ready only after the SDK signals real readiness.
-- [ ] Missing config, initialization failure, and ready states are distinguishable.
+- [x] Dashboard reports Situm ready only after the SDK signals real readiness.
+- [x] Missing config, initialization failure, runtime failure, and ready states are distinguishable.
 
 ---
 
 # Phase 5 — Remove fake PostgreSQL schema configurability
 
+Status: complete
+
 The committed migration owns the fixed `situm_explore` schema. Runtime config should not pretend a different schema can be selected when committed migrations do not follow that choice.
 
 Preferred direction: keep the application-owned schema fixed as `situm_explore` until a real multi-schema requirement exists.
 
-- [ ] Remove `DB_SCHEMA` from `.env.example` and setup docs.
-- [ ] Define the Drizzle schema with the fixed `situm_explore` name.
-- [ ] Remove `runtimeConfig.dbSchema` if unused.
-- [ ] Scope `drizzle.config.ts` explicitly to `situm_explore` instead of environment-driven schema selection.
-- [ ] Do not generate a destructive migration merely because config was simplified.
-- [ ] Inspect the existing migration and confirm it still matches the intended fixed schema.
-- [ ] Keep `DATABASE_URL` configurable.
+- [x] Remove `DB_SCHEMA` from `.env.example` and setup docs.
+- [x] Define the Drizzle schema with the fixed `situm_explore` name.
+- [x] Remove `runtimeConfig.dbSchema` because it was unused by runtime queries.
+- [x] Scope `drizzle.config.ts` explicitly to `situm_explore` instead of environment-driven schema selection.
+- [x] Do not generate a destructive migration merely because config was simplified.
+- [x] Inspect the existing migration and confirm it still matches the intended fixed schema.
+- [x] Keep `DATABASE_URL` configurable.
 
 Acceptance:
 
-- [ ] Runtime queries and migrations agree on the same fixed application schema.
-- [ ] No unrelated PostgreSQL object is touched.
+- [x] Runtime queries and migrations agree on the same fixed application schema.
+- [x] No unrelated PostgreSQL object is touched.
 
 ---
 
 # Phase 6 — Reconcile completed plan history
 
+Status: complete
+
 Plans 000 and 001 are marked complete but contain stale unchecked items. Plans are persistent execution history, so status and checkboxes should not contradict each other.
 
-- [ ] Review unchecked items in `plans/000-resource-gathering.md` against actual implementation/session evidence.
-- [ ] Review unchecked vertical-slice items in `plans/001-web-foundation.md` against actual smoke-test evidence.
-- [ ] Mark items complete only when evidence supports it.
-- [ ] Mark intentionally skipped/non-applicable optional items explicitly as deferred/N/A.
-- [ ] Keep historical blockers/discovery truthful; do not rewrite history to look cleaner.
-- [ ] Update `.agents/state.md` so only current work is presented as active.
+- [x] Review unchecked items in `plans/000-resource-gathering.md` against actual implementation/session evidence.
+- [x] Review unchecked vertical-slice items in `plans/001-web-foundation.md` against actual smoke-test evidence; none remained unchecked.
+- [x] Mark items complete only when evidence supports it.
+- [x] Mark intentionally skipped/non-applicable optional items explicitly as deferred/N/A.
+- [x] Keep historical blockers/discovery truthful; do not rewrite history to look cleaner.
+- [x] Update `.agents/state.md` so only current work is presented as active.
 
 Acceptance:
 
-- [ ] Completed plans no longer contain misleading status/checklist contradictions.
-- [ ] Deferred optional work remains explicitly visible.
+- [x] Completed plans no longer contain misleading status/checklist contradictions.
+- [x] Deferred optional work remains explicitly visible.
 
 ---
 
 # Phase 7 — Final validation and closeout
 
+Status: blocked pending manual authenticated/browser checks
+
 No CI or unit-test framework is required for this plan.
 
-- [ ] `git diff --check`
-- [ ] Clean lockfile install validation with `npm ci` when practical.
-- [ ] `npm run lint`
-- [ ] `npm run typecheck`
-- [ ] `npm run build`
-- [ ] Manual unauthenticated `/api/me` check still rejects access.
+- [x] `git diff --check`
+- [x] Clean lockfile install validation with `npm ci` when practical.
+- [x] `npm run lint`
+- [x] `npm run typecheck`
+- [x] `npm run build`
+- [x] Manual unauthenticated `/api/me` check still rejects access with HTTP 401.
 - [ ] Manual authenticated `/api/me` check still reaches Drizzle/PostgreSQL.
 - [ ] Manual Situm dashboard check reaches the real SDK ready state with local config.
-- [ ] No secrets are staged or committed.
-- [ ] Update relevant `.agents/` files before final phase commit.
+- [x] No secrets are staged or committed.
+- [x] Update relevant `.agents/` files before final phase commit.
 - [ ] Commit and push every completed phase according to the Git protocol.
 - [ ] Do not open a PR until explicitly authorized.
 

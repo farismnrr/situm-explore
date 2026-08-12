@@ -8,7 +8,7 @@ Do not place user-specific facts here; those belong in `../memory/`.
 
 ### Situm Explore building resource discovery
 
-- Situm discovery mapped local slug `building-1422` to building `19866` (`PT Berjaya Inovasi Global`), with floors `69904` (`lt 1`) and `69905` (`lt 2`). Local JPEGs remain reference assets pending cartography comparison.
+- Building floorplan resources and their Situm identifiers were removed from the repository current tree after the user decided they must not remain public. Historical Git blobs remain; do not restore or recommit the assets without a new explicit decision.
 
 Source: observed from Situm API discovery during resource gathering on 2026-08-12.
 
@@ -23,6 +23,7 @@ Source: observed from the local Compose file, running container, and read-only P
 ### Situm web SDK credential boundary
 
 - The installed official `@situm/sdk-js` browser integration initializes `SitumSDK` with `auth.apiKey` and creates a viewer against a DOM element and building ID. This means the chosen web slice must use a clearly named public browser credential rather than pretending a server-only key can initialize the browser SDK.
+- Official Situm SDK JS documentation confirms the browser initialization requires an API key and supports `ViewerEventType.MAP_IS_READY`. Repository/environment metadata cannot establish whether a local key is dedicated or least-privilege; use `NUXT_PUBLIC_SITUM_VIEWER_API_KEY` only after confirming that in the Situm account.
 
 Source: observed in the installed SDK README during web-foundation implementation on 2026-08-12.
 
