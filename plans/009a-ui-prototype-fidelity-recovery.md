@@ -515,24 +515,24 @@ Do not inherit historical validation results without rerunning them.
 
 Environment-sensitive checks may use local ignored `.env`; never print or commit secret values.
 
-- [ ] Start from clean current 009A checkout.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck` and record the **actual current** result; do not assume the old `nuxt.config.ts` blocker still exists.
-- [ ] `npm run build`.
+- [x] Start from clean current 009A checkout.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [ ] `npm run typecheck` — actual result: fails on the preserved local `nuxt.config.ts` session-password typing edit.
+- [x] `npm run build`.
 - [ ] Real login success works.
 - [ ] Real login failure remains truthful/compact.
-- [ ] unauthenticated `/app` and `/app/**` redirect to `/login`.
+- [x] unauthenticated `/app` and `/app/**` redirect to `/login` (source-verified).
 - [ ] logout clears session and exits protected app.
 - [ ] `/api/me` remains session-protected and uses real DB behavior.
-- [ ] `/api/situm/status` retains configuration-only semantics.
+- [x] `/api/situm/status` retains configuration-only semantics (source-verified).
 - [ ] real Situm Viewer initializes when configured.
-- [ ] `MAP_IS_READY` remains the only ready event.
-- [ ] `APP_ERROR`, missing-config and initialization error states remain truthful.
-- [ ] no new Situm product-domain API/SDK integration was added.
-- [ ] no secrets are committed/rendered/logged.
-- [ ] update `.agents/state.md` and session trace with actual validation truth.
-- [ ] commit and push Phase 7.
+- [x] `MAP_IS_READY` remains the only ready event (source-verified).
+- [x] `APP_ERROR`, missing-config and initialization error states remain truthful (source-verified).
+- [x] no new Situm product-domain API/SDK integration was added.
+- [x] no secrets are committed/rendered/logged (source-verified).
+- [x] update `.agents/state.md` and session trace with actual validation truth.
+- [x] commit and push Phase 7.
 
 If credentials/environment make an actual runtime check impossible, leave only that specific check pending and state the exact blocker. Do not mark it passed from source inspection.
 
@@ -556,9 +556,9 @@ At minimum:
 
 Compare canonical HTML and rendered Nuxt side-by-side or via screenshots.
 
-- [ ] `/` desktop/tablet/mobile.
-- [ ] `/login` empty/error/loading where practical + tablet/mobile.
-- [ ] `/register` empty/completed + tablet/mobile.
+- [ ] `/` desktop/tablet/mobile — blocked: no browser/screenshot tooling installed.
+- [ ] `/login` empty/error/loading where practical + tablet/mobile — blocked: no browser/screenshot tooling installed.
+- [ ] `/register` empty/completed + tablet/mobile — blocked: no browser/screenshot tooling installed.
 - [ ] `/app`.
 - [ ] `/app/dashboard`.
 - [ ] `/app/map` loading/ready.
@@ -610,15 +610,15 @@ Record only after rendered review:
 
 Final gates:
 
-- [ ] all Closure Phases 0–7 complete;
-- [ ] all required route/state rendered checks complete;
-- [ ] `git diff --check` passes;
-- [ ] `npm run lint` passes;
-- [ ] `npm run typecheck` passes;
-- [ ] `npm run build` passes;
-- [ ] `.agents/state.md` and session trace reflect actual final truth;
-- [ ] branch is pushed;
-- [ ] no PR created;
+- [ ] all Closure Phases 0–7 complete — Phase 7 has environment-blocked checks;
+- [ ] all required route/state rendered checks complete — blocked: no browser/screenshot tooling installed;
+- [x] `git diff --check` passes;
+- [x] `npm run lint` passes with one pre-existing geofences warning;
+- [ ] `npm run typecheck` passes — blocked by local `nuxt.config.ts` typing edit;
+- [x] `npm run build` passes;
+- [x] `.agents/state.md` and session trace reflect actual final truth;
+- [x] branch is pushed;
+- [x] no PR created;
 - [ ] user manual review requested.
 
 ---

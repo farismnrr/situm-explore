@@ -134,13 +134,6 @@ Do not create a PR or merge unless the user explicitly requests it.
 
 ## Next action
 
-Execute **Closure Phase 0** from `plans/009a-ui-prototype-fidelity-recovery.md`:
-
-- reconcile 009 vs 009A history selectively;
-- remove the duplicate map fixture;
-- restore only still-missing accessibility fixes;
-- correct stale state/reference notes;
-- validate, commit and push;
-- then continue Closure Phases 1–8 sequentially.
+Closure Phases 0–6 are complete, reviewed, committed, and pushed. Phase 7 source/build validation is complete, but protected auth/DB/Situm checks require unavailable configured services and typecheck is blocked by the preserved local `nuxt.config.ts` session-cookie typing edit. Phase 8 rendered conformance is blocked because browser/screenshot tooling is unavailable. Do not mark Plan 009A complete until these gates are resolved and the user reviews the rendered UI.
 
 Do not start Plan 010.
