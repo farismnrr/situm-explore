@@ -310,20 +310,20 @@ The production map canvas remains the **real existing Situm Viewer**; do not rep
 
 Everything around the viewer must closely reproduce `#app-map`.
 
-- [ ] Match outer `map-layout` radius/border and dominant viewport height.
-- [ ] Match 320px desktop side panel and responsive 280px/laptop behavior.
-- [ ] Match header density and ready/loading/error pill footprint.
-- [ ] Match Explore/Route/Layers segmented tabs.
-- [ ] Match POI item height/padding/font/icon geometry.
-- [ ] Match route form/result compactness and action hierarchy.
-- [ ] Match layers rows/switch density and two-column More Viewer Tools grid.
-- [ ] Remove visually large explanatory `UAlert` blocks for local map actions when the prototype uses transient toast feedback; use a toast or compact ephemeral feedback pattern instead.
-- [ ] Match top-left building/floor control composition and top-right mode control composition.
-- [ ] Match map bottom controls placement/shape.
-- [ ] Ensure selected POI produces a popover equivalent to canonical `#poiPopover`, with Directions + Favorite actions; do not rely only on sidebar selection state.
-- [ ] Match location picker and viewer accessibility modal visual composition.
-- [ ] Keep all newly introduced controls local/dummy; do not add Situm API/SDK product integration here.
-- [ ] Preserve real `MAP_IS_READY`, `APP_ERROR`, initialization errors and existing viewer functionality.
+- [x] Match outer `map-layout` radius/border and dominant viewport height.
+- [x] Match 320px desktop side panel and responsive 280px/laptop behavior.
+- [x] Match header density and ready/loading/error pill footprint.
+- [x] Match Explore/Route/Layers segmented tabs.
+- [x] Match POI item height/padding/font/icon geometry.
+- [x] Match route form/result compactness and action hierarchy.
+- [x] Match layers rows/switch density and two-column More Viewer Tools grid.
+- [x] Remove visually large explanatory `UAlert` blocks for local map actions when the prototype uses transient toast feedback; use a toast or compact ephemeral feedback pattern instead.
+- [x] Match top-left building/floor control composition and top-right mode control composition.
+- [x] Match map bottom controls placement/shape.
+- [x] Ensure selected POI produces a popover equivalent to canonical `#poiPopover`, with Directions + Favorite actions; do not rely only on sidebar selection state.
+- [x] Match location picker and viewer accessibility modal visual composition.
+- [x] Keep all newly introduced controls local/dummy; do not add Situm API/SDK product integration here.
+- [x] Preserve real `MAP_IS_READY`, `APP_ERROR`, initialization errors and existing viewer functionality.
 
 Acceptance: the real map occupies the space where prototype floor art was used, while the surrounding chrome is recognizably the same workspace.
 

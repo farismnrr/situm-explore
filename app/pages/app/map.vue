@@ -179,7 +179,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
           <UCheckbox v-model="accessibleRoute" label="Prefer accessible floor changes" />
           <UButton label="Calculate route" block @click="calculateRoute" />
 
-          <UAlert v-if="routeStatus" color="info" variant="soft" :description="routeStatus" />
+          <p v-if="routeStatus" class="map-feedback" role="status">{{ routeStatus }}</p>
           <UCard v-if="routeCalculated" :ui="{ body: 'p-3' }">
             <div class="flex items-center justify-between gap-3">
               <strong class="text-xs text-highlighted">Local preview · 4 min · 86 m</strong>
@@ -214,7 +214,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
             <UButton :label="largeInterfaceText ? 'Font size −' : 'Font size + '" color="neutral" variant="soft" size="sm" @click="largeInterfaceText = !largeInterfaceText; showViewerToolStatus('Viewer font size preference changed locally.')" />
             <UButton label="Set user location" color="neutral" variant="soft" size="sm" @click="showViewerToolStatus('User location updated locally.')" />
           </div>
-          <UAlert v-if="viewerToolStatus" class="mt-3" color="info" variant="soft" :description="viewerToolStatus" />
+          <p v-if="viewerToolStatus" class="map-feedback" role="status">{{ viewerToolStatus }}</p>
         </div>
       </div>
     </aside>
@@ -268,3 +268,25 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
   </UModal>
   </div>
 </template>
+
+<style scoped>
+.map-workspace { min-height: calc(100vh - 6.5rem); border-radius: 1rem; }
+.map-workspace > aside { width: 320px; }
+.map-workspace > section { min-height: calc(100vh - 6.5rem); }
+.map-feedback { margin-top: 0.75rem; border-radius: 0.625rem; background: var(--explore-foreground); color: #fff; padding: 0.625rem 0.75rem; font-size: 0.6875rem; line-height: 1.4; }
+.map-workspace [role='tablist'] button { min-height: 2rem; font-size: 0.6875rem; }
+.map-workspace .map-poi-row { min-height: 3.125rem; }
+@media (max-width: 1100px) {
+  .map-workspace > aside { width: 280px; }
+}
+@media (max-width: 1023px) {
+  .map-workspace { min-height: calc(100vh - 5rem); border-radius: 0; }
+  .map-workspace > aside, .map-workspace > section { width: 100%; min-height: 0; }
+  .map-workspace > aside { max-height: 25rem; }
+  .map-workspace > section { min-height: 34rem; }
+}
+@media (max-width: 639px) {
+  .map-workspace > aside { max-height: none; }
+  .map-workspace > section { min-height: 31rem; }
+}
+</style>
