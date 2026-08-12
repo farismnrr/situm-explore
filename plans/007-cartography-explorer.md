@@ -87,12 +87,12 @@ Tasks:
 
 Before implementation, inspect the complete POI reference area and shared details drawer.
 
-- [ ] Match search, category filter, count/status treatment, table columns/density, and responsive behavior.
-- [ ] Use the same canonical POI fixtures already used by Map/global search where applicable.
-- [ ] Search/filter/favorite state stays local.
-- [ ] Details drawer uses stable fixture IDs/data.
-- [ ] `View on map` navigates to `/app/map` without pretending a real Situm POI was selected.
-- [ ] Compare against the current HTML.
+- [x] Match search, category filter, count/status treatment, table columns/density, and responsive behavior.
+- [x] Use the same canonical POI fixtures already used by Map/global search where applicable.
+- [x] Search/filter/favorite state stays local.
+- [x] Details drawer uses stable fixture IDs/data.
+- [x] `View on map` navigates to `/app/map` without pretending a real Situm POI was selected.
+- [x] Compare against the current HTML.
 
 ## Phase 4 — Geofences `/app/geofences`
 
