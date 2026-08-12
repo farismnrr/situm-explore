@@ -128,12 +128,12 @@ Typical reference areas may include general, navigation, map configuration, styl
 
 Tasks:
 
-- [ ] Match settings navigation/row density/responsive behavior using Nuxt UI primitives.
-- [ ] **All newly represented settings are local UI state in Plan 008.** Do not wire them to Situm simply because the POC key has Read & Write permission.
-- [ ] Switches/selects/reset reproduce approved local interaction intent.
-- [ ] Light mode stays locked.
-- [ ] Reset restores local defaults.
-- [ ] Map-style/image/config writes are explicitly deferred to later dedicated integration work if they are still needed after UI acceptance.
+- [x] Match settings navigation/row density/responsive behavior using Nuxt UI primitives.
+- [x] **All newly represented settings are local UI state in Plan 008.** Do not wire them to Situm simply because the POC key has Read & Write permission.
+- [x] Switches/selects/reset reproduce approved local interaction intent.
+- [x] Light mode stays locked.
+- [x] Reset restores local defaults.
+- [x] Map-style/image/config writes are explicitly deferred to later dedicated integration work if they are still needed after UI acceptance.
 
 ## Validation
 
