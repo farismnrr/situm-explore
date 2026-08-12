@@ -2,11 +2,11 @@
 
 Status: planned
 Branch: `plan/007-cartography-explorer`
-Depends on: Plan 006
+Depends on: Plan 006 complete, reviewed, and integrated into `main`
 
 ## Goal
 
-Implement the approved Buildings/Floors, POIs, Geofences, and Paths surfaces as polished read-only product UI using typed dummy data first.
+Implement the approved Buildings/Floors, POIs, Geofences, and Paths surfaces as polished dummy-first product UI. Do not add new Situm backend/REST/SDK feature integration in this plan.
 
 ## Mandatory HTML-first implementation protocol
 
@@ -14,127 +14,131 @@ Canonical visual/interaction reference:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-**Each cartography page must be read from the canonical HTML before implementation begins.**
+Each cartography page must be read from the **current canonical HTML** before implementation begins.
 
 For every phase:
 
-1. Open the canonical HTML reference.
-2. Locate the exact `#app-*` page listed below.
-3. Inspect page header, toolbar, table/card density, responsive behavior, drawer interactions and local prototype JavaScript.
-4. Translate it into Nuxt/Vue using typed dummy fixtures.
-5. Do not add Situm server APIs merely to populate the page.
-6. Compare the implemented route against the same HTML page before completion.
+1. Open the canonical HTML.
+2. Locate the corresponding Buildings, POIs, Geofences, Paths, table/toolbar, and shared-detail-drawer areas semantically. Old IDs such as `#app-buildings`, `#app-pois`, `#app-geofences`, `#app-paths`, and `#detailDrawer` are locator hints if they still exist.
+3. Inspect hierarchy, density, responsive behavior, drawer interactions, and local prototype behavior.
+4. Translate into Nuxt/Vue/Nuxt UI using typed local fixtures.
+5. Do not add Situm server/API/SDK feature calls merely to populate the page.
+6. Compare the implemented route against the same current HTML area before completion.
 
-### Prototype sections required for this plan
-
-- Buildings/Floors: `#app-buildings`, toolbar/search, building table, floor coverage and resource panels.
-- POIs: `#app-pois`, search, category filter, POI table and details interactions.
-- Geofences: `#app-geofences`, metric summary cards and geofence table.
-- Paths/Routing: `#app-paths`, path-network preview, route form and dummy route-result interaction.
-- Shared details: `#detailDrawer`, `[data-detail]` interactions, close behavior and `View on map` action.
-- Shared tables/toolbars: `.toolbar`, `.table-wrap`, `.table`, `.filter-input`, `.filter-select`.
-
-Do not implement these pages from a generic admin-template mental model. The exact HTML pages above are the required composition reference.
+Do not implement these pages from a generic admin-template mental model.
 
 ## Required reading
 
 - `AGENTS.md`
+- `ARCHITECTURE.md`
 - `DESIGN.md`
-- `design/reference/situm-explore-interactive-prototype.html`
 - `design/IMPLEMENTATION.md`
-- completed Plans 004–006 implementation.
+- `design/data-source-matrix.md`
+- `design/reference/situm-explore-interactive-prototype.html`
+- completed Plans 004–006 implementation/state
+- this plan
 
 ## Data rule
 
-Do **not** add new Situm server discovery/API routes in this plan. These pages are UI-first and dummy-backed so the product can be reviewed without expanding backend scope.
+These pages are UI-first and dummy-backed.
 
-## Phase 1 — Shared cartography fixture shapes
+- no new Situm proxy/discovery endpoints;
+- no new Situm SDK feature wiring;
+- no DB tables/migrations for fixture data;
+- no fake API routes serving fixture JSON.
 
-Before defining data shapes, inspect the columns, labels, badges and detail fields actually rendered by `#app-buildings`, `#app-pois`, `#app-geofences`, `#app-paths` and `#detailDrawer`.
+## Phase 1 — Canonical cartography fixture ownership
 
-- [ ] Create small typed fixtures for buildings, floors, POIs, categories, geofences and path summaries containing only fields required by the approved UI.
-- [ ] Keep synthetic IDs/names; do not persist private real metadata from local resources.
-- [ ] Keep fixture shape easy to replace with real GET results later.
-- [ ] Avoid speculative fields that are not used by the reference.
-- [ ] No repository/service abstraction layer.
+Before defining data, inspect the fields actually rendered by the current HTML.
+
+- [ ] Inspect `app/data/prototype/` created by Plans 005–006 first.
+- [ ] Reuse and extend existing synthetic building/POI records instead of creating a second set for cartography pages.
+- [ ] Add only fields actually required by Buildings/Floors, POIs, Geofences, Paths, and shared details UI.
+- [ ] Keep synthetic IDs/names; do not persist private building resources or real credential-bearing metadata.
+- [ ] Keep fixture shapes straightforward to replace later.
+- [ ] Avoid speculative fields.
+- [ ] No repository/service abstraction around fixtures.
+
+Acceptance: global search, map UI, and cartography pages share one canonical synthetic record per logical dummy resource.
 
 ## Phase 2 — Buildings & Floors `/app/buildings`
 
-**Before implementation, read `#app-buildings` from page header through both lower detail panels.**
+Before implementation, inspect the complete Buildings/Floors reference area.
 
 Match deliberately:
 
-- page-title/eyebrow hierarchy;
-- single-line search toolbar;
-- compact table density;
-- status pill treatment;
-- floor coverage list;
-- cartography resource summary;
-- details-drawer behavior when a building name is selected.
+- page header hierarchy;
+- search/filter toolbar;
+- compact table/card density;
+- status treatment;
+- floor coverage/resource summaries;
+- details-drawer behavior;
+- responsive treatment.
 
 Tasks:
 
-- [ ] Match reference page header, toolbar, compact table and details drawer.
-- [ ] Search/filter client-side.
-- [ ] Show floor coverage/resource status using typed dummy data.
-- [ ] `View on map` routes to `/app/map`; it need not deep-link a real building yet.
-- [ ] Compare desktop/mobile result against `#app-buildings` before completion.
+- [ ] Search/filter client-side against canonical typed fixtures.
+- [ ] Show floor coverage/resource status from dummy data.
+- [ ] `View on map` routes to `/app/map`; no real building deep-link is required yet.
+- [ ] Do not call the Situm buildings API from the app in this UI plan.
+- [ ] Compare desktop/mobile result against the current HTML.
 
 ## Phase 3 — POIs `/app/pois`
 
-**Before implementation, read `#app-pois` plus the shared `#detailDrawer` interaction.**
+Before implementation, inspect the complete POI reference area and shared details drawer.
 
-- [ ] Match search input, category filter, count pill, table columns and density.
-- [ ] Search, category filter, building/floor columns and favorite visual state use local typed data.
-- [ ] Details drawer uses dummy record data while matching reference layout.
-- [ ] `View on map` navigates to map workspace.
-- [ ] Favorite changes remain local-only.
-- [ ] Compare against the HTML POI page before completion.
+- [ ] Match search, category filter, count/status treatment, table columns/density, and responsive behavior.
+- [ ] Use the same canonical POI fixtures already used by Map/global search where applicable.
+- [ ] Search/filter/favorite state stays local.
+- [ ] Details drawer uses stable fixture IDs/data.
+- [ ] `View on map` navigates to `/app/map` without pretending a real Situm POI was selected.
+- [ ] Compare against the current HTML.
 
 ## Phase 4 — Geofences `/app/geofences`
 
-**Before implementation, read the complete `#app-geofences` page.**
+Before implementation, inspect the complete Geofences reference area.
 
-- [ ] Match three metric-summary cards and their density.
-- [ ] Match geofence table columns, status pills and spacing.
-- [ ] Dummy stay-time/session values only.
-- [ ] No real geofence report query.
-- [ ] Map action navigates to map workspace; overlay integration may remain dummy.
-- [ ] Compare against `#app-geofences` before completion.
+- [ ] Match metric-summary/table composition.
+- [ ] All session/stay-time/geofence rows are typed dummy data.
+- [ ] No real geofence/report query.
+- [ ] Map action navigates to `/app/map`; any overlay remains local/dummy.
+- [ ] Compare against the current HTML.
 
 ## Phase 5 — Paths & Routing `/app/paths`
 
-**Before implementation, read `#app-paths`, including `.building-mini`, route form, `#pathPreviewBtn`, `#pathPreviewResult` and related JavaScript.**
+Before implementation, inspect the complete Paths/route-preview reference area.
 
-- [ ] Match path-network visual preview from the prototype using lightweight local CSS/SVG; do not instantiate a second Situm viewer.
-- [ ] Match Start/To form and accessible-route checkbox.
-- [ ] Dummy route preview/results only.
-- [ ] Link to `/app/map` route planner.
-- [ ] No server directions endpoint.
-- [ ] Compare interaction and responsive composition against the HTML before completion.
+- [ ] Match local path-network visual using lightweight CSS/SVG if needed; do not instantiate another Situm Viewer.
+- [ ] Match Start/To and accessibility controls.
+- [ ] Route preview/results are local dummy state only.
+- [ ] Link to `/app/map` route UI.
+- [ ] No server directions endpoint or new viewer directions SDK call.
+- [ ] Compare behavior/responsive composition against the current HTML.
 
 ## Phase 6 — Shared details drawer
 
-**Before implementation, inspect `#detailDrawer`, `.drawer.open`, drawer mobile rules, `#closeDrawer`, `[data-detail]` JavaScript and `#drawerMapBtn`.**
+Before implementation, inspect the current shared drawer states and mobile behavior.
 
-- [ ] Implement one small reusable drawer only if it materially serves Buildings/POIs/Geofences/users later.
-- [ ] Match width, header, detail-row rhythm and mobile full-width behavior.
-- [ ] Close button works; Escape support is preferred if straightforward.
+- [ ] Reuse one small drawer for the cartography resource details when that improves DRY/readability.
+- [ ] Prefer the relevant Nuxt UI overlay primitive instead of recreating prototype drawer infrastructure.
+- [ ] Match width/header/detail-row rhythm/mobile full-width behavior.
+- [ ] Close action and Escape work when supported naturally by the primitive.
 - [ ] `View on map` uses Nuxt navigation.
-- [ ] Do not reproduce the prototype's random generated identifier behavior; use stable fixture IDs.
+- [ ] Use stable fixture IDs; do not reproduce random prototype identifiers.
 
 ## Validation
 
-- [ ] pages use authenticated app layout;
+- [ ] Plan 006 is already integrated in main before this branch was created;
+- [ ] pages use authenticated app layout/middleware;
 - [ ] responsive tables/filters work;
-- [ ] no real write controls;
+- [ ] no remote write controls or new Situm product-domain calls;
 - [ ] no secret/private building resources added;
-- [ ] Buildings matches `#app-buildings`;
-- [ ] POIs matches `#app-pois`;
-- [ ] Geofences matches `#app-geofences`;
-- [ ] Paths matches `#app-paths`;
-- [ ] drawer behavior matches `#detailDrawer`;
+- [ ] no duplicate building/POI fixture sets;
+- [ ] Buildings/POIs/Geofences/Paths/drawer compare against current HTML reference areas;
 - [ ] deliberate deviations are documented;
-- [ ] diff-check/lint/typecheck/build;
-- [ ] phase commits + pushes;
+- [ ] `git diff --check`;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] `npm run build`;
+- [ ] update plan + `.agents/`, commit, and push phases;
 - [ ] no PR until authorized.
