@@ -2,101 +2,112 @@
 
 Status: planned
 Branch: `plan/004-ui-foundation-public-auth`
-Depends on: merged foundation + approved `design/reference/situm-explore-interactive-prototype.html`
+Depends on: merged foundation + populated `design/reference/situm-explore-interactive-prototype.html`
 
 ## Goal
 
-Establish the visual foundation from the approved HTML reference and implement the public/authenticated entry flow without changing the existing authentication backend.
+Establish the approved visual foundation and implement the public/auth entry flow using the existing Nuxt/Vue/Nuxt UI stack without changing the existing authentication backend.
 
-## Mandatory HTML-first implementation protocol
+## Mandatory reference-first protocol
 
 Canonical visual/interaction reference:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-**Do not start Vue/Nuxt implementation before reading this HTML file.**
+### Hard stop when placeholder is present
 
-For every phase in this plan:
+Before any UI implementation, open the canonical HTML.
 
-1. Open/read the canonical HTML reference first.
-2. Locate the exact prototype section named below.
-3. Inspect its HTML structure, CSS variables/classes, visual hierarchy, responsive rules, and JavaScript interaction behavior.
-4. Write down the relevant implementation mapping in the active-plan notes if anything is ambiguous.
-5. Only then translate that section into Nuxt/Vue/Nuxt UI.
-6. Reuse existing project behavior where it already exists; the HTML is a UI/interaction reference, not backend architecture.
-7. Compare the implemented page against the same HTML section before marking the phase complete.
+If it still contains only placeholder content such as `Hello World`, **stop this plan before changing UI code**. Do not infer the missing design from Plan 003, memory, generic SaaS patterns, deleted design docs, or agent taste.
 
-Do not reinterpret the reference from memory. Do not use generic SaaS inspiration as a substitute for reading the file.
+### When the HTML is populated
 
-### Prototype sections required for this plan
+For every phase:
 
-- Global visual foundation: `:root`, reusable `.brand`, `.brand-mark`, `.btn*`, `.card`, `.pill`, `.field`, input/select styles, responsive media queries.
-- Landing page: `#screen-landing` including `.public-nav`, `.hero`, `.hero-grid`, `.hero-window`, trust strip, feature sections, analytics teaser, CTA and footer.
-- Login/register: `#screen-auth` including `.auth-page`, `.auth-art`, `.auth-panel`, `.auth-tabs`, `#loginPane`, `#registerPane`, and the login/register JavaScript flow.
-- Brand mark: use the navigation-arrow SVG from `.brand-mark`; never restore the old `S` lettermark.
+1. Open the exact relevant section of the canonical HTML first.
+2. Understand its rendered hierarchy, proportions, spacing, typography, responsive behavior, interaction states, and action priority.
+3. Treat its HTML/CSS/JS only as evidence of UI/UX intent. Do not copy its architecture into production.
+4. Inspect the existing Nuxt implementation and real backend/integration behavior.
+5. Map the reference intent to Nuxt UI primitives, Vue composition, and Nuxt routing.
+6. Use small custom CSS only for genuine fidelity gaps after Nuxt UI/Tailwind options are exhausted.
+7. Compare the resulting Nuxt page against the same reference section before marking the phase complete.
+
+Production implementation order is mandatory:
+
+1. Nuxt UI primitive;
+2. Nuxt UI props/variants/slots/semantic tokens/app config + existing utilities;
+3. composition of Nuxt UI primitives;
+4. small Vue component where reuse/readability is real;
+5. narrow centralized custom CSS only if necessary.
+
+Do not paste prototype CSS, recreate its `.btn`/`.card`/`.pill` system, or copy its JavaScript screen-switching logic.
 
 ## Required reading
 
 - `AGENTS.md`
 - `DESIGN.md`
-- `design/reference/situm-explore-interactive-prototype.html`
 - `design/IMPLEMENTATION.md`
-- `.agents/design/*`
+- `design/data-source-matrix.md`
+- `design/reference/situm-explore-interactive-prototype.html`
+- this plan
 
-The approved HTML reference is the visual source of truth. Do not redesign it.
+## Reference sections for this plan
+
+When the user has populated the HTML, inspect the sections representing:
+
+- global product visual language and reusable controls;
+- public landing page;
+- login state;
+- register state;
+- navigation-arrow brand mark;
+- desktop/mobile behavior for those surfaces.
+
+Selector/class names in the user's HTML may change when they replace the placeholder. **Do not assume old prototype selectors exist.** Identify the relevant sections from the actual current HTML.
 
 ## Phase 1 — Visual tokens and brand
 
-HTML reference to inspect first: global `:root` tokens and reusable component classes at the top of the canonical prototype.
-
-- [ ] Read the canonical HTML reference before editing Nuxt files.
-- [ ] Audit current Nuxt UI app config and global CSS from Plan 003.
+- [ ] Confirm the canonical HTML is populated; stop if it is still placeholder-only.
+- [ ] Audit current Nuxt UI app config and global CSS from the existing app.
 - [ ] Preserve light-only behavior.
-- [ ] Translate prototype neutrals, borders, radii, spacing, typography hierarchy and restrained shadows into Nuxt UI semantic configuration/global CSS.
-- [ ] Add the approved navigation-arrow SVG as a small reusable brand component matching `.brand-mark` dimensions/weight.
-- [ ] Remove the `S` lettermark anywhere it appears in new UI.
-- [ ] Reproduce common button/card/pill/input density closely enough that later pages do not need independent visual reinvention.
-- [ ] Do not copy the HTML's CSS architecture literally if Nuxt UI semantics provide a cleaner equivalent.
-- [ ] Do not add a new design-system package.
+- [ ] Identify the populated reference's neutral hierarchy, semantic accents, border treatment, radii, typography scale, spacing rhythm, and shadow restraint.
+- [ ] Express those decisions primarily through Nuxt UI semantic configuration/app config and existing utility classes.
+- [ ] Add the approved navigation-arrow product mark as a small Vue/local SVG component if the populated reference still uses it.
+- [ ] Do not create a second design system.
+- [ ] Do not copy prototype classes or stylesheet blocks into production.
 
-Acceptance: global primitives can reproduce the reference without page-specific hardcoded design drift, and a side-by-side inspection of common primitives is visually close.
+Acceptance: common Nuxt UI primitives can reproduce the populated reference's visual language without page-by-page styling drift.
 
 ## Phase 2 — Landing page
 
 Target: `/`.
 
-**Before implementing this phase, read `#screen-landing` in the canonical HTML reference from its opening element through the public footer.**
+Before implementing, inspect the full landing composition in the **current populated HTML**.
 
-Pay particular attention to:
+Match its actual:
 
-- sticky translucent light navigation;
-- hero column proportions and typography scale;
+- navigation structure;
+- hero hierarchy/proportions;
 - CTA hierarchy;
-- product-preview browser/window composition;
-- trust strip density;
-- feature-card spacing and icon treatment;
-- operations/analytics sections;
-- dark final CTA block;
-- mobile breakpoints and how the hero becomes one column.
+- product-preview composition;
+- content-section density;
+- final CTA/footer treatment;
+- responsive reflow.
 
 Tasks:
 
-- [ ] Replace the current auth-only root page with the approved public landing composition.
-- [ ] Implement sticky light nav, brand, Product/Operations/Analytics/About anchors and auth CTAs.
-- [ ] Implement hero hierarchy and product-preview window from reference.
-- [ ] Implement compact feature sections and final CTA only to the level represented by the reference; do not expand marketing scope.
-- [ ] CTA routes: Sign in -> `/login`; Start prototype -> `/register`.
-- [ ] If session already exists, show a quiet `Open workspace` action rather than forcing login.
-- [ ] Compare desktop and mobile output against `#screen-landing` before marking complete.
+- [ ] Replace the current auth-only root page with the populated reference's approved public landing composition.
+- [ ] Use Nuxt links/routes for navigation and auth CTAs.
+- [ ] Keep landing content static; no backend endpoint is required.
+- [ ] If a real session exists, provide an appropriate route to the authenticated workspace without breaking the approved composition.
+- [ ] Compare desktop and mobile output against the populated HTML before completion.
 
-Data: static.
-Backend: none.
+Do not add marketing sections that are not represented by the populated reference.
 
 ## Phase 3 — Real login page
 
 Target: `/login`.
 
-**Before implementing this phase, inspect `#screen-auth`, `.auth-art`, `.auth-panel`, `.auth-box`, `#loginPane`, and the prototype `loginForm` JavaScript.**
+Before implementing, inspect the login state in the current populated HTML.
 
 Reuse existing production behavior:
 
@@ -105,63 +116,56 @@ Reuse existing production behavior:
 - current error response;
 - current session handling.
 
-The prototype accepts any dummy credentials, but production Nuxt **must not** copy that fake authentication behavior. Match only the visual/interaction design while retaining the real login backend.
+Rules:
 
-Tasks:
+- [ ] Match the populated reference's login layout, hierarchy, fields, feedback, and responsive behavior using Nuxt UI form primitives.
+- [ ] Keep labels/autocomplete accessible.
+- [ ] Preserve submit loading/disabled behavior.
+- [ ] Preserve real inline authentication errors.
+- [ ] Successful login enters the authenticated app route defined by the implementation roadmap.
+- [ ] Logged-in visitors should not be forced through another fake login.
+- [ ] Never copy dummy authentication logic from the HTML even if its prototype accepts arbitrary credentials.
 
-- [ ] Match split-panel auth design on desktop and single-panel design on mobile.
-- [ ] Match auth heading, supporting copy, field rhythm, tabs and button hierarchy from HTML.
-- [ ] Use approved brand mark.
-- [ ] Keep proper labels/autocomplete.
-- [ ] Preserve submit loading/disabled state.
-- [ ] Preserve inline real auth errors while styling them like the reference.
-- [ ] Successful login -> `/app`.
-- [ ] Logged-in visitor -> provide `Open workspace` rather than another login attempt.
-- [ ] Compare against the HTML login state before marking complete.
-
-Do not modify authentication backend unless a regression is discovered.
+Do not modify authentication backend unless a real regression is discovered.
 
 ## Phase 4 — Dummy register page
 
 Target: `/register`.
 
-**Before implementing this phase, inspect the same `#screen-auth` container with `#registerPane`, registration fields, tab behavior, responsive layout and submit interaction.**
+Before implementing, inspect the registration state in the current populated HTML.
 
 There is no registration/account backend in current scope.
 
-- [ ] Implement approved registration form and validation UI.
-- [ ] Match the prototype's desktop/mobile composition and field grouping.
-- [ ] Make it explicit in code that registration is prototype-only.
-- [ ] No database insert, no new Drizzle table, no new API route.
-- [ ] On valid submit, use a local demo continuation flow that navigates to `/app` only if that does not interfere with real auth middleware; otherwise show a `Registration is demo-only; use Sign in` completion state.
-- [ ] Prefer the safer behavior if middleware requires a real session.
-- [ ] Do not pretend a real account was created.
-- [ ] Compare against the HTML register state before marking complete.
-
-Acceptance: page visually matches reference without pretending a real account was created.
+- [ ] Match the reference's form composition and responsive behavior using Nuxt UI form primitives.
+- [ ] Use local validation/demo state only.
+- [ ] No database insert.
+- [ ] No new Drizzle table/migration.
+- [ ] No registration API route.
+- [ ] Do not fake a durable authenticated account/session.
+- [ ] Prefer a safe prototype completion state or route to real login when auth middleware requires a real session.
+- [ ] Never claim a real account was created.
 
 ## Phase 5 — Responsive/accessibility/validation
 
-Re-read the prototype's `@media` blocks before this pass; do not invent breakpoints solely from desktop output.
-
-- [ ] Mobile nav and auth layout work without overflow.
+- [ ] Re-check the populated HTML's desktop and mobile behavior before the final pass.
+- [ ] Mobile nav/auth layout works without overflow.
 - [ ] Keyboard/focus behavior works.
-- [ ] CTA links are real Nuxt links/routes.
-- [ ] Desktop landing/auth hierarchy materially matches the canonical HTML.
-- [ ] Mobile landing/auth hierarchy materially matches the canonical HTML.
+- [ ] CTA links use real Nuxt navigation.
+- [ ] Nuxt implementation materially matches the populated HTML without copying its code architecture.
 - [ ] Document any deliberate deviation caused by accessibility/framework constraints.
 - [ ] `git diff --check`.
 - [ ] `npm run lint`.
 - [ ] `npm run typecheck`.
 - [ ] `npm run build`.
-- [ ] Update plan + `.agents/` before each phase commit.
-- [ ] Commit/push each phase.
+- [ ] Update plan + `.agents/` before each completed phase commit.
+- [ ] Commit/push each completed phase.
 - [ ] No PR until explicit authorization.
 
 ## Non-goals
 
-- authenticated sidebar/app pages;
+- authenticated sidebar/app feature pages;
 - new auth model;
 - registration backend;
 - Situm API expansion;
-- analytics backend.
+- analytics backend;
+- copying the reference HTML/CSS/JS into production.
