@@ -15,10 +15,18 @@
   --explore-foreground-muted: #515862;
   /* Meets WCAG AA for normal text on the light surfaces used by the app. */
   --explore-foreground-subtle: #5f6874;
+  --explore-ink: #111827;
+  --explore-ink-hover: #202939;
   --explore-border: #e6e8ec;
   --explore-border-strong: #d8dce2;
   --explore-accent: #2563eb;
   --explore-accent-soft: #eff6ff;
+  --explore-success: #168754;
+  --explore-success-soft: #edf9f2;
+  --explore-warning: #b77908;
+  --explore-warning-soft: #fff8e5;
+  --explore-danger: #b8433b;
+  --explore-danger-soft: #fff0ee;
   --explore-radius-xs: 0.4375rem;
   --explore-radius-sm: 0.5625rem;
   --explore-radius-md: 0.75rem;
@@ -27,6 +35,7 @@
   --explore-shadow-xs: 0 1px 2px rgb(16 24 40 / 4%);
   --explore-shadow-sm: 0 8px 24px rgb(16 24 40 / 6%);
   --explore-shadow-md: 0 18px 55px rgb(16 24 40 / 10%);
+  --explore-focus-ring: 0 0 0 3px rgb(17 24 39 / 7%);
 
   /* Nuxt UI semantic surfaces mapped to the canonical light product palette. */
   --ui-bg: var(--explore-surface);
@@ -147,6 +156,45 @@ body {
   padding-inline: 0.625rem;
   font-size: 0.6875rem;
   font-weight: 680;
+}
+
+/* Nuxt UI primitives use these semantic slots; keep their shared geometry aligned
+   with the canonical reference while leaving route composition to Vue components. */
+[data-slot='base'][data-slot='base'] {
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+[data-slot='base']:disabled,
+[data-slot='base'][aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+[data-slot='base']:focus-visible,
+[data-slot='control']:focus-visible,
+[role='switch']:focus-visible {
+  outline: 2px solid var(--explore-ink);
+  outline-offset: 2px;
+}
+
+[data-slot='badge'] {
+  box-shadow: inset 0 0 0 1px rgb(17 24 39 / 4%);
+}
+
+[role='switch'] {
+  width: 2.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+}
+
+[role='switch'][data-state='checked'] {
+  background-color: var(--explore-ink);
+}
+
+.search-trigger:focus-visible {
+  outline: 2px solid var(--explore-ink);
+  outline-offset: 2px;
+  box-shadow: var(--explore-focus-ring);
 }
 
 /* Keep compound settings controls readable when the app content is narrower than a phone. */

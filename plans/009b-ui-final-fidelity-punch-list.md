@@ -308,64 +308,64 @@ Small additional theme/config files are allowed only if Nuxt conventions make th
 
 ## Tokens
 
-- [ ] Define/normalize canonical background, surface, text, border, ink, accent, semantic status, radius and shadow tokens.
-- [ ] Explicitly distinguish dark `ink` primary actions from blue `accent` actions.
-- [ ] Remove conflicting or unused token aliases when safe.
-- [ ] Preserve accessible text contrast and visible focus.
-- [ ] Avoid arbitrary one-off hex colors in route files when an existing product token owns the meaning.
+- [x] Define/normalize canonical background, surface, text, border, ink, accent, semantic status, radius and shadow tokens.
+- [x] Explicitly distinguish dark `ink` primary actions from blue `accent` actions.
+- [x] Remove conflicting or unused token aliases when safe.
+- [x] Preserve accessible text contrast and visible focus.
+- [x] Avoid arbitrary one-off hex colors in route files when an existing product token owns the meaning.
 
 ## Buttons
 
-- [ ] Normal product-primary action renders as canonical dark ink, not default blue.
-- [ ] Primary hover matches canonical ink-hover.
-- [ ] Secondary action matches white surface + canonical border.
-- [ ] Ghost action matches transparent/muted canonical behavior.
-- [ ] Accent action remains explicit blue and is not the default for every important action.
-- [ ] Normal size matches ~40px/13px/radius-10 geometry.
-- [ ] Small size matches ~34px/12px/radius-9 geometry.
-- [ ] Icon-only buttons match canonical ~36x36/radius-9 geometry.
-- [ ] Loading/disabled/focus/active states remain accessible and visually coherent.
-- [ ] Prefer Nuxt UI theme variants; introduce a product-semantic wrapper only if configuration cannot express the recurring semantic roles cleanly.
+- [x] Normal product-primary action renders as canonical dark ink, not default blue.
+- [x] Primary hover matches canonical ink-hover.
+- [x] Secondary action matches white surface + canonical border.
+- [x] Ghost action matches transparent/muted canonical behavior.
+- [x] Accent action remains explicit blue and is not the default for every important action.
+- [x] Normal size matches ~40px/13px/radius-10 geometry.
+- [x] Small size matches ~34px/12px/radius-9 geometry.
+- [x] Icon-only buttons match canonical ~36x36/radius-9 geometry.
+- [x] Loading/disabled/focus/active states remain accessible and visually coherent.
+- [x] Prefer Nuxt UI theme variants; introduce a product-semantic wrapper only if configuration cannot express the recurring semantic roles cleanly.
 
 ## Cards
 
-- [ ] Main card matches canonical white surface, 1px border, 16px radius and restrained shadow.
-- [ ] Soft-card treatment has one shared implementation equivalent to subtle surface + border + 12px radius.
-- [ ] Avoid large/default library shadows not represented by the prototype.
-- [ ] Card header/body/footer spacing is normalized where the prototype has a repeated pattern.
+- [x] Main card matches canonical white surface, 1px border, 16px radius and restrained shadow.
+- [x] Soft-card treatment has one shared implementation equivalent to subtle surface + border + 12px radius.
+- [x] Avoid large/default library shadows not represented by the prototype.
+- [x] Card header/body/footer spacing is normalized where the prototype has a repeated pattern.
 
 ## Form controls
 
-- [ ] Input/select height ~42px, radius ~10px, canonical border/text/placeholder.
-- [ ] Textarea uses the same control family.
-- [ ] Focus state matches canonical dark-neutral focus treatment while remaining clearly accessible.
-- [ ] Label/helper/error typography is consistent.
-- [ ] No route should independently reinvent the same control dimensions.
+- [x] Input/select height ~42px, radius ~10px, canonical border/text/placeholder.
+- [x] Textarea uses the same control family.
+- [x] Focus state matches canonical dark-neutral focus treatment while remaining clearly accessible.
+- [x] Label/helper/error typography is consistent.
+- [x] No route should independently reinvent the same control dimensions.
 
 ## Pills/badges/status
 
-- [ ] Base pill matches ~28px height, 11px type and full radius.
-- [ ] Neutral/dark/blue/green/amber/red semantic treatments match prototype color language.
-- [ ] Repeated product status semantics use one shared mapping.
+- [x] Base pill matches ~28px height, 11px type and full radius.
+- [x] Neutral/dark/blue/green/amber/red semantic treatments match prototype color language.
+- [x] Repeated product status semantics use one shared mapping.
 
 ## Switches, tabs and other controls
 
-- [ ] Switch geometry matches ~36x20 and canonical ink-on state.
-- [ ] Segmented/pill tabs use shared canonical styling where the same visual pattern is repeated.
-- [ ] True tab semantics and keyboard behavior remain correct.
-- [ ] Search trigger, keyboard hint and icon controls use canonical compact geometry where repeated.
+- [x] Switch geometry matches ~36x20 and canonical ink-on state.
+- [x] Segmented/pill tabs use shared canonical styling where the same visual pattern is repeated.
+- [x] True tab semantics and keyboard behavior remain correct.
+- [x] Search trigger, keyboard hint and icon controls use canonical compact geometry where repeated.
 
 ## Overlays
 
-- [ ] Modal, popover, slideover/drawer and toast base surfaces use canonical radius/border/shadow/density.
-- [ ] Preserve Nuxt UI focus trapping, Escape handling and accessibility.
+- [x] Modal, popover, slideover/drawer and toast base surfaces use canonical radius/border/shadow/density.
+- [x] Preserve Nuxt UI focus trapping, Escape handling and accessibility.
 
 Validation:
 
 - [ ] inspect actual rendered primitives, not just source values, when browser tooling is available;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
 - [ ] commit and push Phase 1.
 
 ---
