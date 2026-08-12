@@ -219,22 +219,78 @@ Other systemic areas that require exact audit include:
 
 No broad restyling before this inventory is complete.
 
-- [ ] Confirm execution branch is `plan/009b-ui-final-fidelity-punch-list` created from the latest cumulative 009A branch HEAD; do not start from stale `main`.
-- [ ] Confirm working tree is safe and do not discard unrelated local changes.
-- [ ] Read the reusable CSS section of the canonical prototype in full.
-- [ ] Inventory every current usage of `UButton`, `UCard`, `UInput`, `USelect`, `UTextarea`, `UBadge`, `USwitch`, `UTabs`, `UModal`, `USlideover`, `UPopover` and current toast/feedback UI.
-- [ ] Inventory repeated product markup across routes: headers, stats, status pills, toolbars, panel heads, detail lists, drawers, activity rows and similar patterns.
-- [ ] Inventory repeated client logic/composables/utilities.
-- [ ] Identify page-local classes/variants that fight the intended global theme.
-- [ ] Produce a component ownership matrix inside this plan before implementation.
-- [ ] For every candidate abstraction classify it as exactly one of:
+## Phase 0 inventory and ownership matrix
+
+Observed branch/worktree: `plan/009b-ui-final-fidelity-punch-list`; the working tree already contained unrelated changes in `.agents/sessions/2026-08-12.md`, `.env.example`, `nuxt.config.ts`, `package-lock.json`, and `package.json`. Those files are preserved. The canonical prototype reusable CSS section is the block beginning at `/* ---- reusable ---- */` in `design/reference/situm-explore-interactive-prototype.html`; it defines the shared brand/container/type helpers, card and soft-card surfaces, button sizes and variants, icon buttons, pills/status colors, form controls, switch, keyboard hint, divider, and toast geometry.
+
+### Primitive usage inventory
+
+| Current primitive/feedback surface | Observed usage | Current owners/routes | Phase 0 classification and intended owner |
+| --- | ---: | --- | --- |
+| `UButton` | 51 | `app/layouts/app.vue`, public/auth pages, every `/app/**` route, map and cartography drawer | Nuxt UI global theme/variant; preserve explicit product semantics for dark ink primary, neutral secondary/ghost/soft, blue accent, and compact icon actions. |
+| `UCard` | 37 | landing, dashboard/home, settings, organization, map, cartography tables, alarms, realtime, analytics, Situm viewer | Nuxt UI global theme/variant; repeated panel framing is a separate product composition. |
+| `UInput` | 12 | login/register, shell search, POI/building filters, map search, settings | Nuxt UI global theme/variant; filter/search composition is a reusable product component only where geometry and behavior match. |
+| `USelect` | 14 | map, paths, POIs, analytics, settings | Nuxt UI global theme/variant; route-specific option state remains local. |
+| `UTextarea` | 0 | none | Nuxt UI global theme/variant, available for future form use; no wrapper candidate observed. |
+| `UBadge` | 38 | shell status, landing, dashboard, cartography tables/drawers, map, paths, realtime, settings/users | Nuxt UI global theme/variant. The separate repeated status-semantics candidate is classified as a reusable product component below. |
+| `USwitch` | 6 | map layers/settings and viewer settings | Nuxt UI global theme/variant; setting-row composition remains a product component candidate only if migrated across settings surfaces. |
+| `UTabs` | 0 | none; settings, analytics, and map currently use native buttons with `role=tab` | Nuxt UI global theme/variant; reusable composable candidate for equivalent keyboard behavior, with route-specific tab labels local. |
+| `UModal` | 2 | shell global search and map viewer settings | Nuxt UI global theme/variant; modal contents remain local to their distinct responsibilities. |
+| `USlideover` | 1 | `CartographyDetailsDrawer.vue` | Nuxt UI global theme/variant. `CartographyDetailsDrawer` is separately classified as a reusable product component below. |
+| `UPopover` | 0 | none; map POI detail is an inline `UCard` and shell search is `UModal` | Nuxt UI global theme/variant; intentionally no product wrapper or migration candidate in Phase 0. |
+| Toast/feedback timing | 48 feedback/status references; no Nuxt toast composable | `useExploreFeedback.ts`, route-local status refs and timers | Reusable composable: `useExploreFeedback` owns shared transient timing/ownership; map viewer-tool status remains intentionally local. |
+| Toast/feedback presentation | Existing `TransientFeedback.vue`, route-local success/error/status markup | `TransientFeedback.vue`, register/settings/analytics/realtime and map feedback markup | Reusable product component for shared transient presentation; map inline viewer status remains intentionally local because it is viewer-tool context. |
+
+### Repeated product markup inventory
+
+| Repeated pattern | Current occurrences | Classification and owner |
+| --- | --- | --- |
+| Authenticated page header/title/description/actions | Nearly every `/app/**` route, with route-specific actions | Reusable product component: shared page header/title/action framing; route content and actions stay slot/prop data. |
+| Metric/stat cards | landing analytics, home, dashboard, realtime, geofences | Reusable product component: stat/metric card; numeric values and notes remain fixture/page data. |
+| Status pills and status dots | shell, dashboard, map, cartography tables, realtime, users, settings, landing | Reusable product component for product status semantics; Nuxt UI badge theme owns primitive geometry/colors. |
+| Panel heads and panel body/foot framing | dashboard, home, map-side panels, analytics and table surfaces | Reusable product component: panel framing/header; unique chart/table bodies remain local. |
+| Search/filter toolbars | buildings, POIs, geofences, analytics, map-side controls | Reusable product component where search/filter alignment and controls match; route-specific filters remain local. |
+| Compact detail lists | cartography drawer, map POI card, building floor inventory, organization/settings rows | Intentionally local where field semantics/layout differ; `CartographyDetailsDrawer` owns its repeated detail-list responsibility. |
+| Details drawers | buildings, POIs, geofences via `CartographyDetailsDrawer` | Reusable product component: existing `CartographyDetailsDrawer`; reconcile only its shared geometry/content slots later. |
+| Activity/alarm/list rows | dashboard alarm summary, realtime positions, alarms, users/mobile/table rows | Intentionally local until behavior and geometry are proven identical; no speculative universal row. |
+| Table shells and mobile list fallbacks | buildings, POIs, geofences, alarms, users, paths | Reusable product component only for shared table framing/tooling; row schemas remain route-local. |
+| Search trigger/results | shell top bar plus modal | Reusable product component: shell search trigger/results composition; global search data remains local fixture/API coordination. |
+| Settings rows/sections | settings page and map viewer settings modal | Intentionally local in Phase 0 because the modal and settings page have different disclosure/ownership behavior. |
+
+### Repeated client logic/composables/utilities inventory
+
+| Logic pattern | Current owner(s) | Classification and intended owner |
+| --- | --- | --- |
+| Transient message state and timeout behavior | `useExploreFeedback.ts`, `TransientFeedback.vue`, map-local `showViewerToolStatus` | Reusable composable for shared transient timing; reusable product component for shared rendering; map inline viewer status intentionally local. |
+| Search/filter computed lists | buildings, POIs, geofences, map and shell search | Reusable pure utility only for deterministic predicate/filter helpers when data shape matches; route query state remains local. |
+| Drawer selected-item/open-close coordination | buildings, POIs, geofences | Reusable product component coordination through existing `CartographyDetailsDrawer`; page selection state remains local. |
+| Settings/analytics/map tab keyboard navigation | settings and analytics custom tab handlers; map native tab buttons | Reusable composable for equivalent tablist keyboard behavior, after semantics are reconciled; no global state. |
+| Favorite toggles | POIs and map | Intentionally local because fixture shapes and viewer context differ; extract only a pure set-toggle utility if exact duplication remains after migration. |
+| Repeated refresh/interval lifecycle | realtime `setInterval`; other routes expose manual refresh/status actions | Intentionally local until a second equivalent lifecycle exists; do not create a generic polling composable in Phase 0. |
+| Building/floor/POI lookup and display mapping | map, buildings, POIs, geofences, dashboard | Reusable pure utility for deterministic lookup/label mapping where shared fixture contracts match; current route-specific computed values remain local. |
+
+### Page-local theme conflicts observed
+
+The audit identified route-local classes/variants that should be reconciled during later phases, not changed here: `color="primary"` is used for map directions, selected floor/mode, occupancy bars and POI/map selection even though the canonical primary action is dark ink and blue is accent; `shadow-lg`, `rounded-lg`, `rounded-xl`, and per-card `:ui` body padding overrides vary across cards/drawers; custom `.landing-*`, `.welcome-card`, `.map-feedback`, `.trend-*`, `.analytics-tab`, `.map-side-tab`, `.map-mode`, `.floor-btn`, `.setting-row`, and related page CSS duplicate canonical button/card/pill/control geometry; raw `bg-primary/10 text-primary`, `bg-success`, and route-local hex/semantic color combinations bypass shared status ownership. These are migration targets, not Phase 0 restyling work.
+
+No candidate is classified as a generic base primitive, Pinia store, event bus, component factory, or speculative abstraction.
+
+- [x] Confirm execution branch is `plan/009b-ui-final-fidelity-punch-list` created from the latest cumulative 009A branch HEAD; do not start from stale `main`.
+- [x] Confirm working tree is safe and do not discard unrelated local changes.
+- [x] Read the reusable CSS section of the canonical prototype in full.
+- [x] Inventory every current usage of `UButton`, `UCard`, `UInput`, `USelect`, `UTextarea`, `UBadge`, `USwitch`, `UTabs`, `UModal`, `USlideover`, `UPopover` and current toast/feedback UI.
+- [x] Inventory repeated product markup across routes: headers, stats, status pills, toolbars, panel heads, detail lists, drawers, activity rows and similar patterns.
+- [x] Inventory repeated client logic/composables/utilities.
+- [x] Identify page-local classes/variants that fight the intended global theme.
+- [x] Produce a component ownership matrix inside this plan before implementation.
+- [x] For every candidate abstraction classify it as exactly one of:
   - Nuxt UI global theme/variant;
   - reusable product component;
   - reusable composable;
   - reusable pure utility;
   - intentionally local because it is unique.
-- [ ] Do not create abstractions whose only justification is hypothetical future reuse.
-- [ ] `git diff --check` for plan/state changes.
+- [x] Do not create abstractions whose only justification is hypothetical future reuse.
+- [x] `git diff --check` for plan/state changes.
 - [ ] commit and push Phase 0.
 
 Acceptance: every repeated primitive/pattern has a clear owner before visual migration begins.
