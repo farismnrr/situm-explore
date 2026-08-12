@@ -4,7 +4,7 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Local testing of the completed Nuxt web foundation; dev server is running on port 3000.
+Local testing of the completed Nuxt web foundation with local environment configured; dev server is running on port 3000.
 
 ## Phase
 
