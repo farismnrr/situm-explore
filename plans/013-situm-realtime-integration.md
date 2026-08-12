@@ -2,42 +2,83 @@
 
 Status: planned-later
 Branch: `plan/013-situm-realtime-integration`
-Depends on: UI accepted; Plan 010 feasibility decisions
+Depends on: Plan 012 complete, reviewed, and integrated into `main`
 
 ## Goal
 
 Replace dummy realtime positions with the simplest supported real Situm realtime flow while preserving the accepted Realtime and Map Viewer UI.
 
-## Mandatory HTML-first UI reference
+Use the same single POC Situm API key. Its Read & Write permission is allowed for the time-boxed POC, but this plan only consumes realtime/location data and does not administer users/devices.
 
-Canonical visual/interaction reference:
+## Required reading
 
-`design/reference/situm-explore-interactive-prototype.html`
+- `AGENTS.md`
+- `ARCHITECTURE.md`
+- `DESIGN.md`
+- `design/IMPLEMENTATION.md`
+- `design/data-source-matrix.md`
+- current canonical HTML Realtime/Map reference areas
+- accepted Nuxt implementation
+- Plan 010 mapping notes and completed Plans 011–012
+- this plan
 
-Before implementation, read:
+## UI-preservation rule
 
-- `#app-realtime` for stat cards, live-map preview, device list, refresh and Follow behavior;
-- `#app-map` Realtime mode/layer and live-position presentation.
+Real realtime payloads must fit the accepted Realtime and Map composition. Ignore external fields the product does not use.
 
-Real realtime data must fit the accepted UI contract. Do not redesign Realtime because API payloads expose extra fields; ignore non-required fields unless a later product decision adds them.
+Old selectors such as `#app-realtime` are locator hints only when still present in the user-populated canonical HTML.
+
+## Credential/data-path rules
+
+- Reuse `NUXT_PUBLIC_SITUM_API_KEY`.
+- No second key/env variable.
+- Never log/render/commit the key value.
+- Use the browser/server data path selected by Plan 010.
+- Keep refresh/subscription complexity no greater than the official API requires.
 
 ## Phases
 
-1. [ ] Re-read `#app-realtime` and `#app-map` Realtime states before defining the real-data mapping.
-2. [ ] Verify current official realtime SDK/API contract, authentication, update cadence, filters, and limits.
-3. [ ] Choose the simplest supported browser/server data path.
-4. [ ] Implement real current-position loading with explicit loading/empty/error states that fit the accepted Realtime composition.
-5. [ ] Update `/app/realtime` cards/list/map markers from real data without changing the accepted visual hierarchy.
-6. [ ] Wire `Follow` to the existing real Map Viewer only when viewer APIs support it safely and preserve the reference interaction intent.
-7. [ ] Add refresh/subscription behavior no more complex than required by the API.
-8. [ ] Avoid background workers, queues, custom websocket infrastructure, or database history unless later justified.
-9. [ ] Validate disconnect/reconnect and stale-data presentation.
-10. [ ] Compare Realtime and Map Realtime states against the canonical HTML after integration.
-11. [ ] lint/typecheck/build + manual smoke + phase commits/pushes.
+### Phase 1 — Revalidate realtime contract
+
+- [ ] Re-read accepted Realtime/Map states.
+- [ ] Verify current official authentication, filters, update cadence, limits, and stale/disconnect semantics.
+- [ ] Confirm exact fields required by existing UI types.
+
+### Phase 2 — Real current positions
+
+- [ ] Replace dummy current-position source with real data.
+- [ ] Add truthful loading/empty/error/stale states within the accepted composition.
+- [ ] Update cards/list/markers from the same canonical real dataset rather than maintaining separate copies.
+- [ ] Remove only dummy records actually replaced.
+
+### Phase 3 — Refresh/subscription
+
+- [ ] Implement the smallest supported refresh/subscription model.
+- [ ] No custom websocket infrastructure, queues, workers, or DB history unless the Situm contract truly requires it and a new plan is approved.
+- [ ] Handle disconnect/reconnect/stale data truthfully.
+
+### Phase 4 — Map Follow context
+
+- [ ] Wire Follow into the existing real Map Viewer only where the supported Viewer capability matches accepted interaction intent.
+- [ ] If follow cannot be mapped cleanly, keep that specific interaction local and document it rather than redesigning the screen.
+
+### Phase 5 — Validation
+
+- [ ] Plan 012 is integrated in main before branch creation.
+- [ ] Realtime and Map states preserve accepted UI hierarchy.
+- [ ] no user/device administration or remote mutation is introduced.
+- [ ] no credential leakage.
+- [ ] `git diff --check`.
+- [ ] `npm run lint`.
+- [ ] `npm run typecheck`.
+- [ ] `npm run build`.
+- [ ] manual realtime smoke including stale/disconnect handling when practical.
+- [ ] update plan + `.agents/`, commit/push phases.
+- [ ] no PR until authorized.
 
 ## Non-goals
 
 - historical trajectory storage in PostgreSQL;
 - custom presence service;
-- writes/device administration;
+- user/device administration;
 - reports integration.
