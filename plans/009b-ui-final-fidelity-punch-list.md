@@ -1,17 +1,23 @@
 # Plan 009B — Nuxt UI Foundation Fidelity & Reusability
 
-Status: **stopped-manual-takeover**
+Status: **closed-manual-accepted**
 Branch: `plan/009b-ui-final-fidelity-punch-list`
-Stopped implementation baseline: `4779d8da0f70833e6052fe0b26cfa3b59a46c142`
+Stopped automated implementation baseline: `4779d8da0f70833e6052fe0b26cfa3b59a46c142`
 Depends on: Plan 009A closed cumulative UI baseline
 
-## Closure decision
+## Final closure decision
 
-Plan 009B is intentionally stopped at the user's request.
+Plan 009B is closed.
 
-The automated/component-driven fidelity work produced regressions and the user has decided to continue the UI manually. This closure is **not** a claim that the Nuxt UI foundation matches the prototype, that route-level fidelity is complete, or that the current rendered UI has been accepted.
+Automated/component-driven fidelity execution was stopped after it produced regressions. The user then took over the difficult UI work manually and has now explicitly stated that the manual work is done and asked to close the plan so the roadmap can continue without the UI blocker.
 
-Do not reopen, continue, reinterpret, or create a follow-up 009C from this plan unless the user explicitly asks to resume automated UI planning.
+This closure therefore means:
+
+- the automated 009B checklist is historical only;
+- the final UI acceptance comes from the user's manual correction and explicit acceptance, not from the old automated checklist;
+- do not reopen or reapply old 009B abstractions over the accepted manual UI unless the user explicitly asks;
+- do not create Plan 009C from old audit findings unless the user explicitly requests new UI work;
+- preserve the accepted manual UI as the product contract for later Situm/backend plans.
 
 ## Historical intent
 
@@ -22,27 +28,16 @@ Do not reopen, continue, reinterpret, or create a follow-up 009C from this plan 
 - consolidate repeated UI/client logic;
 - migrate routes away from conflicting local visual recipes.
 
-Some of that work remains in the branch history, but the user considers the resulting UI insufficient and will now own the visual correction manually.
+Some automated work remains in branch history, but the accepted outcome is the user's later manual UI correction.
 
-## Manual takeover boundary
+## Roadmap gate
 
-From this point:
+The UI roadmap blocker is cleared.
 
-- do not perform broad UI refactors automatically;
-- do not continue component-foundation migrations automatically;
-- do not create Plan 009C automatically;
-- do not rewrite manually adjusted UI back toward this stopped plan unless the user explicitly requests it;
-- preserve real auth, PostgreSQL/Drizzle, and Situm Viewer runtime behavior while the user edits UI manually;
-- do not create a PR or merge without explicit user authorization.
+Plan 010 and later backend/Situm integration work may proceed when requested. Before creating the Plan 010 branch, confirm the user's final manual UI changes are committed/pushed and branch from that final cumulative UI baseline rather than stale `main`.
 
-The canonical prototype may still be used by the user as a visual reference, but this stopped plan is no longer an active execution checklist.
-
-## Backend roadmap gate
-
-Plan 010 and later backend/Situm integration work remain blocked.
-
-They may resume only after the user explicitly states that the manually revised UI baseline is accepted and explicitly authorizes moving past the UI stage.
+No PR or merge is implied by this closure.
 
 ## Completion record
 
-009B is closed as **stopped for manual takeover**, not as successful visual completion.
+009B is closed as **manual UI accepted after automated work was stopped**.
