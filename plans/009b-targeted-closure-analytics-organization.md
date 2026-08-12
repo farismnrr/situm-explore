@@ -170,8 +170,8 @@ Do this before route-specific tuning.
 - [x] Reconcile `ProductDetailList` so Organization can use it without route-local detail-row CSS.
 - [x] Add/reconcile a compact reusable settings-row component for repeated title/description/control rows.
 - [x] Add/reconcile shared activity-row ownership only if it cleanly covers Users Groups + Settings Images (and optionally other proven identical rows).
-- [ ] Keep `ProductPageHeader`, `ProductStatusBadge`, `useExploreFeedback`, `useTabKeyboard` as existing owners where applicable.
-- [ ] Do not add `BaseCard`, `BaseTable`, `BaseRow`, generic config-driven UI engines, Pinia, event bus, or a god composable.
+- [x] Keep `ProductPageHeader`, `ProductStatusBadge`, `useExploreFeedback`, `useTabKeyboard` as existing owners where applicable.
+- [x] Do not add `BaseCard`, `BaseTable`, `BaseRow`, generic config-driven UI engines, Pinia, event bus, or a god composable.
 - [x] Remove/stop using route-level sizes/padding that directly contradict the shared owner.
 - [x] `git diff --check`.
 - [x] `npm run lint`.
