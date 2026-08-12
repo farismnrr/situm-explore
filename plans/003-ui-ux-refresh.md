@@ -190,22 +190,22 @@ Acceptance:
 
 Review the implemented UI as a system rather than fixing isolated desktop screenshots.
 
-- [ ] Check mobile phone layout.
-- [ ] Check tablet/small laptop layout.
-- [ ] Check desktop layout.
-- [ ] Ensure no accidental horizontal overflow.
-- [ ] Verify keyboard navigation and logical tab order.
-- [ ] Verify visible focus treatments.
-- [ ] Verify all form controls have accessible labels.
-- [ ] Verify icon-only actions have accessible names if any exist.
-- [ ] Ensure statuses/errors are not communicated by color alone.
-- [ ] Check readable contrast in light mode.
-- [ ] Keep motion minimal and non-essential.
+- [x] Check mobile phone layout.
+- [x] Check tablet/small laptop layout.
+- [x] Check desktop layout.
+- [x] Ensure no accidental horizontal overflow.
+- [x] Verify keyboard navigation and logical tab order.
+- [x] Verify visible focus treatments.
+- [x] Verify all form controls have accessible labels.
+- [x] Verify icon-only actions have accessible names if any exist.
+- [x] Ensure statuses/errors are not communicated by color alone.
+- [x] Check readable contrast in light mode.
+- [x] Keep motion minimal and non-essential.
 
 Acceptance:
 
-- [ ] Core login/dashboard flow is usable without a mouse.
-- [ ] Layout hierarchy survives smaller screens rather than merely shrinking.
+- [x] Core login/dashboard flow is usable without a mouse.
+- [x] Layout hierarchy survives smaller screens rather than merely shrinking.
 
 ---
 

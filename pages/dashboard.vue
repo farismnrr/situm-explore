@@ -23,7 +23,7 @@ const connectivityLabel = computed(() => {
 
       <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-default pt-3 text-sm">
         <span class="text-muted">Application status</span>
-        <span class="text-highlighted">{{ connectivityLabel }}</span>
+        <span class="text-highlighted" role="status" aria-live="polite">{{ connectivityLabel }}</span>
       </div>
     </div>
   </AppShell>

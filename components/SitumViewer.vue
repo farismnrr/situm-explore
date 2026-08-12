@@ -40,7 +40,7 @@ onMounted(() => {
         role="status"
         aria-live="polite"
       >
-        <div class="h-10 w-10 animate-pulse rounded-full bg-primary/15" aria-hidden="true" />
+        <div class="h-10 w-10 animate-pulse motion-reduce:animate-none rounded-full bg-primary/15" aria-hidden="true" />
         <p class="text-sm text-muted">Loading map…</p>
       </div>
 

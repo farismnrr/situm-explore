@@ -14,7 +14,7 @@ async function logout() {
         <p class="text-sm font-semibold tracking-tight text-highlighted">Situm Explore</p>
 
         <div class="flex min-w-0 items-center gap-2">
-          <span class="max-w-52 truncate text-sm text-muted">{{ user?.email }}</span>
+          <span class="max-w-[min(52vw,13rem)] truncate text-sm text-muted">{{ user?.email }}</span>
           <UButton variant="ghost" color="neutral" size="sm" @click="logout">Log out</UButton>
         </div>
       </div>

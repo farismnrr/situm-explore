@@ -41,12 +41,12 @@ async function login() {
 
         <form v-else class="space-y-5" autocomplete="on" @submit.prevent="login">
           <UFormField label="Email" name="email">
-            <UInput v-model="email" class="w-full" type="email" autocomplete="username" required />
+            <UInput id="email" v-model="email" class="w-full" type="email" autocomplete="username" required />
           </UFormField>
           <UFormField label="Password" name="password">
-            <UInput v-model="password" class="w-full" type="password" autocomplete="current-password" required />
+            <UInput id="password" v-model="password" class="w-full" type="password" autocomplete="current-password" required />
           </UFormField>
-          <UAlert v-if="error" color="error" variant="soft" title="Sign-in failed" :description="error" />
+          <UAlert v-if="error" id="login-error" role="alert" color="error" variant="soft" title="Sign-in failed" :description="error" />
           <UButton type="submit" block :loading="isSubmitting" :disabled="isSubmitting">Sign in</UButton>
         </form>
       </div>
