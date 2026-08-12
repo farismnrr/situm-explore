@@ -1,6 +1,6 @@
 # Situm Explore UI Implementation Contract
 
-This document explains how to translate the single canonical UI/UX reference into the existing Nuxt application.
+This document explains how to translate the single canonical UI/UX reference into the Nuxt application.
 
 ## Canonical reference
 
@@ -8,22 +8,21 @@ There is exactly one HTML visual/interaction reference:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-The user owns the contents of that file and may replace it manually.
+The user owns that file and may replace it manually.
 
 ### Placeholder guard
 
-If the file still contains only placeholder content such as `Hello World`, do **not** start UI implementation.
+If the file still contains only placeholder content such as `Hello World`, do **not** start visual UI implementation.
 
 Do not reconstruct the intended design from:
 
-- prior Plan 003 output;
+- Plan 003 output;
 - conversation memory;
 - generic SaaS patterns;
-- Linear/Vercel/Notion/Stripe inspiration;
-- old deleted design documents;
-- agent preference.
+- old deleted design docs;
+- agent taste.
 
-Wait until the canonical HTML has real reference content.
+Plan 004 Phase 0 architecture/setup work is the only UI-roadmap phase allowed before the canonical HTML is populated.
 
 ## What the HTML means
 
@@ -31,20 +30,20 @@ The HTML/CSS/JS prototype is a **visual and interaction specification only**.
 
 Use it to understand:
 
-- page hierarchy;
-- layout proportions;
-- spacing rhythm;
-- typography hierarchy;
-- color/surface hierarchy;
+- hierarchy and composition;
+- proportions and spacing;
+- typography/surface hierarchy;
 - component density;
 - navigation structure;
 - responsive behavior;
-- intended interaction states;
-- map prominence and surrounding workspace composition.
+- interaction states;
+- map prominence.
 
-It is **not** production architecture.
+It is **not production architecture**.
 
-Do not copy its HTML, CSS architecture, or JavaScript state model into the Nuxt app.
+Do not copy its HTML structure, stylesheet architecture, or JavaScript state/screen-switching model into production.
+
+Selector/ID names mentioned by plans are locator hints from the approved prototype. If the user-populated HTML changes those selectors, locate the corresponding current screen by meaning/function; do not reconstruct missing markup from plan text.
 
 ## Production stack is authoritative
 
@@ -53,19 +52,20 @@ Production remains:
 - Nuxt 4;
 - Vue;
 - Nuxt UI;
-- existing Nuxt UI theme/semantic tokens;
-- existing Nuxt routing/layout conventions;
-- existing auth, PostgreSQL/Drizzle, and Situm SDK integrations.
+- existing Nuxt UI semantic/theme configuration;
+- Nuxt routing/layout/middleware conventions;
+- existing auth, PostgreSQL/Drizzle, and Situm Viewer integration;
+- architecture boundaries from root `ARCHITECTURE.md`.
 
 ### Nuxt UI-first translation order
 
-For every reference element, implement in this order:
+For every reference element:
 
-1. Use an existing Nuxt UI primitive if one matches the semantic job.
-2. Configure it with props, variants, slots, semantic tokens, app config, and existing utility classes.
+1. Use an existing Nuxt UI primitive when it matches the semantic job.
+2. Configure it with props, variants, slots, semantic tokens, app config, and normal utility classes.
 3. Compose a small number of Nuxt UI primitives for a complex pattern.
 4. Create a small Vue component when it improves real reuse/readability.
-5. Add small centralized custom CSS only when Nuxt UI/Tailwind cannot express a required visual detail cleanly.
+5. Add narrow centralized custom CSS only when Nuxt UI/Tailwind cannot express an approved visual detail cleanly.
 
 Examples:
 
@@ -73,10 +73,10 @@ Examples:
 | --- | --- |
 | primary/secondary buttons | `UButton` variants |
 | labelled inputs | `UForm`, `UFormField`, `UInput`, relevant Nuxt UI controls |
-| status pills | `UBadge` or a very small wrapper around Nuxt UI semantics |
+| status pills | `UBadge` or a tiny semantic product wrapper only when useful |
 | errors/status callouts | `UAlert` |
 | modal behavior | Nuxt UI modal/dialog primitive |
-| drawer/mobile navigation | Nuxt UI slideover/drawer primitive when suitable |
+| drawer/mobile navigation | Nuxt UI drawer/slideover primitive when suitable |
 | loading placeholders | Nuxt UI skeleton/loading primitives |
 | navigation | `NuxtLink` / Nuxt routing |
 | prototype JS state | Vue `ref`, `computed`, props/events/composables as needed |
@@ -86,16 +86,16 @@ Examples:
 Do not:
 
 - paste the prototype stylesheet into production;
-- recreate `.btn`, `.card`, `.pill`, `.input`, etc. as a parallel component system;
-- copy prototype JavaScript screen switching instead of using Vue/Nuxt routing;
-- use raw HTML controls when an appropriate Nuxt UI primitive already exists;
-- scatter prototype hex/pixel values throughout page components;
-- install another UI/component library;
-- accept a visibly unrelated result merely because it uses default Nuxt UI styling.
+- recreate `.btn`, `.card`, `.pill`, `.input`, etc. as a parallel design system;
+- copy prototype JavaScript screen switching instead of Nuxt routing/Vue state;
+- use raw controls when an appropriate Nuxt UI primitive exists;
+- scatter prototype hex/pixel values throughout page files;
+- install another component framework;
+- accept an unrelated visual result merely because it uses default Nuxt UI styling.
 
-The target is: **Nuxt UI implementation that visually and behaviorally matches the populated reference**.
+Target: **a Nuxt UI implementation that visually and behaviorally matches the populated reference without copying its implementation technique**.
 
-## Existing real production behavior that must remain real
+## Existing real foundation that must remain real
 
 ### Authentication
 
@@ -109,12 +109,12 @@ Already exists:
 
 Rules:
 
-- `/login` uses the existing real login flow;
-- never copy a prototype's dummy `anything works` login behavior;
-- registration remains visual/dummy until a real registration model is explicitly approved;
+- login uses the existing real login flow;
+- never copy the prototype's dummy `anything works` login behavior;
+- registration remains local/dummy until separately approved;
 - do not add auth tables/endpoints during UI implementation.
 
-### Application / PostgreSQL status
+### PostgreSQL/application status
 
 Already exists:
 
@@ -122,29 +122,32 @@ Already exists:
 - PostgreSQL through Drizzle;
 - fixed `situm_explore` schema.
 
-Use the existing behavior. Do not invent a second health endpoint for presentation convenience.
+Reuse this behavior. Do not invent a second health endpoint for presentation convenience.
 
-### Situm configuration and Viewer
+### Situm Viewer
 
 Already exists:
 
 - `/api/situm/status` for configuration presence/status;
 - `@situm/sdk-js`;
-- `SitumViewer.vue`;
+- real `SitumViewer` component;
 - `ViewerEventType.MAP_IS_READY` readiness handling;
 - viewer runtime/init error handling;
-- public read-only POC viewer credential boundary.
+- one `NUXT_PUBLIC_SITUM_API_KEY` POC credential plus building ID configuration.
 
-Rules:
+The POC key may temporarily have Read & Write permission for speed. That **does not broaden Plans 004–009**.
 
-- production map area uses the real Situm Viewer, never the prototype's CSS/mock floor plan;
+Rules during UI plans:
+
+- production map area uses the existing real Situm Viewer, never the prototype CSS/mock floorplan as a replacement;
 - `MAP_IS_READY` remains the truthful viewer-ready transition;
-- `/api/situm/status` must not be relabelled as viewer readiness;
-- missing product-domain data can stay dummy around the real viewer.
+- `/api/situm/status` is configuration status, not viewer readiness;
+- **do not add new POI/routing/realtime/geofence/settings/camera/other Situm feature calls during Plans 004–009**;
+- all new surrounding product controls remain typed dummy/local UI until later integration plans.
 
-## First-pass route mapping
+## Route mapping
 
-When the populated reference contains these product surfaces, preferred production routes are:
+Preferred production routes once Plan 005 is integrated:
 
 ```text
 /
@@ -165,70 +168,89 @@ When the populated reference contains these product surfaces, preferred producti
 /app/settings
 ```
 
-Use a real authenticated Nuxt layout for shared app chrome instead of prototype-style JavaScript screen switching.
+Important transition:
 
-Do not mechanically create a component for every prototype DOM block. Split components only where Vue reuse/readability warrants it.
+- Plan 004 still uses legacy `/dashboard` after login because `/app` does not exist yet.
+- Plan 005 atomically creates `/app/**`, updates login continuation to `/app`, keeps the real viewer reachable at `/app/map`, and removes/redirects the legacy dashboard UI.
+
+Use a real authenticated Nuxt layout, not prototype-style JavaScript screen switching.
 
 ## Data mode during Plans 004–009
 
 Detailed source rules live in `design/data-source-matrix.md`.
 
-Summary:
-
-| Surface | First implementation mode |
+| Surface | UI-roadmap mode |
 | --- | --- |
 | Landing | static |
 | Login/logout/session | real existing auth |
-| Register | dummy/local only |
-| Authenticated Home | mixed real session + dummy product metrics |
-| Dashboard | mixed real system state + dummy product metrics |
-| Situm Map Viewer | real viewer + dummy surrounding product controls where needed |
-| Buildings/Floors | dummy first |
-| POIs | dummy first |
-| Geofences | dummy first |
-| Paths/Routing | dummy first unless an existing viewer call is safely wired |
-| Realtime | dummy first |
-| Analytics/Reports | dummy first |
-| Alarms | dummy first |
-| Users/Groups | dummy first |
-| Organization | dummy/read-only context |
-| Viewer Settings | local UI state first |
+| Register | dummy/local |
+| Home | real session + dummy product data |
+| Dashboard | real foundation status + dummy product metrics |
+| Situm Map Viewer | real existing viewer lifecycle |
+| New map Explore/Route/Layers tools | dummy/local around real viewer |
+| Buildings/Floors | dummy/local |
+| POIs | dummy/local |
+| Geofences | dummy/local |
+| Paths/Routing | dummy/local |
+| Realtime | dummy/local |
+| Analytics/Reports | dummy/local |
+| Alarms | dummy/local |
+| Users/Groups | dummy/local |
+| Organization | dummy/static context |
+| Viewer Settings | dummy/local |
 
-Missing backend domains must not trigger backend expansion merely to make the UI complete.
+Missing domains must not trigger backend/API expansion merely to complete the approved UI.
 
 ## Dummy data policy
 
-1. Keep fixtures typed and centralized.
+1. Keep fixtures typed and centralized under `app/data/prototype/` after the Nuxt 4 migration.
 2. Use synthetic IDs/names/values.
 3. Never persist real credentials, private floor resources, or sensitive organization metadata as fixtures.
-4. Keep fixture shapes straightforward to replace with real reads later, without building speculative service/repository layers.
-5. Local interactions such as search, filters, drawers, tabs, toggles, toasts and route previews are fine.
-6. Never claim a remote Situm write occurred when the action is local/dummy.
-7. Keep the current POC permission boundary read-only.
+4. One logical dummy resource should have one canonical fixture record. Global search, Map UI, and Cartography UI should reuse it rather than copy it.
+5. Keep fixture shapes straightforward to replace later; do not build speculative repositories/services around them.
+6. Local filters/search/tabs/drawers/toggles/toasts/route previews/report states/simulated movement are fine.
+7. Dummy actions must never claim a remote Situm mutation succeeded.
+8. Broader Read & Write key permission is irrelevant to UI scope: Plans 004–009 stay dummy-first for missing domains.
+
+## POC credential wording
+
+Current environment contract:
+
+```text
+NUXT_PUBLIC_SITUM_API_KEY
+NUXT_PUBLIC_SITUM_BUILDING_ID
+```
+
+The single key may temporarily have Read & Write permission for the time-boxed POC and should be revoked/replaced later.
+
+If a reference screen contains stale `Only Read` copy, preserve the approved composition but use truthful current wording such as `Read & Write (POC)` or neutral `POC key configured` when that status is shown.
+
+Never render/log the key value.
 
 ## Styling rules
 
 - Light mode only.
 - Prefer Nuxt UI semantic tokens over raw colors.
-- Border-first surfaces; shadows restrained.
-- Use typography and spacing for hierarchy before decoration.
-- Keep navigation and controls compact where the populated HTML does.
-- The real map/viewer should receive the visual space indicated by the reference.
-- Custom CSS must be narrow, centralized where practical, and justify a real fidelity gap.
+- Border-first/restrained surfaces.
+- Use typography/spacing for hierarchy before decoration.
+- Keep density and navigation treatment aligned to the populated reference.
+- Give the real viewer the space indicated by the reference.
+- Custom CSS must be narrow and justified by a real fidelity gap.
 
-## Required implementation workflow
+## Required UI implementation workflow
 
-For every UI phase:
+For every visual phase:
 
-1. Verify the canonical HTML is populated and not the placeholder.
-2. Open/read the exact relevant reference section.
+1. Verify canonical HTML is populated.
+2. Open the exact current reference area.
 3. Identify visual/interaction intent, not code to copy.
-4. Inspect the current Nuxt implementation and existing real integration boundaries.
-5. Map reference intent to Nuxt UI primitives and Vue composition.
-6. Implement using Nuxt conventions.
-7. Compare the result against the same HTML reference section.
-8. Document any deliberate deviation caused by SDK, accessibility, or framework constraints.
-9. Run the plan's validation gates.
+4. Inspect existing Nuxt/foundation behavior.
+5. Map reference intent to Nuxt UI + Vue composition.
+6. Implement with `ARCHITECTURE.md` boundaries.
+7. Keep missing domains dummy/local.
+8. Compare against the same HTML area.
+9. Document deliberate accessibility/framework/SDK deviations.
+10. Run plan validation gates.
 
 ## Quality gates
 
@@ -239,16 +261,19 @@ For code-changing UI phases:
 - `npm run typecheck`;
 - `npm run build`;
 - no secrets committed;
-- real auth/database/Situm behavior touched by the phase remains intact;
-- desktop/mobile visual comparison against the populated canonical reference when browser validation is available.
+- existing real auth/database/viewer behavior remains intact;
+- no new Situm product-domain feature integration during Plans 004–009;
+- desktop/mobile comparison against the populated HTML when browser validation is available.
 
 ## Keep architecture boring
 
-Do not add:
+Do not add during UI plans:
 
 - another UI framework;
-- Pinia/global state without a concrete need;
-- generic service/repository layers for future possibilities;
+- Pinia/global state without concrete need;
+- generic service/repository layers;
 - backend endpoints just to serve dummy UI;
-- registration/account infrastructure during UI plans;
-- Situm write operations during the read-only POC roadmap.
+- registration/account infrastructure;
+- new Situm feature/API integrations just because the POC key has broad permission.
+
+Later integration plans own backend/Situm capability work after the UI is complete and accepted.
