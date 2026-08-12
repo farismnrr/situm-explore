@@ -15,7 +15,20 @@ Required configuration:
 - `NUXT_SESSION_PASSWORD`: at least 32 characters; used by maintained `nuxt-auth-utils` for sealed secure sessions.
 - `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`: the single owner credential. Generate the scrypt hash with `hashPassword` from `nuxt-auth-utils`; login verifies it with `verifyPassword`.
 - `DATABASE_URL` for the shared PostgreSQL instance. The application-owned schema is fixed as `situm_explore`.
-- `NUXT_PUBLIC_SITUM_API_KEY` and `NUXT_PUBLIC_SITUM_BUILDING_ID`: Situm POC API key and building identifier. The POC intentionally uses one key for the browser viewer and later Situm integrations; a Read & Write key may be used temporarily for speed and should be revoked/replaced after the POC.
+- `NUXT_PUBLIC_SITUM_API_KEY`: the single Situm POC API key. The POC may temporarily use a Read & Write key for speed; revoke/replace it after the POC.
+- `NUXT_PUBLIC_SITUM_BUILDING_ID`: the building loaded by the Map Viewer. It may be filled manually or discovered locally from Situm using the configured API key.
+
+### Discover the Situm building ID
+
+If the local `.env` already contains `NUXT_PUBLIC_SITUM_API_KEY` but `NUXT_PUBLIC_SITUM_BUILDING_ID` is blank, the agent may discover accessible buildings with the official Situm REST endpoint:
+
+```sh
+curl -fsS \
+  -H "X-API-KEY: ${NUXT_PUBLIC_SITUM_API_KEY}" \
+  https://api.situm.com/api/v1/buildings
+```
+
+The agent should inspect the returned building names/IDs, select the intended POC building, and write only the selected ID to the ignored local `.env` as `NUXT_PUBLIC_SITUM_BUILDING_ID`. Do not commit `.env`, API-key values, or credential-bearing command output.
 
 ## Database
 
