@@ -132,11 +132,11 @@ Do not label Viewer `Ready` from `/api/situm/status`; actual Viewer readiness re
 
 Dummy values may include visitors, device count, average stay, Viewer sessions, chart series, occupancy, and alarm summary.
 
-- [ ] Match reference hierarchy/density with Nuxt UI.
-- [ ] Keep dummy data obvious in source but production-like in rendering.
-- [ ] Do not add backend endpoints/DB tables for metrics.
-- [ ] Avoid a chart dependency solely for prototype charts; simple CSS/SVG is enough.
-- [ ] Compare against current HTML.
+- [x] Match reference hierarchy/density with Nuxt UI.
+- [x] Keep dummy data obvious in source but production-like in rendering.
+- [x] Do not add backend endpoints/DB tables for metrics.
+- [x] Avoid a chart dependency solely for prototype charts; simple CSS/SVG is enough.
+- [x] Compare against current HTML.
 
 ## Phase 5 — Global search shell
 
