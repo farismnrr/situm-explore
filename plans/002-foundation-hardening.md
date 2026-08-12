@@ -119,22 +119,24 @@ Acceptance:
 
 # Phase 5 — Remove fake PostgreSQL schema configurability
 
+Status: complete
+
 The committed migration owns the fixed `situm_explore` schema. Runtime config should not pretend a different schema can be selected when committed migrations do not follow that choice.
 
 Preferred direction: keep the application-owned schema fixed as `situm_explore` until a real multi-schema requirement exists.
 
-- [ ] Remove `DB_SCHEMA` from `.env.example` and setup docs.
-- [ ] Define the Drizzle schema with the fixed `situm_explore` name.
-- [ ] Remove `runtimeConfig.dbSchema` if unused.
-- [ ] Scope `drizzle.config.ts` explicitly to `situm_explore` instead of environment-driven schema selection.
-- [ ] Do not generate a destructive migration merely because config was simplified.
-- [ ] Inspect the existing migration and confirm it still matches the intended fixed schema.
-- [ ] Keep `DATABASE_URL` configurable.
+- [x] Remove `DB_SCHEMA` from `.env.example` and setup docs.
+- [x] Define the Drizzle schema with the fixed `situm_explore` name.
+- [x] Remove `runtimeConfig.dbSchema` because it was unused by runtime queries.
+- [x] Scope `drizzle.config.ts` explicitly to `situm_explore` instead of environment-driven schema selection.
+- [x] Do not generate a destructive migration merely because config was simplified.
+- [x] Inspect the existing migration and confirm it still matches the intended fixed schema.
+- [x] Keep `DATABASE_URL` configurable.
 
 Acceptance:
 
-- [ ] Runtime queries and migrations agree on the same fixed application schema.
-- [ ] No unrelated PostgreSQL object is touched.
+- [x] Runtime queries and migrations agree on the same fixed application schema.
+- [x] No unrelated PostgreSQL object is touched.
 
 ---
 
