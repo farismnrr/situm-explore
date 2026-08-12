@@ -9,7 +9,9 @@ Before executing any plan in this directory, read:
 1. root `AGENTS.md`;
 2. `.agents/README.md`;
 3. `.agents/protocols/git-workflow.md`;
-4. the active plan file.
+4. root `ARCHITECTURE.md`;
+5. the active plan file;
+6. `DESIGN.md` and its linked implementation/reference documents when the plan changes UI/UX.
 
 Every plan must use its own branch. Use the repository's normal working directory; do not create a linked Git worktree unless the user explicitly asks for one.
 
@@ -31,6 +33,8 @@ git switch -c plan/002-foundation-hardening origin/main
 ```
 
 Do not execute two plans in the same branch and do not implement a plan directly on `main`.
+
+All implementation must respect the Nuxt 4 app/server/shared boundaries in `ARCHITECTURE.md`. Do not introduce speculative services, repositories, stores, layers, or generic abstractions merely because a plan adds a new surface.
 
 After each completed implementation phase:
 
