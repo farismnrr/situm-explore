@@ -170,19 +170,19 @@ Acceptance:
 
 Preserve the hardened `MAP_IS_READY` behavior.
 
-- [ ] Do not regress truthful readiness semantics from Plan 002.
-- [ ] Style loading state so it occupies stable map space and does not cause layout jump.
-- [ ] Use a subtle skeleton/spinner/message appropriate to the viewer surface.
-- [ ] Keep error state in-context with concise error copy.
-- [ ] If a safe retry/reload action is straightforward with the current SDK lifecycle, add it; otherwise do not invent complexity.
-- [ ] Ready state should remove temporary feedback cleanly.
-- [ ] Keep viewer border/radius/surface styling aligned with the global UI system.
-- [ ] Do not add custom map overlays or controls without a real feature requirement.
+- [x] Do not regress truthful readiness semantics from Plan 002.
+- [x] Style loading state so it occupies stable map space and does not cause layout jump.
+- [x] Use a subtle skeleton/spinner/message appropriate to the viewer surface.
+- [x] Keep error state in-context with concise error copy.
+- [x] If a safe retry/reload action is straightforward with the current SDK lifecycle, add it; otherwise do not invent complexity.
+- [x] Ready state should remove temporary feedback cleanly.
+- [x] Keep viewer border/radius/surface styling aligned with the global UI system.
+- [x] Do not add custom map overlays or controls without a real feature requirement.
 
 Acceptance:
 
-- [ ] Loading, error, and ready are visually clear and consistent.
-- [ ] No false-ready regression is introduced.
+- [x] Loading, error, and ready are visually clear and consistent.
+- [x] No false-ready regression is introduced.
 
 ---
 
