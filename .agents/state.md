@@ -8,7 +8,7 @@ Gathered building assets, Situm metadata, and local PostgreSQL runtime/schema in
 
 ## Phase
 
-**Phase 1 — Web foundation complete; pending PR authorization**
+**Phase 1 — Web foundation complete**
 
 ## Active decisions
 
@@ -45,8 +45,8 @@ Gathered building assets, Situm metadata, and local PostgreSQL runtime/schema in
 
 ## Open loops
 
-- Review and optionally open a PR for `plan/001-web-foundation` when authorized. No further implementation phase is currently defined.
+- No active implementation loop. Future product work can start from `main` in a new plan branch/worktree.
 
 ## Next likely action
 
-Review the completed web foundation and open a PR only when authorized. The local dedicated `situm_explore` schema has been migrated; no unrelated database objects were changed.
+The completed web foundation is merged to `main`; the local dedicated `situm_explore` schema is migrated and no unrelated database objects were changed.
