@@ -2,11 +2,15 @@
 
 Status: planned
 Branch: `plan/006-situm-map-workspace`
-Depends on: Plan 005
+Depends on: Plan 005 complete, reviewed, and integrated into `main`
 
 ## Goal
 
-Turn the approved Map Viewer prototype into the primary production workspace around the already-working real Situm SDK viewer.
+Turn the approved Map Viewer prototype into the primary production map workspace around the already-working real Situm Viewer, while keeping **all new product controls dummy/local during the UI roadmap**.
+
+This plan preserves one real integration only: the viewer initialization/readiness/error lifecycle that already exists before the plan. New POI, routing, realtime, geofence, settings, camera, and other Situm capability wiring belongs in later backend/integration plans after UI acceptance.
+
+Do not use the broader Read & Write POC key as a reason to expand this UI plan.
 
 ## Mandatory HTML-first implementation protocol
 
@@ -14,93 +18,86 @@ Canonical visual/interaction reference:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-**Read the HTML Map Viewer section before touching the Nuxt map page or viewer composition.**
+Read the Map Viewer section in the **current** HTML before touching the Nuxt map composition.
 
 For every phase:
 
-1. Open the canonical HTML reference.
-2. Inspect `#app-map` and the exact related controls listed below.
-3. Separate visual/interaction behavior from fake prototype data/DOM map drawing.
-4. Keep the real `SitumViewer.vue` SDK lifecycle as the production map canvas.
-5. Translate surrounding UI into Vue/Nuxt UI while preserving the approved composition.
-6. Wire only safe existing SDK behavior after verifying the installed/current API; otherwise keep control behavior local/dummy.
-7. Compare against `#app-map` before marking the phase complete.
+1. Open the canonical HTML.
+2. Locate the current Map Viewer composition semantically; old IDs such as `#app-map`, `#mapTab-search`, `#mapTab-route`, and `#mapTab-layers` are locator hints only if they still exist.
+3. Separate visual/interaction intent from fake prototype data and fake DOM/CSS map drawing.
+4. Keep the real `SitumViewer` as the production map canvas.
+5. Translate surrounding UI into Nuxt UI/Vue state.
+6. Keep all newly introduced product controls local/dummy in Plans 004–009.
+7. Compare against the same HTML section before completing the phase.
 
-### Prototype sections required for this plan
-
-- Entire Map Viewer page: `#app-map`.
-- Workspace composition: `.map-layout`, `.map-side`, `.map-side-head`, `.map-side-tabs`, `.map-side-body`, `.map-main`.
-- Explore: `#mapTab-search`, `#poiSearch`, `#poiList`, `.poi-item`, `#poiPopover`.
-- Route: `#mapTab-route`, route form/result/steps and route-line state.
-- Layers/tools: `#mapTab-layers`, layer toggles, location picker, viewer settings and secondary viewer-tool buttons.
-- Building/floor/mode controls: `#mapBuilding`, `[data-floor]`, `.map-mode-bar`, `.floor-switcher`.
-- Map controls: center/zoom controls and their placement.
-- Responsive behavior: map/sidebar stacking rules in the prototype media queries.
-
-The prototype's `.map-canvas`, `.big-floor`, pins and fake live dots are illustrative only. **Do not replace the real Situm iframe/viewer with these dummy map shapes.**
+The prototype's CSS floorplan/map shapes, pins, route line, geofence shapes, and simulated live dots are illustrative only. Never replace the real Situm viewer with them.
 
 ## Existing real foundation to preserve
 
-- `@situm/sdk-js` already installed;
-- `SitumViewer.vue` already initializes the viewer;
-- public read-only viewer API key already configured;
-- building configuration already exists;
+- `@situm/sdk-js` is installed;
+- `SitumViewer.vue` already initializes the real viewer;
+- runtime uses the single `NUXT_PUBLIC_SITUM_API_KEY` POC credential;
+- a configured/discovered `NUXT_PUBLIC_SITUM_BUILDING_ID` loads the real building;
 - readiness changes to `ready` only after `ViewerEventType.MAP_IS_READY`;
-- `APP_ERROR` and initialization errors are already surfaced.
+- `APP_ERROR` and initialization errors are surfaced.
 
-Do not rewrite this working lifecycle just to match the prototype.
+The POC key may have Read & Write permission, but **this plan does not add new remote Situm feature calls**.
 
 ## Required reading
 
 - `AGENTS.md`
+- `ARCHITECTURE.md`
 - `DESIGN.md`
-- `design/reference/situm-explore-interactive-prototype.html`
 - `design/IMPLEMENTATION.md`
-- current `SitumViewer.vue` and Situm runtime configuration.
+- `design/data-source-matrix.md`
+- `design/reference/situm-explore-interactive-prototype.html`
+- completed Plan 005 implementation/state
+- current `app/components/situm/SitumViewer.vue` and runtime configuration
+- this plan
 
 ## Phase 1 — Workspace composition
 
 Target: `/app/map`.
 
-**Before implementation, inspect the complete `#app-map` structure and CSS sizing.**
+Before implementation, inspect the complete Map Viewer reference composition and responsive sizing.
 
-- [ ] Move/compose the existing real `SitumViewer` into the approved map workspace layout.
-- [ ] Real viewer occupies the large right/main map canvas where the HTML prototype draws its fake floor.
-- [ ] Left panel matches approved `Explore / Route / Layers` hierarchy, width and density.
-- [ ] Header/building/floor controls visually match the reference.
-- [ ] Preserve stable loading map dimensions.
-- [ ] Preserve error state in the map canvas.
-- [ ] Viewer shell must not display `Ready` before actual `MAP_IS_READY`.
-- [ ] Match desktop and mobile map-workspace proportions from the reference.
+- [ ] Replace the temporary Plan 005 map-page composition with the approved workspace composition.
+- [ ] Keep the existing real `SitumViewer` lifecycle intact.
+- [ ] Viewer occupies the approved dominant map area.
+- [ ] Left/secondary panel matches the approved Explore / Route / Layers hierarchy when present in the current HTML.
+- [ ] Header/building/floor/mode controls match reference placement/density.
+- [ ] Preserve stable loading dimensions and truthful map error state.
+- [ ] Never display `Ready` before actual `MAP_IS_READY`.
+- [ ] Match desktop/mobile proportions from the current HTML.
 
-## Phase 2 — Explore UI
+## Phase 2 — Explore UI, dummy/local
 
-**Before implementation, inspect `#mapTab-search`, POI list items, selected state, favorite control and `#poiPopover`.**
+Before implementation, inspect current POI search/list/selection/popover/favorite states in the HTML.
 
-- [ ] Implement search input and POI list using typed dummy POI fixtures initially.
-- [ ] Match POI row sizing/icon treatment/text hierarchy from HTML.
-- [ ] POI selection changes local selected state and detail/popover treatment matching reference.
-- [ ] Favorite toggle is local-only.
-- [ ] Filters work locally.
-- [ ] Do not create a POI backend/API proxy in this plan.
-- [ ] If current Viewer API exposes a low-risk, documented POI selection call that can be used without changing data architecture, AI may wire selected dummy-known POI only after verifying SDK docs and IDs; otherwise keep it local.
+- [ ] Reuse or extend the canonical typed POI/building fixtures under `app/data/prototype/`; do not create duplicate records if Plan 005 already introduced them.
+- [ ] Implement local POI search/filter.
+- [ ] POI selection changes local Vue state and detail/popover presentation.
+- [ ] Favorite state is local-only.
+- [ ] No POI REST/Nitro endpoint.
+- [ ] No new Viewer POI-selection SDK call in this UI plan.
+- [ ] Do not claim dummy POIs are loaded from Situm.
 
-## Phase 3 — Route UI
+## Phase 3 — Route UI, dummy/local
 
-**Before implementation, inspect `#mapTab-route`, `.route-form`, `.route-result`, `.route-steps`, and route-related prototype JavaScript.**
+Before implementation, inspect the route form/result/steps and accessible-route state in the current HTML.
 
-- [ ] Implement Start / Destination controls and accessible-route option.
-- [ ] Route result UI matches approved prototype density and hierarchy.
-- [ ] Default implementation is dummy/local route steps.
-- [ ] Do not claim a real route was calculated unless SDK directions are actually wired.
-- [ ] If directions are wired, preserve a clear adapter boundary and verify official SDK method/event behavior first.
-- [ ] Do not add server routes solely for navigation.
+- [ ] Implement Start/Destination controls using typed local fixture options.
+- [ ] Implement accessible-route option as local UI state.
+- [ ] Route calculation/result/steps are dummy/local only.
+- [ ] Do not wire directions/navigation SDK calls in this plan.
+- [ ] Do not add a server routing endpoint.
+- [ ] Never claim a real route was calculated.
 
-## Phase 4 — Layers / viewer tools
+## Phase 4 — Layers and viewer tools, dummy/local
 
-**Before implementation, inspect `#mapTab-layers` and all viewer-tool buttons in the canonical HTML.**
+Inspect every approved layers/tools state in the current HTML before implementation.
 
-Represent approved tools:
+Examples may include:
 
 - realtime positions;
 - geofences;
@@ -114,56 +111,62 @@ Represent approved tools:
 - viewer font size;
 - set user location.
 
-Rule per control:
+Rules:
 
-1. Match the visual placement/state from the HTML first.
-2. If already supported cleanly by the current viewer SDK and can be wired without backend expansion, implement real interaction after inspecting official API.
-3. Otherwise implement explicit local dummy behavior/toast/state.
-4. Never fake a successful remote write.
+1. Match placement/state from the HTML.
+2. Implement the visible interaction with Vue local state, dummy overlays where appropriate, disabled state, or truthful local toast/result.
+3. Do **not** add new Situm SDK/REST feature wiring during Plan 006.
+4. Never imply a remote mutation occurred.
 
-## Phase 5 — Building/floor/view controls
+## Phase 5 — Building/floor/view controls, dummy around the real configured viewer
 
-**Before implementation, inspect `#mapBuilding`, `.floor-switcher`, `[data-floor]`, `.map-mode-bar`, zoom and center controls.**
+Before implementation, inspect building/floor/mode/zoom/center controls in the current HTML.
 
-- [ ] Keep configured building real.
-- [ ] Do not invent real extra building IDs.
-- [ ] Additional building entries shown in the visual reference may remain dummy/disabled until later integration plans.
-- [ ] Floor selector may use known viewer state if obtainable safely; otherwise keep only actual configured/default floor UI and local demo alternatives clearly synthetic in source code.
-- [ ] Zoom/center controls may call real viewer camera APIs only after verifying current SDK signatures.
-- [ ] Match control size, grouping and floating placement from HTML.
+- [ ] The actual mounted viewer continues to use the real configured `NUXT_PUBLIC_SITUM_BUILDING_ID`.
+- [ ] Do not invent extra real building IDs.
+- [ ] Visual building/floor alternatives required by the reference remain synthetic/local until later integration.
+- [ ] Do not add building/floor discovery APIs to the application in this plan.
+- [ ] Zoom/center/mode buttons outside the viewer remain local UI behavior unless they are already part of the untouched existing viewer itself; no new SDK camera wiring in this plan.
+- [ ] Keep synthetic records obvious in source code.
 
-## Phase 6 — Real/dummy labeling in code
+## Phase 6 — Component/data ownership
 
-The user-facing UI should look coherent, not covered in `DEMO` badges. The source code must make the boundary obvious.
+Preferred responsibility grouping under the architecture contract:
 
-Suggested split:
+```text
+app/components/situm/SitumViewer.vue      # existing real SDK lifecycle
+app/components/situm/SitumWorkspace.vue   # product composition if extraction is useful
+app/data/prototype/...                     # typed dummy POIs/routes/layers
+```
 
-- `components/map/SitumViewer.vue` — real SDK lifecycle;
-- `components/map/SitumWorkspace.vue` — composition;
-- local typed fixtures/composables for dummy POIs/routes/layers.
+Nuxt nested component auto-import naming follows Nuxt conventions; explicit imports are also acceptable when clearer.
 
-No service/repository architecture yet.
+Do not create services/repositories/global stores for dummy map state. Prefer local component state or one focused composable only when multiple map components genuinely share reactive state.
 
 ## Validation
 
-- [ ] real viewer still reaches `MAP_IS_READY` manually;
-- [ ] real viewer errors remain visible;
-- [ ] missing configuration remains distinguishable;
-- [ ] no API key value committed;
-- [ ] map layout matches the canonical HTML `#app-map` desktop/mobile hierarchy;
-- [ ] Explore/Route/Layers controls compare to their exact HTML states;
-- [ ] dummy controls never imply remote writes;
-- [ ] deliberate framework/SDK deviations are documented;
+- [ ] real viewer reaches `MAP_IS_READY` manually;
+- [ ] viewer errors/missing configuration remain truthful;
+- [ ] no API key value committed/logged;
+- [ ] map layout matches the current canonical HTML desktop/mobile hierarchy;
+- [ ] Explore/Route/Layers controls behave locally and visibly;
+- [ ] no new product-domain Situm network/API/SDK capability calls were introduced beyond the pre-existing viewer initialization/lifecycle;
+- [ ] dummy actions never imply remote writes;
+- [ ] fixture records are reused rather than duplicated across Plans 005–007;
+- [ ] update `README.md` if it still describes the legacy dashboard as the viewer location;
+- [ ] document deliberate deviations;
 - [ ] `git diff --check`;
-- [ ] lint/typecheck/build;
-- [ ] commit/push each phase;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] `npm run build`;
+- [ ] update plan + `.agents/`, commit, and push each phase;
 - [ ] no PR until explicit authorization.
 
 ## Non-goals
 
-- backend Situm proxy;
-- Cartography Edition/Read & Write key;
+- new Situm REST/Nitro feature integration;
+- new Situm Viewer feature-method wiring beyond the existing create/readiness/error lifecycle;
+- additional credential/key architecture;
 - persisted favorites;
-- real realtime data feed;
-- real reports;
+- real routing/realtime/geofences/reports;
 - app DB schema changes.
