@@ -8,7 +8,7 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 
 ## Phase
 
-**Phase 3 — Foundation hardening planned**
+**Phase 4 — Foundation hardening planned**
 
 ## Active decisions
 
@@ -50,7 +50,6 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 
 - Execute `plans/002-foundation-hardening.md` on branch `plan/002-foundation-hardening` using the normal repository working directory.
 - Complete Phase 1's removal commit and push; the exposure policy is now explicit.
-- Make Nuxt ESLint clean-clone reproducible.
 - Make Situm viewer ready-state reflect the SDK's actual ready event.
 - Remove false PostgreSQL schema configurability and keep `situm_explore` explicit.
 - Reconcile stale checkboxes in completed plans 000/001.
