@@ -150,19 +150,19 @@ Acceptance:
 
 The map/viewer is the primary product content for the current app.
 
-- [ ] Replace the foundation-style stack of generic cards with a clearer content hierarchy.
-- [ ] Give the Situm viewer substantially more viewport space on desktop.
-- [ ] Keep a practical responsive minimum height on mobile/tablet.
-- [ ] Make database/application connectivity a compact secondary status rather than a dominant card.
-- [ ] Use concise human-readable labels; avoid exposing technical implementation detail more prominently than necessary.
-- [ ] Keep account identity in the app shell instead of duplicating it in dashboard content.
-- [ ] Do not add fake KPIs, charts, activity feeds, or widgets.
+- [x] Replace the foundation-style stack of generic cards with a clearer content hierarchy.
+- [x] Give the Situm viewer substantially more viewport space on desktop.
+- [x] Keep a practical responsive minimum height on mobile/tablet.
+- [x] Make database/application connectivity a compact secondary status rather than a dominant card.
+- [x] Use concise human-readable labels; avoid exposing technical implementation detail more prominently than necessary.
+- [x] Keep account identity in the app shell instead of duplicating it in dashboard content.
+- [x] Do not add fake KPIs, charts, activity feeds, or widgets.
 
 Acceptance:
 
-- [ ] User attention naturally lands on the map.
-- [ ] Operational state remains visible but secondary.
-- [ ] Dashboard feels useful even though the product scope is still intentionally small.
+- [x] User attention naturally lands on the map.
+- [x] Operational state remains visible but secondary.
+- [x] Dashboard feels useful even though the product scope is still intentionally small.
 
 ---
 

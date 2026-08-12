@@ -30,10 +30,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <UCard>
-    <h2 class="mb-3 font-semibold">Situm web integration</h2>
+  <UCard class="overflow-hidden">
+    <h2 class="mb-3 font-semibold">Map</h2>
     <UAlert v-if="state === 'error'" color="error" :description="message" />
-    <div v-show="state !== 'error'" ref="container" class="h-80 w-full overflow-hidden rounded" />
+    <div v-show="state !== 'error'" ref="container" class="min-h-[22rem] h-[min(70vh,48rem)] w-full overflow-hidden rounded" />
     <p v-if="state === 'loading'" class="mt-2">Loading Situm Map Viewer…</p>
   </UCard>
 </template>
