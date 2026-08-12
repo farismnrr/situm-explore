@@ -117,6 +117,21 @@ body {
   min-width: 0;
 }
 
+.table-wrap { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+
+@media (max-width: 1023px) {
+  .app-content { padding-inline: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 .search-trigger {
   min-width: 220px;
   height: 34px;

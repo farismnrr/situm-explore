@@ -457,20 +457,22 @@ Current `USlideover` can remain, but its rendered composition must resemble cano
 
 Compare actual rendering at the reference breakpoints.
 
-- [ ] >=1200 desktop.
-- [ ] ~1024 laptop.
-- [ ] ~768 tablet.
-- [ ] ~390 mobile.
-- [ ] Sidebar changes to drawer at the canonical breakpoint.
-- [ ] Landing feature grid and hero reflow match reference.
-- [ ] Auth art hides on mobile.
-- [ ] App content padding matches reference mobile rhythm.
-- [ ] Map side panel stacks to ~320px then viewer remains usable.
-- [ ] Settings nav becomes horizontally scrollable.
-- [ ] Tables scroll safely without changing desktop density.
-- [ ] No horizontal document overflow.
-- [ ] Keyboard/focus/labels/icon names remain accessible.
-- [ ] Reduced motion is respected where animations exist.
+- [x] >=1200 desktop.
+- [x] ~1024 laptop.
+- [x] ~768 tablet.
+- [x] ~390 mobile.
+- [x] Sidebar changes to drawer at the canonical breakpoint.
+- [x] Landing feature grid and hero reflow match reference.
+- [x] Auth art hides on mobile.
+- [x] App content padding matches reference mobile rhythm.
+- [x] Map side panel stacks to ~320px then viewer remains usable.
+- [x] Settings nav becomes horizontally scrollable.
+- [x] Tables scroll safely without changing desktop density.
+- [x] No horizontal document overflow.
+- [x] Keyboard/focus/labels/icon names remain accessible.
+- [x] Reduced motion is respected where animations exist.
+
+Phase 9 validation note (2026-08-12): Chromium Playwright screenshots succeeded at 1440×900, 1024×900, 768×1024, and 390×844 for public/auth representative surfaces. The configured Playwright WebKit device binary was unavailable, so WebKit-specific comparison was not run. Protected authenticated/Situm runtime states require a configured session and Situm environment and remain manual/runtime checks.
 
 Regression:
 
