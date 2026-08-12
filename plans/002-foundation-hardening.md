@@ -1,6 +1,6 @@
 # Plan 002 — Foundation Hardening
 
-Status: in progress
+Status: complete
 Scope: harden the completed web foundation before starting product/self-improvement features
 Principle: fix concrete foundation risks without expanding architecture.
 
@@ -162,7 +162,7 @@ Acceptance:
 
 # Phase 7 — Final validation and closeout
 
-Status: blocked pending manual authenticated/browser checks
+Status: complete (manual checks confirmed by user on 2026-08-12)
 
 No CI or unit-test framework is required for this plan.
 
@@ -172,12 +172,12 @@ No CI or unit-test framework is required for this plan.
 - [x] `npm run typecheck`
 - [x] `npm run build`
 - [x] Manual unauthenticated `/api/me` check still rejects access with HTTP 401.
-- [ ] Manual authenticated `/api/me` check still reaches Drizzle/PostgreSQL.
-- [ ] Manual Situm dashboard check reaches the real SDK ready state with local config.
+- [x] Manual authenticated `/api/me` check still reaches Drizzle/PostgreSQL; user confirmed manual testing is complete.
+- [x] Manual Situm dashboard check reaches the real SDK ready state with local config; user confirmed manual testing is complete.
 - [x] No secrets are staged or committed.
 - [x] Update relevant `.agents/` files before final phase commit.
-- [ ] Commit and push every completed phase according to the Git protocol.
-- [ ] Do not open a PR until explicitly authorized.
+- [x] Completed implementation phases were committed/pushed and Plan 002 was integrated through PR #3.
+- [x] PR creation remained user-gated; the final integration happened after the user requested the PR-first correction.
 
 ---
 
@@ -192,6 +192,6 @@ No CI or unit-test framework is required for this plan.
 
 ## Definition of done
 
-This plan is complete when the current Nuxt foundation has an explicit resource-visibility policy, a least-privilege Situm browser credential boundary, reproducible lint setup, truthful viewer readiness, one fixed PostgreSQL schema contract, reconciled plan history, and passing local quality gates.
+This plan is complete: the current Nuxt foundation has an explicit resource-visibility policy, a least-privilege Situm browser credential boundary, reproducible lint setup, truthful viewer readiness, one fixed PostgreSQL schema contract, reconciled plan history, and passing local/manual quality gates.
 
-After that, the next plan may start the first actual self-improvement product behavior.
+The next plan may proceed to UI/UX or product behavior without carrying forward a known foundation blocker.
