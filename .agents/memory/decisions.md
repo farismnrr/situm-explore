@@ -40,7 +40,7 @@ Status: active.
 - Use a maintained Nuxt-oriented auth module/plugin rather than building custom authentication infrastructure.
 - Avoid premature architecture: no monorepo, microservices, queues, separate API app, or native layer until requirements justify them.
 
-Status: active.
+Status: active, refined by the Nuxt 4 architecture contract below.
 
 ## 2026-08-12 — Git execution workflow
 
@@ -87,5 +87,17 @@ Status: active.
 - During UI-first work, keep real: login/session/logout, auth middleware, `/api/me`, PostgreSQL behavior, `/api/situm/status` configuration semantics, and the existing Situm Viewer `MAP_IS_READY` / `APP_ERROR` lifecycle.
 - During UI-first work, keep dummy/local: registration, business metrics, cartography lists not yet exposed by the app, route previews around the viewer, realtime, reports/analytics, alarms, organization/users, and viewer settings not already wired.
 - Current POC Situm permission boundary remains one `Only Read` browser-visible viewer credential; never expose its value and do not add remote write operations.
+
+Status: active.
+
+## 2026-08-12 — Nuxt 4 layered architecture contract
+
+- Root `ARCHITECTURE.md` is the single application architecture/folder/dependency contract and is mandatory reading for implementation work.
+- Use Nuxt 4's native split: Vue application code under `app/`; Nitro/server code under root `server/`; genuinely cross-runtime types/pure helpers under root `shared/`.
+- Apply layered architecture lightly: presentation -> client coordination -> HTTP transport -> application service only when needed -> DB/external integrations.
+- Pages stay route/composition focused; composables own reusable reactive coordination; API handlers own transport concerns; DB/external integration code remains server-only.
+- KISS is the default tie-breaker. SOLID is applied to real responsibilities/dependencies, and DRY follows proven repetition rather than speculative abstraction.
+- Do not create generic repositories/services, DI containers, Pinia stores, Nuxt layers, generic API clients, or empty architecture folders without a concrete current requirement.
+- Plan 004 Phase 0 performs the one-time migration from the current backwards-compatible root Vue structure into Nuxt 4 `app/` before the UI surface expands. Existing URLs/auth/DB/Situm behavior must remain unchanged during that migration.
 
 Status: active.
