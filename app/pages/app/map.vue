@@ -120,13 +120,7 @@ const tabItems = [
   { label: 'Layers', value: 'layers' as const }
 ]
 
-function moveMapTab(event: KeyboardEvent, index: number) {
-  if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return
-  event.preventDefault()
-  const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabItems.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabItems.length) % tabItems.length
-  activeTab.value = tabItems[nextIndex]!.value
-  requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(`[data-map-tab="${activeTab.value}"]`)?.focus())
-}
+const { handleTabKey } = useTabKeyboard()
 
 function handleViewerStatus(state: 'loading' | 'ready' | 'error') {
   viewerState.value = state
@@ -166,7 +160,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
             :tabindex="activeTab === tab.value ? 0 : -1"
             class="rounded-md px-2 py-2 text-xs font-medium text-muted transition hover:text-highlighted"
             :class="activeTab === tab.value ? 'bg-default text-highlighted shadow-xs' : ''"
-            @keydown="moveMapTab($event, index)"
+            @keydown="handleTabKey($event, index, tabItems.length, nextIndex => activeTab = tabItems[nextIndex]!.value, '[data-map-tab]')"
             @click="activeTab = tab.value"
           >
             {{ tab.label }}

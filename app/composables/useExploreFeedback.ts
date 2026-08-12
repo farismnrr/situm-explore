@@ -1,12 +1,20 @@
 let feedbackTimer: ReturnType<typeof setTimeout> | undefined
 
+interface FeedbackState {
+  message: string
+  revision: number
+}
+
 export function useExploreFeedback() {
-  const message = useState('explore-feedback-message', () => '')
+  const state = useState<FeedbackState>('explore-feedback-state', () => ({ message: '', revision: 0 }))
   function showFeedback(nextMessage: string) {
-    message.value = nextMessage
+    const revision = state.value.revision + 1
+    state.value = { message: nextMessage, revision }
     if (feedbackTimer) clearTimeout(feedbackTimer)
-    feedbackTimer = setTimeout(() => { message.value = '' }, 2600)
+    feedbackTimer = setTimeout(() => {
+      if (state.value.revision === revision) state.value = { message: '', revision }
+    }, 2600)
   }
 
-  return { message, showFeedback }
+  return { message: computed(() => state.value.message), showFeedback }
 }

@@ -13,14 +13,7 @@ const defaultBuilding = ref('Main Building')
 const defaultFloor = ref('Floor 1')
 const resetMessage = ref('')
 const { showFeedback } = useExploreFeedback()
-
-function moveSettingsTab(event: KeyboardEvent, index: number) {
-  if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return
-  event.preventDefault()
-  const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length
-  activeTab.value = tabs[nextIndex]!.id
-  requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(`[data-settings-tab="${activeTab.value}"]`)?.focus())
-}
+const { handleTabKey } = useTabKeyboard()
 
 const tabs: Array<{ id: SettingsTab, label: string }> = [
   { id: 'general', label: 'General' },
@@ -63,7 +56,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
     <div class="settings-layout grid gap-4 lg:grid-cols-[13.75rem_minmax(0,1fr)]">
       <UCard :ui="{ body: 'p-2 sm:p-2' }" class="h-fit overflow-hidden">
         <nav class="flex gap-1 overflow-x-auto lg:block" role="tablist" aria-label="Viewer settings sections">
-          <button v-for="(tab, index) in tabs" :key="tab.id" :data-settings-tab="tab.id" type="button" role="tab" :aria-selected="activeTab === tab.id" :tabindex="activeTab === tab.id ? 0 : -1" class="shrink-0 rounded-md px-3 py-2 text-left text-sm transition lg:block lg:w-full" :class="activeTab === tab.id ? 'bg-elevated font-medium text-highlighted' : 'text-muted hover:bg-elevated/70 hover:text-highlighted'" @keydown="moveSettingsTab($event, index)" @click="activeTab = tab.id">{{ tab.label }}</button>
+          <button v-for="(tab, index) in tabs" :key="tab.id" :data-settings-tab="tab.id" type="button" role="tab" :aria-selected="activeTab === tab.id" :tabindex="activeTab === tab.id ? 0 : -1" class="shrink-0 rounded-md px-3 py-2 text-left text-sm transition lg:block lg:w-full" :class="activeTab === tab.id ? 'bg-elevated font-medium text-highlighted' : 'text-muted hover:bg-elevated/70 hover:text-highlighted'" @keydown="handleTabKey($event, index, tabs.length, nextIndex => activeTab = tabs[nextIndex]!.id, '[data-settings-tab]')" @click="activeTab = tab.id">{{ tab.label }}</button>
         </nav>
       </UCard>
 

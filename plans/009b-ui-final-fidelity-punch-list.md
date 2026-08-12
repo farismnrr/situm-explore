@@ -416,18 +416,18 @@ Goal: repeated behavior has one small implementation, without creating a global 
 
 ## Required review
 
-- [ ] Re-audit `useExploreFeedback()` and keep one timer/owner model so an older caller cannot clear a newer toast.
-- [ ] Re-audit tablist keyboard behavior across Analytics, Settings, Map and any other true tab interfaces.
-- [ ] Extract one reusable tab keyboard helper/composable only if the same behavior is currently duplicated.
-- [ ] Audit repeated text filtering/search logic; share only where behavior and lifecycle are genuinely equivalent.
-- [ ] Audit repeated selection/open-close state shared between multiple components; use a focused composable only where component coordination requires it.
-- [ ] Keep unique page behavior local.
-- [ ] Prefer pure utilities for deterministic transformation/filtering that does not require Vue reactivity.
-- [ ] Do not create `useUiStore`, god composables, Pinia, event bus or generic state machine.
-- [ ] Ensure extracted logic has a small public API and one responsibility.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
+- [x] Re-audit `useExploreFeedback()` and keep one timer/owner model so an older caller cannot clear a newer toast.
+- [x] Re-audit tablist keyboard behavior across Analytics, Settings, Map and any other true tab interfaces.
+- [x] Extract one reusable tab keyboard helper/composable only if the same behavior is currently duplicated.
+- [x] Audit repeated text filtering/search logic; share only where behavior and lifecycle are genuinely equivalent.
+- [x] Audit repeated selection/open-close state shared between multiple components; use a focused composable only where component coordination requires it.
+- [x] Keep unique page behavior local.
+- [x] Prefer pure utilities for deterministic transformation/filtering that does not require Vue reactivity.
+- [x] Do not create `useUiStore`, god composables, Pinia, event bus or generic state machine.
+- [x] Ensure extracted logic has a small public API and one responsibility.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [x] `npm run typecheck`.
 - [ ] commit and push Phase 3.
 
 ---
