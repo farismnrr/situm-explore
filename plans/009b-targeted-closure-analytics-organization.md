@@ -377,19 +377,19 @@ Validation:
 
 After all four routes visually match:
 
-- [ ] Search Analytics/Users/Organization/Settings for repeated `panel-head` recipes; shared owner must be used where semantics match.
-- [ ] Search for route-level table-cell padding/font overrides that fight `.table-density`; remove unjustified overrides.
-- [ ] Search for duplicate detail-row implementations; Organization must not own a parallel detail-list system.
-- [ ] Search repeated setting-row markup; compatible rows use one shared component.
-- [ ] Search repeated activity-row markup; use one shared owner where the canonical grammar is actually identical.
-- [ ] Keep unique charts/report data/settings state local.
-- [ ] Do not move route state into presentation components just to reduce line count.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
-- [ ] update parent Plan 009B status/session/state with actual closure evidence.
-- [ ] commit and push.
+- [x] Search Analytics/Users/Organization/Settings for repeated `panel-head` recipes; shared owner must be used where semantics match.
+- [x] Search for route-level table-cell padding/font overrides that fight `.table-density`; remove unjustified overrides.
+- [x] Search for duplicate detail-row implementations; Organization must not own a parallel detail-list system.
+- [x] Search repeated setting-row markup; compatible rows use one shared component.
+- [x] Search repeated activity-row markup; use one shared owner where the canonical grammar is actually identical.
+- [x] Keep unique charts/report data/settings state local.
+- [x] Do not move route state into presentation components just to reduce line count.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [x] `npm run typecheck`.
+- [x] `npm run build`.
+- [x] update parent Plan 009B status/session/state with actual closure evidence.
+- [x] commit and push.
 
 ---
 

@@ -92,7 +92,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
 
         <section v-else class="p-[18px]">
           <h2 class="setting-heading">Images</h2><p class="setting-intro">Referenced POI, category and floor resources.</p>
-          <div class="activity-list"><div v-for="image in [{ name: 'poi-reception.svg', detail: 'POI icon · 6 KB', status: 'Referenced' }, { name: 'category-workspace.svg', detail: 'POI category icon · 5 KB', status: 'Referenced' }, { name: 'floor-1-map.png', detail: 'Floor resource · 842 KB', status: 'Active' }]" :key="image.name" class="activity-row"><span class="activity-dot" :class="image.status === 'Active' ? 'tone-success' : 'tone-info'" /><div class="activity-copy"><strong>{{ image.name }}</strong><span>{{ image.detail }}</span></div><ProductStatusBadge :label="image.status" :tone="image.status === 'Active' ? 'success' : 'neutral'" /></div></div>
+          <div class="activity-list"><ProductActivityRow v-for="image in [{ name: 'poi-reception.svg', detail: 'POI icon · 6 KB', status: 'Referenced' }, { name: 'category-workspace.svg', detail: 'POI category icon · 5 KB', status: 'Referenced' }, { name: 'floor-1-map.png', detail: 'Floor resource · 842 KB', status: 'Active' }]" :key="image.name" :title="image.name" :meta="image.detail" :dot-tone="image.status === 'Active' ? 'success' : 'info'">
+            <template #trailing><ProductStatusBadge :label="image.status" :tone="image.status === 'Active' ? 'success' : 'neutral'" /></template>
+          </ProductActivityRow></div>
         </section>
       </UCard>
     </div>

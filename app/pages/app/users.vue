@@ -27,7 +27,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
 
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
         <ProductPanelHeader title="Groups" :meta="`${prototypeDirectoryGroups.length} groups`" />
-        <div class="panel-body activity-list"><article v-for="group in prototypeDirectoryGroups" :key="group.id" class="activity-row grid grid-cols-[auto_1fr_auto] items-start gap-2"><span class="mt-1 size-1.5 shrink-0 rounded-full" :class="group.color === 'info' ? 'bg-info' : group.color === 'success' ? 'bg-success' : 'bg-neutral'" /><div class="min-w-0"><h3 class="text-[11px] font-medium text-highlighted">{{ group.name }}</h3><p class="mt-0.5 text-[10px] text-muted">{{ group.userCount }} users · {{ group.deviceCount }} devices</p></div><UIcon name="i-lucide-chevron-right" class="mt-0.5 size-3.5 text-muted" aria-hidden="true" /></article></div>
+        <div class="panel-body activity-list"><ProductActivityRow v-for="group in prototypeDirectoryGroups" :key="group.id" :title="group.name" :meta="`${group.userCount} users · ${group.deviceCount} devices`" :dot-tone="group.color">
+          <template #trailing><UIcon name="i-lucide-chevron-right" class="mt-0.5 size-3.5 text-muted" aria-hidden="true" /></template>
+        </ProductActivityRow></div>
       </UCard>
     </div>
 
