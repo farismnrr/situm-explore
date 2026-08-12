@@ -52,7 +52,7 @@ const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/
     <UCard :ui="{ body: 'p-0' }">
       <div class="panel-head"><div><h2 class="font-semibold text-highlighted">Quick explore</h2><p class="mt-1 text-xs text-muted">Common Situm web surfaces</p></div></div>
       <div class="quick-grid p-4">
-        <NuxtLink v-for="item in homeExplore" :key="item.to" :to="item.to" class="quick-card rounded-lg border border-default p-4 transition hover:border-primary hover:bg-elevated">
+        <NuxtLink v-for="item in homeExplore" :key="item.to" :to="item.to" class="quick-card soft-card p-4 transition hover:border-primary hover:bg-elevated">
           <span class="mb-4 grid size-9 place-items-center rounded-lg border border-default bg-elevated text-lg text-highlighted" aria-hidden="true">{{ item.icon }}</span><strong class="block text-sm text-highlighted">{{ item.title }}</strong><span class="mt-1 block text-xs leading-5 text-muted">{{ item.detail }}</span>
         </NuxtLink>
       </div>

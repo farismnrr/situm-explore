@@ -38,7 +38,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden rounded-lg border border-default bg-default">
+  <UCard :ui="{ body: 'p-0 sm:p-0' }">
     <div class="relative min-h-[22rem] h-[min(70vh,48rem)] w-full overflow-hidden rounded-lg bg-muted">
       <div ref="container" class="h-full w-full" />
 

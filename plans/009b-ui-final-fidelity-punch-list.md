@@ -575,6 +575,10 @@ Perform a final source audit specifically for future maintainability.
 
 # Phase 7 — User acceptance of the component foundation
 
+### Foundation correction note (2026-08-12)
+
+Rendered review identified a fidelity issue not visible from token names alone: Nuxt UI's merged `ring`/`divide` card classes made surfaces look heavier than the prototype, while route-local `rounded-lg` overrides made repeated containers inconsistent. The targeted correction now uses an explicit 1px border, canonical 16px main-card radius/shadow, canonical 12px soft-card surface/radius, and removes repeated-container exceptions while preserving unique map/control geometry. User acceptance remains open.
+
 This plan is foundation-focused. It does not claim every page layout is pixel-perfect simply because primitives are fixed.
 
 Before closing:

@@ -70,15 +70,15 @@ export default defineAppConfig({
         variant: 'outline'
       },
       slots: {
-        root: 'rounded-2xl overflow-hidden shadow-[0_1px_2px_rgb(16_24_40_/_4%)]',
+        root: 'overflow-hidden rounded-[var(--explore-radius-lg)] border border-default bg-default ring-0 divide-y-0 shadow-[var(--explore-shadow-xs)]',
         header: 'p-4 sm:px-5',
         body: 'p-4 sm:p-5',
         footer: 'p-4 sm:px-5'
       },
       variants: {
         variant: {
-          soft: { root: 'rounded-xl bg-muted/50 ring ring-default shadow-none' },
-          subtle: { root: 'rounded-xl bg-muted/50 ring ring-default shadow-none' }
+          soft: { root: 'rounded-[var(--explore-radius-md)] border border-default bg-muted shadow-none' },
+          subtle: { root: 'rounded-[var(--explore-radius-md)] border border-default bg-muted shadow-none' }
         }
       }
     },

@@ -76,7 +76,7 @@ function openDetails(building: PrototypeBuilding) {
     </div>
 
     <CartographyDetailsDrawer v-if="selectedBuilding" v-model:open="drawerOpen" title="Building details" type="Building" :name="selectedBuilding.name" :subtitle="selectedBuilding.organization" :map-to="'/app/map'" :details="[{ label: 'Identifier', value: selectedBuilding.id }, { label: 'Map status', value: selectedBuilding.status }, { label: 'Floors', value: String(selectedBuilding.floors.length) }, { label: 'Points of interest', value: String(selectedBuilding.poiCount) }]">
-      <div><h3 class="mb-3 text-sm font-semibold text-highlighted">Floor inventory</h3><div class="space-y-2"><div v-for="floor in selectedBuilding.floors" :key="floor.id" class="rounded-lg border border-default p-3"><div class="flex items-center justify-between"><strong class="text-sm text-highlighted">{{ floor.name }}</strong><UBadge :color="floor.mapStatus === 'Ready' ? 'success' : 'warning'" variant="soft" size="sm">{{ floor.mapStatus }}</UBadge></div><p class="mt-1 text-xs text-muted">{{ floor.poiCount }} POIs · {{ floor.geofenceCount }} geofences</p></div></div></div>
+      <div><h3 class="mb-3 text-sm font-semibold text-highlighted">Floor inventory</h3><div class="space-y-2"><div v-for="floor in selectedBuilding.floors" :key="floor.id" class="soft-card p-3"><div class="flex items-center justify-between"><strong class="text-sm text-highlighted">{{ floor.name }}</strong><UBadge :color="floor.mapStatus === 'Ready' ? 'success' : 'warning'" variant="soft" size="sm">{{ floor.mapStatus }}</UBadge></div><p class="mt-1 text-xs text-muted">{{ floor.poiCount }} POIs · {{ floor.geofenceCount }} geofences</p></div></div></div>
     </CartographyDetailsDrawer>
   </div>
 </template>
