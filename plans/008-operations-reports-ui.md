@@ -114,11 +114,11 @@ Before implementation, inspect Users/Groups and shared details-drawer behavior.
 
 Before implementation, inspect the current Organization/credential-boundary composition.
 
-- [ ] Organization data stays synthetic/static unless an already-existing foundation response truly provides a field.
-- [ ] Never render/log the API key value.
-- [ ] If the approved reference shows a key-permission label, current explicit POC policy overrides stale prototype copy: use `Read & Write (POC)` or a neutral `POC key configured` label rather than falsely claiming `Only Read`.
-- [ ] Preserve the reference layout even if wording is adjusted for truthful current configuration.
-- [ ] Do not turn this into an admin interface.
+- [x] Organization data stays synthetic/static unless an already-existing foundation response truly provides a field.
+- [x] Never render/log the API key value.
+- [x] If the approved reference shows a key-permission label, current explicit POC policy overrides stale prototype copy: use `Read & Write (POC)` or a neutral `POC key configured` label rather than falsely claiming `Only Read`.
+- [x] Preserve the reference layout even if wording is adjusted for truthful current configuration.
+- [x] Do not turn this into an admin interface.
 
 ## Phase 6 — Viewer Settings `/app/settings`
 
