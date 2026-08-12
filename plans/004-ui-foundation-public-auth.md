@@ -8,11 +8,11 @@ Depends on: merged foundation; populated `design/reference/situm-explore-interac
 
 First align the small existing application with the repository's Nuxt 4 architecture contract, then establish the approved visual foundation and implement the public/auth entry flow using the existing Nuxt/Vue/Nuxt UI stack without changing the existing authentication backend.
 
+This plan must finish in a usable state on its own. It must **not** redirect users to `/app` yet because the `/app/**` route tree is created by Plan 005.
+
 ## Architecture contract
 
 Read `ARCHITECTURE.md` before changing code.
-
-The architecture phase is intentionally early because the application still has very few pages/components. Do the one-time Nuxt 4 directory migration before the UI roadmap multiplies files.
 
 Architecture principles for this plan:
 
@@ -25,7 +25,7 @@ Architecture principles for this plan:
 
 ## Phase 0 — Nuxt 4 architecture alignment
 
-**This phase may execute while the canonical HTML still contains `Hello World`.** It is architecture-only and must not make visual/design decisions from the missing reference.
+**This phase may execute while the canonical HTML still contains `Hello World`.** It is architecture/setup-only and must not make visual/design decisions from the missing reference.
 
 Target migration:
 
@@ -49,13 +49,29 @@ Tasks:
 - [ ] Migrate the Vue application files into Nuxt 4's `app/` structure using file moves/renames rather than duplicate copies.
 - [ ] Keep `server/`, `shared/`, `public/`, `drizzle/`, `nuxt.config.ts`, and `drizzle.config.ts` at repository root as appropriate.
 - [ ] Move the real Situm viewer into `app/components/situm/SitumViewer.vue` without changing its SDK lifecycle.
-- [ ] Move the current shell into `app/components/app/AppShell.vue` only as an interim location; later authenticated-shell work may replace it with `app/layouts/app.vue`. Do not keep both architectures once the real app layout exists.
+- [ ] Move the current shell into `app/components/app/AppShell.vue` only as an interim location; Plan 005 replaces it with the authenticated app layout. Do not keep both shell architectures afterward.
 - [ ] Move DB initialization from `server/utils/db.ts` to `server/db/client.ts` and update server imports. Keep `server/db/schema.ts` and the Drizzle tooling path stable.
 - [ ] Keep existing API URLs unchanged: `/api/auth/login`, `/api/me`, `/api/situm/status`.
-- [ ] Do not add `server/services/`, `server/repositories/`, `shared/`, Pinia, a generic API client, or Nuxt layers unless this migration discovers a concrete current need. Empty architecture folders are not required.
-- [ ] Ensure `nuxt.config.ts` continues to resolve the global CSS correctly after `~` points to the Nuxt 4 `app/` source directory.
-- [ ] Preserve the current `/` and `/dashboard` routes during this architecture-only phase; route expansion happens in later UI phases/plans.
+- [ ] Do not add `server/services/`, `server/repositories/`, `shared/`, Pinia, a generic API client, or Nuxt layers unless a concrete current need is discovered. Empty architecture folders are not required.
+- [ ] Ensure `nuxt.config.ts` continues to resolve `~/assets/css/main.css` after `~` points at the Nuxt 4 `app/` source directory.
+- [ ] Preserve the current `/` and `/dashboard` routes during this architecture-only phase.
 - [ ] Verify auth middleware, login, `/api/me`, and Situm Viewer imports still resolve after moves.
+
+### Optional local Situm building discovery
+
+If local `.env` has `NUXT_PUBLIC_SITUM_API_KEY` but `NUXT_PUBLIC_SITUM_BUILDING_ID` is blank:
+
+1. Read the key from ignored local `.env` without printing or persisting its value.
+2. Call `GET https://api.situm.com/api/v1/buildings` with header `X-API-KEY`.
+3. Inspect returned building names and IDs.
+4. If exactly one intended building is unambiguous, write only its ID to ignored local `.env` as `NUXT_PUBLIC_SITUM_BUILDING_ID`.
+5. If multiple buildings make the target genuinely ambiguous and there is no existing local/project evidence that identifies the POC building, do not guess silently; surface the candidate names/IDs for user selection.
+6. Never commit `.env`, the API key, or credential-bearing command output.
+
+The discovery is setup only. Do not turn it into a new application endpoint or UI feature.
+
+Validation:
+
 - [ ] `git diff --check`.
 - [ ] `npm run lint`.
 - [ ] `npm run typecheck`.
@@ -63,10 +79,10 @@ Tasks:
 
 Acceptance:
 
-- the current application behaves the same;
+- current behavior is preserved;
 - Vue app code lives under Nuxt 4 `app/`;
 - server/database code remains root `server/`;
-- there are no old duplicate root `pages/`, `components/`, `middleware/`, or `assets/` application trees;
+- old duplicate root `pages/`, `components/`, `middleware/`, and `assets/` application trees are gone;
 - no speculative architecture was introduced.
 
 After Phase 0, stop before Phase 1 if the canonical HTML is still placeholder-only.
@@ -79,28 +95,28 @@ Canonical visual/interaction reference:
 
 ### Hard stop when placeholder is present
 
-Before any **visual UI implementation**, open the canonical HTML.
+Before visual UI implementation, open the canonical HTML.
 
-If it still contains only placeholder content such as `Hello World`, **stop after architecture work and do not change visual UI code**. Do not infer the missing design from Plan 003, memory, generic SaaS patterns, deleted design docs, or agent taste.
+If it still contains only placeholder content such as `Hello World`, stop after architecture/setup work. Do not infer design from Plan 003, memory, generic SaaS patterns, deleted design docs, or agent taste.
 
 ### When the HTML is populated
 
 For every visual phase:
 
 1. Open the exact relevant section of the canonical HTML first.
-2. Understand its rendered hierarchy, proportions, spacing, typography, responsive behavior, interaction states, and action priority.
-3. Treat its HTML/CSS/JS only as evidence of UI/UX intent. Do not copy its architecture into production.
-4. Inspect the existing Nuxt implementation and real backend/integration behavior.
-5. Map the reference intent to Nuxt UI primitives, Vue composition, and Nuxt routing.
+2. Understand hierarchy, proportions, spacing, typography, responsive behavior, interaction states, and action priority.
+3. Treat HTML/CSS/JS only as UI/UX evidence, not production architecture.
+4. Inspect current Nuxt behavior before changing it.
+5. Translate reference intent to Nuxt UI primitives, Vue composition, and Nuxt routing.
 6. Use small custom CSS only for genuine fidelity gaps after Nuxt UI/Tailwind options are exhausted.
-7. Compare the resulting Nuxt page against the same reference section before marking the phase complete.
+7. Compare the resulting Nuxt page against the same HTML section before completing the phase.
 
-Production implementation order is mandatory:
+Production implementation order:
 
 1. Nuxt UI primitive;
 2. Nuxt UI props/variants/slots/semantic tokens/app config + existing utilities;
 3. composition of Nuxt UI primitives;
-4. small Vue component where reuse/readability is real;
+4. small Vue component when reuse/readability is real;
 5. narrow centralized custom CSS only if necessary.
 
 Do not paste prototype CSS, recreate its `.btn`/`.card`/`.pill` system, or copy its JavaScript screen-switching logic.
@@ -113,11 +129,12 @@ Do not paste prototype CSS, recreate its `.btn`/`.card`/`.pill` system, or copy 
 - `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
 - `design/reference/situm-explore-interactive-prototype.html`
+- `.env.example` and the Situm setup section in `README.md` for Phase 0 environment handling
 - this plan
 
 ## Reference sections for this plan
 
-When the user has populated the HTML, inspect the sections representing:
+When the HTML is populated, inspect the sections representing:
 
 - global product visual language and reusable controls;
 - public landing page;
@@ -126,52 +143,44 @@ When the user has populated the HTML, inspect the sections representing:
 - navigation-arrow brand mark;
 - desktop/mobile behavior for those surfaces.
 
-Selector/class names in the user's HTML may change when they replace the placeholder. **Do not assume old prototype selectors exist.** Identify the relevant sections from the actual current HTML.
+Selector/class names may change when the user replaces the placeholder. Do not assume an old selector exists; locate the actual current section semantically.
 
 ## Phase 1 — Visual tokens and brand
 
-- [ ] Confirm the canonical HTML is populated; stop if it is still placeholder-only.
-- [ ] Audit current Nuxt UI `app/app.config.ts` and `app/assets/css/main.css` after Phase 0.
+- [ ] Confirm the canonical HTML is populated.
+- [ ] Audit `app/app.config.ts` and `app/assets/css/main.css` after Phase 0.
 - [ ] Preserve light-only behavior.
-- [ ] Identify the populated reference's neutral hierarchy, semantic accents, border treatment, radii, typography scale, spacing rhythm, and shadow restraint.
-- [ ] Express those decisions primarily through Nuxt UI semantic configuration/app config and existing utility classes.
-- [ ] Add the approved navigation-arrow product mark as a small Vue/local SVG component if the populated reference still uses it.
-- [ ] Do not create a second design system.
-- [ ] Do not copy prototype classes or stylesheet blocks into production.
+- [ ] Extract the reference's neutral hierarchy, semantic accents, border treatment, radii, typography scale, spacing rhythm, and restrained shadows.
+- [ ] Express those decisions primarily through Nuxt UI semantic configuration/app config and existing utilities.
+- [ ] Add the navigation-arrow product mark as a small Vue/local SVG component if it remains in the populated reference.
+- [ ] Do not create a second design system or copy prototype stylesheet blocks.
 
-Acceptance: common Nuxt UI primitives can reproduce the populated reference's visual language without page-by-page styling drift.
+Acceptance: common Nuxt UI primitives reproduce the reference language without page-by-page styling drift.
 
 ## Phase 2 — Landing page
 
 Target: `/`.
 
-Before implementing, inspect the full landing composition in the **current populated HTML**.
+Before implementation, inspect the full landing composition in the current populated HTML.
 
-Match its actual:
-
-- navigation structure;
-- hero hierarchy/proportions;
-- CTA hierarchy;
-- product-preview composition;
-- content-section density;
-- final CTA/footer treatment;
-- responsive reflow.
+Match its actual navigation, hero hierarchy/proportions, CTA hierarchy, product preview, content density, final CTA/footer treatment, and responsive reflow.
 
 Tasks:
 
-- [ ] Replace the current auth-only root page with the populated reference's approved public landing composition.
+- [ ] Replace the current auth-only root page with the approved public landing composition.
 - [ ] Use Nuxt links/routes for navigation and auth CTAs.
 - [ ] Keep landing content static; no backend endpoint is required.
-- [ ] If a real session exists, provide an appropriate route to the authenticated workspace without breaking the approved composition.
-- [ ] Compare desktop and mobile output against the populated HTML before completion.
+- [ ] Auth CTAs route to `/login` or `/register`.
+- [ ] If a real session exists during Plan 004, the authenticated continuation must still use the existing `/dashboard` route. Do **not** point to `/app` before Plan 005 creates it.
+- [ ] Compare desktop/mobile output against the HTML.
 
-Do not add marketing sections that are not represented by the populated reference.
+Do not add marketing sections not represented by the populated reference.
 
 ## Phase 3 — Real login page
 
 Target: `/login`.
 
-Before implementing, inspect the login state in the current populated HTML.
+Before implementation, inspect the login state in the current populated HTML.
 
 Reuse existing production behavior:
 
@@ -182,42 +191,40 @@ Reuse existing production behavior:
 
 Rules:
 
-- [ ] Match the populated reference's login layout, hierarchy, fields, feedback, and responsive behavior using Nuxt UI form primitives.
+- [ ] Match layout, hierarchy, fields, feedback, and responsive behavior with Nuxt UI form primitives.
 - [ ] Keep labels/autocomplete accessible.
-- [ ] Preserve submit loading/disabled behavior.
-- [ ] Preserve real inline authentication errors.
-- [ ] Successful login enters the authenticated app route defined by the implementation roadmap.
-- [ ] Logged-in visitors should not be forced through another fake login.
-- [ ] Never copy dummy authentication logic from the HTML even if its prototype accepts arbitrary credentials.
+- [ ] Preserve submit loading/disabled behavior and real inline auth errors.
+- [ ] **During Plan 004, successful login continues to existing `/dashboard`.** Plan 005 owns the atomic migration to `/app`.
+- [ ] Logged-in visitors to `/login` should continue to `/dashboard` rather than seeing a fake login.
+- [ ] Never copy dummy `anything works` authentication from the HTML.
 
-Do not modify authentication backend unless a real regression is discovered.
+Do not modify the authentication backend unless a real regression is discovered.
 
 ## Phase 4 — Dummy register page
 
 Target: `/register`.
 
-Before implementing, inspect the registration state in the current populated HTML.
+Before implementation, inspect the registration state in the current populated HTML.
 
 There is no registration/account backend in current scope.
 
-- [ ] Match the reference's form composition and responsive behavior using Nuxt UI form primitives.
+- [ ] Match the reference form composition and responsive behavior using Nuxt UI form primitives.
 - [ ] Use local validation/demo state only.
-- [ ] No database insert.
-- [ ] No new Drizzle table/migration.
-- [ ] No registration API route.
+- [ ] No DB insert, Drizzle migration, or registration API route.
 - [ ] Do not fake a durable authenticated account/session.
-- [ ] Prefer a safe prototype completion state or route to real login when auth middleware requires a real session.
-- [ ] Never claim a real account was created.
+- [ ] Successful demo completion should clearly route the user to real `/login` or show a local completion state; never claim a real account was created.
 
-## Phase 5 — Responsive/accessibility/validation
+## Phase 5 — Responsive/accessibility/final validation
 
-- [ ] Re-check the populated HTML's desktop and mobile behavior before the final pass.
-- [ ] Mobile nav/auth layout works without overflow.
+- [ ] Re-check populated HTML desktop/mobile behavior.
+- [ ] Mobile landing/auth layout has no overflow.
 - [ ] Keyboard/focus behavior works.
 - [ ] CTA links use real Nuxt navigation.
-- [ ] Nuxt implementation materially matches the populated HTML without copying its code architecture.
-- [ ] Architecture still follows `ARCHITECTURE.md`; do not let UI implementation create feature-specific folder conventions ad hoc.
-- [ ] Document any deliberate deviation caused by accessibility/framework constraints.
+- [ ] Login still succeeds into `/dashboard` at the end of this plan.
+- [ ] Existing `/dashboard` remains authenticated and the real Situm Viewer remains reachable.
+- [ ] Nuxt output materially matches the populated HTML without copying its code architecture.
+- [ ] Architecture still follows `ARCHITECTURE.md`.
+- [ ] Document deliberate accessibility/framework deviations.
 - [ ] `git diff --check`.
 - [ ] `npm run lint`.
 - [ ] `npm run typecheck`.
@@ -228,10 +235,11 @@ There is no registration/account backend in current scope.
 
 ## Non-goals
 
+- creating `/app/**` routes before Plan 005;
 - authenticated sidebar/app feature pages;
 - new auth model;
 - registration backend;
-- Situm API expansion;
+- Situm feature/API expansion beyond the already-working viewer;
 - analytics backend;
-- copying the reference HTML/CSS/JS into production;
+- copying reference HTML/CSS/JS into production;
 - speculative services/repositories/global state/layers.
