@@ -103,12 +103,12 @@ Before implementation, inspect filters/table/status states in current HTML.
 
 Before implementation, inspect Users/Groups and shared details-drawer behavior.
 
-- [ ] Match desktop composition and responsive stacking.
-- [ ] Use synthetic fixtures.
-- [ ] Keep Situm organization users conceptually distinct from Situm Explore app auth/session identity.
-- [ ] Do not create user/account CRUD.
-- [ ] Reuse Plan 007 shared drawer where appropriate rather than inventing another drawer.
-- [ ] No Situm users/groups API integration in this plan.
+- [x] Match desktop composition and responsive stacking.
+- [x] Use synthetic fixtures.
+- [x] Keep Situm organization users conceptually distinct from Situm Explore app auth/session identity.
+- [x] Do not create user/account CRUD.
+- [x] Reuse Plan 007 shared drawer where appropriate rather than inventing another drawer.
+- [x] No Situm users/groups API integration in this plan.
 
 ## Phase 5 — Organization `/app/organization`
 
