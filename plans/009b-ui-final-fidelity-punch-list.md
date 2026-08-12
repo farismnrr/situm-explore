@@ -393,17 +393,17 @@ shared transient feedback/toast composition
 
 Rules:
 
-- [ ] Reuse Nuxt UI primitives internally instead of reimplementing buttons/cards/inputs from scratch.
-- [ ] Components expose small semantic props, not dozens of generic style switches.
-- [ ] A repeated product component owns its internal canonical spacing/type hierarchy so pages cannot subtly diverge.
-- [ ] Do not create generic `Base*` wrappers with no product meaning.
-- [ ] Do not hide significant business/application state inside presentational components.
-- [ ] Preserve accessibility labels/roles/focus behavior.
-- [ ] Remove superseded duplicate components only after all callers are migrated.
-- [ ] Keep product grouping shallow and consistent with `ARCHITECTURE.md`.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
+- [x] Reuse Nuxt UI primitives internally instead of reimplementing buttons/cards/inputs from scratch.
+- [x] Components expose small semantic props, not dozens of generic style switches.
+- [x] A repeated product component owns its internal canonical spacing/type hierarchy so pages cannot subtly diverge.
+- [x] Do not create generic `Base*` wrappers with no product meaning.
+- [x] Do not hide significant business/application state inside presentational components.
+- [x] Preserve accessibility labels/roles/focus behavior.
+- [x] Remove superseded duplicate components only after all callers are migrated.
+- [x] Keep product grouping shallow and consistent with `ARCHITECTURE.md`.
+- [x] `git diff --check`.
+- [x] `npm run lint`.
+- [x] `npm run typecheck`.
 - [ ] commit and push Phase 2.
 
 Acceptance: repeated product UI no longer depends on route authors remembering the same long Tailwind/class recipe.

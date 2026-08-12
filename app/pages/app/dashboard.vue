@@ -14,13 +14,12 @@ const situmColor = computed(() => situm.value?.configured ? 'success' : 'warning
 
 <template>
   <div class="dashboard-page">
-    <div class="page-head mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-      <div><p class="eyebrow">Overview</p><h1 class="mt-1 text-2xl font-semibold tracking-tight text-highlighted">Dashboard</h1><p class="mt-2 text-sm text-muted">Operational snapshot of the indoor workspace.</p></div>
-      <div class="flex flex-wrap gap-2"><UButton to="/app/analytics" color="neutral" variant="outline">Open reports</UButton><UButton to="/app/map">Open map</UButton></div>
-    </div>
+    <ProductPageHeader eyebrow="Overview" title="Dashboard" description="Operational snapshot of the indoor workspace.">
+      <template #actions><UButton to="/app/analytics" color="neutral" variant="outline">Open reports</UButton><UButton to="/app/map">Open map</UButton></template>
+    </ProductPageHeader>
 
     <div class="stat-grid mb-4">
-      <UCard v-for="stat in dashboardStats" :key="stat.label" :ui="{ body: 'p-4' }"><span class="text-xs text-muted">{{ stat.label }}</span><strong class="mt-2 block text-2xl tracking-tight text-highlighted">{{ stat.value }}</strong><small class="mt-1 block text-xs" :class="stat.positive ? 'text-success' : 'text-muted'">{{ stat.note }}</small></UCard>
+      <ProductStatCard v-for="stat in dashboardStats" :key="stat.label" :label="stat.label" :value="stat.value" :note="stat.note" :positive="stat.positive" />
     </div>
 
     <div class="content-grid mb-4">

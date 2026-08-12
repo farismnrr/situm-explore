@@ -26,12 +26,7 @@ function close() {
     <template #body>
       <div class="drawer-body space-y-5">
         <UBadge color="neutral" variant="soft" class="w-fit">{{ props.type }}</UBadge>
-        <dl class="divide-y divide-default border-y border-default text-sm">
-          <div v-for="detail in props.details" :key="detail.label" class="grid grid-cols-[115px_minmax(0,1fr)] gap-3 py-2.5">
-            <dt class="text-muted">{{ detail.label }}</dt>
-            <dd class="max-w-[65%] text-right font-medium text-highlighted">{{ detail.value }}</dd>
-          </div>
-        </dl>
+        <ProductDetailList :items="props.details" />
         <slot />
         <UButton :to="props.mapTo" block label="View on map" @click="close" />
       </div>

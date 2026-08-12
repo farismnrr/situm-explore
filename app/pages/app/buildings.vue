@@ -30,13 +30,7 @@ function openDetails(building: PrototypeBuilding) {
 
 <template>
   <div class="cartography-page">
-    <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-      <div>
-        <p class="eyebrow">Cartography</p>
-        <h1 class="mt-1 text-2xl font-semibold tracking-tight text-highlighted">Buildings &amp; floors</h1>
-        <p class="mt-2 text-sm text-muted">Venue and floor metadata.</p>
-      </div>
-    </div>
+    <ProductPageHeader eyebrow="Cartography" title="Buildings & floors" description="Venue and floor metadata." />
 
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex flex-col gap-2 sm:flex-row">
