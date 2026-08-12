@@ -20,6 +20,14 @@ function refreshPositions() {
   statusMessage.value = 'Local demo positions refreshed.'
 }
 
+let refreshTimer: ReturnType<typeof setInterval> | undefined
+onMounted(() => {
+  refreshTimer = setInterval(refreshPositions, 5000)
+})
+onBeforeUnmount(() => {
+  if (refreshTimer) clearInterval(refreshTimer)
+})
+
 async function follow(position: RealtimePosition) {
   statusMessage.value = `Following ${position.name} in the local map preview.`
   await navigateTo({ path: '/app/map', query: { mode: 'realtime', follow: position.id } })
@@ -29,7 +37,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="operations-page space-y-6">
     <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Operations</p>
@@ -37,12 +45,12 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
         <p class="mt-1 text-sm text-muted">Current user and device locations across the indoor workspace.</p>
       </div>
       <div class="flex flex-wrap items-center gap-2">
-        <UBadge color="neutral" variant="soft"><span class="mr-1.5 size-1.5 rounded-full bg-muted" />Local demo · refresh on demand</UBadge>
-        <UButton label="Refresh now" icon="i-lucide-refresh-cw" color="neutral" variant="soft" @click="refreshPositions" />
+        <UBadge color="success" variant="soft"><span class="mr-1.5 size-1.5 rounded-full bg-success" />Auto refresh · 5s</UBadge>
+        <UButton label="Refresh now" icon="i-lucide-refresh-cw" color="neutral" variant="ghost" @click="refreshPositions" />
       </div>
     </div>
 
-    <UAlert v-if="statusMessage" color="info" variant="soft" :description="statusMessage" />
+    <p v-if="statusMessage" class="sr-only" role="status">{{ statusMessage }}</p>
 
     <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <UCard v-for="stat in realtimeStats" :key="stat.label" :ui="{ body: 'p-4' }">
@@ -58,11 +66,8 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
           <h2 class="text-sm font-semibold text-highlighted">Live map</h2>
           <span class="text-xs text-muted">Updated {{ updatedAt }}</span>
         </div>
-        <div class="relative m-3 h-[420px] overflow-hidden rounded-lg border border-default bg-elevated" aria-label="Local realtime map preview">
-          <div class="absolute inset-[12%_10%] rounded-[18%] border-2 border-default bg-default/70 shadow-inner" />
-          <div class="absolute left-[22%] top-[25%] h-px w-[56%] bg-border" />
-          <div class="absolute left-[48%] top-[12%] h-[76%] w-px bg-border" />
-          <div class="absolute bottom-[18%] left-[14%] right-[14%] h-[18%] rounded-lg border border-dashed border-default" />
+        <div class="realtime-map relative m-3 overflow-hidden rounded-lg border border-default" aria-label="Local realtime map preview">
+          <div class="realtime-floor" />
           <span v-for="position in positions" :key="position.id" class="absolute z-10 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm transition-all duration-500" :class="position.status === 'online' ? 'bg-sky-500' : 'bg-gray-400'" :style="{ left: `${position.marker.left}%`, top: `${position.marker.top}%` }" :title="position.name" />
           <div class="absolute bottom-3 left-3 rounded-md border border-default bg-default/90 px-2.5 py-1.5 text-[11px] text-muted shadow-sm">Main Building · local preview</div>
         </div>
@@ -74,7 +79,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
           <span class="text-xs text-muted">24 total</span>
         </div>
         <div class="divide-y divide-default">
-          <div v-for="position in positions" :key="position.id" class="flex items-center gap-3 px-4 py-4">
+            <div v-for="position in positions" :key="position.id" class="activity-row flex items-center gap-3 px-4 py-3">
             <span class="size-2 shrink-0 rounded-full" :class="position.status === 'online' ? 'bg-success' : 'bg-gray-400'" aria-hidden="true" />
             <div class="min-w-0 flex-1"><strong class="block text-sm text-highlighted">{{ position.name }}</strong><span class="mt-1 block text-xs text-muted">{{ position.status === 'online' ? `${position.floor} · ${position.location}` : position.location }}</span></div>
             <UButton v-if="position.status === 'online'" label="Follow" color="neutral" variant="ghost" size="sm" @click="follow(position)" />
@@ -85,3 +90,12 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
     </div>
   </div>
 </template>
+
+<style scoped>
+.operations-page { max-width: 1480px; }
+.realtime-map { height: 420px; background: repeating-linear-gradient(0deg,#fafbfc 0 26px,#f0f2f4 27px),repeating-linear-gradient(90deg,transparent 0 26px,#f0f2f4 27px); }
+.realtime-floor { position:absolute; inset:12% 10%; border:2px solid #d6dae0; border-radius:18px; background:#fff; transform:rotate(-2deg); }
+.realtime-floor::before { content:''; position:absolute; inset:15% 12%; border:1px solid #e0e3e7; border-radius:9px; }
+.activity-row strong { font-size: .6875rem; }
+.activity-row span { font-size: .625rem; }
+</style>

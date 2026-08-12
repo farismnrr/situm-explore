@@ -24,7 +24,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Alarms' })
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="operations-page space-y-6">
     <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Operations</p>
@@ -37,12 +37,11 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Alarms' })
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
       <USelect v-model="typeFilter" :items="alarmTypes" aria-label="Filter alarms by type" class="w-full sm:w-52" />
       <USelect v-model="statusFilter" :items="alarmStatuses" aria-label="Filter alarms by status" class="w-full sm:w-44" />
-      <span class="text-xs text-muted sm:ml-auto">{{ filteredAlarms.length }} of {{ prototypeAlarms.length }} alarms</span>
     </div>
 
     <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
       <div class="hidden overflow-x-auto md:block">
-        <table class="w-full min-w-[680px] text-left text-sm">
+        <table class="table-density w-full min-w-[680px] text-left">
           <thead class="border-b border-default bg-elevated/40 text-xs text-muted">
             <tr><th class="px-5 py-3 font-medium">Type</th><th class="px-4 py-3 font-medium">User</th><th class="px-4 py-3 font-medium">Location</th><th class="px-4 py-3 font-medium">Triggered</th><th class="px-4 py-3 font-medium">Status</th></tr>
           </thead>
@@ -67,6 +66,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Alarms' })
       <p v-if="filteredAlarms.length === 0" class="px-5 py-10 text-center text-sm text-muted">No alarms match your filters.</p>
     </UCard>
 
-    <p class="text-xs text-muted">Alarm records are local prototype fixtures. This view is read-only.</p>
   </div>
 </template>
+
+<style scoped>
+.operations-page { max-width: 1480px; }
+</style>

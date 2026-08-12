@@ -367,54 +367,54 @@ Acceptance: the real map occupies the space where prototype floor art was used, 
 
 ## Realtime `/app/realtime`
 
-- [ ] Match reference green `Auto refresh · 5s` pill footprint and Refresh now action while keeping actual behavior local/manual unless a timer is intentionally safe; UI copy must remain truthful.
-- [ ] Remove persistent status `UAlert` feedback that shifts the page; use compact/transient feedback equivalent to prototype toast.
-- [ ] Match 4-stat density.
-- [ ] Replace alternate realtime map drawing with the canonical building-mini visual language and marker treatment.
-- [ ] Match People & devices activity-row density and Follow actions.
+- [x] Match reference green `Auto refresh · 5s` pill footprint and Refresh now action with a safe local-only interval and cleanup; UI copy remains truthful.
+- [x] Remove persistent status `UAlert` feedback that shifts the page; use compact/transient feedback equivalent to prototype toast.
+- [x] Match 4-stat density.
+- [x] Replace alternate realtime map drawing with the canonical building-mini visual language and marker treatment.
+- [x] Match People & devices activity-row density and Follow actions.
 
 ## Analytics `/app/analytics`
 
-- [ ] Remove extra `Local prototype data` badge from the header.
-- [ ] Match date select + Export CSV action only.
-- [ ] Match prototype tab font size, spacing and selected treatment; current larger underline-tab implementation must be visually compared and corrected.
-- [ ] Match visitor/positioning chart heights, bar language and panel-head structure.
-- [ ] Heatmap must use canonical red/amber/yellow density language, not the current blue/yellow/red blurred interpretation.
-- [ ] Match table typography/density across stay-time and positions reports.
-- [ ] Match Map Viewer usage three soft-card composition.
-- [ ] Replace persistent export alert with transient prototype-like feedback.
+- [x] Remove extra `Local prototype data` badge from the header.
+- [x] Match date select + Export CSV action only.
+- [x] Match prototype tab font size, spacing and selected treatment; current larger underline-tab implementation must be visually compared and corrected.
+- [x] Match visitor/positioning chart heights, bar language and panel-head structure.
+- [x] Heatmap must use canonical red/amber/yellow density language, not the current blue/yellow/red blurred interpretation.
+- [x] Match table typography/density across stay-time and positions reports.
+- [x] Match Map Viewer usage three soft-card composition.
+- [x] Replace persistent export alert with transient prototype-like feedback.
 
 ## Alarms `/app/alarms`
 
-- [ ] Keep canonical two-filter toolbar only; remove extra right-side result count if it changes the reference composition.
-- [ ] Match compact table density and pill styling.
-- [ ] Remove bottom explanatory fixture paragraph absent from the reference.
+- [x] Keep canonical two-filter toolbar only; remove extra right-side result count if it changes the reference composition.
+- [x] Match compact table density and pill styling.
+- [x] Remove bottom explanatory fixture paragraph absent from the reference.
 
 ## Users `/app/users`
 
-- [ ] Remove prominent Local fixture badge + full-width informational alert.
-- [ ] Restore canonical equal two-column Users/Groups composition rather than current 1.35/.65 split.
-- [ ] Match compact panel heads, table, and group activity-list treatment.
-- [ ] Preserve drawer on user selection.
+- [x] Remove prominent Local fixture badge + full-width informational alert.
+- [x] Restore canonical equal two-column Users/Groups composition rather than current 1.35/.65 split.
+- [x] Match compact panel heads, table, and group activity-list treatment.
+- [x] Preserve drawer on user selection.
 
 ## Organization `/app/organization`
 
 Current project truth differs from the old prototype permission wording because the POC now allows one Read & Write-capable key. Preserve the **latest project truth**, but match canonical composition:
 
-- [ ] no large synthetic-context alert above the grid;
-- [ ] match canonical 1.4/.6 grid relationship;
-- [ ] match detail-list density instead of large row cards;
-- [ ] match credential-boundary soft-card composition;
-- [ ] current permission wording may say Read & Write (POC), but must occupy the same visual role as the prototype permission pill.
+- [x] no large synthetic-context alert above the grid;
+- [x] match canonical 1.4/.6 grid relationship;
+- [x] match detail-list density instead of large row cards;
+- [x] match credential-boundary soft-card composition;
+- [x] current permission wording may say Read & Write (POC), but must occupy the same visual role as the prototype permission pill.
 
 ## Viewer Settings `/app/settings`
 
-- [ ] Remove persistent Local-only settings alert; source remains local/dummy without debug-style page banners.
-- [ ] Match canonical 220px settings nav and 14px gap.
-- [ ] Match 11px nav/control density rather than generic 14px settings UI.
-- [ ] Match setting-section 18px padding and compact row typography.
-- [ ] Match General/Navigation/Map/Styles/Images compositions state-by-state.
-- [ ] Reset feedback should be transient and not insert a large callout into the page.
+- [x] Remove persistent Local-only settings alert; source remains local/dummy without debug-style page banners.
+- [x] Match canonical 220px settings nav and 14px gap.
+- [x] Match 11px nav/control density rather than generic 14px settings UI.
+- [x] Match setting-section 18px padding and compact row typography.
+- [x] Match General/Navigation/Map/Styles/Images compositions state-by-state.
+- [x] Reset feedback should be transient and not insert a large callout into the page.
 
 ---
 

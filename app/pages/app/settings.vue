@@ -38,7 +38,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="operations-page space-y-6">
     <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Viewer</p>
@@ -48,10 +48,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
       <UButton label="Reset demo" icon="i-lucide-rotate-ccw" color="neutral" variant="outline" class="w-fit" @click="resetSettings" />
     </div>
 
-    <UAlert v-if="resetMessage" color="info" variant="soft" :description="resetMessage" close @update:open="resetMessage = ''" />
-    <UAlert color="info" variant="soft" title="Local-only settings" description="These preferences are stored in this page for the current session. No Situm settings, styles, images or configuration are read or changed." />
+    <p v-if="resetMessage" class="sr-only" role="status">{{ resetMessage }}</p>
 
-    <div class="grid gap-6 lg:grid-cols-[13.75rem_minmax(0,1fr)]">
+    <div class="settings-layout grid gap-4 lg:grid-cols-[13.75rem_minmax(0,1fr)]">
       <UCard :ui="{ body: 'p-2 sm:p-2' }" class="h-fit overflow-hidden">
         <nav class="flex gap-1 overflow-x-auto lg:block" aria-label="Viewer settings sections">
           <button v-for="tab in tabs" :key="tab.id" type="button" class="shrink-0 rounded-md px-3 py-2 text-left text-sm transition lg:block lg:w-full" :class="activeTab === tab.id ? 'bg-elevated font-medium text-highlighted' : 'text-muted hover:bg-elevated/70 hover:text-highlighted'" :aria-current="activeTab === tab.id ? 'page' : undefined" @click="activeTab = tab.id">{{ tab.label }}</button>
@@ -59,7 +58,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
       </UCard>
 
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
-        <section v-if="activeTab === 'general'" class="p-5 sm:p-6">
+        <section v-if="activeTab === 'general'" class="p-[18px]">
           <h2 class="text-base font-semibold text-highlighted">General viewer behavior</h2>
           <p class="mt-1 text-xs text-muted">Local preferences representing viewer actions and configuration.</p>
           <div class="mt-5 divide-y divide-default">
@@ -70,7 +69,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
           </div>
         </section>
 
-        <section v-else-if="activeTab === 'navigation'" class="p-5 sm:p-6">
+        <section v-else-if="activeTab === 'navigation'" class="p-[18px]">
           <h2 class="text-base font-semibold text-highlighted">Navigation</h2><p class="mt-1 text-xs text-muted">Route behavior reflected from local directions preferences.</p>
           <div class="mt-5 divide-y divide-default">
             <div class="flex items-center justify-between gap-5 py-4 first:pt-0"><div><strong class="block text-sm text-highlighted">Prefer shortest route</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Default directions strategy.</span></div><USwitch v-model="preferShortestRoute" aria-label="Prefer shortest route" /></div>
@@ -79,7 +78,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
           </div>
         </section>
 
-        <section v-else-if="activeTab === 'map'" class="p-5 sm:p-6">
+        <section v-else-if="activeTab === 'map'" class="p-[18px]">
           <h2 class="text-base font-semibold text-highlighted">Map configuration</h2><p class="mt-1 text-xs text-muted">Local configuration profile and viewer interaction defaults.</p>
           <div class="mt-5 divide-y divide-default">
             <div class="flex items-center justify-between gap-5 py-4 first:pt-0"><div><strong class="block text-sm text-highlighted">Configuration profile</strong><span class="mt-1 block text-xs leading-relaxed text-muted">Map behavior profile.</span></div><USelect v-model="configurationProfile" :items="['default', 'poc-workspace']" aria-label="Configuration profile" class="w-48" /></div>
@@ -88,12 +87,12 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
           </div>
         </section>
 
-        <section v-else-if="activeTab === 'styles'" class="p-5 sm:p-6">
+        <section v-else-if="activeTab === 'styles'" class="p-[18px]">
           <h2 class="text-base font-semibold text-highlighted">Map styles</h2><p class="mt-1 text-xs text-muted">Local read-only previews; no style upload or remote mutation is available.</p>
           <div class="mt-5 grid gap-3 sm:grid-cols-3"><div v-for="style in [{ name: 'Default light', tone: 'bg-gradient-to-br from-slate-50 to-slate-200' }, { name: 'High contrast', tone: 'bg-gradient-to-br from-white to-slate-300' }, { name: 'Brand neutral', tone: 'bg-gradient-to-br from-zinc-50 to-zinc-200' }]" :key="style.name" class="rounded-lg border border-default p-3"><strong class="text-sm text-highlighted">{{ style.name }}</strong><div class="mt-3 h-20 rounded-md" :class="style.tone" /></div></div>
         </section>
 
-        <section v-else class="p-5 sm:p-6">
+        <section v-else class="p-[18px]">
           <h2 class="text-base font-semibold text-highlighted">Images</h2><p class="mt-1 text-xs text-muted">Local reference examples for POI, category and floor resources.</p>
           <div class="mt-5 divide-y divide-default rounded-lg border border-default"><div v-for="image in [{ name: 'poi-reception.svg', detail: 'POI icon · 6 KB', status: 'Referenced' }, { name: 'category-workspace.svg', detail: 'POI category icon · 5 KB', status: 'Referenced' }, { name: 'floor-1-map.png', detail: 'Floor resource · 842 KB', status: 'Active' }]" :key="image.name" class="flex items-center gap-3 p-4"><span class="size-2.5 shrink-0 rounded-full" :class="image.status === 'Active' ? 'bg-success' : 'bg-primary'" /><div class="min-w-0 flex-1"><strong class="block text-sm text-highlighted">{{ image.name }}</strong><span class="mt-1 block text-xs text-muted">{{ image.detail }}</span></div><UBadge :color="image.status === 'Active' ? 'success' : 'neutral'" variant="soft">{{ image.status }}</UBadge></div></div>
         </section>
@@ -101,3 +100,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
     </div>
   </div>
 </template>
+
+<style scoped>
+.operations-page { max-width: 1480px; }
+.settings-layout :deep(button) { font-size: 0.6875rem; }
+.settings-layout :deep(.setting-row) { min-height: 3.25rem; }
+</style>
