@@ -4,140 +4,122 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Execute a gap-free sequential Situm Explore POC roadmap: Nuxt 4 architecture alignment -> complete approved UI with dummy/local data for missing domains -> user UI acceptance -> selective Situm integrations.
+Recover the cumulative Plans 004–009 UI so the Nuxt implementation closely matches the canonical interactive prototype before any backend/Situm data integration begins.
 
 ## Phase
 
-**Plan 008 is complete on a deliberately stacked branch based on completed Plan 007; Plan 009 starts from its pushed HEAD per the user's explicit unattended-run override.**
+**Plan 009A — UI Prototype Fidelity Recovery is next/active on `plan/009a-ui-prototype-fidelity-recovery`.**
+
+The branch is intentionally stacked from the cumulative HEAD of `plan/009-ui-conformance-polish`; therefore it contains all implementation from Plans 004–009.
+
+No PR or merge has been requested.
+
+## Why Plan 009A is required
+
+The user manually tested real login successfully, but rejected current UI fidelity because many screens are visibly different from the prototype.
+
+A repository-wide static audit confirmed major visual drift across shared primitives, authenticated shell, auth, map workspace, cartography, operations, organization/settings, drawers/modals, and page density.
+
+Important finding: Plan 009 is **not actually complete**. Its own file records Phases 4–7 as incomplete after worker capacity was exhausted. Earlier visual signoff checkboxes must not be interpreted as user acceptance; the user's later manual review supersedes them.
 
 ## Active contracts
 
-- `AGENTS.md` — root router and sequential-plan guard.
-- `.agents/protocols/git-workflow.md` + `plans/README.md` — branch/phase/push/PR/integration workflow.
-- `ARCHITECTURE.md` — Nuxt 4 folder/layer/dependency source of truth.
-- `DESIGN.md` — design router.
-- `design/IMPLEMENTATION.md` — HTML -> Nuxt UI translation contract.
-- `design/data-source-matrix.md` — Plans 004–009 real-vs-dummy contract.
-- `design/reference/situm-explore-interactive-prototype.html` — only visual/interaction reference once user-populated.
+- `AGENTS.md` — root router/workflow.
+- `ARCHITECTURE.md` — full-stack Nuxt architecture contract; SOLID/DRY/KISS/layering remain mandatory.
+- `DESIGN.md` — visual authority router.
+- `design/IMPLEMENTATION.md` — prototype -> Nuxt/Vue/Nuxt UI translation contract.
+- `design/data-source-matrix.md` — existing-real vs dummy/local data boundary.
+- `design/reference/situm-explore-interactive-prototype.html` — canonical visual/interaction reference, subject to the user's newer explicit design direction.
+- `plans/009a-ui-prototype-fidelity-recovery.md` — active recovery checklist.
 
-Historical plans/session notes are evidence only and do not override current contracts.
+## Visual authority
 
-## Sequential execution rule
+1. user's latest explicit direction;
+2. canonical HTML;
+3. `DESIGN.md`;
+4. active recovery plan;
+5. implementation guide.
 
-```text
-finish + validate plan branch
--> push
--> user review
--> explicit PR/integration authorization
--> dependency lands in main
--> sync main
--> create next plan branch from updated origin/main
-```
+The canonical HTML currently contains stale `S` brand markup, while `DESIGN.md` requires the approved navigation-arrow mark. Plan 009A Phase 0 owns normalizing only that stale reference detail before production fidelity work.
 
-Do not start a dependent plan from stale `main` or silently stack branches. Stacked branches require explicit user request.
+The HTML remains reference only. Production must stay Nuxt 4 + Vue + Nuxt UI and must not copy the prototype stylesheet/JS architecture.
 
-## Architecture target
+## Main audit findings
 
-Plan 004 Phase 0 owns:
+Systemic:
 
-```text
-app.vue                     -> app/app.vue
-app.config.ts               -> app/app.config.ts
-assets/                     -> app/assets/
-components/                 -> app/components/
-middleware/                 -> app/middleware/
-pages/                      -> app/pages/
-server/utils/db.ts          -> server/db/client.ts
-server/db/schema.ts         -> unchanged
-server/api/**               -> routes preserved
-```
+- global Nuxt UI button defaults are neutral/outline while many prototype primary actions are dark filled;
+- multiple authenticated routes are narrowed with `max-w-6xl` even though the prototype app content extends to ~1480px;
+- common page titles/tables/cards/navigation are looser/larger than the compact prototype language;
+- shell search/account/status/action composition materially differs from the prototype;
+- current `BrandMark.vue` is a thin right arrow rather than the approved navigation-pointer mark.
 
-Do not create empty services/repositories/shared/layers/stores/generic infrastructure just to match diagrams.
+Public/auth:
 
-## UI/data boundary — Plans 004–009
+- landing is structurally similar but has width/type/action-state drift;
+- auth is materially redesigned: unequal desktop columns, underline tabs, different art-card layout, and mobile keeps a partial dark art block instead of hiding it.
+
+Authenticated product:
+
+- Home/Dashboard density and proportions drift;
+- Map chrome differs and lacks high-fidelity prototype popover/transient feedback behavior;
+- Buildings/POIs add debug/local-fixture UI and use oversized table density;
+- Geofences adds an unreferenced filter toolbar;
+- Paths uses a different SVG network visual;
+- Realtime uses a different live-map composition and persistent alerts;
+- Analytics adds local-data UI and uses different tab/heatmap/chart language;
+- Users/Organization/Settings add large explanatory alerts/badges and different grid/density decisions;
+- shared drawer uses generic slideover composition instead of matching canonical drawer geometry closely.
+
+## Data/runtime boundary during Plan 009A
 
 Keep real:
 
-- `/api/auth/login`, `useUserSession()`, logout, server session authorization;
+- `/api/auth/login`;
+- `useUserSession()` / logout / auth middleware;
 - `/api/me` and PostgreSQL/Drizzle behavior;
-- `/api/situm/status` as configuration status only;
-- existing Situm Viewer creation, `MAP_IS_READY`, `APP_ERROR`, init errors.
+- `/api/situm/status` configuration semantics;
+- real Situm Viewer creation;
+- `MAP_IS_READY` / `APP_ERROR` / initialization errors.
 
-Keep typed dummy/local until after UI acceptance:
+Keep local/dummy:
 
 - registration;
 - product metrics/activity;
-- Buildings/Floors/POIs/Categories product data;
-- Geofences/Paths/routes;
-- all newly represented Map Explore/Route/Layers/tools beyond existing Viewer lifecycle;
-- Realtime;
-- Reports/Analytics;
-- Alarms;
-- Users/Groups/Organization;
-- newly represented Viewer settings/config/style/image behavior.
+- cartography product records;
+- route previews;
+- realtime product data;
+- analytics/reports;
+- alarms/users/groups/organization;
+- new map tools/settings not already part of the real Viewer lifecycle.
 
-Canonical synthetic records should be reused from `app/data/prototype/` after Plan 004 migration.
+Plan 009A must not add new backend endpoints, database work, or Situm product-domain integration.
 
-## Situm POC setup
+## Branch / roadmap state
 
-- Env: `NUXT_PUBLIC_SITUM_API_KEY` + `NUXT_PUBLIC_SITUM_BUILDING_ID`.
-- One time-boxed POC key may have Read & Write permission; revoke/replace after POC.
-- Never persist/log/render the key value.
-- Missing local building ID may be discovered through `GET https://api.situm.com/api/v1/buildings` with `X-API-KEY`, writing only selected ID to ignored `.env`.
-- Do not silently guess among genuinely ambiguous buildings.
-- Broader key permission does not expand Plans 004–009.
+Current cumulative chain:
 
-## UI roadmap
+```text
+main
+└─ plan/004-ui-foundation-public-auth
+   └─ plan/005-authenticated-shell-dashboard
+      └─ plan/006-situm-map-workspace
+         └─ plan/007-cartography-explorer
+            └─ plan/008-operations-reports-ui
+               └─ plan/009-ui-conformance-polish
+                  └─ plan/009a-ui-prototype-fidelity-recovery  <- active
+```
 
-1. **004** — architecture Phase 0, then Landing/Login/Register after HTML is populated. Ends with login still using existing `/dashboard`.
-2. **005** — authenticated layout; `app/app.vue` activates `NuxtLayout`; atomically creates `/app/**`, moves login to `/app`, keeps real Viewer reachable at `/app/map`, retires/redirects legacy dashboard UI.
-3. **006** — approved Map workspace around existing real Viewer; all newly introduced map tools stay local/dummy.
-4. **007** — dummy Buildings/Floors/POIs/Geofences/Paths; canonical fixtures reused.
-5. **008** — dummy/local Realtime, Analytics, Alarms, Users/Groups, Organization, Settings.
-6. **009** — whole-product HTML conformance, responsive/accessibility, foundation regression, architecture/DRY, docs gate.
+Plan 010 and later backend/integration plans are blocked until:
 
-Plan 010 cannot start until Plan 009 is integrated and the user explicitly accepts the complete UI.
+1. Plan 009A is complete;
+2. rendered UI has been reviewed against every reference surface;
+3. the user explicitly accepts the recovered UI.
 
-## Later Situm integration roadmap
-
-10. **010** — feasibility/capability/data-contract/ownership mapping only; no fixture replacement or writes.
-11. **011** — Buildings/Floors/POIs/Categories.
-12. **012** — Geofences/Paths/Routing.
-13. **013** — Realtime positions plus only device metadata needed by accepted Realtime UI.
-14. **014** — Reports/Analytics.
-15. **015** — Organization/Users/Groups/Alarms where valuable.
-16. **016** — **conditional** remaining accepted Viewer/settings/write actions (map config/styles/images, favorites or other real Viewer actions, narrow mutations) only when Plan 010 records an explicit go-list. If no real action is needed, mark `skipped-not-needed` and do not implement it.
-
-Later plans also execute sequentially through integrated `main`. Any Nitro/server Situm data route must use existing app session authorization; never create an unauthenticated generic Situm proxy.
-
-## Completed / historical
-
-- Plans 000–002: completed foundation/resource work.
-- Plan 003: closed historical UI attempt; rendered result was not accepted as current design target.
-
-## Current open loop
-
-Plan 009 is active on the explicitly authorized stacked branch. Phase 3 is complete and pushed; Phase 4 is blocked because the configured worker cannot currently be spawned (the agent service reports its thread limit is reached and prior worker IDs are unavailable). Do not implement the remaining phases directly in the parent agent.
-
-## Audit status
-
-Repository-wide pre-execution audit corrected:
-
-- stale credential/env/context wording;
-- sequential branch dependency ambiguity;
-- Plan 004 -> 005 missing-route/login transition;
-- Nuxt layout activation requirement in Plan 005;
-- temporary real-Viewer reachability during route migration;
-- accidental permission for new Situm API/SDK wiring inside UI plans;
-- duplicate dummy fixture ownership ambiguity;
-- Plan 010 duplicate implementation overlap;
-- missing server-session guard requirement for future Situm Nitro routes;
-- missing device ownership for Realtime;
-- missing ownership for remaining Viewer/settings/write actions via conditional Plan 016;
-- stale project goals/preferences/knowledge/package metadata.
-
-The only intentional visual blocker is the user-populated canonical HTML.
+Do not create a PR or merge unless the user explicitly requests it.
 
 ## Next action
 
-Resume Plan 009 Phase 4 with the configured worker when worker capacity is available, then continue Phases 5–7 sequentially without merging or opening PRs.
+Execute `plans/009a-ui-prototype-fidelity-recovery.md` phase-by-phase on the existing recovery branch, beginning with reference/brand normalization and global Nuxt UI primitives before page-level fixes.
+
+Final visual signoff must be evidence-based. If browser/screenshot comparison is unavailable to the executing agent, do not mark final fidelity complete; leave that gate pending for user/manual review.
