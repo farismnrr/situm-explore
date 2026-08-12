@@ -7,6 +7,16 @@ const poiSearch = ref('')
 const showFavorites = ref(false)
 const favoritePoiIds = ref<string[]>(['reception'])
 const selectedPoiId = ref<string | null>('reception')
+const routeStart = ref('Reception')
+const routeDestination = ref('Meeting Room A')
+const accessibleRoute = ref(false)
+const routeCalculated = ref(false)
+const routeStatus = ref('')
+
+const routeOptions = computed(() => ['My location', ...homePois.map(poi => poi.name)])
+const routeSteps = computed(() => accessibleRoute.value
+  ? ['Walk straight past reception for 28 m', 'Take the lift at the workspace corridor', `${routeDestination.value} is on your left`]
+  : ['Walk straight past reception for 28 m', 'Turn right at the workspace corridor', `${routeDestination.value} is on your left`])
 
 const filteredPois = computed(() => homePois.filter((poi) => {
   const query = poiSearch.value.trim().toLowerCase()
@@ -28,6 +38,15 @@ function toggleFavorite(id: string) {
 
 function isFavorite(id: string) {
   return favoritePoiIds.value.includes(id)
+}
+
+function calculateRoute() {
+  routeCalculated.value = true
+  routeStatus.value = 'Local route preview generated; no navigation service was contacted.'
+}
+
+function startLocalNavigation() {
+  routeStatus.value = 'Navigation is a local preview only; no live directions were started.'
 }
 
 const tabItems = [
@@ -95,10 +114,26 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
         </div>
 
         <div v-else-if="activeTab === 'route'" role="tabpanel" class="space-y-4">
-          <UFormField label="Start"><USelect :items="['Reception', 'My location', 'Lift Lobby']" model-value="Reception" class="w-full" /></UFormField>
-          <UFormField label="Destination"><USelect :items="['Meeting Room A', 'Training Area', 'Lift Lobby']" model-value="Meeting Room A" class="w-full" /></UFormField>
-          <UCheckbox label="Prefer accessible floor changes" />
-          <UButton label="Calculate route" block disabled />
+          <UFormField label="Start"><USelect v-model="routeStart" :items="routeOptions" class="w-full" /></UFormField>
+          <UFormField label="Destination"><USelect v-model="routeDestination" :items="routeOptions" class="w-full" /></UFormField>
+          <UCheckbox v-model="accessibleRoute" label="Prefer accessible floor changes" />
+          <UButton label="Calculate route" block @click="calculateRoute" />
+
+          <UAlert v-if="routeStatus" color="info" variant="soft" :description="routeStatus" />
+          <UCard v-if="routeCalculated" :ui="{ body: 'p-3' }">
+            <div class="flex items-center justify-between gap-3">
+              <strong class="text-xs text-highlighted">Local preview · 4 min · 86 m</strong>
+              <UBadge color="info" variant="soft">{{ accessibleRoute ? 'Accessible preview' : 'Shortest preview' }}</UBadge>
+            </div>
+            <p class="mt-2 text-[11px] text-muted">{{ routeStart }} → {{ routeDestination }} · dummy route data</p>
+            <div class="mt-3 space-y-2">
+              <div v-for="(step, index) in routeSteps" :key="step" class="grid grid-cols-[18px_1fr] gap-2 text-[11px] text-muted">
+                <span class="grid size-[18px] place-items-center rounded-full bg-elevated text-[10px] font-semibold text-highlighted">{{ index + 1 }}</span>
+                <span>{{ step }}</span>
+              </div>
+            </div>
+            <UButton class="mt-3 w-full" label="Start local preview" color="neutral" variant="soft" size="sm" @click="startLocalNavigation" />
+          </UCard>
         </div>
 
         <div v-else role="tabpanel" class="space-y-1">

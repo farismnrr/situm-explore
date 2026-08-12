@@ -86,12 +86,12 @@ Before implementation, inspect current POI search/list/selection/popover/favorit
 
 Before implementation, inspect the route form/result/steps and accessible-route state in the current HTML.
 
-- [ ] Implement Start/Destination controls using typed local fixture options.
-- [ ] Implement accessible-route option as local UI state.
-- [ ] Route calculation/result/steps are dummy/local only.
-- [ ] Do not wire directions/navigation SDK calls in this plan.
-- [ ] Do not add a server routing endpoint.
-- [ ] Never claim a real route was calculated.
+- [x] Implement Start/Destination controls using typed local fixture options.
+- [x] Implement accessible-route option as local UI state.
+- [x] Route calculation/result/steps are dummy/local only.
+- [x] Do not wire directions/navigation SDK calls in this plan.
+- [x] Do not add a server routing endpoint.
+- [x] Never claim a real route was calculated.
 
 ## Phase 4 — Layers and viewer tools, dummy/local
 
