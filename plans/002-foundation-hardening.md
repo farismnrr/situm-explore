@@ -81,17 +81,19 @@ Acceptance:
 
 # Phase 3 — Make Nuxt ESLint reproducible from a clean clone
 
+Status: complete
+
 The foundation uses `@nuxt/eslint` and imports generated `.nuxt/eslint.config.mjs`. Make sure the Nuxt module actually generates that config reliably.
 
-- [ ] Register `@nuxt/eslint` in `nuxt.config.ts` using the current recommended Nuxt setup.
-- [ ] Keep one flat-config ESLint setup; do not introduce a parallel legacy config.
-- [ ] Verify a clean generated state can produce the expected Nuxt ESLint config.
-- [ ] Run `npm run lint` and require zero lint errors.
+- [x] Register `@nuxt/eslint` in `nuxt.config.ts` using the current recommended Nuxt setup.
+- [x] Keep one flat-config ESLint setup; do not introduce a parallel legacy config.
+- [x] Verify a clean generated state can produce the expected Nuxt ESLint config.
+- [x] Run `npm run lint` and require zero lint errors.
 
 Acceptance:
 
-- [ ] Fresh clone/install does not rely on stale local `.nuxt` output for lint configuration.
-- [ ] `npm run lint` passes.
+- [x] Fresh clone/install does not rely on stale local `.nuxt` output for lint configuration.
+- [x] `npm run lint` passes.
 
 ---
 
