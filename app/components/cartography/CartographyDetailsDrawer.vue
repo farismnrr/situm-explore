@@ -25,13 +25,9 @@ function close() {
   <USlideover :open="props.open" :title="props.title" :ui="{ content: 'cartography-drawer w-full sm:max-w-[380px]' }" @update:open="emit('update:open', $event)">
     <template #body>
       <div class="drawer-body space-y-5">
-        <div>
-          <UBadge color="neutral" variant="soft">{{ props.type }}</UBadge>
-          <h2 class="mt-2 text-lg font-semibold text-highlighted">{{ props.name }}</h2>
-          <p v-if="props.subtitle" class="mt-1 text-xs text-muted">{{ props.subtitle }}</p>
-        </div>
+        <UBadge color="neutral" variant="soft" class="w-fit">{{ props.type }}</UBadge>
         <dl class="divide-y divide-default border-y border-default text-sm">
-          <div v-for="detail in props.details" :key="detail.label" class="flex justify-between gap-4 py-2.5">
+          <div v-for="detail in props.details" :key="detail.label" class="grid grid-cols-[115px_minmax(0,1fr)] gap-3 py-2.5">
             <dt class="text-muted">{{ detail.label }}</dt>
             <dd class="max-w-[65%] text-right font-medium text-highlighted">{{ detail.value }}</dd>
           </div>

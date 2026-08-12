@@ -12,9 +12,8 @@ const routeStart = ref('Reception')
 const routeDestination = ref('Meeting Room A')
 const accessibleRoute = ref(false)
 const routeCalculated = ref(false)
-const routeStatus = ref('')
 const layerState = reactive({ realtime: true, geofence: false, trajectory: false, follow: false })
-const locationPickerOpen = ref(false)
+const locationPickerActive = ref(false)
 const viewerSettingsOpen = ref(false)
 const accessibleNavigation = ref(false)
 const largeInterfaceText = ref(false)
@@ -83,7 +82,7 @@ function openDirections(poiName: string) {
   routeDestination.value = poiName
   activeTab.value = 'route'
   routeCalculated.value = false
-  routeStatus.value = 'Destination selected locally. Calculate a route preview to continue.'
+  showFeedback('Destination added to route planner.')
 }
 
 function toggleFavorite(id: string) {
@@ -98,11 +97,11 @@ function isFavorite(id: string) {
 
 function calculateRoute() {
   routeCalculated.value = true
-  routeStatus.value = 'Local route preview generated; no navigation service was contacted.'
+  showFeedback('Route preview calculated.')
 }
 
 function startLocalNavigation() {
-  routeStatus.value = 'Navigation is a local preview only; no live directions were started.'
+  showFeedback('Route preview opened.')
 }
 
 function showViewerToolStatus(message: string) {
@@ -196,20 +195,19 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
           <UCheckbox v-model="accessibleRoute" label="Prefer accessible floor changes" />
           <UButton label="Calculate route" block @click="calculateRoute" />
 
-          <p v-if="routeStatus" class="map-feedback" role="status">{{ routeStatus }}</p>
           <UCard v-if="routeCalculated" :ui="{ body: 'p-3' }">
             <div class="flex items-center justify-between gap-3">
-              <strong class="text-xs text-highlighted">Local preview · 4 min · 86 m</strong>
-              <UBadge color="info" variant="soft">{{ accessibleRoute ? 'Accessible preview' : 'Shortest preview' }}</UBadge>
+              <strong class="text-xs text-highlighted">4 min · 86 m</strong>
+              <UBadge color="info" variant="soft">{{ accessibleRoute ? 'Accessible' : 'Shortest' }}</UBadge>
             </div>
-            <p class="mt-2 text-[11px] text-muted">{{ routeStart }} → {{ routeDestination }} · dummy route data</p>
+            <p class="mt-2 text-[11px] text-muted">{{ routeStart }} → {{ routeDestination }}</p>
             <div class="mt-3 space-y-2">
               <div v-for="(step, index) in routeSteps" :key="step" class="grid grid-cols-[18px_1fr] gap-2 text-[11px] text-muted">
                 <span class="grid size-[18px] place-items-center rounded-full bg-elevated text-[10px] font-semibold text-highlighted">{{ index + 1 }}</span>
                 <span>{{ step }}</span>
               </div>
             </div>
-            <UButton class="mt-3 w-full" label="Start local preview" color="neutral" variant="soft" size="sm" @click="startLocalNavigation" />
+            <UButton class="mt-3 w-full" label="Open route" color="neutral" variant="soft" size="sm" @click="startLocalNavigation" />
           </UCard>
         </div>
 
@@ -219,7 +217,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
             <span><strong class="block text-xs text-highlighted">{{ item.label }}</strong><span class="mt-1 block text-[11px] text-muted">{{ item.hint }}</span></span>
             <USwitch :model-value="layerState[item.key as keyof typeof layerState]" :aria-label="item.label" @update:model-value="toggleLayer(item.key as keyof typeof layerState)" />
           </div>
-          <UButton label="Open location picker" block color="neutral" variant="soft" size="sm" class="mt-3" @click="locationPickerOpen = true" />
+          <UButton :label="locationPickerActive ? 'Clear location' : 'Pick location'" block color="neutral" variant="soft" size="sm" class="mt-3" @click="locationPickerActive = !locationPickerActive; showViewerToolStatus(locationPickerActive ? 'Location marker enabled.' : 'Location marker cleared.')" />
           <UButton label="Viewer accessibility settings" block color="neutral" variant="soft" size="sm" class="mt-2" @click="viewerSettingsOpen = true" />
           <div class="my-3 border-t border-default" />
           <p class="mb-2 text-[11px] text-muted">More viewer tools</p>
@@ -251,12 +249,12 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
       <div class="h-full min-h-[34rem] p-2 sm:min-h-[38rem] sm:p-3 lg:min-h-0">
         <SitumViewer class="h-full" @status="handleViewerStatus" />
       </div>
-      <div class="absolute bottom-6 left-6 z-10 flex flex-col overflow-hidden rounded-lg border border-default bg-default/95 shadow-sm backdrop-blur">
+      <div class="absolute bottom-6 right-6 z-10 flex flex-col overflow-hidden rounded-lg border border-default bg-default/95 shadow-sm backdrop-blur">
         <UButton icon="i-lucide-locate-fixed" aria-label="Center map locally" color="neutral" variant="ghost" @click="centerMap" />
         <UButton label="+" aria-label="Zoom in locally" color="neutral" variant="ghost" :disabled="zoomLevel === 4" @click="adjustZoom(1)" />
         <UButton label="−" aria-label="Zoom out locally" color="neutral" variant="ghost" :disabled="zoomLevel === 0" @click="adjustZoom(-1)" />
       </div>
-      <UCard v-if="selectedPoi" class="absolute bottom-4 left-3 right-3 z-10 shadow-lg sm:bottom-6 sm:left-auto sm:right-6 sm:w-72" :ui="{ body: 'p-4' }">
+      <UCard v-if="selectedPoi" class="absolute right-6 top-20 z-10 w-60 shadow-lg" :ui="{ body: 'p-3' }">
         <div class="flex items-start justify-between gap-3">
           <div><p class="font-semibold text-highlighted">{{ selectedPoi.name }}</p><p class="mt-1 text-xs text-muted">{{ selectedPoi.category }} · {{ selectedPoi.floor }} · {{ homeBuilding.name }}</p></div>
           <UButton icon="i-lucide-x" aria-label="Close POI details" color="neutral" variant="ghost" size="xs" @click="selectedPoiId = null" />
@@ -264,14 +262,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
         <p class="mt-3 text-xs text-muted">{{ selectedPoi.description }}</p>
         <div class="mt-4 flex flex-wrap gap-2"><UButton label="Directions" color="primary" size="sm" @click="openDirections(selectedPoi.name)" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
       </UCard>
-      <UModal v-model:open="locationPickerOpen" title="Location picker" description="Choose a local preview point on Floor 1.">
-        <template #body>
-          <div class="rounded-lg border border-dashed border-primary bg-elevated p-4 text-center text-xs text-muted">Local map point · 41.387, 2.169</div>
-        </template>
-        <template #footer>
-          <UButton class="ml-auto" label="Use this location" size="sm" @click="locationPickerOpen = false; showViewerToolStatus('Selected map location stored locally.')" />
-        </template>
-      </UModal>
+      <button v-if="locationPickerActive" type="button" class="map-location-marker" aria-label="Selected map location" @click="locationPickerActive = false; showViewerToolStatus('Location marker cleared.')" />
     </section>
     <UModal v-model:open="viewerSettingsOpen" title="Viewer accessibility settings" :ui="{ content: 'w-full sm:max-w-[520px]' }">
       <template #body>
@@ -291,6 +282,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
 .map-workspace > aside { width: 320px; }
 .map-workspace > section { min-height: calc(100vh - 6.5rem); }
 .map-feedback { margin-top: 0.75rem; border-radius: 0.625rem; background: var(--explore-foreground); color: #fff; padding: 0.625rem 0.75rem; font-size: 0.6875rem; line-height: 1.4; }
+.map-location-marker { position: absolute; left: 52%; top: 48%; z-index: 12; width: 2rem; height: 2rem; border: 2px solid #fff; border-radius: 999px; background: #ef4444; box-shadow: 0 7px 22px rgb(239 68 68 / 22%); }
 .map-workspace [role='tablist'] button { min-height: 2rem; font-size: 0.6875rem; }
 .map-workspace .map-poi-row { min-height: 3.125rem; }
 @media (max-width: 1100px) {

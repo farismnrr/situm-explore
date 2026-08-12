@@ -433,43 +433,43 @@ This is the highest-priority product surface. The map canvas stays the real Situ
 
 ## Map workspace `/app/map`
 
-- [ ] 320px desktop / ~280px laptop side panel where canonical applies.
-- [ ] Explore/Route/Layers segmented controls match reference.
-- [ ] POI rows match canonical size/icon/text density.
-- [ ] Route form/result is compact and does not expose persistent `dummy route data` / `Local preview` copy that changes the card footprint.
-- [ ] Route/local actions use transient feedback when reference uses toast.
-- [ ] Layers rows/switches and More Viewer Tools grid match reference.
-- [ ] Building/floor controls match canonical top-left composition.
-- [ ] Explore/Realtime/Trajectory mode controls match canonical top-right composition.
-- [ ] Center/zoom control cluster is at canonical right-bottom placement and shape.
-- [ ] Selected POI is a compact anchored ~240px popover equivalent to canonical `#poiPopover`, not a large bottom-right card.
-- [ ] Directions/Favorite behavior remains local and functional.
-- [ ] Location picker toggles an on-map marker/selection state like the reference; do not use a separate location-picker modal unless a runtime constraint requires and documents it.
-- [ ] Viewer accessibility modal remains a Nuxt UI modal but matches canonical 520px composition.
-- [ ] Real Viewer loading/ready/error lifecycle is preserved.
-- [ ] No new Situm product feature calls are introduced.
+- [x] 320px desktop / ~280px laptop side panel where canonical applies.
+- [x] Explore/Route/Layers segmented controls match reference.
+- [x] POI rows match canonical size/icon/text density.
+- [x] Route form/result is compact and does not expose persistent `dummy route data` / `Local preview` copy that changes the card footprint.
+- [x] Route/local actions use transient feedback when reference uses toast.
+- [x] Layers rows/switches and More Viewer Tools grid match reference.
+- [x] Building/floor controls match canonical top-left composition.
+- [x] Explore/Realtime/Trajectory mode controls match canonical top-right composition.
+- [x] Center/zoom control cluster is at canonical right-bottom placement and shape.
+- [x] Selected POI is a compact anchored ~240px popover equivalent to canonical `#poiPopover`, not a large bottom-right card.
+- [x] Directions/Favorite behavior remains local and functional.
+- [x] Location picker toggles an on-map marker/selection state like the reference; do not use a separate location-picker modal unless a runtime constraint requires and documents it.
+- [x] Viewer accessibility modal remains a Nuxt UI modal but matches canonical 520px composition.
+- [x] Real Viewer loading/ready/error lifecycle is preserved.
+- [x] No new Situm product feature calls are introduced.
 
 ## Shared details drawer
 
-- [ ] ~380px desktop width below topbar.
-- [ ] compact ~62px header.
-- [ ] type pill -> canonical compact detail-list; do not insert a large unreferenced name/subtitle hero block.
-- [ ] detail rows use ~115px fixed label column.
-- [ ] divider + full-width View on map action.
-- [ ] mobile full-width below topbar.
-- [ ] Nuxt UI focus/Escape behavior remains accessible.
+- [x] ~380px desktop width below topbar.
+- [x] compact ~62px header.
+- [x] type pill -> canonical compact detail-list; do not insert a large unreferenced name/subtitle hero block.
+- [x] detail rows use ~115px fixed label column.
+- [x] divider + full-width View on map action.
+- [x] mobile full-width below topbar.
+- [x] Nuxt UI focus/Escape behavior remains accessible.
 
 ## Global search
 
-- [ ] ~520px modal geometry.
-- [ ] canonical compact result rows.
-- [ ] Cmd/Ctrl+K and Escape work.
+- [x] ~520px modal geometry.
+- [x] canonical compact result rows.
+- [x] Cmd/Ctrl+K and Escape work.
 
 ## Transient feedback
 
-- [ ] Fix timer ownership so multiple callers cannot clear a newer shared message with an older caller timer.
-- [ ] Keep one small KISS-safe feedback mechanism.
-- [ ] Dark bottom-right toast footprint matches reference.
+- [x] Fix timer ownership so multiple callers cannot clear a newer shared message with an older caller timer.
+- [x] Keep one small KISS-safe feedback mechanism.
+- [x] Dark bottom-right toast footprint matches reference.
 
 Validation:
 
@@ -481,9 +481,9 @@ Validation:
 - [ ] rendered viewer accessibility modal;
 - [ ] rendered details drawer and search modal;
 - [ ] 1440, 1024, 900, 768 and 390 width checks where applicable;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] commit and push Phase 5.
+- [x] `npm run lint`;
+- [ ] `npm run typecheck` — blocked by the preserved pre-existing local `nuxt.config.ts` session-cookie typing edit.
+- [x] commit and push Phase 5.
 
 ---
 
