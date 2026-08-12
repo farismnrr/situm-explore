@@ -64,7 +64,7 @@ async function logout() {
   <div>
     <div class="flex min-h-screen bg-default text-default">
     <button v-if="mobileOpen" class="fixed inset-0 z-30 bg-gray-950/25 lg:hidden" aria-label="Close navigation" @click="mobileOpen = false" />
-    <aside class="fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col border-r border-default bg-default transition-transform lg:translate-x-0" :class="{ 'translate-x-0': mobileOpen }">
+    <aside class="fixed inset-y-0 left-0 z-40 flex w-[228px] -translate-x-full flex-col border-r border-default bg-default transition-transform lg:translate-x-0" :class="{ 'translate-x-0': mobileOpen }">
       <div class="flex h-16 items-center border-b border-default px-5">
         <NuxtLink to="/" class="flex items-center gap-2 text-sm font-semibold tracking-tight text-highlighted" @click="mobileOpen = false">
           <BrandMark size="sm" /><span>Situm Explore</span>
@@ -87,7 +87,7 @@ async function logout() {
       </div>
     </aside>
 
-    <div class="min-w-0 flex-1 lg:pl-64">
+    <div class="min-w-0 flex-1 lg:pl-[228px]">
       <header class="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-default bg-default/90 px-4 backdrop-blur sm:px-6">
         <div class="flex min-w-0 items-center gap-3">
           <UButton icon="i-lucide-menu" aria-label="Open navigation" color="neutral" variant="ghost" class="lg:hidden" @click="mobileOpen = true" />
@@ -99,7 +99,7 @@ async function logout() {
           <UBadge color="neutral" variant="soft" class="hidden sm:inline-flex"><span class="mr-1.5 size-1.5 rounded-full bg-muted" />Local demo</UBadge>
         </div>
       </header>
-      <main class="min-h-[calc(100vh-4rem)] p-4 sm:p-6 lg:p-8"><slot /></main>
+      <main class="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-[1480px] px-4 py-6 sm:px-6 lg:px-7 lg:py-[30px]"><slot /></main>
     </div>
     </div>
 

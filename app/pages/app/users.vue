@@ -13,9 +13,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Organization</p>
         <h1 class="mt-2 text-2xl font-semibold tracking-tight text-highlighted">Users &amp; groups</h1>
-        <p class="mt-1 max-w-2xl text-sm text-muted">Read-only directory context for people and device grouping.</p>
+        <p class="mt-1 max-w-2xl text-sm text-muted">Local directory context for people and device grouping.</p>
       </div>
-      <UBadge color="info" variant="soft" class="w-fit">Read only</UBadge>
+      <UBadge color="info" variant="soft" class="w-fit">Local fixture</UBadge>
     </div>
 
     <UAlert color="info" variant="soft" title="Situm directory context" description="These synthetic directory records are separate from the signed-in Situm Explore app session. Changes are not persisted." />
@@ -36,7 +36,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
       </UCard>
 
       <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
-        <div class="flex items-center justify-between gap-3 border-b border-default px-5 py-4"><div><h2 class="font-semibold text-highlighted">Groups</h2><p class="mt-1 text-xs text-muted">{{ prototypeDirectoryGroups.length }} local sample groups</p></div><UBadge color="neutral" variant="soft">Read only</UBadge></div>
+        <div class="flex items-center justify-between gap-3 border-b border-default px-5 py-4"><div><h2 class="font-semibold text-highlighted">Groups</h2><p class="mt-1 text-xs text-muted">{{ prototypeDirectoryGroups.length }} local sample groups</p></div><UBadge color="neutral" variant="soft">Local fixture</UBadge></div>
         <div class="divide-y divide-default"><article v-for="group in prototypeDirectoryGroups" :key="group.id" class="flex items-start gap-3 p-4"><span class="mt-1.5 size-2.5 shrink-0 rounded-full" :class="group.color === 'info' ? 'bg-info' : group.color === 'success' ? 'bg-success' : 'bg-neutral'" /><div class="min-w-0"><h3 class="font-medium text-highlighted">{{ group.name }}</h3><p class="mt-1 text-xs text-muted">{{ group.userCount }} users · {{ group.deviceCount }} devices</p><p class="mt-2 text-xs text-muted">{{ group.description }}</p></div></article></div>
       </UCard>
     </div>

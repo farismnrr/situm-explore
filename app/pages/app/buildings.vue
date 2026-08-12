@@ -34,9 +34,9 @@ function openDetails(building: PrototypeBuilding) {
       <div>
         <p class="eyebrow">Cartography</p>
         <h1 class="mt-1 text-2xl font-semibold tracking-tight text-highlighted">Buildings &amp; floors</h1>
-        <p class="mt-2 text-sm text-muted">Read-only inventory of venue and floor metadata.</p>
+        <p class="mt-2 text-sm text-muted">Local inventory of venue and floor metadata.</p>
       </div>
-      <UBadge color="info" variant="soft" class="w-fit font-mono text-xs">LOCAL FIXTURE · READ ONLY</UBadge>
+      <UBadge color="info" variant="soft" class="w-fit font-mono text-xs">LOCAL FIXTURE · NO REMOTE ACTIONS</UBadge>
     </div>
 
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -77,7 +77,7 @@ function openDetails(building: PrototypeBuilding) {
         <div class="divide-y divide-default"><div v-for="floor in coverageBuilding.floors" :key="floor.id" class="flex items-center gap-3 px-5 py-3"><span class="size-2 rounded-full" :class="floor.mapStatus === 'Ready' ? 'bg-success' : 'bg-warning'" /><div class="min-w-0 flex-1"><strong class="block text-sm text-highlighted">{{ floor.name }} · {{ floor.id }}</strong><span class="block text-xs text-muted">{{ floor.floorplan }} floorplan · {{ floor.poiCount }} POIs · {{ floor.geofenceCount }} geofences</span></div><UBadge :color="floor.mapStatus === 'Ready' ? 'success' : 'warning'" variant="soft" size="sm">{{ floor.mapStatus }}</UBadge></div></div>
       </UCard>
       <UCard>
-        <div class="flex items-center justify-between border-b border-default pb-4"><h2 class="font-semibold text-highlighted">Cartography resources</h2><span class="text-xs text-muted">Read only</span></div>
+        <div class="flex items-center justify-between border-b border-default pb-4"><h2 class="font-semibold text-highlighted">Cartography resources</h2><span class="text-xs text-muted">Local context</span></div>
         <div class="divide-y divide-default text-sm"><div class="flex items-center justify-between py-3"><span class="text-muted">Vector map</span><UBadge :color="coverageBuilding.resources.vectorMap === 'Available' ? 'success' : 'warning'" variant="soft">{{ coverageBuilding.resources.vectorMap }}</UBadge></div><div class="flex items-center justify-between py-3"><span class="text-muted">Map style</span><strong class="text-highlighted">{{ coverageBuilding.resources.mapStyle }}</strong></div><div class="flex items-center justify-between pt-3"><span class="text-muted">Raster tiles</span><UBadge :color="coverageBuilding.resources.rasterTiles === 'Available' ? 'success' : 'warning'" variant="soft">{{ coverageBuilding.resources.rasterTiles }}</UBadge></div></div>
       </UCard>
     </div>

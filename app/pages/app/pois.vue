@@ -77,7 +77,7 @@ function toggleFavorite(poi: PrototypePoi) {
       <p v-if="filteredPois.length === 0" class="px-5 py-10 text-center text-sm text-muted">No POIs match your filters.</p>
     </UCard>
 
-    <CartographyDetailsDrawer v-if="selectedPoi" v-model:open="drawerOpen" title="POI details" :type="selectedPoi.category" :name="selectedPoi.name" :subtitle="selectedPoi.description" map-to="/app/map" :details="[{ label: 'Identifier', value: selectedPoi.id }, { label: 'Building', value: buildingNames.get(selectedPoi.buildingId) ?? 'Unknown building' }, { label: 'Floor', value: selectedPoi.floor }, { label: 'External ID', value: selectedPoi.externalId }, { label: 'Access', value: 'Read only' }]" />
+    <CartographyDetailsDrawer v-if="selectedPoi" v-model:open="drawerOpen" title="POI details" :type="selectedPoi.category" :name="selectedPoi.name" :subtitle="selectedPoi.description" map-to="/app/map" :details="[{ label: 'Identifier', value: selectedPoi.id }, { label: 'Building', value: buildingNames.get(selectedPoi.buildingId) ?? 'Unknown building' }, { label: 'Floor', value: selectedPoi.floor }, { label: 'External ID', value: selectedPoi.externalId }, { label: 'Access', value: 'Local fixture' }]" />
   </div>
 </template>
 

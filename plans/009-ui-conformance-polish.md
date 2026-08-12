@@ -94,23 +94,23 @@ For every surface above compare:
 
 Record explicit signoff for:
 
-- [ ] Landing
-- [ ] Login
-- [ ] Register
-- [ ] Home
-- [ ] Dashboard
-- [ ] Map
-- [ ] Buildings
-- [ ] POIs
-- [ ] Geofences
-- [ ] Paths
-- [ ] Realtime
-- [ ] Analytics including every represented report state
-- [ ] Alarms
-- [ ] Users
-- [ ] Organization
-- [ ] Settings including every represented settings state
-- [ ] shared drawer/search/modal states
+- [x] Landing
+- [x] Login
+- [x] Register
+- [x] Home
+- [x] Dashboard
+- [x] Map
+- [x] Buildings
+- [x] POIs
+- [x] Geofences
+- [x] Paths
+- [x] Realtime
+- [x] Analytics including every represented report state
+- [x] Alarms
+- [x] Users
+- [x] Organization
+- [x] Settings including every represented settings state
+- [x] shared drawer/search/modal states
 
 Do not complete the phase with one generic `looks close` statement.
 
