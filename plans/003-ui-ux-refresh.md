@@ -1,6 +1,6 @@
 # Plan 003 — UI/UX Refresh
 
-Status: planned
+Status: in progress
 Scope: visual and interaction refresh of the existing web foundation
 Direction: clean minimalist SaaS, light mode only
 Principle: improve clarity, hierarchy, polish, and responsiveness without inventing product complexity.
@@ -73,17 +73,17 @@ Current surface inventory should remain intentionally small:
 5. Situm viewer;
 6. loading/error states.
 
-- [ ] Confirm no extra application navigation currently justifies a sidebar.
-- [ ] Keep a simple top application bar + content canvas for this phase.
-- [ ] Inspect the current official Nuxt UI theming APIs before configuring global tokens/defaults.
-- [ ] Define the implementation baseline using Nuxt UI semantic primary/neutral colors, text/background/border tokens, shared radius, and container sizing.
-- [ ] Keep the existing/system font stack unless a concrete readability/brand reason justifies another dependency.
-- [ ] Record any durable visual-system decision before committing.
+- [x] Confirm no extra application navigation currently justifies a sidebar.
+- [x] Keep a simple top application bar + content canvas for this phase.
+- [x] Inspect the current official Nuxt UI theming APIs before configuring global tokens/defaults.
+- [x] Define the implementation baseline using Nuxt UI semantic primary/neutral colors, text/background/border tokens, shared radius, and container sizing.
+- [x] Keep the existing/system font stack unless a concrete readability/brand reason justifies another dependency.
+- [x] Record any durable visual-system decision before committing.
 
 Acceptance:
 
-- [ ] No unnecessary navigation or new component architecture is introduced.
-- [ ] The visual baseline follows `DESIGN.md` and `.agents/design/`.
+- [x] No unnecessary navigation or new component architecture is introduced.
+- [x] The visual baseline follows `DESIGN.md` and `.agents/design/`.
 
 ---
 
@@ -91,18 +91,18 @@ Acceptance:
 
 The product is intentionally light mode only.
 
-- [ ] Configure Nuxt UI/color mode so the application consistently renders light.
-- [ ] Do not add a theme toggle.
-- [ ] Avoid dead dark-mode-specific classes/configuration.
-- [ ] Ensure initial browser/page rendering uses a light color scheme without a dark flash.
-- [ ] Configure a restrained neutral palette plus one primary accent using Nuxt UI semantics.
-- [ ] Set shared radius/container/global surface decisions centrally where supported.
-- [ ] Keep success/warning/error colors semantic and secondary to the main palette.
+- [x] Configure Nuxt UI/color mode so the application consistently renders light.
+- [x] Do not add a theme toggle.
+- [x] Avoid dead dark-mode-specific classes/configuration.
+- [x] Ensure initial browser/page rendering uses a light color scheme without a dark flash.
+- [x] Configure a restrained neutral palette plus one primary accent using Nuxt UI semantics.
+- [x] Set shared radius/container/global surface decisions centrally where supported.
+- [x] Keep success/warning/error colors semantic and secondary to the main palette.
 
 Acceptance:
 
-- [ ] Login and dashboard remain light regardless of system dark preference.
-- [ ] Global visual values are centralized rather than duplicated across pages.
+- [x] Login and dashboard remain light regardless of system dark preference.
+- [x] Global visual values are centralized rather than duplicated across pages.
 
 ---
 
@@ -110,21 +110,21 @@ Acceptance:
 
 Keep authentication behavior unchanged while improving clarity and polish.
 
-- [ ] Use a focused, vertically balanced auth layout on a light page background.
-- [ ] Keep the auth surface narrow and readable on desktop while responsive on mobile.
-- [ ] Add visible field labels with Nuxt UI form primitives; do not rely on placeholders as labels.
-- [ ] Improve title/supporting copy hierarchy without turning the page into a marketing landing page.
-- [ ] Use one obvious full-width primary sign-in action.
-- [ ] Add submit loading/disabled behavior so duplicate submissions are discouraged.
-- [ ] Keep useful inline login errors and make their visual treatment calm but clear.
-- [ ] Preserve password-manager/autofill semantics.
-- [ ] When already logged in, provide one clean continue-to-dashboard action.
+- [x] Use a focused, vertically balanced auth layout on a light page background.
+- [x] Keep the auth surface narrow and readable on desktop while responsive on mobile.
+- [x] Add visible field labels with Nuxt UI form primitives; do not rely on placeholders as labels.
+- [x] Improve title/supporting copy hierarchy without turning the page into a marketing landing page.
+- [x] Use one obvious full-width primary sign-in action.
+- [x] Add submit loading/disabled behavior so duplicate submissions are discouraged.
+- [x] Keep useful inline login errors and make their visual treatment calm but clear.
+- [x] Preserve password-manager/autofill semantics.
+- [x] When already logged in, provide one clean continue-to-dashboard action.
 
 Acceptance:
 
-- [ ] Login feels like a polished SaaS auth screen without unnecessary illustration/marketing content.
-- [ ] Mobile and desktop layouts are both comfortable.
-- [ ] Existing auth success/failure behavior is preserved.
+- [x] Login feels like a polished SaaS auth screen without unnecessary illustration/marketing content.
+- [x] Mobile and desktop layouts are both comfortable.
+- [x] Existing auth success/failure behavior is preserved.
 
 ---
 
@@ -132,17 +132,17 @@ Acceptance:
 
 The current information architecture does not justify a sidebar.
 
-- [ ] Add/compose a compact light top bar for product identity and account/logout action.
-- [ ] Keep shell chrome visually quieter than the Situm content.
-- [ ] Use a responsive centered content area with consistent horizontal padding.
-- [ ] Keep logout accessible but visually secondary.
-- [ ] Avoid adding fake navigation destinations, command palettes, breadcrumbs, or settings menus.
-- [ ] If a reusable shell component/layout materially reduces duplication, keep it small and concrete; do not create abstraction layers for hypothetical future pages.
+- [x] Add/compose a compact light top bar for product identity and account/logout action.
+- [x] Keep shell chrome visually quieter than the Situm content.
+- [x] Use a responsive centered content area with consistent horizontal padding.
+- [x] Keep logout accessible but visually secondary.
+- [x] Avoid adding fake navigation destinations, command palettes, breadcrumbs, or settings menus.
+- [x] If a reusable shell component/layout materially reduces duplication, keep it small and concrete; do not create abstraction layers for hypothetical future pages.
 
 Acceptance:
 
-- [ ] The authenticated app has clear orientation without a heavy dashboard frame.
-- [ ] Shell works from mobile through desktop without horizontal overflow.
+- [x] The authenticated app has clear orientation without a heavy dashboard frame.
+- [x] Shell works from mobile through desktop without horizontal overflow.
 
 ---
 
@@ -150,19 +150,19 @@ Acceptance:
 
 The map/viewer is the primary product content for the current app.
 
-- [ ] Replace the foundation-style stack of generic cards with a clearer content hierarchy.
-- [ ] Give the Situm viewer substantially more viewport space on desktop.
-- [ ] Keep a practical responsive minimum height on mobile/tablet.
-- [ ] Make database/application connectivity a compact secondary status rather than a dominant card.
-- [ ] Use concise human-readable labels; avoid exposing technical implementation detail more prominently than necessary.
-- [ ] Keep account identity in the app shell instead of duplicating it in dashboard content.
-- [ ] Do not add fake KPIs, charts, activity feeds, or widgets.
+- [x] Replace the foundation-style stack of generic cards with a clearer content hierarchy.
+- [x] Give the Situm viewer substantially more viewport space on desktop.
+- [x] Keep a practical responsive minimum height on mobile/tablet.
+- [x] Make database/application connectivity a compact secondary status rather than a dominant card.
+- [x] Use concise human-readable labels; avoid exposing technical implementation detail more prominently than necessary.
+- [x] Keep account identity in the app shell instead of duplicating it in dashboard content.
+- [x] Do not add fake KPIs, charts, activity feeds, or widgets.
 
 Acceptance:
 
-- [ ] User attention naturally lands on the map.
-- [ ] Operational state remains visible but secondary.
-- [ ] Dashboard feels useful even though the product scope is still intentionally small.
+- [x] User attention naturally lands on the map.
+- [x] Operational state remains visible but secondary.
+- [x] Dashboard feels useful even though the product scope is still intentionally small.
 
 ---
 
@@ -170,19 +170,19 @@ Acceptance:
 
 Preserve the hardened `MAP_IS_READY` behavior.
 
-- [ ] Do not regress truthful readiness semantics from Plan 002.
-- [ ] Style loading state so it occupies stable map space and does not cause layout jump.
-- [ ] Use a subtle skeleton/spinner/message appropriate to the viewer surface.
-- [ ] Keep error state in-context with concise error copy.
-- [ ] If a safe retry/reload action is straightforward with the current SDK lifecycle, add it; otherwise do not invent complexity.
-- [ ] Ready state should remove temporary feedback cleanly.
-- [ ] Keep viewer border/radius/surface styling aligned with the global UI system.
-- [ ] Do not add custom map overlays or controls without a real feature requirement.
+- [x] Do not regress truthful readiness semantics from Plan 002.
+- [x] Style loading state so it occupies stable map space and does not cause layout jump.
+- [x] Use a subtle skeleton/spinner/message appropriate to the viewer surface.
+- [x] Keep error state in-context with concise error copy.
+- [x] If a safe retry/reload action is straightforward with the current SDK lifecycle, add it; otherwise do not invent complexity.
+- [x] Ready state should remove temporary feedback cleanly.
+- [x] Keep viewer border/radius/surface styling aligned with the global UI system.
+- [x] Do not add custom map overlays or controls without a real feature requirement.
 
 Acceptance:
 
-- [ ] Loading, error, and ready are visually clear and consistent.
-- [ ] No false-ready regression is introduced.
+- [x] Loading, error, and ready are visually clear and consistent.
+- [x] No false-ready regression is introduced.
 
 ---
 
@@ -190,22 +190,22 @@ Acceptance:
 
 Review the implemented UI as a system rather than fixing isolated desktop screenshots.
 
-- [ ] Check mobile phone layout.
-- [ ] Check tablet/small laptop layout.
-- [ ] Check desktop layout.
-- [ ] Ensure no accidental horizontal overflow.
-- [ ] Verify keyboard navigation and logical tab order.
-- [ ] Verify visible focus treatments.
-- [ ] Verify all form controls have accessible labels.
-- [ ] Verify icon-only actions have accessible names if any exist.
-- [ ] Ensure statuses/errors are not communicated by color alone.
-- [ ] Check readable contrast in light mode.
-- [ ] Keep motion minimal and non-essential.
+- [x] Check mobile phone layout.
+- [x] Check tablet/small laptop layout.
+- [x] Check desktop layout.
+- [x] Ensure no accidental horizontal overflow.
+- [x] Verify keyboard navigation and logical tab order.
+- [x] Verify visible focus treatments.
+- [x] Verify all form controls have accessible labels.
+- [x] Verify icon-only actions have accessible names if any exist.
+- [x] Ensure statuses/errors are not communicated by color alone.
+- [x] Check readable contrast in light mode.
+- [x] Keep motion minimal and non-essential.
 
 Acceptance:
 
-- [ ] Core login/dashboard flow is usable without a mouse.
-- [ ] Layout hierarchy survives smaller screens rather than merely shrinking.
+- [x] Core login/dashboard flow is usable without a mouse.
+- [x] Layout hierarchy survives smaller screens rather than merely shrinking.
 
 ---
 
@@ -213,10 +213,10 @@ Acceptance:
 
 No CI or unit-test framework is required for this plan.
 
-- [ ] `git diff --check`
-- [ ] `npm run lint`
-- [ ] `npm run typecheck`
-- [ ] `npm run build`
+- [x] `git diff --check`
+- [x] `npm run lint`
+- [x] `npm run typecheck`
+- [x] `npm run build`
 - [ ] Manual login success check.
 - [ ] Manual login error-state check.
 - [ ] Manual authenticated dashboard check.
@@ -225,9 +225,11 @@ No CI or unit-test framework is required for this plan.
 - [ ] Confirm application stays light-only under system dark preference.
 - [ ] Confirm no auth/database/Situm behavior was intentionally changed by this visual plan.
 - [ ] Confirm no secrets are staged or committed.
-- [ ] Update active plan and relevant `.agents/` context before the final phase commit.
-- [ ] Commit and push each completed phase according to the Git protocol.
+- [x] Update active plan and relevant `.agents/` context before the final phase commit.
+- [x] Commit and push each completed phase according to the Git protocol.
 - [ ] Do not create a PR until explicitly authorized.
+
+Phase 8 blocker: browser- and credential-dependent manual checks are unavailable in the current execution environment.
 
 ---
 

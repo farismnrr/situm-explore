@@ -1,1 +1,18 @@
 @import 'tailwindcss';
+@import '@nuxt/ui';
+
+:root {
+  color-scheme: light;
+  --ui-radius: 0.5rem;
+  --ui-container: var(--container-5xl);
+}
+
+html,
+body {
+  @apply bg-default text-default;
+  overflow-x: clip;
+}
+
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-primary;
+}
