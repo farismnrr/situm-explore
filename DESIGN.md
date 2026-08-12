@@ -1,53 +1,78 @@
 # DESIGN.md
 
-This file is the design router for Situm Explore.
+This file is the single design router for Situm Explore.
 
-## Golden visual reference
+There is intentionally no `.agents/design/` layer. Do not create another parallel design source of truth.
 
-The primary visual and interaction source of truth is:
+## Canonical visual reference
+
+The only HTML visual/interaction reference is:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-It is the user-approved interactive prototype. For UI implementation work, **match this prototype before applying agent taste**.
+The user will populate that file manually with the approved prototype.
 
-Authority order when design guidance conflicts:
+### Placeholder guard
+
+If the canonical HTML still contains only placeholder content such as `Hello World`, **do not implement or redesign UI from memory, prior screenshots, Plan 003, generic SaaS references, or agent taste**. Treat the visual reference as not yet available and stop UI implementation at that boundary.
+
+Once the user replaces the placeholder, the HTML defines visual and interaction intent only.
+
+It is **not production code** and its HTML/CSS/JS must not be copied wholesale into the Nuxt application.
+
+## Authority order
+
+When design guidance conflicts, prefer:
 
 1. the user's latest explicit direction;
-2. the approved interactive prototype;
+2. the populated canonical HTML reference;
 3. the active implementation plan;
-4. `design/nuxt-implementation-guide.md` and `design/data-source-matrix.md`;
-5. `.agents/design/` principles/guides;
-6. external inspiration;
-7. agent taste.
+4. `design/IMPLEMENTATION.md`;
+5. `design/data-source-matrix.md`;
+6. agent judgment only for gaps not covered above.
 
-Plan 003 is historical implementation evidence only. Its merged UI was closed because it was too far from the user's expectation. **Do not treat Plan 003's rendered result as an approved design target.**
+Plan 003 is historical implementation evidence only. Its rendered UI was not accepted as the design target.
+
+## Production implementation contract
+
+Production remains:
+
+- Nuxt 4;
+- Vue;
+- Nuxt UI;
+- existing Nuxt UI semantic/theme configuration;
+- existing auth/PostgreSQL/Situm integrations.
+
+Translate the reference into production using this order:
+
+1. use an existing Nuxt UI primitive when it fits;
+2. configure it with props, variants, slots, semantic tokens, app config, and existing utility classes;
+3. compose a few Nuxt UI primitives for more complex patterns;
+4. create a small Vue component when reuse/readability is real;
+5. add small centralized custom CSS only for a visual gap that Nuxt UI/Tailwind cannot express cleanly.
+
+Do **not**:
+
+- copy prototype CSS wholesale;
+- recreate prototype classes such as `.btn`, `.card`, or `.pill` as a second design system;
+- copy prototype JavaScript instead of using Vue state and Nuxt routing;
+- hardcode every prototype pixel/hex value across Vue files;
+- replace Nuxt UI with another component library;
+- redesign the reference merely because Nuxt UI defaults differ.
 
 ## Product direction
 
 - Clean minimalist SaaS.
 - Light mode only.
-- Premium but restrained; hierarchy comes from spacing, typography, borders, and composition rather than decoration.
-- Use the navigation-arrow mark shown in the approved prototype. Do not restore the old `S` lettermark.
-- The richer authenticated information architecture now justifies a compact sidebar on desktop and drawer/sidebar behavior on mobile.
+- Premium but restrained.
+- Navigation-arrow product mark, not an `S` lettermark.
+- Authenticated desktop information architecture may use the compact sidebar represented by the populated reference; mobile should use an appropriate drawer/sheet behavior.
+- Preserve accessibility, keyboard behavior, focus visibility, truthful loading/error/ready states, and responsive hierarchy.
 
-## Nuxt translation rules
+## Data boundary
 
-The prototype is a visual/interaction specification, **not production architecture to copy literally**.
+Existing real behavior stays real. Missing product domains may use typed local dummy data during UI implementation.
 
-- Use Nuxt 4 + Vue + Nuxt UI already installed in the repository.
-- Translate repeated prototype patterns into small Vue components only when reuse is real.
-- Keep Nuxt UI primitives and semantic states where they help accessibility and consistency.
-- A small centralized set of project CSS variables/utilities may be used to achieve visual fidelity; do not create a second component framework.
-- Keep current auth, PostgreSQL, and Situm behavior working.
-- Existing real integrations must remain real.
-- Surfaces without an existing backend/API implementation may use typed client-side dummy data. Do not expand backend/database scope merely to make the UI look complete.
-- Never display or commit credential values.
+Do not add backend endpoints, database tables, migrations, Situm write operations, or account-registration infrastructure merely to populate UI reference screens.
 
-## Non-negotiables
-
-- The prototype wins over generic Linear/Vercel/Notion inspiration.
-- Do not redesign the approved composition while implementing it.
-- Do not add dark mode or a theme toggle.
-- Do not replace the navigation mark with an arbitrary logo.
-- Do not invent new backend endpoints, database tables, migrations, account registration, Situm write operations, or admin behavior inside the UI implementation roadmap unless a later user-approved plan explicitly asks for them.
-- Preserve keyboard access, focus visibility, readable contrast, truthful loading/error/ready states, and responsive behavior.
+Read `design/IMPLEMENTATION.md`, `design/data-source-matrix.md`, and the active plan for the exact implementation/data mapping.
