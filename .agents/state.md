@@ -120,6 +120,6 @@ Do not create a PR or merge unless the user explicitly requests it.
 
 ## Next action
 
-Phases 0–7 of Plan 009A are complete, reviewed, linted, committed, and pushed. Delegate Phase 8 shared drawer/modal/search/transient feedback fidelity to the configured worker.
+Phases 0–8 of Plan 009A are complete, reviewed, linted, committed, and pushed. Delegate Phase 9 responsive/accessibility/real-behavior regression to the configured worker.
 
 Final visual signoff must be evidence-based. If browser/screenshot comparison is unavailable to the executing agent, do not mark final fidelity complete; leave that gate pending for user/manual review.

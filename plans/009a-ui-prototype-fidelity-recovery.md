@@ -424,32 +424,32 @@ Current project truth differs from the old prototype permission wording because 
 
 Current `USlideover` can remain, but its rendered composition must resemble canonical drawer:
 
-- [ ] ~380px desktop width;
-- [ ] top aligned below 64px app bar where feasible;
-- [ ] compact 62px header;
-- [ ] no unrelated generic description text dominating the header;
-- [ ] type pill, detail rows with ~115px label column, divider, full-width View on map action;
-- [ ] mobile full width below mobile topbar;
-- [ ] Escape/focus behavior remains accessible through Nuxt UI.
+- [x] ~380px desktop width;
+- [x] top aligned below 64px app bar where feasible;
+- [x] compact 62px header;
+- [x] no unrelated generic description text dominating the header;
+- [x] type pill, detail rows with ~115px label column, divider, full-width View on map action;
+- [x] mobile full width below mobile topbar;
+- [x] Escape/focus behavior remains accessible through Nuxt UI.
 
 ## Global search
 
-- [ ] Search trigger matches shell reference.
-- [ ] Modal width/radius/header/body closely match canonical 520px modal.
-- [ ] Results match canonical POI-list density rather than oversized command-palette styling.
-- [ ] Cmd/Ctrl+K and Escape remain functional.
+- [x] Search trigger matches shell reference.
+- [x] Modal width/radius/header/body closely match canonical 520px modal.
+- [x] Results match canonical POI-list density rather than oversized command-palette styling.
+- [x] Cmd/Ctrl+K and Escape remain functional.
 
 ## Viewer accessibility modal
 
-- [ ] Match three compact setting rows and Done footer.
-- [ ] Preserve local switches.
+- [x] Match three compact setting rows and Done footer.
+- [x] Preserve local switches.
 
 ## Toast / ephemeral status
 
-- [ ] Implement one small reusable transient feedback mechanism if required by multiple local prototype actions.
-- [ ] Match reference bottom-right dark toast footprint rather than inserting full-width page alerts.
-- [ ] Reuse it for Sync, map tool actions, route/local actions, realtime refresh, report export and settings reset when appropriate.
-- [ ] Do not build a generic notification subsystem beyond what this POC needs.
+- [x] Implement one small reusable transient feedback mechanism if required by multiple local prototype actions.
+- [x] Match reference bottom-right dark toast footprint rather than inserting full-width page alerts.
+- [x] Reuse it for Sync, map tool actions, route/local actions, realtime refresh, report export and settings reset when appropriate.
+- [x] Do not build a generic notification subsystem beyond what this POC needs.
 
 ---
 

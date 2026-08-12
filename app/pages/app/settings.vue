@@ -12,6 +12,7 @@ const configurationProfile = ref('default')
 const defaultBuilding = ref('Main Building')
 const defaultFloor = ref('Floor 1')
 const resetMessage = ref('')
+const { showFeedback } = useExploreFeedback()
 
 const tabs: Array<{ id: SettingsTab, label: string }> = [
   { id: 'general', label: 'General' },
@@ -32,6 +33,7 @@ function resetSettings() {
   defaultBuilding.value = 'Main Building'
   defaultFloor.value = 'Floor 1'
   resetMessage.value = 'Local viewer preferences reset to their demo defaults.'
+  showFeedback('Viewer preferences reset locally.')
 }
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })

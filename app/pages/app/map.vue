@@ -20,6 +20,7 @@ const accessibleNavigation = ref(false)
 const largeInterfaceText = ref(false)
 const highContrastCues = ref(false)
 const viewerToolStatus = ref('')
+const { showFeedback } = useExploreFeedback()
 const mapSearchFilter = ref(false)
 const savedCar = ref(false)
 const syntheticBuildingOptions = mapBuildings.map(building => building.label)
@@ -102,6 +103,7 @@ function startLocalNavigation() {
 
 function showViewerToolStatus(message: string) {
   viewerToolStatus.value = message
+  showFeedback(message)
 }
 
 function toggleLayer(key: keyof typeof layerState) {
@@ -256,16 +258,16 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
         </template>
       </UModal>
     </section>
-  <UModal v-model:open="viewerSettingsOpen" title="Viewer accessibility settings">
-    <template #body>
-      <div class="space-y-4">
-        <UCheckbox v-model="accessibleNavigation" label="Accessible navigation" description="Prefer lifts and accessible floor changes in local previews." />
-        <UCheckbox v-model="largeInterfaceText" label="Large interface text" description="Increase viewer text size locally." />
-        <UCheckbox v-model="highContrastCues" label="High contrast cues" description="Increase local control distinction." />
-      </div>
-    </template>
-    <template #footer><UButton label="Done" class="ml-auto" @click="viewerSettingsOpen = false; showViewerToolStatus('Viewer preferences saved locally.')" /></template>
-  </UModal>
+    <UModal v-model:open="viewerSettingsOpen" title="Viewer accessibility settings" :ui="{ content: 'w-full sm:max-w-[520px]' }">
+      <template #body>
+        <div class="space-y-3">
+          <UCheckbox v-model="accessibleNavigation" label="Accessible navigation" description="Prefer lifts and accessible floor changes in local previews." />
+          <UCheckbox v-model="largeInterfaceText" label="Large interface text" description="Increase viewer text size locally." />
+          <UCheckbox v-model="highContrastCues" label="High contrast cues" description="Increase local control distinction." />
+        </div>
+      </template>
+      <template #footer><UButton label="Done" class="ml-auto" @click="viewerSettingsOpen = false; showViewerToolStatus('Viewer preferences saved locally.')" /></template>
+    </UModal>
   </div>
 </template>
 

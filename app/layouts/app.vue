@@ -12,6 +12,7 @@ const displayName = computed(() => {
 })
 const initials = computed(() => displayName.value.split(' ').map(part => part.charAt(0)).slice(0, 2).join('').toUpperCase())
 const syncStatus = ref('')
+const { showFeedback } = useExploreFeedback()
 
 const searchDestinations = [
   { label: 'Home', detail: 'Workspace', to: '/app', icon: '⌂' },
@@ -82,6 +83,7 @@ async function logout() {
 
 function syncWorkspace() {
   syncStatus.value = 'Workspace data refreshed locally.'
+  showFeedback('Local workspace data synced.')
   window.setTimeout(() => { syncStatus.value = '' }, 2200)
 }
 </script>
@@ -133,7 +135,7 @@ function syncWorkspace() {
     </div>
     </div>
 
-    <UModal v-model:open="searchOpen" title="Search Situm Explore" description="Search local workspace destinations and prototype records." :ui="{ content: 'sm:max-w-xl' }" @after:leave="searchQuery = ''">
+    <UModal v-model:open="searchOpen" title="Search Situm Explore" description="Search local workspace destinations and prototype records." :ui="{ content: 'w-full sm:max-w-[520px]' }" @after:leave="searchQuery = ''">
     <template #body>
       <UInput v-model="searchQuery" autofocus icon="i-lucide-search" placeholder="Search buildings, POIs, users, reports…" aria-label="Search workspace" class="w-full" />
       <div class="mt-3 max-h-80 overflow-y-auto">
@@ -145,5 +147,6 @@ function syncWorkspace() {
       </div>
     </template>
     </UModal>
+    <TransientFeedback />
   </div>
 </template>

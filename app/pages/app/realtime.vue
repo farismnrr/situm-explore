@@ -5,6 +5,7 @@ const positions = ref<RealtimePosition[]>(realtimePositions.map(position => ({ .
 const updatedAt = ref('just now')
 const refreshCount = ref(0)
 const statusMessage = ref('')
+const { showFeedback } = useExploreFeedback()
 
 function refreshPositions() {
   refreshCount.value += 1
@@ -18,6 +19,7 @@ function refreshPositions() {
   }))
   updatedAt.value = 'just now'
   statusMessage.value = 'Local demo positions refreshed.'
+  showFeedback('Local positions refreshed.')
 }
 
 let refreshTimer: ReturnType<typeof setInterval> | undefined

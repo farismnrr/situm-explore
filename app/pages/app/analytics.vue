@@ -4,6 +4,7 @@ import { analyticsTabs, positioningBars, positionRecords, stayRecords, visitorBa
 const activeReport = ref<AnalyticsReport>('visitors')
 const dateRange = ref('Last 24 hours')
 const exportMessage = ref('')
+const { showFeedback } = useExploreFeedback()
 
 function exportCsv() {
   const rows = activeReport.value === 'stay'
@@ -18,6 +19,7 @@ function exportCsv() {
   link.click()
   URL.revokeObjectURL(link.href)
   exportMessage.value = 'Local CSV downloaded. No report service was contacted.'
+  showFeedback('Local CSV downloaded.')
 }
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Analytics & reports' })
