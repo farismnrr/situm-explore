@@ -1,6 +1,34 @@
 <script setup lang="ts">
+import { homeBuilding, homePois } from '~/data/prototype/home'
+
 const activeTab = ref<'explore' | 'route' | 'layers'>('explore')
 const viewerState = ref<'loading' | 'ready' | 'error'>('loading')
+const poiSearch = ref('')
+const showFavorites = ref(false)
+const favoritePoiIds = ref<string[]>(['reception'])
+const selectedPoiId = ref<string | null>('reception')
+
+const filteredPois = computed(() => homePois.filter((poi) => {
+  const query = poiSearch.value.trim().toLowerCase()
+  const matchesSearch = !query || [poi.name, poi.category, poi.floor].some(value => value.toLowerCase().includes(query))
+  return matchesSearch && (!showFavorites.value || favoritePoiIds.value.includes(poi.id))
+}))
+
+const selectedPoi = computed(() => homePois.find(poi => poi.id === selectedPoiId.value) ?? null)
+
+function selectPoi(id: string) {
+  selectedPoiId.value = id
+}
+
+function toggleFavorite(id: string) {
+  favoritePoiIds.value = favoritePoiIds.value.includes(id)
+    ? favoritePoiIds.value.filter(poiId => poiId !== id)
+    : [...favoritePoiIds.value, id]
+}
+
+function isFavorite(id: string) {
+  return favoritePoiIds.value.includes(id)
+}
 
 const tabItems = [
   { label: 'Explore', value: 'explore' as const },
@@ -53,16 +81,17 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
 
       <div class="min-h-0 flex-1 overflow-auto p-4">
         <div v-if="activeTab === 'explore'" role="tabpanel">
-          <UInput icon="i-lucide-search" placeholder="Search POIs or categories…" aria-label="Search POIs or categories" />
+          <UInput v-model="poiSearch" icon="i-lucide-search" placeholder="Search POIs or categories…" aria-label="Search POIs or categories" />
           <div class="mt-3 space-y-2">
-            <button v-for="item in ['Reception', 'Meeting Room A', 'Training Area', 'Lift Lobby']" :key="item" type="button" class="flex w-full items-center gap-3 rounded-lg border border-default p-3 text-left transition hover:bg-elevated">
-              <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-elevated text-xs font-semibold text-highlighted" aria-hidden="true">{{ item[0] }}</span>
-              <span class="min-w-0 flex-1"><strong class="block truncate text-xs text-highlighted">{{ item }}</strong><span class="mt-1 block text-[11px] text-muted">{{ item === 'Training Area' ? 'Workspace · Floor 2' : 'Main building · Floor 1' }}</span></span>
-              <span class="text-muted" aria-hidden="true">›</span>
+            <button v-for="poi in filteredPois" :key="poi.id" type="button" class="flex w-full items-center gap-3 rounded-lg border p-3 text-left transition hover:bg-elevated" :class="selectedPoiId === poi.id ? 'border-primary bg-elevated' : 'border-default'" :aria-pressed="selectedPoiId === poi.id" @click="selectPoi(poi.id)">
+              <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-elevated text-xs font-semibold text-highlighted" aria-hidden="true">{{ poi.name[0] }}</span>
+              <span class="min-w-0 flex-1"><strong class="block truncate text-xs text-highlighted">{{ poi.name }}</strong><span class="mt-1 block text-[11px] text-muted">{{ poi.category }} · {{ poi.floor }}</span></span>
+              <UIcon v-if="isFavorite(poi.id)" name="i-lucide-star" class="size-3.5 text-warning" aria-label="Favorite" /><span class="text-muted" aria-hidden="true">›</span>
             </button>
+            <p v-if="filteredPois.length === 0" class="py-4 text-center text-xs text-muted">No POIs match this filter.</p>
           </div>
           <div class="my-4 border-t border-default" />
-          <div class="flex items-center justify-between text-xs"><span class="text-muted">Favorite POIs</span><UButton label="Show favorites" color="neutral" variant="ghost" size="xs" /></div>
+          <div class="flex items-center justify-between text-xs"><span class="text-muted">Favorite POIs</span><UButton :label="showFavorites ? 'Show all POIs' : 'Show favorites'" color="neutral" variant="ghost" size="xs" @click="showFavorites = !showFavorites" /></div>
         </div>
 
         <div v-else-if="activeTab === 'route'" role="tabpanel" class="space-y-4">
@@ -94,6 +123,14 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
         <SitumViewer class="h-full" @status="handleViewerStatus" />
       </div>
       <div class="absolute bottom-6 left-6 z-10 flex flex-col overflow-hidden rounded-lg border border-default bg-default/95 shadow-sm backdrop-blur"><UButton icon="i-lucide-locate-fixed" aria-label="Center map" color="neutral" variant="ghost" /><UButton label="+" aria-label="Zoom in" color="neutral" variant="ghost" /><UButton label="−" aria-label="Zoom out" color="neutral" variant="ghost" /></div>
+      <UCard v-if="selectedPoi" class="absolute bottom-6 right-6 z-10 w-72 shadow-lg" :ui="{ body: 'p-4' }">
+        <div class="flex items-start justify-between gap-3">
+          <div><p class="font-semibold text-highlighted">{{ selectedPoi.name }}</p><p class="mt-1 text-xs text-muted">{{ selectedPoi.category }} · {{ selectedPoi.floor }} · {{ homeBuilding.name }}</p></div>
+          <UButton icon="i-lucide-x" aria-label="Close POI details" color="neutral" variant="ghost" size="xs" @click="selectedPoiId = null" />
+        </div>
+        <p class="mt-3 text-xs text-muted">{{ selectedPoi.description }}</p>
+        <div class="mt-4 flex gap-2"><UButton label="Directions" color="primary" size="sm" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
+      </UCard>
     </section>
   </div>
 </template>

@@ -74,13 +74,13 @@ Before implementation, inspect the complete Map Viewer reference composition and
 
 Before implementation, inspect current POI search/list/selection/popover/favorite states in the HTML.
 
-- [ ] Reuse or extend the canonical typed POI/building fixtures under `app/data/prototype/`; do not create duplicate records if Plan 005 already introduced them.
-- [ ] Implement local POI search/filter.
-- [ ] POI selection changes local Vue state and detail/popover presentation.
-- [ ] Favorite state is local-only.
-- [ ] No POI REST/Nitro endpoint.
-- [ ] No new Viewer POI-selection SDK call in this UI plan.
-- [ ] Do not claim dummy POIs are loaded from Situm.
+- [x] Reuse or extend the canonical typed POI/building fixtures under `app/data/prototype/`; do not create duplicate records if Plan 005 already introduced them.
+- [x] Implement local POI search/filter.
+- [x] POI selection changes local Vue state and detail/popover presentation.
+- [x] Favorite state is local-only.
+- [x] No POI REST/Nitro endpoint.
+- [x] No new Viewer POI-selection SDK call in this UI plan.
+- [x] Do not claim dummy POIs are loaded from Situm.
 
 ## Phase 3 — Route UI, dummy/local
 

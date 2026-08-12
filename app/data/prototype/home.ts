@@ -26,6 +26,14 @@ export interface HomeExploreItem {
   to: string
 }
 
+export interface HomePoi {
+  id: string
+  name: string
+  category: string
+  floor: string
+  description: string
+}
+
 export const homeMetrics: HomeMetric[] = [
   { label: 'Buildings', value: '3', note: '5 floors available' },
   { label: 'Points of interest', value: '42', note: 'across 8 categories' },
@@ -39,6 +47,13 @@ export const homeBuilding: HomeBuilding = {
   floor: 'Floor 1',
   status: 'Map ready'
 }
+
+export const homePois: HomePoi[] = [
+  { id: 'reception', name: 'Reception', category: 'Services', floor: 'Floor 1', description: 'Visitor services and front desk' },
+  { id: 'meeting-room-a', name: 'Meeting Room A', category: 'Rooms', floor: 'Floor 1', description: 'Small meeting room near the workspace corridor' },
+  { id: 'training-area', name: 'Training Area', category: 'Workspace', floor: 'Floor 2', description: 'Flexible training and collaboration space' },
+  { id: 'lift-lobby', name: 'Lift Lobby', category: 'Access', floor: 'Floor 1', description: 'Lift access between building floors' }
+]
 
 export const homeActivity: HomeActivity[] = [
   { title: 'Map viewer ready', detail: 'Building viewer initialized successfully', time: '1m', tone: 'success' },
