@@ -7,13 +7,13 @@ const state = ref<'loading' | 'ready' | 'error'>('loading')
 const message = ref('')
 
 onMounted(() => {
-  if (!config.public.situmViewerApiKey || !config.public.situmBuildingId) {
+  if (!config.public.situmApiKey || !config.public.situmBuildingId) {
     state.value = 'error'
     message.value = 'The map viewer is not configured.'
     return
   }
   try {
-    const sdk = new SitumSDK({ auth: { apiKey: config.public.situmViewerApiKey } })
+    const sdk = new SitumSDK({ auth: { apiKey: config.public.situmApiKey } })
     const viewer = sdk.viewer.create({ domElement: container.value!, buildingId: Number(config.public.situmBuildingId) })
     viewer.on(ViewerEventType.MAP_IS_READY, () => {
       state.value = 'ready'
