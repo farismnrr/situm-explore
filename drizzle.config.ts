@@ -1,1 +1,1 @@
-import { defineConfig } from 'drizzle-kit'; export default defineConfig({ schema: './server/db/schema.ts', out: './drizzle', dialect: 'postgresql', dbCredentials: { url: process.env.DATABASE_URL || '' }, schemaFilter: [process.env.DB_SCHEMA || 'situm_explore'] })
+import { defineConfig } from 'drizzle-kit'; export default defineConfig({ schema: './server/db/schema.ts', out: './drizzle', dialect: 'postgresql', dbCredentials: { url: process.env.DATABASE_URL || '' }, schemaFilter: ['situm_explore'] })
