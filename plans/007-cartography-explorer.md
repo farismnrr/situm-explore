@@ -108,12 +108,12 @@ Before implementation, inspect the complete Geofences reference area.
 
 Before implementation, inspect the complete Paths/route-preview reference area.
 
-- [ ] Match local path-network visual using lightweight CSS/SVG if needed; do not instantiate another Situm Viewer.
-- [ ] Match Start/To and accessibility controls.
-- [ ] Route preview/results are local dummy state only.
-- [ ] Link to `/app/map` route UI.
-- [ ] No server directions endpoint or new viewer directions SDK call.
-- [ ] Compare behavior/responsive composition against the current HTML.
+- [x] Match local path-network visual using lightweight CSS/SVG if needed; do not instantiate another Situm Viewer.
+- [x] Match Start/To and accessibility controls.
+- [x] Route preview/results are local dummy state only.
+- [x] Link to `/app/map` route UI.
+- [x] No server directions endpoint or new viewer directions SDK call.
+- [x] Compare behavior/responsive composition against the current HTML.
 
 ## Phase 6 — Shared details drawer
 
