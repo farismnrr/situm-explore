@@ -98,11 +98,11 @@ Before implementation, inspect the complete POI reference area and shared detail
 
 Before implementation, inspect the complete Geofences reference area.
 
-- [ ] Match metric-summary/table composition.
-- [ ] All session/stay-time/geofence rows are typed dummy data.
-- [ ] No real geofence/report query.
-- [ ] Map action navigates to `/app/map`; any overlay remains local/dummy.
-- [ ] Compare against the current HTML.
+- [x] Match metric-summary/table composition.
+- [x] All session/stay-time/geofence rows are typed dummy data.
+- [x] No real geofence/report query.
+- [x] Map action navigates to `/app/map`; any overlay remains local/dummy.
+- [x] Compare against the current HTML.
 
 ## Phase 5 — Paths & Routing `/app/paths`
 
