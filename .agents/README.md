@@ -18,10 +18,11 @@ The root `AGENTS.md` is intentionally small. This directory contains operating r
 | `reflections/` | Lessons that should improve future agent behavior. |
 | `sessions/` | Concise chronological records of conversations. |
 
-Design guidance intentionally lives outside `.agents/` to avoid duplicate sources of truth:
+Architecture and design guidance intentionally live outside `.agents/` to avoid duplicate sources of truth:
 
+- root `ARCHITECTURE.md` is the application architecture/folder/dependency contract;
 - root `DESIGN.md` is the design router;
-- `design/IMPLEMENTATION.md` is the Nuxt implementation contract;
+- `design/IMPLEMENTATION.md` is the Nuxt UI implementation contract;
 - `design/data-source-matrix.md` defines real-vs-dummy data boundaries;
 - `design/reference/situm-explore-interactive-prototype.html` is the single visual/interaction reference once populated by the user.
 
@@ -32,8 +33,8 @@ At the start of a conversation:
 1. Read `identity.md`.
 2. Read `state.md`.
 3. Read `protocols/chat-lifecycle.md`.
-4. If executing a plan or changing repository implementation, read `protocols/git-workflow.md` before editing.
-5. If doing UI/UX/styling/layout/component-composition work, read root `DESIGN.md`, the active plan, and only the root `design/` documents they require.
+4. If executing a plan or changing repository implementation, read `protocols/git-workflow.md` and root `ARCHITECTURE.md` before editing.
+5. If doing UI/UX/styling/layout/component-composition work, also read root `DESIGN.md`, the active plan, and only the root `design/` documents they require.
 6. Read only the memory, knowledge, reflection, plan, and session files relevant to the task.
 7. If the conversation references prior work and the durable stores are insufficient, inspect recent session notes.
 
@@ -66,7 +67,7 @@ For plan implementation, persistence is also a pre-commit checkpoint: relevant `
 When information conflicts, prefer:
 
 1. The user's latest explicit statement.
-2. Current durable files under `.agents/` and root routers such as `DESIGN.md`.
+2. Current durable files under `.agents/` and root contracts/routers such as `ARCHITECTURE.md` and `DESIGN.md`.
 3. Recent session notes.
 4. Agent inference.
 
@@ -83,8 +84,9 @@ Never silently promote inference above explicit user statements.
 - Never persist secrets or credentials.
 - Keep each plan isolated on its own branch and preserve a reviewable phase-by-phase Git history.
 - Use the normal repository working directory; linked Git worktrees are optional only when explicitly requested.
+- For implementation work, follow the Nuxt 4 runtime/folder/dependency boundaries in `ARCHITECTURE.md`.
 - For UI work, do not invent a new visual direction when the canonical HTML reference is populated.
 
 ## Current scope
 
-The Nuxt foundation and hardening are complete. Plan 003 is closed but its rendered UI was not accepted. The next implementation roadmap starts at `plans/004-ui-foundation-public-auth.md` and must use the single canonical HTML reference once the user has replaced its placeholder content. Native/mobile, CI, and unit-test infrastructure remain deferred.
+The Nuxt foundation and hardening are complete. Plan 003 is closed but its rendered UI was not accepted. Plan 004 now begins with a Nuxt 4 architecture-alignment phase that may run before the HTML reference is populated; visual Phase 1+ remains blocked until the user replaces the canonical HTML placeholder. Native/mobile, CI, and unit-test infrastructure remain deferred.
