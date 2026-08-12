@@ -60,20 +60,22 @@ Acceptance:
 
 # Phase 2 — Situm browser credential boundary
 
+Status: complete (2026-08-12)
+
 The browser Map Viewer requires a client-visible credential, but the browser should not receive a broad discovery/admin key if a least-privilege viewer key is available.
 
-- [ ] Inspect local Situm credential usage without printing or persisting credential values.
-- [ ] Verify current official Situm Map Viewer/browser key guidance.
-- [ ] Determine whether the configured browser key is dedicated/least-privilege for Map Viewer use.
-- [ ] Prefer a dedicated read-only/browser-safe viewer credential for `NUXT_PUBLIC_SITUM_API_KEY`.
-- [ ] Keep discovery/admin/server credentials out of `runtimeConfig.public`.
-- [ ] If a new viewer key requires a manual user action, document exactly what is needed; do not expose the existing secret.
-- [ ] Update `.env.example`, README, and `.agents/knowledge/` only if the credential model changes.
+- [x] Inspect local Situm credential usage without printing or persisting credential values.
+- [x] Verify current official Situm Map Viewer/browser key guidance: the SDK requires an API key in browser initialization and exposes viewer readiness events.
+- [x] Confirm the configured local key as read-only and approved for browser use (user-stated, 2026-08-12).
+- [x] Use the confirmed read-only credential under `NUXT_PUBLIC_SITUM_VIEWER_API_KEY`.
+- [x] Keep discovery/admin/server credentials out of `runtimeConfig.public`.
+- [x] Document that no manual key action is required; the existing credential was not copied or exposed.
+- [x] Update `.env.example`, README, and runtime references for the explicit viewer credential boundary.
 
 Acceptance:
 
-- [ ] Browser credential exposure is intentional and least-privilege.
-- [ ] No broad server/admin credential is exposed to the browser.
+- [x] Browser credential exposure is intentional and least-privilege; the user confirmed the existing configured key is read-only and approved for the browser viewer.
+- [x] No broad server/admin credential is exposed to the browser by the application configuration.
 
 ---
 

@@ -7,13 +7,13 @@ const state = ref<'loading' | 'ready' | 'error'>('loading')
 const message = ref('')
 
 onMounted(() => {
-  if (!config.public.situmApiKey || !config.public.situmBuildingId) {
+  if (!config.public.situmViewerApiKey || !config.public.situmBuildingId) {
     state.value = 'error'
-    message.value = 'Missing NUXT_PUBLIC_SITUM_API_KEY or NUXT_PUBLIC_SITUM_BUILDING_ID.'
+    message.value = 'Missing NUXT_PUBLIC_SITUM_VIEWER_API_KEY or NUXT_PUBLIC_SITUM_BUILDING_ID.'
     return
   }
   try {
-    const sdk = new SitumSDK({ auth: { apiKey: config.public.situmApiKey } })
+    const sdk = new SitumSDK({ auth: { apiKey: config.public.situmViewerApiKey } })
     sdk.viewer.create({ domElement: container.value!, buildingId: Number(config.public.situmBuildingId) })
     state.value = 'ready'
   } catch (error: unknown) {
