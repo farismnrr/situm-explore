@@ -132,17 +132,17 @@ Acceptance:
 
 The current information architecture does not justify a sidebar.
 
-- [ ] Add/compose a compact light top bar for product identity and account/logout action.
-- [ ] Keep shell chrome visually quieter than the Situm content.
-- [ ] Use a responsive centered content area with consistent horizontal padding.
-- [ ] Keep logout accessible but visually secondary.
-- [ ] Avoid adding fake navigation destinations, command palettes, breadcrumbs, or settings menus.
-- [ ] If a reusable shell component/layout materially reduces duplication, keep it small and concrete; do not create abstraction layers for hypothetical future pages.
+- [x] Add/compose a compact light top bar for product identity and account/logout action.
+- [x] Keep shell chrome visually quieter than the Situm content.
+- [x] Use a responsive centered content area with consistent horizontal padding.
+- [x] Keep logout accessible but visually secondary.
+- [x] Avoid adding fake navigation destinations, command palettes, breadcrumbs, or settings menus.
+- [x] If a reusable shell component/layout materially reduces duplication, keep it small and concrete; do not create abstraction layers for hypothetical future pages.
 
 Acceptance:
 
-- [ ] The authenticated app has clear orientation without a heavy dashboard frame.
-- [ ] Shell works from mobile through desktop without horizontal overflow.
+- [x] The authenticated app has clear orientation without a heavy dashboard frame.
+- [x] Shell works from mobile through desktop without horizontal overflow.
 
 ---
 
