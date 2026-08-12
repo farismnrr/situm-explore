@@ -94,23 +94,23 @@ For every surface above compare:
 
 Record explicit signoff for:
 
-- [ ] Landing
-- [ ] Login
-- [ ] Register
-- [ ] Home
-- [ ] Dashboard
-- [ ] Map
-- [ ] Buildings
-- [ ] POIs
-- [ ] Geofences
-- [ ] Paths
-- [ ] Realtime
-- [ ] Analytics including every represented report state
-- [ ] Alarms
-- [ ] Users
-- [ ] Organization
-- [ ] Settings including every represented settings state
-- [ ] shared drawer/search/modal states
+- [x] Landing
+- [x] Login
+- [x] Register
+- [x] Home
+- [x] Dashboard
+- [x] Map
+- [x] Buildings
+- [x] POIs
+- [x] Geofences
+- [x] Paths
+- [x] Realtime
+- [x] Analytics including every represented report state
+- [x] Alarms
+- [x] Users
+- [x] Organization
+- [x] Settings including every represented settings state
+- [x] shared drawer/search/modal states
 
 Do not complete the phase with one generic `looks close` statement.
 
@@ -120,18 +120,18 @@ Read the actual current HTML media-query/responsive behavior first.
 
 Validate at minimum:
 
-- [ ] desktop >= 1200px;
-- [ ] laptop around 1024px;
-- [ ] tablet around 768px;
-- [ ] mobile around 390px;
-- [ ] landing/nav/hero reflow;
-- [ ] auth mobile composition;
-- [ ] app sidebar -> mobile drawer behavior;
-- [ ] tables scroll safely;
-- [ ] map workspace remains usable;
-- [ ] settings navigation responds appropriately;
-- [ ] forms remain comfortable;
-- [ ] no horizontal document overflow.
+- [x] desktop >= 1200px;
+- [x] laptop around 1024px;
+- [x] tablet around 768px;
+- [x] mobile around 390px;
+- [x] landing/nav/hero reflow;
+- [x] auth mobile composition;
+- [x] app sidebar -> mobile drawer behavior;
+- [x] tables scroll safely;
+- [x] map workspace remains usable;
+- [x] settings navigation responds appropriately;
+- [x] forms remain comfortable;
+- [x] no horizontal document overflow.
 
 Small deviations are allowed only for real usability/accessibility reasons and must be documented.
 
@@ -139,16 +139,16 @@ Small deviations are allowed only for real usability/accessibility reasons and m
 
 Inspect the corresponding HTML interaction intent before each review.
 
-- [ ] route links use Nuxt routing;
-- [ ] auth remains real while matching approved visual states;
-- [ ] global search open/filter/navigate/close works locally;
-- [ ] drawers/modals close clearly and Escape works when supported by Nuxt UI primitives;
-- [ ] dummy filters/search work;
-- [ ] map Explore/Route/Layers states remain local/dummy except the pre-existing real viewer lifecycle;
-- [ ] analytics tabs work locally;
-- [ ] settings tabs/switch/reset work locally;
-- [ ] no dead controls unless intentionally disabled in the reference;
-- [ ] no dummy action claims a remote Situm mutation.
+- [x] route links use Nuxt routing;
+- [x] auth remains real while matching approved visual states;
+- [x] global search open/filter/navigate/close works locally;
+- [x] drawers/modals close clearly and Escape works when supported by Nuxt UI primitives;
+- [x] dummy filters/search work;
+- [x] map Explore/Route/Layers states remain local/dummy except the pre-existing real viewer lifecycle;
+- [x] analytics tabs work locally;
+- [x] settings tabs/switch/reset work locally;
+- [x] no dead controls unless intentionally disabled in the reference;
+- [x] no dummy action claims a remote Situm mutation.
 
 Do not add new Situm REST/SDK feature integration as part of polishing.
 
@@ -211,6 +211,10 @@ The broader Read & Write POC key does not authorize adding new remote features i
 - [ ] no PR until user authorization.
 
 ## Completion boundary
+
+### Execution blocker
+
+Phase 4 cannot start in this run because the configured worker could not be spawned: the agent service reported that its thread limit was reached, and the previously used worker IDs were unavailable. Remaining phases are intentionally left incomplete rather than implemented by the parent agent.
 
 Plan 009 is complete only when the user can review the **entire UI roadmap as one coherent product**.
 

@@ -580,9 +580,9 @@ The application currently uses Nuxt's backwards-compatible root app structure. I
 | `app.config.ts` | `app/app.config.ts` | Nuxt UI/app configuration. |
 | `assets/css/main.css` | `app/assets/css/main.css` | Build-processed global CSS. |
 | `pages/index.vue` | `app/pages/index.vue` | Existing route preserved initially. |
-| `pages/dashboard.vue` | `app/pages/dashboard.vue` | Preserve route until UI roadmap introduces `/app/**`. |
-| `middleware/auth.ts` | `app/middleware/auth.ts` | Client route middleware. |
-| `components/AppShell.vue` | `app/components/app/AppShell.vue` or replace with `app/layouts/app.vue` | Decide during authenticated-shell implementation; do not keep two shells. |
+| `pages/dashboard.vue` | `app/pages/dashboard.vue` | Compatibility redirect to `/app/map`; the authenticated product surface is under `/app/**`. |
+| `middleware/auth.ts` | `app/middleware/auth.ts` | Client route middleware; unauthenticated `/app/**` navigation goes to `/login`. |
+| `components/AppShell.vue` | `app/layouts/app.vue` | Authenticated shell has one layout owner; no parallel legacy shell. |
 | `components/SitumViewer.vue` | `app/components/situm/SitumViewer.vue` | Preserve real SDK lifecycle. |
 | `server/utils/db.ts` | `server/db/client.ts` | DB infrastructure belongs with DB schema. |
 | `server/db/schema.ts` | unchanged | Correct boundary already. |

@@ -1,8 +1,8 @@
 # Plan 010 — Situm Integration Feasibility & Contract Mapping
 
-Status: planned-later
+Status: **planned-ready**
 Branch: `plan/010-progressive-situm-data-integration`
-Depends on: Plan 009 integrated into `main` **and** explicit user acceptance of the completed UI roadmap
+Depends on: Plans 009A and 009B closed, with the user's final manually corrected UI explicitly accepted as the cumulative UI baseline
 
 ## Goal
 
@@ -10,12 +10,26 @@ Prepare later Situm backend/data integration work **without replacing any UI dum
 
 Plan 010 is feasibility/contract-mapping only. Plans 011–015 own real read/data domains; Plan 016 conditionally owns any remaining accepted Viewer/settings/write actions that still need to become real. This prevents duplicate or ownerless implementation during sequential execution.
 
+## UI gate status
+
+The UI gate is satisfied.
+
+Plan 009A is historical. Automated Plan 009B work was stopped after regressions, the user then completed the difficult UI correction manually, explicitly accepted the manual result, and asked to close the UI plans so the roadmap can continue.
+
+Before creating the Plan 010 branch, perform only the normal baseline preflight:
+
+1. confirm the user's final manual UI changes are committed and pushed;
+2. identify that final cumulative UI HEAD;
+3. create `plan/010-progressive-situm-data-integration` from that HEAD, not stale `main` or an older 009A/009B baseline.
+
+Do not reopen 009B/009C as a prerequisite.
+
 ## Hard boundary
 
 During Plan 010:
 
 - do not replace dummy datasets;
-- do not redesign accepted UI;
+- do not redesign the accepted UI;
 - do not introduce remote write actions;
 - do not create broad backend infrastructure merely for future plans.
 
@@ -26,8 +40,9 @@ During Plan 010:
 - `DESIGN.md`
 - `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
-- populated canonical HTML reference
-- completed/accepted Plans 004–009 implementation/state
+- current accepted Nuxt UI implementation after the user's manual correction
+- populated canonical HTML reference as historical/reference context where still useful
+- closed Plans 009A and 009B
 - Plans 011–016 so feasibility decisions match later scopes
 - this plan
 
@@ -35,9 +50,9 @@ During Plan 010:
 
 For every candidate dataset/action inspect:
 
-1. accepted Nuxt route/components/types from Plans 004–009;
-2. corresponding current canonical HTML area;
-3. canonical dummy fixtures/local actions that may later be replaced.
+1. the final manually accepted Nuxt route/components/types;
+2. corresponding current local fixture/action contract;
+3. canonical HTML only as secondary reference when it still agrees with the accepted manual UI.
 
 Later Situm payloads/capabilities are adapted into the accepted UI contract; external API shape does not redesign the product.
 
@@ -64,9 +79,10 @@ Rules:
 - client route middleware is not API security;
 - never create a generic unauthenticated Situm proxy.
 
-## Phase 1 — Verify current local setup
+## Phase 1 — Verify current local setup and accepted UI baseline
 
-- [ ] Confirm Plan 009 is integrated and UI explicitly accepted.
+- [ ] Confirm Plans 009A and 009B are closed.
+- [ ] Confirm the user's final manual UI changes are committed/pushed and record the exact cumulative baseline HEAD.
 - [ ] Confirm ignored local `.env` has the POC key without printing it.
 - [ ] If building ID is missing, follow documented `/api/v1/buildings` discovery and write only selected ID to local `.env`.
 - [ ] Do not change environment naming.
@@ -80,7 +96,7 @@ Using current official Situm docs and safe local read probes, map **every accept
 - Realtime positions and any device metadata required by the accepted Realtime UI;
 - Reports/Analytics;
 - Organization/Users/Groups/Alarms;
-- accepted Map Viewer tools represented in the final UI, such as POI selection/favorites, location picker, follow/trajectory/navigation, save-car/navigation-to-car, search/accessibility settings, or other tools actually present in the populated reference;
+- accepted Map Viewer tools represented in the final UI, such as POI selection/favorites, location picker, follow/trajectory/navigation, save-car/navigation-to-car, search/accessibility settings, or other tools actually present in the accepted UI;
 - Viewer/map configuration, styles, images, or other settings actually represented by the accepted Settings UI;
 - any accepted action that would require a remote mutation.
 

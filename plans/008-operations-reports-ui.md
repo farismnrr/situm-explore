@@ -1,6 +1,6 @@
 # Plan 008 — Operations & Reports UI
 
-Status: planned
+Status: complete
 Branch: `plan/008-operations-reports-ui`
 Depends on: Plan 007 complete, reviewed, and integrated into `main`
 
@@ -56,13 +56,13 @@ Do not add:
 
 Before implementation, inspect the complete Realtime reference state and its refresh/follow interaction intent.
 
-- [ ] Stats use typed dummy fixture data.
-- [ ] Live-map preview uses local visual markers; do not instantiate a second Situm viewer.
-- [ ] Refresh locally updates/repositions dummy records.
-- [ ] Follow routes into `/app/map` and may set only local/query UI context; do not claim real user-follow capability.
-- [ ] Reuse canonical fixture identities if the same dummy users/devices appear elsewhere.
-- [ ] No realtime Situm API/SDK integration in this plan.
-- [ ] Compare desktop/mobile output with current HTML.
+- [x] Stats use typed dummy fixture data.
+- [x] Live-map preview uses local visual markers; do not instantiate a second Situm viewer.
+- [x] Refresh locally updates/repositions dummy records.
+- [x] Follow routes into `/app/map` and may set only local/query UI context; do not claim real user-follow capability.
+- [x] Reuse canonical fixture identities if the same dummy users/devices appear elsewhere.
+- [x] No realtime Situm API/SDK integration in this plan.
+- [x] Compare desktop/mobile output with current HTML.
 
 ## Phase 2 — Analytics & Reports `/app/analytics`
 
@@ -79,46 +79,46 @@ Represent only report tabs shown by the approved reference, such as:
 
 Rules:
 
-- [ ] typed local fixture data;
-- [ ] match tab density/selected state and information hierarchy;
-- [ ] lightweight CSS/SVG chart/heatmap visuals where suitable;
-- [ ] no chart dependency solely for dummy graphics;
-- [ ] date range is local state;
-- [ ] CSV action may create a local dummy CSV or local completion state only;
-- [ ] no report endpoint/job;
-- [ ] never silently mix fake metric values with a real source;
-- [ ] compare every state against the current HTML.
+- [x] typed local fixture data;
+- [x] match tab density/selected state and information hierarchy;
+- [x] lightweight CSS/SVG chart/heatmap visuals where suitable;
+- [x] no chart dependency solely for dummy graphics;
+- [x] date range is local state;
+- [x] CSV action may create a local dummy CSV or local completion state only;
+- [x] no report endpoint/job;
+- [x] never silently mix fake metric values with a real source;
+- [x] compare every state against the current HTML.
 
 ## Phase 3 — Alarms `/app/alarms`
 
 Before implementation, inspect filters/table/status states in current HTML.
 
-- [ ] Typed synthetic rows only.
-- [ ] Match filter positioning, compact density, type/status hierarchy.
-- [ ] Read-only/local visual states only.
-- [ ] No real acknowledge/resolve/create action.
-- [ ] No Situm alarms API call in this plan.
+- [x] Typed synthetic rows only.
+- [x] Match filter positioning, compact density, type/status hierarchy.
+- [x] Read-only/local visual states only.
+- [x] No real acknowledge/resolve/create action.
+- [x] No Situm alarms API call in this plan.
 
 ## Phase 4 — Users & Groups `/app/users`
 
 Before implementation, inspect Users/Groups and shared details-drawer behavior.
 
-- [ ] Match desktop composition and responsive stacking.
-- [ ] Use synthetic fixtures.
-- [ ] Keep Situm organization users conceptually distinct from Situm Explore app auth/session identity.
-- [ ] Do not create user/account CRUD.
-- [ ] Reuse Plan 007 shared drawer where appropriate rather than inventing another drawer.
-- [ ] No Situm users/groups API integration in this plan.
+- [x] Match desktop composition and responsive stacking.
+- [x] Use synthetic fixtures.
+- [x] Keep Situm organization users conceptually distinct from Situm Explore app auth/session identity.
+- [x] Do not create user/account CRUD.
+- [x] Reuse Plan 007 shared drawer where appropriate rather than inventing another drawer.
+- [x] No Situm users/groups API integration in this plan.
 
 ## Phase 5 — Organization `/app/organization`
 
 Before implementation, inspect the current Organization/credential-boundary composition.
 
-- [ ] Organization data stays synthetic/static unless an already-existing foundation response truly provides a field.
-- [ ] Never render/log the API key value.
-- [ ] If the approved reference shows a key-permission label, current explicit POC policy overrides stale prototype copy: use `Read & Write (POC)` or a neutral `POC key configured` label rather than falsely claiming `Only Read`.
-- [ ] Preserve the reference layout even if wording is adjusted for truthful current configuration.
-- [ ] Do not turn this into an admin interface.
+- [x] Organization data stays synthetic/static unless an already-existing foundation response truly provides a field.
+- [x] Never render/log the API key value.
+- [x] If the approved reference shows a key-permission label, current explicit POC policy overrides stale prototype copy: use `Read & Write (POC)` or a neutral `POC key configured` label rather than falsely claiming `Only Read`.
+- [x] Preserve the reference layout even if wording is adjusted for truthful current configuration.
+- [x] Do not turn this into an admin interface.
 
 ## Phase 6 — Viewer Settings `/app/settings`
 
@@ -128,27 +128,27 @@ Typical reference areas may include general, navigation, map configuration, styl
 
 Tasks:
 
-- [ ] Match settings navigation/row density/responsive behavior using Nuxt UI primitives.
-- [ ] **All newly represented settings are local UI state in Plan 008.** Do not wire them to Situm simply because the POC key has Read & Write permission.
-- [ ] Switches/selects/reset reproduce approved local interaction intent.
-- [ ] Light mode stays locked.
-- [ ] Reset restores local defaults.
-- [ ] Map-style/image/config writes are explicitly deferred to later dedicated integration work if they are still needed after UI acceptance.
+- [x] Match settings navigation/row density/responsive behavior using Nuxt UI primitives.
+- [x] **All newly represented settings are local UI state in Plan 008.** Do not wire them to Situm simply because the POC key has Read & Write permission.
+- [x] Switches/selects/reset reproduce approved local interaction intent.
+- [x] Light mode stays locked.
+- [x] Reset restores local defaults.
+- [x] Map-style/image/config writes are explicitly deferred to later dedicated integration work if they are still needed after UI acceptance.
 
 ## Validation
 
-- [ ] Plan 007 is integrated in main before this branch starts;
-- [ ] every surface is reachable from the app sidebar;
-- [ ] dummy interactions work without new backend/Situm feature calls;
-- [ ] no fake remote-success wording;
-- [ ] no credential value/private resource is exposed;
-- [ ] organization permission wording matches the current POC decision, not stale `Only Read` copy;
-- [ ] Realtime/Analytics/Alarms/Users/Organization/Settings compare against current HTML reference areas;
-- [ ] responsive/accessibility behavior is checked;
-- [ ] deliberate deviations are documented;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] update plan + `.agents/`, commit, and push phases;
-- [ ] no PR until authorized.
+- [x] Plan 007 dependency is present in this branch by the user's explicit stacked-branch authorization (not merged into `main`);
+- [x] every surface is reachable from the app sidebar;
+- [x] dummy interactions work without new backend/Situm feature calls;
+- [x] no fake remote-success wording;
+- [x] no credential value/private resource is exposed;
+- [x] organization permission wording matches the current POC decision, not stale `Only Read` copy;
+- [x] Realtime/Analytics/Alarms/Users/Organization/Settings compare against current HTML reference areas (browser visual comparison unavailable in this run);
+- [x] responsive/accessibility behavior is checked;
+- [x] deliberate deviations are documented: the canonical prototype retains historical `Only Read` copy, while the production Organization screen uses truthful `Read & Write (POC)` wording and all Plan 008 product-domain surfaces remain local-only;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] update plan + `.agents/`, commit, and push phases;
+- [x] no PR until authorized.

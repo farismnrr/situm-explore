@@ -1,0 +1,304 @@
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+:root {
+  color-scheme: light;
+  --ui-radius: 0.75rem;
+  --ui-container: var(--container-5xl);
+
+  /* Situm Explore visual tokens: cool neutrals, border-first surfaces, and a restrained blue accent. */
+  --explore-background: #f6f7f9;
+  --explore-surface: #ffffff;
+  --explore-surface-subtle: #fafbfc;
+  --explore-surface-hover: #f4f5f7;
+  --explore-foreground: #16181c;
+  --explore-foreground-muted: #515862;
+  /* Meets WCAG AA for normal text on the light surfaces used by the app. */
+  --explore-foreground-subtle: #5f6874;
+  --explore-ink: #111827;
+  --explore-ink-hover: #202939;
+  --explore-border: #e6e8ec;
+  --explore-border-strong: #d8dce2;
+  --explore-accent: #2563eb;
+  --explore-accent-soft: #eff6ff;
+  --explore-success: #168754;
+  --explore-success-soft: #edf9f2;
+  --explore-warning: #b77908;
+  --explore-warning-soft: #fff8e5;
+  --explore-danger: #b8433b;
+  --explore-danger-soft: #fff0ee;
+  --explore-radius-xs: 0.4375rem;
+  --explore-radius-sm: 0.5625rem;
+  --explore-radius-md: 0.75rem;
+  --explore-radius-lg: 1rem;
+  --explore-radius-xl: 1.375rem;
+  --explore-shadow-xs: 0 1px 2px rgb(16 24 40 / 4%);
+  --explore-shadow-sm: 0 8px 24px rgb(16 24 40 / 6%);
+  --explore-shadow-md: 0 18px 55px rgb(16 24 40 / 10%);
+  --explore-focus-ring: 0 0 0 3px rgb(17 24 39 / 7%);
+
+  /* Nuxt UI semantic surfaces mapped to the canonical light product palette. */
+  --ui-bg: var(--explore-surface);
+  --ui-bg-muted: var(--explore-surface-subtle);
+  --ui-bg-elevated: var(--explore-surface-hover);
+  --ui-bg-accented: var(--explore-border);
+  --ui-bg-inverted: var(--explore-foreground);
+  --ui-text: var(--explore-foreground);
+  --ui-text-muted: var(--explore-foreground-muted);
+  --ui-text-dimmed: var(--explore-foreground-subtle);
+  --ui-border: var(--explore-border);
+  --ui-border-accented: var(--explore-border-strong);
+}
+
+html,
+body {
+  @apply bg-default text-default antialiased;
+  background-color: var(--explore-background);
+  color: var(--explore-foreground);
+  overflow-x: clip;
+}
+
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-primary;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 0.75rem;
+  z-index: 100;
+  transform: translateY(-150%);
+  border-radius: 0.5rem;
+  background: var(--explore-foreground);
+  color: white;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: transform 150ms ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--explore-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Shared product-density primitives used by more than one authenticated surface. */
+.page-head {
+  margin-bottom: 1.375rem;
+}
+
+.soft-card {
+  border: 1px solid var(--explore-border);
+  border-radius: var(--explore-radius-md);
+  background: var(--explore-surface-subtle);
+}
+
+.page-head h1,
+.page-title {
+  font-size: 1.875rem;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.app-content h1 {
+  font-size: 1.875rem;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.panel-head {
+  min-height: 3.25rem;
+  padding: 0.9375rem 1rem;
+}
+
+.panel-head h2,
+.panel-head h3 {
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.panel-body {
+  padding: 1rem;
+}
+
+.activity-list {
+  display: grid;
+}
+
+.activity-row {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  align-items: start;
+  gap: 0.5625rem;
+  padding: 0.6875rem 0;
+  border-bottom: 1px solid var(--explore-border);
+}
+
+.activity-row:last-child {
+  border-bottom: 0;
+}
+
+.table-density th {
+  padding: 0.625rem 0.75rem;
+  color: var(--explore-foreground-subtle);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table-density td {
+  padding: 0.6875rem 0.75rem;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* Keep controls compact and consistent without replacing Nuxt UI primitives. */
+[data-slot='control'] {
+  min-height: 2.5rem;
+  border-radius: var(--explore-radius-sm);
+  font-size: 0.8125rem;
+}
+
+[data-slot='control']:focus-within {
+  box-shadow: 0 0 0 3px rgb(17 24 39 / 7%);
+}
+
+[data-slot='badge'] {
+  min-height: 1.625rem;
+  border-radius: 999px;
+  padding-inline: 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 680;
+}
+
+/* Nuxt UI primitives use these semantic slots; keep their shared geometry aligned
+   with the canonical reference while leaving route composition to Vue components. */
+[data-slot='base'][data-slot='base'] {
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+[data-slot='base']:disabled,
+[data-slot='base'][aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+[data-slot='base']:focus-visible,
+[data-slot='control']:focus-visible,
+[role='switch']:focus-visible {
+  outline: 2px solid var(--explore-ink);
+  outline-offset: 2px;
+}
+
+[data-slot='badge'] {
+  box-shadow: inset 0 0 0 1px rgb(17 24 39 / 4%);
+}
+
+[role='switch'] {
+  width: 2.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+}
+
+[role='switch'][data-state='checked'] {
+  background-color: var(--explore-ink);
+}
+
+.search-trigger:focus-visible {
+  outline: 2px solid var(--explore-ink);
+  outline-offset: 2px;
+  box-shadow: var(--explore-focus-ring);
+}
+
+/* Keep compound settings controls readable when the app content is narrower than a phone. */
+.setting-row > :first-child {
+  min-width: 0;
+}
+
+.table-wrap { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+
+.table-density td > p,
+.table-density td button > span {
+  margin-top: 0.125rem;
+  line-height: 1.2;
+}
+
+.app-shell-main { padding-left: 14.25rem; }
+.app-sidebar { width: 14.25rem; transform: translateX(0); }
+.shell-menu-button,
+.shell-menu-backdrop { display: none; }
+
+.operations-page > :not([hidden]) ~ :not([hidden]) { margin-top: 1.25rem; }
+
+@media (max-width: 1023px) {
+  .app-content { padding-inline: 1rem; }
+}
+
+.search-trigger {
+  min-width: 220px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.625rem;
+  border: 1px solid var(--explore-border);
+  border-radius: var(--explore-radius-sm);
+  background: var(--explore-surface);
+  color: var(--explore-foreground-subtle);
+  font-size: 0.6875rem;
+}
+
+.search-trigger kbd {
+  border: 1px solid var(--explore-border);
+  border-radius: 0.3125rem;
+  background: var(--explore-surface-subtle);
+  padding: 0.125rem 0.3125rem;
+  color: var(--explore-foreground-subtle);
+  font-size: 0.625rem;
+}
+
+@media (min-width: 801px) and (max-width: 1049px) {
+  .app-sidebar { width: 208px; }
+  .app-shell-main { padding-left: 208px; }
+}
+
+@media (max-width: 800px) {
+  .app-shell-main { padding-left: 0; }
+  .app-sidebar { width: min(228px, calc(100vw - 2rem)); transform: translateX(-100%); }
+  .app-sidebar.translate-x-0 { transform: translateX(0); }
+  .shell-menu-button { display: inline-flex; }
+  .shell-menu-backdrop { display: block; }
+}
+
+@media (max-width: 639px) {
+  .setting-row,
+  .setting-section .flex.items-center.justify-between.gap-5 {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .setting-row {
+    display: flex;
+  }
+
+  .setting-row > :last-child,
+  .setting-section .flex.items-center.justify-between.gap-5 > :last-child {
+    align-self: stretch;
+  }
+}

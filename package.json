@@ -31,6 +31,7 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
+    "nuxt-agentation": "^0.1.0",
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.9"
   }

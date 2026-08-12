@@ -36,4 +36,6 @@ Drizzle owns only the dedicated `situm_explore` schema. Review `drizzle/0000_sil
 
 ## Situm
 
-The protected dashboard creates the official `@situm/sdk-js` Map Viewer with the configured POC API key and building ID. Missing configuration and SDK initialization errors are shown in the UI.
+The authenticated workspace is rooted at `/app`; its `/app/map` route creates the official `@situm/sdk-js` Map Viewer with the configured POC API key and building ID. Missing configuration and SDK initialization errors are shown in the UI. The legacy `/dashboard` URL redirects to `/app/map` for compatibility.
+
+During the UI roadmap, the Home and Dashboard product metrics and the surrounding product-domain screens use typed local prototype fixtures. The real session, `/api/me`, and Situm Viewer lifecycle remain active; `/api/situm/status` reports configuration only and is not a substitute for Viewer readiness.
