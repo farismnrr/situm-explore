@@ -12,6 +12,15 @@ const routeDestination = ref('Meeting Room A')
 const accessibleRoute = ref(false)
 const routeCalculated = ref(false)
 const routeStatus = ref('')
+const layerState = reactive({ realtime: true, geofence: false, trajectory: false, follow: false })
+const locationPickerOpen = ref(false)
+const viewerSettingsOpen = ref(false)
+const accessibleNavigation = ref(false)
+const largeInterfaceText = ref(false)
+const highContrastCues = ref(false)
+const viewerToolStatus = ref('')
+const mapSearchFilter = ref(false)
+const savedCar = ref(false)
 
 const routeOptions = computed(() => ['My location', ...homePois.map(poi => poi.name)])
 const routeSteps = computed(() => accessibleRoute.value
@@ -47,6 +56,15 @@ function calculateRoute() {
 
 function startLocalNavigation() {
   routeStatus.value = 'Navigation is a local preview only; no live directions were started.'
+}
+
+function showViewerToolStatus(message: string) {
+  viewerToolStatus.value = message
+}
+
+function toggleLayer(key: keyof typeof layerState) {
+  layerState[key] = !layerState[key]
+  showViewerToolStatus(`${key === 'geofence' ? 'Geofences' : key.charAt(0).toUpperCase() + key.slice(1)} ${layerState[key] ? 'shown' : 'hidden'} locally.`)
 }
 
 const tabItems = [
@@ -138,10 +156,23 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
 
         <div v-else role="tabpanel" class="space-y-1">
           <p class="mb-3 text-xs text-muted">Viewer overlays and tools</p>
-          <div v-for="item in ['Realtime positions', 'Geofences', 'Trajectory', 'Follow user']" :key="item" class="flex items-center justify-between gap-3 border-b border-default py-3 last:border-0">
-            <span><strong class="block text-xs text-highlighted">{{ item }}</strong><span class="mt-1 block text-[11px] text-muted">Local workspace control</span></span>
-            <USwitch :aria-label="item" :default-value="item === 'Realtime positions'" disabled />
+          <div v-for="item in [{ key: 'realtime', label: 'Realtime positions', hint: 'Live people/device overlay' }, { key: 'geofence', label: 'Geofences', hint: 'Spatial zones and boundaries' }, { key: 'trajectory', label: 'Trajectory', hint: 'Playback a recent route' }, { key: 'follow', label: 'Follow user', hint: 'Keep selected user centered' }]" :key="item.key" class="flex items-center justify-between gap-3 border-b border-default py-3 last:border-0">
+            <span><strong class="block text-xs text-highlighted">{{ item.label }}</strong><span class="mt-1 block text-[11px] text-muted">{{ item.hint }}</span></span>
+            <USwitch :model-value="layerState[item.key as keyof typeof layerState]" :aria-label="item.label" @update:model-value="toggleLayer(item.key as keyof typeof layerState)" />
           </div>
+          <UButton label="Open location picker" block color="neutral" variant="soft" size="sm" class="mt-3" @click="locationPickerOpen = true" />
+          <UButton label="Viewer accessibility settings" block color="neutral" variant="soft" size="sm" class="mt-2" @click="viewerSettingsOpen = true" />
+          <div class="my-3 border-t border-default" />
+          <p class="mb-2 text-[11px] text-muted">More viewer tools</p>
+          <div class="grid grid-cols-2 gap-2">
+            <UButton label="Save car" color="neutral" variant="soft" size="sm" @click="savedCar = true; showViewerToolStatus('Car position saved locally.')" />
+            <UButton label="Navigate to car" color="neutral" variant="soft" size="sm" :disabled="!savedCar" @click="showViewerToolStatus('Dummy navigation to the saved car started locally.')" />
+            <UButton label="Select flight" color="neutral" variant="soft" size="sm" @click="showViewerToolStatus('Flight selection opened locally.')" />
+            <UButton :label="mapSearchFilter ? 'Clear filter' : 'Search filter'" color="neutral" variant="soft" size="sm" @click="mapSearchFilter = !mapSearchFilter; showViewerToolStatus(mapSearchFilter ? 'Local search filter applied.' : 'Local search filter cleared.')" />
+            <UButton :label="largeInterfaceText ? 'Font size −' : 'Font size + '" color="neutral" variant="soft" size="sm" @click="largeInterfaceText = !largeInterfaceText; showViewerToolStatus('Viewer font size preference changed locally.')" />
+            <UButton label="Set user location" color="neutral" variant="soft" size="sm" @click="showViewerToolStatus('User location updated locally.')" />
+          </div>
+          <UAlert v-if="viewerToolStatus" class="mt-3" color="info" variant="soft" :description="viewerToolStatus" />
         </div>
       </div>
     </aside>
@@ -166,6 +197,21 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
         <p class="mt-3 text-xs text-muted">{{ selectedPoi.description }}</p>
         <div class="mt-4 flex gap-2"><UButton label="Directions" color="primary" size="sm" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
       </UCard>
+      <UCard v-if="locationPickerOpen" class="absolute left-1/2 top-1/2 z-20 w-72 -translate-x-1/2 -translate-y-1/2 shadow-lg" :ui="{ body: 'p-4' }">
+        <div class="flex items-start justify-between gap-3"><div><p class="font-semibold text-highlighted">Location picker</p><p class="mt-1 text-xs text-muted">Choose a local preview point on Floor 1.</p></div><UButton icon="i-lucide-x" aria-label="Close location picker" color="neutral" variant="ghost" size="xs" @click="locationPickerOpen = false" /></div>
+        <div class="mt-4 rounded-lg border border-dashed border-primary bg-elevated p-4 text-center text-xs text-muted">Local map point · 41.387, 2.169</div>
+        <UButton class="mt-3 w-full" label="Use this location" size="sm" @click="locationPickerOpen = false; showViewerToolStatus('Selected map location stored locally.')" />
+      </UCard>
     </section>
+  <UModal v-model:open="viewerSettingsOpen" title="Viewer accessibility settings">
+    <template #body>
+      <div class="space-y-4">
+        <UCheckbox v-model="accessibleNavigation" label="Accessible navigation" description="Prefer lifts and accessible floor changes in local previews." />
+        <UCheckbox v-model="largeInterfaceText" label="Large interface text" description="Increase viewer text size locally." />
+        <UCheckbox v-model="highContrastCues" label="High contrast cues" description="Increase local control distinction." />
+      </div>
+    </template>
+    <template #footer><UButton label="Done" class="ml-auto" @click="viewerSettingsOpen = false; showViewerToolStatus('Viewer preferences saved locally.')" /></template>
+  </UModal>
   </div>
 </template>

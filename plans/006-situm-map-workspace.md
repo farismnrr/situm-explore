@@ -118,6 +118,8 @@ Rules:
 3. Do **not** add new Situm SDK/REST feature wiring during Plan 006.
 4. Never imply a remote mutation occurred.
 
+Implementation: completed with local layer toggles, local picker/settings overlays, and local-only tool status feedback.
+
 ## Phase 5 — Building/floor/view controls, dummy around the real configured viewer
 
 Before implementation, inspect building/floor/mode/zoom/center controls in the current HTML.
