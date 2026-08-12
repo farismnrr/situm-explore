@@ -4,49 +4,47 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Execute a gap-free sequential roadmap for the Situm Explore POC: first align the existing small Nuxt codebase to the Nuxt 4 architecture contract, then implement the full approved UI from the single user-owned HTML reference with dummy/local data for missing domains, then integrate selected Situm data/capabilities in later dedicated plans.
+Execute a gap-free sequential Situm Explore POC roadmap: Nuxt 4 architecture alignment -> complete approved UI with dummy/local data for missing domains -> user UI acceptance -> selective Situm integrations.
 
 ## Phase
 
-**Plan 004 is next. Phase 0 architecture/setup may run now; visual Phase 1+ remains blocked until the user replaces the canonical `Hello World` HTML placeholder.**
+**Plan 004 is next. Phase 0 architecture/setup may run now; visual Phase 1+ is blocked until the user replaces the canonical `Hello World` HTML placeholder.**
 
 ## Active contracts
 
-- `AGENTS.md` — root agent router and sequential-plan guard.
+- `AGENTS.md` — root router and sequential-plan guard.
 - `.agents/protocols/git-workflow.md` + `plans/README.md` — branch/phase/push/PR/integration workflow.
 - `ARCHITECTURE.md` — Nuxt 4 folder/layer/dependency source of truth.
-- `DESIGN.md` — design source-of-truth router.
+- `DESIGN.md` — design router.
 - `design/IMPLEMENTATION.md` — HTML -> Nuxt UI translation contract.
 - `design/data-source-matrix.md` — Plans 004–009 real-vs-dummy contract.
-- `design/reference/situm-explore-interactive-prototype.html` — only visual/interaction reference once populated by the user.
+- `design/reference/situm-explore-interactive-prototype.html` — only visual/interaction reference once user-populated.
 
-Historical plans/session notes are evidence only and do not override these current contracts.
+Historical plans/session notes are evidence only and do not override current contracts.
 
 ## Sequential execution rule
-
-For every dependent plan:
 
 ```text
 finish + validate plan branch
 -> push
--> user reviews
--> user explicitly authorizes PR/integration
+-> user review
+-> explicit PR/integration authorization
 -> dependency lands in main
 -> sync main
 -> create next plan branch from updated origin/main
 ```
 
-Do not start a dependent plan from stale `main` and do not silently stack branches. Stacked branches require explicit user request.
+Do not start a dependent plan from stale `main` or silently stack branches. Stacked branches require explicit user request.
 
-## Nuxt architecture target
+## Architecture target
 
-Plan 004 Phase 0 owns the one-time migration:
+Plan 004 Phase 0 owns:
 
 ```text
 app.vue                     -> app/app.vue
 app.config.ts               -> app/app.config.ts
 assets/                     -> app/assets/
-components/                 -> app/components/ with shallow product grouping
+components/                 -> app/components/
 middleware/                 -> app/middleware/
 pages/                      -> app/pages/
 server/utils/db.ts          -> server/db/client.ts
@@ -54,100 +52,94 @@ server/db/schema.ts         -> unchanged
 server/api/**               -> routes preserved
 ```
 
-Do not create empty `services/`, `repositories/`, `shared/`, `layers/`, stores, or generic infrastructure solely to match a diagram.
+Do not create empty services/repositories/shared/layers/stores/generic infrastructure just to match diagrams.
 
-## Current UI/data boundary
-
-Plans 004–009 are UI-first and dummy-first for product domains without an existing integration.
+## UI/data boundary — Plans 004–009
 
 Keep real:
 
 - `/api/auth/login`, `useUserSession()`, logout, server session authorization;
 - `/api/me` and PostgreSQL/Drizzle behavior;
 - `/api/situm/status` as configuration status only;
-- existing `SitumViewer` creation, `MAP_IS_READY`, `APP_ERROR`, and initialization errors.
+- existing Situm Viewer creation, `MAP_IS_READY`, `APP_ERROR`, init errors.
 
-Keep dummy/local until after UI acceptance:
+Keep typed dummy/local until after UI acceptance:
 
 - registration;
-- business metrics/activity;
+- product metrics/activity;
 - Buildings/Floors/POIs/Categories product data;
-- Geofences/Paths and route previews;
-- all newly represented Map Explore/Route/Layers controls beyond the existing Viewer lifecycle;
+- Geofences/Paths/routes;
+- all newly represented Map Explore/Route/Layers/tools beyond existing Viewer lifecycle;
 - Realtime;
 - Reports/Analytics;
 - Alarms;
 - Users/Groups/Organization;
 - newly represented Viewer settings/config/style/image behavior.
 
-Canonical synthetic records should be reused across screens from `app/data/prototype/` once Plan 004 migrates the app structure.
+Canonical synthetic records should be reused from `app/data/prototype/` after Plan 004 migration.
 
 ## Situm POC setup
 
-- Env: `NUXT_PUBLIC_SITUM_API_KEY` and `NUXT_PUBLIC_SITUM_BUILDING_ID`.
-- The single time-boxed POC key may have Read & Write permission for speed; revoke/replace it after the POC.
+- Env: `NUXT_PUBLIC_SITUM_API_KEY` + `NUXT_PUBLIC_SITUM_BUILDING_ID`.
+- One time-boxed POC key may have Read & Write permission; revoke/replace after POC.
 - Never persist/log/render the key value.
-- If building ID is missing locally, agent may GET `https://api.situm.com/api/v1/buildings` with `X-API-KEY` and write only the selected ID to ignored local `.env`.
-- Do not silently guess if multiple building candidates are genuinely ambiguous.
+- Missing local building ID may be discovered through `GET https://api.situm.com/api/v1/buildings` with `X-API-KEY`, writing only selected ID to ignored `.env`.
+- Do not silently guess among genuinely ambiguous buildings.
 - Broader key permission does not expand Plans 004–009.
 
 ## UI roadmap
 
-1. `plans/004-ui-foundation-public-auth.md`
-   - Phase 0: Nuxt 4 architecture/setup alignment; may run before HTML population.
-   - Phase 1+: Landing/Login/Register; requires populated HTML.
-   - Ends with real login still going to existing `/dashboard` so the plan is independently usable.
-2. `plans/005-authenticated-shell-dashboard.md`
-   - After Plan 004 lands in main.
-   - Atomically creates `/app/**`, changes login continuation to `/app`, redirects/retires legacy dashboard UI, and keeps the real Viewer reachable at `/app/map`.
-3. `plans/006-situm-map-workspace.md`
-   - Approved map workspace around the existing real Viewer; all new product controls remain dummy/local.
-4. `plans/007-cartography-explorer.md`
-   - Buildings/Floors, POIs, Geofences, Paths dummy UI; reuse canonical fixtures.
-5. `plans/008-operations-reports-ui.md`
-   - Realtime, Reports, Alarms, Users/Groups, Organization, Settings dummy/local UI.
-6. `plans/009-ui-conformance-polish.md`
-   - Whole-product HTML conformance, responsive/accessibility, regression, architecture/DRY, docs gate.
+1. **004** — architecture Phase 0, then Landing/Login/Register after HTML is populated. Ends with login still using existing `/dashboard`.
+2. **005** — authenticated layout; `app/app.vue` activates `NuxtLayout`; atomically creates `/app/**`, moves login to `/app`, keeps real Viewer reachable at `/app/map`, retires/redirects legacy dashboard UI.
+3. **006** — approved Map workspace around existing real Viewer; all newly introduced map tools stay local/dummy.
+4. **007** — dummy Buildings/Floors/POIs/Geofences/Paths; canonical fixtures reused.
+5. **008** — dummy/local Realtime, Analytics, Alarms, Users/Groups, Organization, Settings.
+6. **009** — whole-product HTML conformance, responsive/accessibility, foundation regression, architecture/DRY, docs gate.
 
 Plan 010 cannot start until Plan 009 is integrated and the user explicitly accepts the complete UI.
 
 ## Later Situm integration roadmap
 
-- `plans/010-progressive-situm-data-integration.md` — feasibility/capability/data-contract mapping only; no fixture replacement.
-- `plans/011-situm-buildings-pois-read-integration.md` — Buildings/Floors/POIs/Categories.
-- `plans/012-situm-geofences-paths-routing-integration.md` — Geofences/Paths/Routing.
-- `plans/013-situm-realtime-integration.md` — Realtime.
-- `plans/014-situm-reports-analytics-integration.md` — Reports/Analytics.
-- `plans/015-situm-organization-alarms-read-integration.md` — Organization/Users/Groups/Alarms where still valuable.
+10. **010** — feasibility/capability/data-contract/ownership mapping only; no fixture replacement or writes.
+11. **011** — Buildings/Floors/POIs/Categories.
+12. **012** — Geofences/Paths/Routing.
+13. **013** — Realtime positions plus only device metadata needed by accepted Realtime UI.
+14. **014** — Reports/Analytics.
+15. **015** — Organization/Users/Groups/Alarms where valuable.
+16. **016** — **conditional** remaining accepted Viewer/settings/write actions (map config/styles/images, favorites or other real Viewer actions, narrow mutations) only when Plan 010 records an explicit go-list. If no real action is needed, mark `skipped-not-needed` and do not implement it.
 
-These later plans also execute sequentially through integrated `main`. Real write actions are not implicitly included; if still needed for the POC, create a later explicit mutation plan.
+Later plans also execute sequentially through integrated `main`. Any Nitro/server Situm data route must use existing app session authorization; never create an unauthenticated generic Situm proxy.
 
 ## Completed / historical
 
-- Plans 000, 001, 002: completed foundation/resource work.
-- Plan 003: complete/closed historical UI attempt; rendered result was not accepted as the current design target.
+- Plans 000–002: completed foundation/resource work.
+- Plan 003: closed historical UI attempt; rendered result was not accepted as current design target.
 
-## Current blocker / open loop
+## Current open loop
 
-The canonical HTML file in the repository still contains only `Hello World`. The user intends to replace it manually with the approved interactive prototype.
+The canonical HTML still contains only `Hello World`. The user intends to replace it manually with the approved interactive prototype.
 
-Plan 004 Phase 0 may run before that replacement. After Phase 0, visual work must stop if the HTML is still placeholder-only.
+Plan 004 Phase 0 may run before replacement, but visual work stops at the reference guard if placeholder remains. Prefer populating the HTML before full sequential execution so the Plan 004 branch does not need to pause mid-plan.
 
 ## Audit status
 
-A repository-wide pre-execution audit on 2026-08-12 corrected:
+Repository-wide pre-execution audit corrected:
 
-- stale Read-Only credential wording;
-- Plan 010 implementation overlap with Plans 011–015;
+- stale credential/env/context wording;
 - sequential branch dependency ambiguity;
-- Plan 004 -> Plan 005 missing-route/login transition;
-- temporary loss risk for the real Viewer during route migration;
-- accidental permission for new Situm SDK/API wiring inside UI plans;
-- duplicate dummy-fixture ownership ambiguity;
-- stale durable goals/preferences/knowledge and project package description.
+- Plan 004 -> 005 missing-route/login transition;
+- Nuxt layout activation requirement in Plan 005;
+- temporary real-Viewer reachability during route migration;
+- accidental permission for new Situm API/SDK wiring inside UI plans;
+- duplicate dummy fixture ownership ambiguity;
+- Plan 010 duplicate implementation overlap;
+- missing server-session guard requirement for future Situm Nitro routes;
+- missing device ownership for Realtime;
+- missing ownership for remaining Viewer/settings/write actions via conditional Plan 016;
+- stale project goals/preferences/knowledge/package metadata.
 
-The remaining intentional boundary before UI work is the user-populated canonical HTML.
+The only intentional visual blocker is the user-populated canonical HTML.
 
 ## Next action
 
-When implementation begins, start Plan 004 from latest `origin/main`, execute Phase 0, validate/commit/push, and wait at the HTML guard if the canonical reference is still placeholder-only. No PR/integration without explicit user authorization.
+User populates the canonical HTML, then execute Plan 004 sequentially from current `main`. No dependent plan starts until the previous plan is reviewed, explicitly authorized for integration, and landed in `main`.
