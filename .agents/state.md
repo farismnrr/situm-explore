@@ -32,7 +32,7 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 
 ## Active plan
 
-- `plans/002-foundation-hardening.md` is merged to `main`; final manual authenticated/API and browser readiness checks remain documented as blocked.
+- `plans/002-foundation-hardening.md`
 
 ## Completed plans
 
@@ -48,7 +48,8 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 
 ## Open loops
 
-- Complete the documented manual authenticated/API and browser readiness checks if the project continues hardening.
+- Execute `plans/002-foundation-hardening.md` on branch `plan/002-foundation-hardening` using the normal repository working directory.
+- Complete Phase 1's removal commit and push; the exposure policy is now explicit.
 - Continue with later foundation-hardening phases; the application and Drizzle migrations now use the fixed `situm_explore` schema.
 - Phase 6 reconciliation is complete: Plans 000 and 001 now distinguish completed evidence from explicitly deferred/N/A optional work.
 - Automated Phase 7 validation passes. Remaining blockers are manual authenticated `/api/me` verification and browser confirmation of Situm's real `MAP_IS_READY` event.
