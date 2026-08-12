@@ -262,17 +262,17 @@ Responsive:
 
 Primary file: `app/layouts/app.vue` plus small app components only if they materially improve clarity/reuse.
 
-- [ ] Sidebar width exactly follows the canonical 228px desktop contract and 208px around the reference laptop breakpoint.
-- [ ] Match sidebar background, group spacing, group labels, item height, item font size, active/hover surfaces and icon footprint.
-- [ ] Keep navigation labels consistent with prototype (`Map Viewer`, `Viewer settings`, etc.) unless a latest explicit user direction supersedes them.
-- [ ] Rebuild account footer to match avatar + name + email + overflow affordance and separate Sign out action while using the real session/logout behavior.
-- [ ] Topbar fixed/sticky behavior, height, left offset and backdrop treatment match the prototype.
-- [ ] Replace current small ghost Search button with the canonical search-trigger field + keyboard hint on desktop.
-- [ ] Keep Cmd/Ctrl+K working.
-- [ ] Use an active Sync-style local/demo action footprint matching the prototype rather than an unrelated disabled refresh icon.
-- [ ] Keep POC status truthfully worded for the current project decision, but match the canonical pill footprint/placement.
-- [ ] Match mobile sidebar/backdrop/menu behavior.
-- [ ] Remove authenticated-route `max-w-6xl` constraints that unnecessarily narrow pages compared with canonical `app-content`, except where a reference surface is intentionally narrower.
+- [x] Sidebar width exactly follows the canonical 228px desktop contract and 208px around the reference laptop breakpoint.
+- [x] Match sidebar background, group spacing, group labels, item height, item font size, active/hover surfaces and icon footprint.
+- [x] Keep navigation labels consistent with prototype (`Map Viewer`, `Viewer settings`, etc.) unless a latest explicit user direction supersedes them.
+- [x] Rebuild account footer to match avatar + name + email + overflow affordance and separate Sign out action while using the real session/logout behavior.
+- [x] Topbar fixed/sticky behavior, height, left offset and backdrop treatment match the prototype.
+- [x] Replace current small ghost Search button with the canonical search-trigger field + keyboard hint on desktop.
+- [x] Keep Cmd/Ctrl+K working.
+- [x] Use an active Sync-style local/demo action footprint matching the prototype rather than an unrelated disabled refresh icon.
+- [x] Keep POC status truthfully worded for the current project decision, but match the canonical pill footprint/placement.
+- [x] Match mobile sidebar/backdrop/menu behavior.
+- [x] Remove authenticated-route `max-w-6xl` constraints that unnecessarily narrow pages compared with canonical `app-content`, except where a reference surface is intentionally narrower.
 
 Acceptance: every authenticated route inherits the correct visual frame before page-level tuning.
 

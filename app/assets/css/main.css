@@ -117,6 +117,51 @@ body {
   min-width: 0;
 }
 
+.search-trigger {
+  min-width: 220px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.625rem;
+  border: 1px solid var(--explore-border);
+  border-radius: var(--explore-radius-sm);
+  background: var(--explore-surface);
+  color: var(--explore-foreground-subtle);
+  font-size: 0.6875rem;
+}
+
+.search-trigger kbd {
+  border: 1px solid var(--explore-border);
+  border-radius: 0.3125rem;
+  background: var(--explore-surface-subtle);
+  padding: 0.125rem 0.3125rem;
+  color: var(--explore-foreground-subtle);
+  font-size: 0.625rem;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 0.75rem;
+  z-index: 100;
+  transform: translateY(-160%);
+  border-radius: var(--explore-radius-sm);
+  background: var(--explore-foreground);
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus { transform: translateY(0); }
+
+@media (min-width: 640px) and (max-width: 1100px) {
+  .app-sidebar { width: 208px; }
+  .app-shell-main { padding-left: 208px; }
+}
+
 @media (max-width: 639px) {
   .setting-row,
   .setting-section .flex.items-center.justify-between.gap-5 {
