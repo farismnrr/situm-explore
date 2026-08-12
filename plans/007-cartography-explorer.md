@@ -77,11 +77,11 @@ Match deliberately:
 
 Tasks:
 
-- [ ] Search/filter client-side against canonical typed fixtures.
-- [ ] Show floor coverage/resource status from dummy data.
-- [ ] `View on map` routes to `/app/map`; no real building deep-link is required yet.
-- [ ] Do not call the Situm buildings API from the app in this UI plan.
-- [ ] Compare desktop/mobile result against the current HTML.
+- [x] Search/filter client-side against canonical typed fixtures.
+- [x] Show floor coverage/resource status from dummy data.
+- [x] `View on map` routes to `/app/map`; no real building deep-link is required yet.
+- [x] Do not call the Situm buildings API from the app in this UI plan.
+- [x] Compare desktop/mobile result against the current HTML.
 
 ## Phase 3 — POIs `/app/pois`
 
