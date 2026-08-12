@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { homeBuilding, homePois } from '~/data/prototype/home'
-import { mapBuildings } from '~/data/prototype/map'
+import { cartographyBuildings } from '~/data/prototype/cartography'
 
 const activeTab = ref<'explore' | 'route' | 'layers'>('explore')
 const viewerState = ref<'loading' | 'ready' | 'error'>('loading')
@@ -23,14 +23,18 @@ const viewerToolStatus = ref('')
 const { showFeedback } = useExploreFeedback()
 const mapSearchFilter = ref(false)
 const savedCar = ref(false)
-const syntheticBuildingOptions = mapBuildings.map(building => building.label)
-const selectedBuilding = ref<string>(mapBuildings[0]!.label)
-const selectedFloor = ref<string>(mapBuildings[0]!.floors[0]!)
+const mapBuildings = computed(() => cartographyBuildings.map(building => ({
+  label: building.name,
+  floors: building.floors.map(floor => floor.name)
+})))
+const syntheticBuildingOptions = mapBuildings.value.map(building => building.label)
+const selectedBuilding = ref<string>(mapBuildings.value[0]!.label)
+const selectedFloor = ref<string>(mapBuildings.value[0]!.floors[0]!)
 const viewMode = ref<'explore' | 'realtime' | 'trajectory'>('explore')
 const zoomLevel = ref(1)
 const centerVersion = ref(0)
 
-const activeBuilding = computed(() => mapBuildings.find(building => building.label === selectedBuilding.value) ?? mapBuildings[0]!)
+const activeBuilding = computed(() => mapBuildings.value.find(building => building.label === selectedBuilding.value) ?? mapBuildings.value[0]!)
 
 function selectBuilding(building: string) {
   selectedBuilding.value = building

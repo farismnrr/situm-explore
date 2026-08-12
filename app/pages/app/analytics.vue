@@ -38,7 +38,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Analytics & reports'
     <p v-if="exportMessage" class="sr-only" role="status">{{ exportMessage }}</p>
 
     <div class="analytics-tabs flex gap-1 overflow-x-auto border-b border-default" role="tablist" aria-label="Analytics reports">
-      <button v-for="tab in analyticsTabs" :key="tab.id" type="button" role="tab" :aria-selected="activeReport === tab.id" class="analytics-tab shrink-0 border-b-2 px-3 py-2.5 text-xs font-medium transition" :class="activeReport === tab.id ? 'border-primary text-highlighted' : 'border-transparent text-muted hover:text-highlighted'" @click="activeReport = tab.id">{{ tab.label }}</button>
+      <button v-for="tab in analyticsTabs" :key="tab.id" type="button" role="tab" :aria-selected="activeReport === tab.id" :tabindex="activeReport === tab.id ? 0 : -1" class="analytics-tab shrink-0 border-b-2 px-3 py-2.5 text-xs font-medium transition" :class="activeReport === tab.id ? 'border-primary text-highlighted' : 'border-transparent text-muted hover:text-highlighted'" @click="activeReport = tab.id">{{ tab.label }}</button>
     </div>
 
     <UCard :ui="{ body: 'p-0' }">

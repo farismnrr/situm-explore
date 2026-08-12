@@ -20,7 +20,7 @@ No PR or merge has been requested.
 
 Do not merge Plan 009 wholesale into 009A and do not reset/rebase 009A merely to linearize history. Inspect later Plan 009 commits selectively and port/reimplement only still-relevant fixes that are missing from 009A.
 
-Known missing cleanup from the later Plan 009 history: the derived duplicate `app/data/prototype/map.ts` should be removed and map building/floor selectors should derive from the canonical cartography fixture source.
+Closure Phase 0 removed the derived duplicate `app/data/prototype/map.ts`; map building/floor selectors now derive from the canonical cartography fixture source.
 
 ## Active contracts
 
@@ -87,7 +87,7 @@ Useful canonical locator hints include current reference surfaces such as `#scre
 ### Architecture / accessibility
 
 - `app/pages/app/map.vue` has grown large enough to justify a small number of clear product boundaries while staying KISS;
-- `app/data/prototype/map.ts` is an unnecessary derived duplicate fixture;
+- map building/floor selectors derive directly from canonical cartography fixtures;
 - later Plan 009 accessibility improvements must be reconciled selectively where 009A regressed contrast/tab semantics;
 - do not create generic UI wrappers, Pinia, event bus, DI, repository/service layers, or backend expansion for this recovery.
 

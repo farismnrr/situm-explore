@@ -220,17 +220,17 @@ Do not inherit that blocker by assumption. From a clean checkout of current 009A
 
 No visual redesign in this phase.
 
-- [ ] Confirm working branch is `plan/009a-ui-prototype-fidelity-recovery` and working tree is safe.
-- [ ] Fetch latest refs and document the current 009 vs 009A divergence; do not merge Plan 009 wholesale.
-- [ ] Inspect the later Plan 009 commits for still-relevant fixes only.
-- [ ] Remove derived duplicate `app/data/prototype/map.ts` and derive map building/floor options from canonical cartography fixture data.
-- [ ] Restore any still-required accessibility fix from later Plan 009 only when 009A does not already implement an equivalent or better version.
-- [ ] Correct stale route/reference selector notes in `.agents/state.md` / session notes where they could mislead future execution.
-- [ ] Correct stale statements that canonical HTML still contains the old `S`; reference brand normalization is already complete.
-- [ ] Record that older checked 009A visual boxes are historical evidence and this closure checklist is authoritative.
-- [ ] `git diff --check`.
-- [ ] `npm run lint` for code changes.
-- [ ] commit and push Phase 0.
+- [x] Confirm working branch is `plan/009a-ui-prototype-fidelity-recovery` and working tree is safe.
+- [x] Fetch latest refs and document the current 009 vs 009A divergence; do not merge Plan 009 wholesale.
+- [x] Inspect the later Plan 009 commits for still-relevant fixes only.
+- [x] Remove derived duplicate `app/data/prototype/map.ts` and derive map building/floor options from canonical cartography fixture data.
+- [x] Restore any still-required accessibility fix from later Plan 009 only when 009A does not already implement an equivalent or better version.
+- [x] Correct stale route/reference selector notes in `.agents/state.md` / session notes where they could mislead future execution.
+- [x] Correct stale statements that canonical HTML still contains the old `S`; reference brand normalization is already complete.
+- [x] Record that older checked 009A visual boxes are historical evidence and this closure checklist is authoritative.
+- [x] `git diff --check`.
+- [x] `npm run lint` for code changes.
+- [x] commit and push Phase 0.
 
 Acceptance: branch lineage and current instructions are truthful; no missing cleanup is silently assumed to exist because it was committed to a sibling branch.
 

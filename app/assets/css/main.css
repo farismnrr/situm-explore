@@ -13,7 +13,8 @@
   --explore-surface-hover: #f4f5f7;
   --explore-foreground: #16181c;
   --explore-foreground-muted: #515862;
-  --explore-foreground-subtle: #8b939e;
+  /* Meets WCAG AA for normal text on the light surfaces used by the app. */
+  --explore-foreground-subtle: #5f6874;
   --explore-border: #e6e8ec;
   --explore-border-strong: #d8dce2;
   --explore-accent: #2563eb;
@@ -50,6 +51,32 @@ body {
 
 :focus-visible {
   @apply outline-2 outline-offset-2 outline-primary;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 0.75rem;
+  z-index: 100;
+  transform: translateY(-150%);
+  border-radius: 0.5rem;
+  background: var(--explore-foreground);
+  color: white;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: transform 150ms ease;
+}
+
+.skip-link:focus-visible { transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 /* Shared product-density primitives used by more than one authenticated surface. */

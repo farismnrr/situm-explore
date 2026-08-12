@@ -54,8 +54,8 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
 
     <div class="settings-layout grid gap-4 lg:grid-cols-[13.75rem_minmax(0,1fr)]">
       <UCard :ui="{ body: 'p-2 sm:p-2' }" class="h-fit overflow-hidden">
-        <nav class="flex gap-1 overflow-x-auto lg:block" aria-label="Viewer settings sections">
-          <button v-for="tab in tabs" :key="tab.id" type="button" class="shrink-0 rounded-md px-3 py-2 text-left text-sm transition lg:block lg:w-full" :class="activeTab === tab.id ? 'bg-elevated font-medium text-highlighted' : 'text-muted hover:bg-elevated/70 hover:text-highlighted'" :aria-current="activeTab === tab.id ? 'page' : undefined" @click="activeTab = tab.id">{{ tab.label }}</button>
+        <nav class="flex gap-1 overflow-x-auto lg:block" role="tablist" aria-label="Viewer settings sections">
+          <button v-for="tab in tabs" :key="tab.id" type="button" role="tab" :aria-selected="activeTab === tab.id" :tabindex="activeTab === tab.id ? 0 : -1" class="shrink-0 rounded-md px-3 py-2 text-left text-sm transition lg:block lg:w-full" :class="activeTab === tab.id ? 'bg-elevated font-medium text-highlighted' : 'text-muted hover:bg-elevated/70 hover:text-highlighted'" @click="activeTab = tab.id">{{ tab.label }}</button>
         </nav>
       </UCard>
 
