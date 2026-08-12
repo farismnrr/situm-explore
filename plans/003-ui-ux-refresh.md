@@ -213,10 +213,10 @@ Acceptance:
 
 No CI or unit-test framework is required for this plan.
 
-- [ ] `git diff --check`
-- [ ] `npm run lint`
-- [ ] `npm run typecheck`
-- [ ] `npm run build`
+- [x] `git diff --check`
+- [x] `npm run lint`
+- [x] `npm run typecheck`
+- [x] `npm run build`
 - [ ] Manual login success check.
 - [ ] Manual login error-state check.
 - [ ] Manual authenticated dashboard check.
@@ -225,9 +225,11 @@ No CI or unit-test framework is required for this plan.
 - [ ] Confirm application stays light-only under system dark preference.
 - [ ] Confirm no auth/database/Situm behavior was intentionally changed by this visual plan.
 - [ ] Confirm no secrets are staged or committed.
-- [ ] Update active plan and relevant `.agents/` context before the final phase commit.
-- [ ] Commit and push each completed phase according to the Git protocol.
+- [x] Update active plan and relevant `.agents/` context before the final phase commit.
+- [x] Commit and push each completed phase according to the Git protocol.
 - [ ] Do not create a PR until explicitly authorized.
+
+Phase 8 blocker: browser- and credential-dependent manual checks are unavailable in the current execution environment.
 
 ---
 
