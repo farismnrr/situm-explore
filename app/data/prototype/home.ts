@@ -48,7 +48,7 @@ export const homePois = cartographyPois
 
 export const homeActivity: HomeActivity[] = [
   { title: 'Map viewer ready', detail: 'Building viewer initialized successfully', time: '1m', tone: 'success' },
-  { title: 'Realtime refreshed', detail: '24 positions returned', time: '3m', tone: 'info' },
+  { title: 'Realtime demo refreshed', detail: 'Local fixture positions updated', time: '3m', tone: 'info' },
   { title: 'Report loaded', detail: 'Visitors · last 24 hours', time: '18m', tone: 'neutral' },
   { title: 'Geofence alert', detail: 'Meeting room max stay time', time: '32m', tone: 'warning' }
 ]

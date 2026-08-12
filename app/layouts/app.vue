@@ -95,8 +95,8 @@ async function logout() {
         </div>
         <div class="flex items-center gap-2">
           <UButton icon="i-lucide-search" label="Search" color="neutral" variant="ghost" size="sm" class="hidden sm:inline-flex" aria-haspopup="dialog" @click="openSearch" />
-          <UButton icon="i-lucide-refresh-cw" aria-label="Sync" color="neutral" variant="ghost" size="sm" />
-          <UBadge color="success" variant="soft" class="hidden sm:inline-flex"><span class="mr-1.5 size-1.5 rounded-full bg-success" />Connected</UBadge>
+          <UButton icon="i-lucide-refresh-cw" aria-label="Local demo refresh unavailable" color="neutral" variant="ghost" size="sm" disabled />
+          <UBadge color="neutral" variant="soft" class="hidden sm:inline-flex"><span class="mr-1.5 size-1.5 rounded-full bg-muted" />Local demo</UBadge>
         </div>
       </header>
       <main class="min-h-[calc(100vh-4rem)] p-4 sm:p-6 lg:p-8"><slot /></main>

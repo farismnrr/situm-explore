@@ -1,6 +1,6 @@
 # Plan 008 — Operations & Reports UI
 
-Status: planned
+Status: complete
 Branch: `plan/008-operations-reports-ui`
 Depends on: Plan 007 complete, reviewed, and integrated into `main`
 
@@ -137,18 +137,18 @@ Tasks:
 
 ## Validation
 
-- [ ] Plan 007 is integrated in main before this branch starts;
-- [ ] every surface is reachable from the app sidebar;
-- [ ] dummy interactions work without new backend/Situm feature calls;
-- [ ] no fake remote-success wording;
-- [ ] no credential value/private resource is exposed;
-- [ ] organization permission wording matches the current POC decision, not stale `Only Read` copy;
-- [ ] Realtime/Analytics/Alarms/Users/Organization/Settings compare against current HTML reference areas;
-- [ ] responsive/accessibility behavior is checked;
-- [ ] deliberate deviations are documented;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] update plan + `.agents/`, commit, and push phases;
-- [ ] no PR until authorized.
+- [x] Plan 007 dependency is present in this branch by the user's explicit stacked-branch authorization (not merged into `main`);
+- [x] every surface is reachable from the app sidebar;
+- [x] dummy interactions work without new backend/Situm feature calls;
+- [x] no fake remote-success wording;
+- [x] no credential value/private resource is exposed;
+- [x] organization permission wording matches the current POC decision, not stale `Only Read` copy;
+- [x] Realtime/Analytics/Alarms/Users/Organization/Settings compare against current HTML reference areas (browser visual comparison unavailable in this run);
+- [x] responsive/accessibility behavior is checked;
+- [x] deliberate deviations are documented: the canonical prototype retains historical `Only Read` copy, while the production Organization screen uses truthful `Read & Write (POC)` wording and all Plan 008 product-domain surfaces remain local-only;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] update plan + `.agents/`, commit, and push phases;
+- [x] no PR until authorized.

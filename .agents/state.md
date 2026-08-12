@@ -8,7 +8,7 @@ Execute a gap-free sequential Situm Explore POC roadmap: Nuxt 4 architecture ali
 
 ## Phase
 
-**Plan 008 is in progress on a deliberately stacked branch based on completed Plan 007, per the user's explicit unattended-run override.**
+**Plan 008 is complete on a deliberately stacked branch based on completed Plan 007; Plan 009 starts from its pushed HEAD per the user's explicit unattended-run override.**
 
 ## Active contracts
 
@@ -142,4 +142,4 @@ The only intentional visual blocker is the user-populated canonical HTML.
 
 ## Next action
 
-Complete Plan 008, then continue the authorized stacked branch sequence through Plan 009 without merging or opening PRs.
+Create Plan 009 from the completed Plan 008 HEAD, then finish the authorized stacked run without merging or opening PRs.
