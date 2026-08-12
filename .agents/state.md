@@ -34,8 +34,10 @@ Align the small existing codebase to a clear Nuxt 4 layered architecture before 
 - Use one full-stack Nuxt application for frontend and backend.
 - Use Nuxt UI as the production component/design foundation.
 - Preserve existing real login/session, `/api/me` database behavior, and truthful Situm `MAP_IS_READY` viewer lifecycle.
-- For product surfaces without an existing backend, prefer typed local dummy data instead of expanding backend/database scope.
-- Current Situm POC permission boundary remains `Only Read`; do not implement remote writes.
+- Plans 004–009 remain UI-first and dummy-first for product domains whose backend does not already exist. Do not add new Situm backend integrations merely to complete those UI plans.
+- For the time-boxed POC, use one `NUXT_PUBLIC_SITUM_API_KEY`; the user may provision it with Read & Write permission for speed. Revoke/replace it after the POC.
+- If local `NUXT_PUBLIC_SITUM_BUILDING_ID` is blank but the Situm API key exists, the agent may discover buildings with `GET https://api.situm.com/api/v1/buildings` using the `X-API-KEY` header, then write the selected building ID to ignored local `.env` only.
+- Additional Situm backend/API implementation happens only in later plans after the UI roadmap is complete and manually accepted.
 
 ## Architecture target
 
@@ -68,16 +70,11 @@ Do not create empty `services/`, `repositories/`, `shared/`, `layers/`, stores, 
 
 Missing backend domains stay dummy/local during Plans 004–009.
 
-## Later real-data roadmap
+## Later backend/integration roadmap
 
-- `plans/010-progressive-situm-data-integration.md` — umbrella/feasibility plan after UI acceptance.
-- `plans/011-situm-buildings-pois-read-integration.md`
-- `plans/012-situm-geofences-paths-routing-integration.md`
-- `plans/013-situm-realtime-integration.md`
-- `plans/014-situm-reports-analytics-integration.md`
-- `plans/015-situm-organization-alarms-read-integration.md`
+Plans after UI acceptance may replace selected dummy surfaces with real Situm data and may use the single POC Situm credential where needed. Keep each backend/integration change in its own plan rather than expanding Plans 004–009.
 
-Do not start Plans 010–015 until the UI produced by Plans 004–009 is manually accepted by the user.
+Existing `plans/010-*` through `plans/015-*` are later integration candidates and must not start until the UI produced by Plans 004–009 is manually accepted by the user. Their exact read/write scope may be revised at execution time to match the POC need.
 
 ## Completed / closed plans
 
@@ -92,17 +89,18 @@ Do not start Plans 010–015 until the UI produced by Plans 004–009 is manuall
 - Current package uses Nuxt 4 and Nuxt UI 4, but Vue app files still use Nuxt's backwards-compatible root directory layout and should be migrated once before further growth.
 - Existing login/session flow is real and should be reused.
 - Authenticated `/api/me` and PostgreSQL `situm_explore` behavior already exist.
-- Real Situm browser viewer integration already exists with read-only credential configuration and truthful `MAP_IS_READY` readiness.
+- Real Situm browser viewer integration already exists with one POC API-key configuration and truthful `MAP_IS_READY` readiness.
 - Local credentials remain ignored and must never be committed.
 
 ## Open loops
 
 - Execute Plan 004 Phase 0 on `plan/004-ui-foundation-public-auth` when implementation work starts; migrate existing Vue app files into Nuxt 4 `app/` and move DB client initialization beside the DB schema.
+- If the local Situm building ID is missing, discover it from `/api/v1/buildings` with the local API key and persist only the selected ID in local `.env`.
 - User manually replaces the `Hello World` placeholder in `design/reference/situm-explore-interactive-prototype.html` with the approved interactive reference.
 - After HTML population, continue Plan 004 Phase 1+ for visual implementation.
-- Keep each subsequent UI plan narrow and reviewable.
-- Only replace dummy data with real Situm reads after UI acceptance through Plans 010–015.
+- Keep each subsequent UI plan narrow, dummy-first, and reviewable.
+- Only add/replace Situm backend integrations after UI acceptance in later dedicated plans.
 
 ## Next likely action
 
-Start Plan 004 Phase 0 from latest `origin/main` if the user asks to execute it. Read `ARCHITECTURE.md` first, perform only behavior-preserving Nuxt 4 structure alignment, validate/commit/push, then stop before visual Phase 1 if the canonical HTML is still placeholder-only. No PR until explicit user authorization.
+Start Plan 004 Phase 0 from latest `origin/main` if the user asks to execute it. Read `ARCHITECTURE.md` first, perform only behavior-preserving Nuxt 4 structure alignment, discover a missing local Situm building ID if needed, validate/commit/push, then stop before visual Phase 1 if the canonical HTML is still placeholder-only. No PR until explicit user authorization.
