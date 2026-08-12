@@ -1,155 +1,157 @@
-# Plan 010 — Progressive Situm Data Integration
+# Plan 010 — Situm Integration Feasibility & Contract Mapping
 
 Status: planned-later
 Branch: `plan/010-progressive-situm-data-integration`
-Depends on: UI accepted through Plan 009
+Depends on: Plan 009 integrated into `main` **and** explicit user acceptance of the completed UI roadmap
 
 ## Goal
 
-Replace selected dummy read-only surfaces with real Situm data only after the UI is approved. This plan is intentionally later so backend/API expansion does not block UI delivery.
+Prepare the later Situm backend/data integration work **without replacing any UI dummy dataset yet**.
 
-## Mandatory UI-preservation reference
+Plan 010 is a feasibility/contract-mapping gate only. Plans 011–015 are the actual domain integration plans. This separation prevents duplicate implementation when the roadmap is executed sequentially.
 
-Canonical visual/interaction reference:
+## Hard boundary
 
-`design/reference/situm-explore-interactive-prototype.html`
+During Plan 010:
 
-Before integrating any dataset, **open the canonical HTML and read the exact screen that consumes that dataset**. This plan changes data sources, not product composition.
+- do not replace Buildings/Floors dummy data;
+- do not replace POIs;
+- do not integrate Geofences/Paths/Routing;
+- do not integrate Realtime;
+- do not replace Reports/Analytics;
+- do not integrate Organization/Users/Groups/Alarms;
+- do not redesign accepted UI;
+- do not introduce remote write actions.
 
-Required mapping:
+Those belong to Plans 011–015 or to a later explicit write-action plan if the user still needs one after read/data integration.
 
-- Buildings/Floors -> `#app-buildings` and `#app-map` building/floor controls.
-- POIs/Categories -> `#app-pois` and `#app-map` Explore/POI states.
-- Geofences -> `#app-geofences` and Map Layers UI.
-- Paths/Routing -> `#app-paths` and `#app-map` Route UI.
-- Realtime -> `#app-realtime` and Map Realtime mode/layer.
-- Reports -> `#app-analytics` and every matching `.report-pane`.
-- Organization/Users/Alarms -> `#app-organization`, `#app-users`, `#app-alarms`.
+## Required reading
 
-Per integration:
+- `AGENTS.md`
+- `ARCHITECTURE.md`
+- `DESIGN.md`
+- `design/IMPLEMENTATION.md`
+- `design/data-source-matrix.md`
+- populated `design/reference/situm-explore-interactive-prototype.html`
+- completed/accepted Plans 004–009 implementation and state
+- Plans 011–015 so feasibility decisions line up with their scopes
+- this plan
 
-1. Read the relevant HTML section first.
-2. Inspect the accepted Nuxt implementation produced by Plans 004–009.
-3. Map real API responses into the existing accepted UI contract.
-4. Do not redesign layout, navigation, card/table density, labels, or interaction hierarchy simply because the data becomes real.
-5. UI changes are limited to truthful loading/empty/error states or unavoidable capability differences, which must be documented.
+## UI-preservation rule
 
-## Credential policy
+For every candidate dataset, inspect:
 
-Current POC uses one `Only Read` Situm key.
+1. the accepted Nuxt route/components/types produced by Plans 004–009;
+2. the corresponding current canonical HTML reference area;
+3. the canonical typed dummy fixtures that will eventually be replaced.
 
-- Do not request `Cartography Edition` or `Read & Write` for this plan.
-- Never expose credential values in logs/UI/repo.
-- If server-side API usage is introduced, evaluate whether the existing browser-visible POC key is still acceptable or whether a dedicated server key should be introduced before productionization.
+The later API payload must be adapted into the accepted UI contract. API response shape does not get to redesign the product.
 
-## Integration order
+## POC credential contract
 
-Do not integrate everything at once.
+Current environment contract:
 
-### Phase 1 — Discovery feasibility
+```text
+NUXT_PUBLIC_SITUM_API_KEY
+NUXT_PUBLIC_SITUM_BUILDING_ID
+```
 
-- [ ] Read all relevant canonical HTML target screens before defining data mappings.
-- [ ] Inspect current official Situm JS SDK and REST docs.
-- [ ] Inventory which approved UI fields can be obtained with read-only GET/SDK APIs.
-- [ ] Decide browser SDK vs Nitro server route per dataset based on current official guidance and credential exposure, not convenience.
-- [ ] Keep scope read-only.
-- [ ] Document response-to-existing-UI-type mapping before replacing data.
+The time-boxed POC uses one Situm key and the user may provision it with Read & Write permission for speed.
 
-### Phase 2 — Buildings & Floors
+Rules:
 
-First real replacement candidate.
+- reuse that same environment variable for later Situm integrations unless the user explicitly changes the POC decision;
+- never commit/render/log the key value;
+- do not create a second Situm key/env variable during this roadmap merely for architectural purity;
+- broader key permission does **not** mean every plan should perform writes;
+- Plan 010 uses safe read/discovery probes only while mapping capability;
+- any real mutation must be explicitly owned by a later plan and correspond to an accepted product action.
 
-Before implementation, read `#app-buildings` and `#app-map` building/floor controls.
+## Phase 1 — Verify current local setup
 
-- [ ] load buildings/floors through the chosen supported API;
-- [ ] map to existing UI types;
-- [ ] preserve loading/empty/error states;
-- [ ] remove only the replaced dummy fixture records;
-- [ ] do not change accepted page design.
+- [ ] Confirm Plan 009 is integrated and UI is explicitly accepted by the user.
+- [ ] Confirm local ignored `.env` has the POC key without printing it.
+- [ ] If building ID is missing, follow the documented `/api/v1/buildings` discovery flow and write only the selected ID to local `.env`.
+- [ ] Do not change public environment naming.
 
-### Phase 3 — POIs / Categories
+## Phase 2 — Official API/SDK capability inventory
 
-Before implementation, read `#app-pois` and `#app-map` Explore/POI states.
+Using current official Situm documentation and safe local read probes, map the accepted UI needs for:
 
-- [ ] load real POIs/categories read-only;
-- [ ] keep search/filter client-side unless dataset size proves otherwise;
-- [ ] connect `View on map` only when viewer API mapping is reliable;
-- [ ] favorites may remain local unless a supported read/write product requirement appears later;
-- [ ] preserve accepted POI UI composition.
+- Buildings/Floors/POIs/Categories;
+- Geofences/Paths/Routing;
+- Realtime;
+- Reports/Analytics;
+- Organization/Users/Groups/Alarms;
+- any accepted UI action that might actually require a write later.
 
-### Phase 4 — Geofences / Paths
+For each capability record in this plan's notes:
 
-Before implementation, read `#app-geofences`, `#app-paths`, and matching Map Layers/Route UI.
+- official endpoint/SDK capability;
+- required permission;
+- fields required by the accepted UI only;
+- browser Viewer vs Nitro/server access path;
+- expected loading/empty/error behavior;
+- target later plan number.
 
-- [ ] read real geofences/path metadata if supported and useful;
-- [ ] preserve dummy report values unless report endpoints are separately integrated;
-- [ ] no cartography writes;
-- [ ] preserve accepted page/map composition.
+Do not add product fields just because the external API exposes them.
 
-### Phase 5 — Realtime
+## Phase 3 — Decide one data path per domain
 
-Before implementation, read `#app-realtime` and Map Realtime mode/layer states.
+For each domain, choose the smallest appropriate approach:
 
-- [ ] inspect official realtime API/SDK contract and recommended refresh/subscription model;
-- [ ] integrate only if POC usage and credential boundary are acceptable;
-- [ ] keep polling/subscription simple;
-- [ ] avoid queues/websocket infrastructure unless the Situm API actually requires it;
-- [ ] preserve accepted Realtime UI hierarchy.
+- existing browser Viewer capability when the feature genuinely belongs to Viewer behavior; or
+- a small Nitro/server integration when the app needs REST data.
 
-### Phase 6 — Reports / Analytics
+Rules:
 
-Before each report integration, open `#app-analytics` and the exact matching `.report-pane`.
+- do not implement both browser and server paths for the same data without a concrete reason;
+- follow `ARCHITECTURE.md`;
+- do not create generic repository/service layers preemptively;
+- a simple server-side Situm request helper may be introduced later by the first domain plan that actually needs it, rather than ceremonially in Plan 010.
 
-Integrate one report at a time based on product value:
+## Phase 4 — Map existing fixture contracts to later plans
 
-- visitors;
-- geofence stay time;
-- positioning time;
-- user positions;
-- map viewer usage;
-- heatmap if supported.
+Create/update plan notes so later implementation is deterministic:
 
-- [ ] each report keeps current accepted UI contract;
-- [ ] no background-job infrastructure unless API latency/contract proves necessary;
-- [ ] graceful fallback to clear empty/error state, not dummy values silently mixed with real data.
+- Plan 011 owns Buildings/Floors/POIs/Categories;
+- Plan 012 owns Geofences/Paths/Routing;
+- Plan 013 owns Realtime;
+- Plan 014 owns Reports/Analytics;
+- Plan 015 owns Organization/Users/Groups/Alarms.
 
-### Phase 7 — Organization / Users / Alarms
+For each plan, identify which canonical `app/data/prototype/` records will be replaced and which remain intentionally dummy.
 
-Before implementation, read `#app-organization`, `#app-users`, and `#app-alarms`.
+Do not delete or replace fixtures in Plan 010.
 
-- [ ] integrate only if needed for the POC demonstration;
-- [ ] keep these distinct from application auth users;
-- [ ] remain read-only;
-- [ ] preserve accepted UI composition.
+## Phase 5 — Write-action decision
 
-## Data-boundary rule
+Review accepted dummy/local actions after all read/data mappings are known.
 
-A page must be one of:
+- [ ] Identify which accepted UI actions, if any, genuinely need a Situm mutation for the POC.
+- [ ] Do not implement them here.
+- [ ] If real writes are still needed, create a new dedicated plan after Plan 015 (or another explicitly ordered point chosen by the user) with narrow mutation scope and the same POC key.
+- [ ] If no real writes are needed for the demo, leave those interactions local and avoid unnecessary backend scope.
 
-1. clearly real data;
-2. clearly local prototype data in source code;
-3. mixed only when each field/group has a deliberate source.
+## Validation / completion
 
-Never silently present dummy values as if they came from Situm.
-
-## Validation per integration
-
-- relevant canonical HTML target screen re-read before implementation;
-- official API/SDK docs checked;
-- no extra permission level required;
-- no credential leakage;
-- error/rate-limit behavior handled;
-- accepted UI unchanged except loading/empty/error necessities;
-- lint/typecheck/build;
-- manual API smoke check;
-- phase commit/push;
-- no PR until authorized.
+- [ ] No accepted UI composition was changed.
+- [ ] No dummy source was replaced yet.
+- [ ] No remote mutation occurred.
+- [ ] No credential value was committed/logged.
+- [ ] Every domain has a clear owner among Plans 011–015.
+- [ ] Later plan dependency/order is unambiguous.
+- [ ] Any capability that cannot be implemented cleanly is explicitly marked to remain dummy rather than left as an implicit blocker.
+- [ ] `git diff --check` for docs/config changes.
+- [ ] Update `.agents/` and this plan.
+- [ ] Commit/push the plan branch.
+- [ ] No PR until user authorization.
 
 ## Non-goals
 
-- Situm writes;
-- POI/geofence/path editing;
-- account administration;
-- key management UI;
-- background workers unless proven necessary;
-- broad backend redesign.
+- actual domain data replacement;
+- UI redesign;
+- new database tables;
+- background workers/queues;
+- credential/key split;
+- remote Situm writes.
