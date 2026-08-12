@@ -110,21 +110,21 @@ Acceptance:
 
 Keep authentication behavior unchanged while improving clarity and polish.
 
-- [ ] Use a focused, vertically balanced auth layout on a light page background.
-- [ ] Keep the auth surface narrow and readable on desktop while responsive on mobile.
-- [ ] Add visible field labels with Nuxt UI form primitives; do not rely on placeholders as labels.
-- [ ] Improve title/supporting copy hierarchy without turning the page into a marketing landing page.
-- [ ] Use one obvious full-width primary sign-in action.
-- [ ] Add submit loading/disabled behavior so duplicate submissions are discouraged.
-- [ ] Keep useful inline login errors and make their visual treatment calm but clear.
-- [ ] Preserve password-manager/autofill semantics.
-- [ ] When already logged in, provide one clean continue-to-dashboard action.
+- [x] Use a focused, vertically balanced auth layout on a light page background.
+- [x] Keep the auth surface narrow and readable on desktop while responsive on mobile.
+- [x] Add visible field labels with Nuxt UI form primitives; do not rely on placeholders as labels.
+- [x] Improve title/supporting copy hierarchy without turning the page into a marketing landing page.
+- [x] Use one obvious full-width primary sign-in action.
+- [x] Add submit loading/disabled behavior so duplicate submissions are discouraged.
+- [x] Keep useful inline login errors and make their visual treatment calm but clear.
+- [x] Preserve password-manager/autofill semantics.
+- [x] When already logged in, provide one clean continue-to-dashboard action.
 
 Acceptance:
 
-- [ ] Login feels like a polished SaaS auth screen without unnecessary illustration/marketing content.
-- [ ] Mobile and desktop layouts are both comfortable.
-- [ ] Existing auth success/failure behavior is preserved.
+- [x] Login feels like a polished SaaS auth screen without unnecessary illustration/marketing content.
+- [x] Mobile and desktop layouts are both comfortable.
+- [x] Existing auth success/failure behavior is preserved.
 
 ---
 
