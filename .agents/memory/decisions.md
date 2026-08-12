@@ -10,6 +10,14 @@
 
 Status: active.
 
+## 2026-08-12 — Web foundation implementation
+
+- Use `nuxt-auth-utils` for sealed sessions and its scrypt password utilities; the first slice authenticates one configured owner credential rather than introducing account management.
+- Use `@situm/sdk-js` Map Viewer in the browser. Its documented browser initialization requires the Situm API key client-side, so the integration uses an explicitly public `NUXT_PUBLIC_SITUM_API_KEY`; no server-only secret is exposed through runtime configuration.
+- Drizzle owns only the `situm_explore` PostgreSQL schema and its initial `app_settings` table.
+
+Status: active.
+
 ## 2026-08-12 — Initial web architecture
 
 - Move from agent-foundation-only into the first web foundation phase.
