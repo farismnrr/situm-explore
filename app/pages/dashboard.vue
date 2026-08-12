@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-definePageMeta({ middleware: 'auth' })
+definePageMeta({ middleware: 'auth', layout: 'app', title: 'Dashboard' })
 
 const { data, error } = await useFetch('/api/me')
 
@@ -13,8 +13,7 @@ const connectivityLabel = computed(() => {
 </script>
 
 <template>
-  <AppShell>
-    <div class="mx-auto max-w-6xl space-y-5 sm:space-y-6">
+  <div class="mx-auto max-w-6xl space-y-5 sm:space-y-6">
       <header class="space-y-1">
         <h1 class="text-2xl font-semibold tracking-tight text-highlighted sm:text-3xl">Building map</h1>
         <p class="text-sm text-muted">Explore your building in Situm.</p>
@@ -26,6 +25,5 @@ const connectivityLabel = computed(() => {
         <span class="text-muted">Application status</span>
         <span class="text-highlighted" role="status" aria-live="polite">{{ connectivityLabel }}</span>
       </div>
-    </div>
-  </AppShell>
+  </div>
 </template>

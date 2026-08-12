@@ -1,6 +1,6 @@
 # Plan 005 — Authenticated App Shell & Dashboard
 
-Status: planned
+Status: in progress
 Branch: `plan/005-authenticated-shell-dashboard`
 Depends on: Plan 004 complete, reviewed, and integrated into `main`
 
@@ -49,18 +49,18 @@ Before implementation, inspect the authenticated shell and mobile state in the c
 
 Tasks:
 
-- [ ] Create the authenticated Nuxt layout using the approved sidebar + topbar composition.
-- [ ] **Update `app/app.vue` so layouts are actually rendered**, preserving the global `UApp` wrapper, e.g. the equivalent of `UApp -> NuxtLayout -> NuxtPage`. Do not create `app/layouts/app.vue` while leaving `NuxtPage` outside `NuxtLayout`.
-- [ ] Replace/remove the interim Plan 004 `AppShell` component once the layout owns authenticated chrome; do not keep two shell architectures.
-- [ ] Use shallow components under `app/components/app/` only when they improve readability/reuse.
-- [ ] Use real Nuxt routes and active-route state.
-- [ ] Account identity comes from `useUserSession()`.
-- [ ] Logout uses existing `clear()` and returns to public `/` consistently.
-- [ ] Keep the navigation-arrow brand mark from the approved reference.
-- [ ] Update `app/middleware/auth.ts` so unauthenticated `/app/**` navigation goes to `/login`, not the public landing page.
-- [ ] Keep API authorization server-side as it already exists; client middleware is navigation UX only.
-- [ ] Do not add Pinia/global-store architecture for shell state.
-- [ ] Match desktop/mobile shell behavior against the HTML.
+- [x] Create the authenticated Nuxt layout using the approved sidebar + topbar composition.
+- [x] **Update `app/app.vue` so layouts are actually rendered**, preserving the global `UApp` wrapper, e.g. the equivalent of `UApp -> NuxtLayout -> NuxtPage`. Do not create `app/layouts/app.vue` while leaving `NuxtPage` outside `NuxtLayout`.
+- [x] Replace/remove the interim Plan 004 `AppShell` component once the layout owns authenticated chrome; do not keep two shell architectures.
+- [x] Use shallow components under `app/components/app/` only when they improve readability/reuse.
+- [x] Use real Nuxt routes and active-route state.
+- [x] Account identity comes from `useUserSession()`.
+- [x] Logout uses existing `clear()` and returns to public `/` consistently.
+- [x] Keep the navigation-arrow brand mark from the approved reference.
+- [x] Update `app/middleware/auth.ts` so unauthenticated `/app/**` navigation goes to `/login`, not the public landing page.
+- [x] Keep API authorization server-side as it already exists; client middleware is navigation UX only.
+- [x] Do not add Pinia/global-store architecture for shell state.
+- [x] Match desktop/mobile shell behavior against the HTML.
 
 Acceptance:
 

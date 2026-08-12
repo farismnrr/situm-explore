@@ -8,7 +8,7 @@ Execute a gap-free sequential Situm Explore POC roadmap: Nuxt 4 architecture ali
 
 ## Phase
 
-**Plan 004 is complete on its plan branch; integration into `main` is the next gate before Plan 005.**
+**Plan 005 is in progress on a deliberately stacked branch based on completed Plan 004, per the user's explicit unattended-run override.**
 
 ## Active contracts
 
@@ -142,4 +142,4 @@ The only intentional visual blocker is the user-populated canonical HTML.
 
 ## Next action
 
-Review and integrate Plan 004 into `main`; do not start dependent Plan 005 until that integration is complete.
+Complete Plan 005 phases, then continue the authorized stacked branch sequence through Plan 009 without merging or opening PRs.
