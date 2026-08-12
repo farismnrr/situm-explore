@@ -43,14 +43,13 @@ Harden the completed Nuxt web foundation before starting the first self-improvem
 
 - Nuxt full-stack foundation is merged to `main`.
 - Local PostgreSQL `situm_explore` schema has been migrated without touching unrelated database objects.
-- Situm building discovery identified building `19866` and floors `69904`/`69905`.
-- Building floorplan JPEGs and related non-secret metadata are currently committed in a public repository; visibility/exposure must be treated as an explicit policy decision during hardening.
+- Building floorplan JPEGs and related metadata were removed from the current tree after the user decided they must not remain public; historical Git blobs remain because history rewrite was not authorized.
 - Local credentials remain ignored and must never be committed.
 
 ## Open loops
 
 - Execute `plans/002-foundation-hardening.md` on branch `plan/002-foundation-hardening` using the normal repository working directory.
-- Resolve the public-resource exposure decision before treating the foundation as fully hardened.
+- Complete Phase 1's removal commit and push; the exposure policy is now explicit.
 - Verify least-privilege Situm browser credential usage.
 - Make Nuxt ESLint clean-clone reproducible.
 - Make Situm viewer ready-state reflect the SDK's actual ready event.
