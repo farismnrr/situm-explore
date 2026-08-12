@@ -2,7 +2,7 @@
 
 Status: **planned-ready**
 Branch: `plan/010-progressive-situm-data-integration`
-Depends on: Plans 009A and 009B closed, with the user's final manually corrected UI explicitly accepted as the cumulative UI baseline
+Depends on: Plans 009A and 009B closed, the user's final manually corrected UI explicitly accepted, and the cumulative UI baseline integrated into `main`
 
 ## Goal
 
@@ -12,17 +12,19 @@ Plan 010 is feasibility/contract-mapping only. Plans 011–015 own real read/dat
 
 ## UI gate status
 
-The UI gate is satisfied.
+The UI gate is satisfied and the accepted cumulative UI is integrated into `main` through integration PR #6.
 
-Plan 009A is historical. Automated Plan 009B work was stopped after regressions, the user then completed the difficult UI correction manually, explicitly accepted the manual result, and asked to close the UI plans so the roadmap can continue.
+Current integration baseline at the time this plan was updated:
+
+`873253075dfbb79410d4f3c94865759ccac43a02`
 
 Before creating the Plan 010 branch, perform only the normal baseline preflight:
 
-1. confirm the user's final manual UI changes are committed and pushed;
-2. identify that final cumulative UI HEAD;
-3. create `plan/010-progressive-situm-data-integration` from that HEAD, not stale `main` or an older 009A/009B baseline.
+1. fetch the latest `main`;
+2. confirm `main` still contains the accepted UI baseline and has no unexpected integration blocker;
+3. create `plan/010-progressive-situm-data-integration` from current `main`.
 
-Do not reopen 009B/009C as a prerequisite.
+Do not reopen 009B/009C as a prerequisite and do not branch Plan 010 from historical 009A/009B branches now that the cumulative UI has been integrated.
 
 ## Hard boundary
 
@@ -40,7 +42,7 @@ During Plan 010:
 - `DESIGN.md`
 - `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
-- current accepted Nuxt UI implementation after the user's manual correction
+- current accepted Nuxt UI implementation on `main`
 - populated canonical HTML reference as historical/reference context where still useful
 - closed Plans 009A and 009B
 - Plans 011–016 so feasibility decisions match later scopes
@@ -50,7 +52,7 @@ During Plan 010:
 
 For every candidate dataset/action inspect:
 
-1. the final manually accepted Nuxt route/components/types;
+1. the final manually accepted Nuxt route/components/types on current `main`;
 2. corresponding current local fixture/action contract;
 3. canonical HTML only as secondary reference when it still agrees with the accepted manual UI.
 
@@ -82,7 +84,7 @@ Rules:
 ## Phase 1 — Verify current local setup and accepted UI baseline
 
 - [ ] Confirm Plans 009A and 009B are closed.
-- [ ] Confirm the user's final manual UI changes are committed/pushed and record the exact cumulative baseline HEAD.
+- [ ] Record the exact current `main` HEAD used to create the Plan 010 branch.
 - [ ] Confirm ignored local `.env` has the POC key without printing it.
 - [ ] If building ID is missing, follow documented `/api/v1/buildings` discovery and write only selected ID to local `.env`.
 - [ ] Do not change environment naming.
