@@ -8,7 +8,7 @@ Do not place user-specific facts here; those belong in `../memory/`.
 
 ### Situm Explore building resource discovery
 
-- Building floorplan resources and their Situm identifiers were removed from the repository current tree after the user decided they must not remain public. Historical Git blobs remain; do not restore or recommit the assets without a new explicit decision.
+- Situm discovery mapped local slug `building-1422` to building `19866` (`PT Berjaya Inovasi Global`), with floors `69904` (`lt 1`) and `69905` (`lt 2`). Local JPEGs remain reference assets pending cartography comparison.
 
 Source: observed from Situm API discovery during resource gathering on 2026-08-12.
 

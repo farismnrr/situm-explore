@@ -6,7 +6,7 @@ Principle: gather what we already have, discover what the APIs/database can tell
 
 ## Goal
 
-Prepare the minimum local resources needed to execute `plans/001-web-foundation.md` without prematurely building product features. The gathered building files were later removed from the public repository current tree by explicit user decision; this historical plan records the original intake only.
+Prepare the minimum local resources needed to execute `plans/001-web-foundation.md` without prematurely building product features.
 
 This phase is complete when Codex has local access to the building floorplan assets, Situm credentials through `.env`, PostgreSQL access through `.env`, and enough Situm/database metadata to start the web foundation safely.
 

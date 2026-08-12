@@ -1,6 +1,6 @@
 # Plan 002 — Foundation Hardening
 
-Status: in progress
+Status: planned
 Scope: harden the completed web foundation before starting product/self-improvement features
 Principle: fix concrete foundation risks without expanding architecture.
 
@@ -44,17 +44,18 @@ The repository is currently public and contains committed building floorplan JPE
 
 Do not silently assume this exposure is acceptable.
 
-- [x] Confirm current repository visibility before changing anything: the repository is public.
-- [x] Inventory committed building resources and metadata that were publicly reachable.
-- [x] Confirm the intended policy: building floorplans and related metadata must not remain public (user-stated, 2026-08-12).
-- [x] Remove the current-tree resources and add an ignore rule to prevent accidental recommit.
-- [x] Remember: deleting a file in a new commit does not remove its historical Git blob.
-- [x] Do not rewrite Git history or change repository visibility without explicit user authorization.
+- [ ] Confirm current repository visibility before changing anything.
+- [ ] Inventory committed building resources and metadata that are publicly reachable.
+- [ ] Confirm the intended policy: intentionally public, or must be protected/removed.
+- [ ] If public exposure is approved, persist the decision and avoid unnecessary file churn.
+- [ ] If public exposure is not approved, stop product work and prepare the smallest safe remediation path.
+- [ ] Remember: deleting a file in a new commit does not remove its historical Git blob.
+- [ ] Do not rewrite Git history or change repository visibility without explicit user authorization.
 
 Acceptance:
 
-- [x] Resource visibility policy is explicit and persisted.
-- [x] No destructive history rewrite or visibility change happened implicitly.
+- [ ] Resource visibility policy is explicit and persisted.
+- [ ] No destructive history rewrite or visibility change happened implicitly.
 
 ---
 

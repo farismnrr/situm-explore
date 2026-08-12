@@ -12,9 +12,6 @@ dist/
 !.env.example
 .data/
 
-# Local building resources are not approved for repository distribution.
-resources/buildings/
-
 # Logs and temporary files
 *.log
 logs/
