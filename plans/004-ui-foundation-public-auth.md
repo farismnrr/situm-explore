@@ -208,11 +208,11 @@ Before implementation, inspect the registration state in the current populated H
 
 There is no registration/account backend in current scope.
 
-- [ ] Match the reference form composition and responsive behavior using Nuxt UI form primitives.
-- [ ] Use local validation/demo state only.
-- [ ] No DB insert, Drizzle migration, or registration API route.
-- [ ] Do not fake a durable authenticated account/session.
-- [ ] Successful demo completion should clearly route the user to real `/login` or show a local completion state; never claim a real account was created.
+- [x] Match the reference form composition and responsive behavior using Nuxt UI form primitives.
+- [x] Use local validation/demo state only.
+- [x] No DB insert, Drizzle migration, or registration API route.
+- [x] Do not fake a durable authenticated account/session.
+- [x] Successful demo completion should clearly route the user to real `/login` or show a local completion state; never claim a real account was created.
 
 ## Phase 5 — Responsive/accessibility/final validation
 
