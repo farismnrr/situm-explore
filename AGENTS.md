@@ -22,11 +22,11 @@ For any plan execution or repository implementation work, also read and follow:
 For any UI, UX, styling, layout, component-composition, or visual-design work, also read:
 
 6. `DESIGN.md`
-7. `.agents/design/README.md` and the design guides it routes to
+7. The active plan and only the root `design/` implementation documents explicitly linked by `DESIGN.md` or that plan
 
 The Git workflow protocol is mandatory. Every plan uses its own dedicated branch in the normal repository working directory. Linked Git worktrees are not required. Completed phases must be persisted, validated, committed, and pushed without opening a PR unless the user explicitly asks for one.
 
-The design guidance is mandatory for UI work. Prefer the repository's design principles and Nuxt UI semantic system over ad-hoc styling or copying a reference product literally.
+For UI work, the approved HTML is a visual/interaction reference only. Production implementation must use the existing Nuxt/Vue/Nuxt UI stack; do not copy the prototype HTML/CSS/JS as application architecture.
 
 ## Mandatory chat closeout
 
