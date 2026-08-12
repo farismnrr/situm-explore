@@ -11,7 +11,7 @@ export default defineAppConfig({
     button: {
       defaultVariants: {
         color: 'neutral',
-        variant: 'outline',
+        variant: 'solid',
         size: 'md'
       }
     },
@@ -20,6 +20,11 @@ export default defineAppConfig({
         color: 'neutral',
         variant: 'outline',
         size: 'md'
+      }
+    },
+    card: {
+      defaultVariants: {
+        variant: 'outline'
       }
     }
   }

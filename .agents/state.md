@@ -120,6 +120,6 @@ Do not create a PR or merge unless the user explicitly requests it.
 
 ## Next action
 
-Phase 0 of Plan 009A is complete, reviewed, linted, committed, and pushed. Delegate Phase 1 global Nuxt UI visual foundation to the configured worker.
+Phases 0–1 of Plan 009A are complete, reviewed, linted, committed, and pushed. Delegate Phase 2 public landing/authentication fidelity to the configured worker.
 
 Final visual signoff must be evidence-based. If browser/screenshot comparison is unavailable to the executing agent, do not mark final fidelity complete; leave that gate pending for user/manual review.

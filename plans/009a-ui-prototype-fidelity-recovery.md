@@ -194,16 +194,16 @@ Inspect prototype reusable CSS/visual intent first, especially brand, card, butt
 
 Tasks:
 
-- [ ] Audit `app/app.config.ts` button/input/card defaults against prototype semantics.
-- [ ] Fix primary button default behavior so product-primary actions use the dark ink treatment represented by the prototype.
-- [ ] Define secondary/ghost/accent usage consistently through Nuxt UI props/variants.
-- [ ] Align input/select height, border, radius, text size and focus treatment.
-- [ ] Align badge/pill height, radius, font density and semantic tone without creating a parallel component library.
-- [ ] Align default card border/radius/shadow hierarchy to prototype card/soft-card intent.
-- [ ] Align global background/text/border semantic tokens to the canonical values already recorded under `--explore-*` where appropriate.
-- [ ] Establish reusable page-header/panel/table utility composition only where it removes real drift across multiple routes.
-- [ ] Do not paste prototype CSS wholesale.
-- [ ] Do not make every page maintain its own slightly different `eyebrow`, table, card, or page-title implementation.
+- [x] Audit `app/app.config.ts` button/input/card defaults against prototype semantics.
+- [x] Fix primary button default behavior so product-primary actions use the dark ink treatment represented by the prototype.
+- [x] Define secondary/ghost/accent usage consistently through Nuxt UI props/variants.
+- [x] Align input/select height, border, radius, text size and focus treatment.
+- [x] Align badge/pill height, radius, font density and semantic tone without creating a parallel component library.
+- [x] Align default card border/radius/shadow hierarchy to prototype card/soft-card intent.
+- [x] Align global background/text/border semantic tokens to the canonical values already recorded under `--explore-*` where appropriate.
+- [x] Establish reusable page-header/panel/table utility composition only where it removes real drift across multiple routes.
+- [x] Do not paste prototype CSS wholesale.
+- [x] Do not make every page maintain its own slightly different `eyebrow`, table, card, or page-title implementation.
 
 Validation focus:
 

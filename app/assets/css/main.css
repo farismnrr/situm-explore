@@ -3,7 +3,7 @@
 
 :root {
   color-scheme: light;
-  --ui-radius: 0.625rem;
+  --ui-radius: 0.75rem;
   --ui-container: var(--container-5xl);
 
   /* Situm Explore visual tokens: cool neutrals, border-first surfaces, and a restrained blue accent. */
@@ -26,6 +26,18 @@
   --explore-shadow-xs: 0 1px 2px rgb(16 24 40 / 4%);
   --explore-shadow-sm: 0 8px 24px rgb(16 24 40 / 6%);
   --explore-shadow-md: 0 18px 55px rgb(16 24 40 / 10%);
+
+  /* Nuxt UI semantic surfaces mapped to the canonical light product palette. */
+  --ui-bg: var(--explore-surface);
+  --ui-bg-muted: var(--explore-surface-subtle);
+  --ui-bg-elevated: var(--explore-surface-hover);
+  --ui-bg-accented: var(--explore-border);
+  --ui-bg-inverted: var(--explore-foreground);
+  --ui-text: var(--explore-foreground);
+  --ui-text-muted: var(--explore-foreground-muted);
+  --ui-text-dimmed: var(--explore-foreground-subtle);
+  --ui-border: var(--explore-border);
+  --ui-border-accented: var(--explore-border-strong);
 }
 
 html,
@@ -38,6 +50,66 @@ body {
 
 :focus-visible {
   @apply outline-2 outline-offset-2 outline-primary;
+}
+
+/* Shared product-density primitives used by more than one authenticated surface. */
+.page-head {
+  margin-bottom: 1.375rem;
+}
+
+.page-head h1,
+.page-title {
+  font-size: 1.875rem;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.panel-head {
+  min-height: 3.25rem;
+  padding: 0.9375rem 1rem;
+}
+
+.panel-head h2,
+.panel-head h3 {
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.table-density th {
+  padding: 0.625rem 0.75rem;
+  color: var(--explore-foreground-subtle);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table-density td {
+  padding: 0.6875rem 0.75rem;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* Keep controls compact and consistent without replacing Nuxt UI primitives. */
+[data-slot='control'] {
+  min-height: 2.625rem;
+  border-radius: var(--explore-radius-sm);
+  font-size: 0.8125rem;
+}
+
+[data-slot='control']:focus-within {
+  box-shadow: 0 0 0 3px rgb(17 24 39 / 7%);
+}
+
+[data-slot='badge'] {
+  min-height: 1.75rem;
+  border-radius: 999px;
+  padding-inline: 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 680;
 }
 
 /* Keep compound settings controls readable when the app content is narrower than a phone. */
