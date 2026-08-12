@@ -1,9 +1,9 @@
 # Plan 009B Addendum — Analytics & Organization UI Targeted Closure
 
-Status: **stopped-manual-takeover**
+Status: **closed-manual-accepted**
 Branch: `plan/009b-ui-final-fidelity-punch-list`
 Parent plan: `plans/009b-ui-final-fidelity-punch-list.md`
-Last targeted implementation baseline: `4779d8da0f70833e6052fe0b26cfa3b59a46c142`
+Last automated targeted implementation baseline: `4779d8da0f70833e6052fe0b26cfa3b59a46c142`
 
 Focused routes were:
 
@@ -12,25 +12,27 @@ Focused routes were:
 - `/app/organization`
 - `/app/settings`
 
-## Closure decision
+## Final closure decision
 
-This targeted closure is stopped at the user's request because the resulting rendered UI became worse rather than reliably converging on the intended prototype.
+This addendum is closed.
 
-The prior checked implementation items are historical execution evidence only. They are **not** proof of successful rendered fidelity and must not be used by a future agent to claim these routes are complete.
+The automated targeted closure was stopped because its rendered result regressed. The user then corrected the difficult UI manually and has explicitly stated that the manual work is done and asked to remove the UI roadmap blocker.
 
-The user is taking over these UI surfaces manually.
+The prior checked implementation items remain historical execution evidence only. They are not the source of final acceptance.
 
-## Manual takeover rules
+Final acceptance authority is the user's manual result and explicit closure decision.
 
-- Do not continue Closure Phases A–F automatically.
-- Do not create Plan 009C automatically.
-- Do not reapply this addendum's component abstractions or sizing rules over the user's manual work unless explicitly requested.
-- Do not claim the four routes match the prototype based on the old checklist.
-- Do not create a PR or merge without explicit user authorization.
-- Preserve real auth/DB/Situm runtime behavior while UI changes are made manually.
+## Preservation rule
 
-## Backend roadmap gate
+- Do not resume Closure Phases A–F automatically.
+- Do not create Plan 009C from the old findings automatically.
+- Do not reapply this addendum's abstractions, spacing rules, or old prototype-diff assumptions over the accepted manual UI unless explicitly requested.
+- Later backend/Situm work must adapt data and behavior into the accepted UI rather than redesigning these screens.
+- Preserve real auth/DB/Situm runtime behavior.
+- No PR or merge is implied by this closure.
 
-Plan 010 remains blocked until the user explicitly accepts the manually revised final UI and explicitly authorizes continuing the roadmap.
+## Roadmap gate
 
-This addendum is closed as **stopped for manual takeover**, not completed successfully.
+The targeted UI blocker is cleared. Plan 010 may proceed when requested, using the final committed/pushed manual UI baseline as its parent.
+
+This addendum is closed as **manual UI accepted after automated targeted work was stopped**.
