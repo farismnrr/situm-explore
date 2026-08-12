@@ -2,11 +2,13 @@
 
 Status: planned
 Branch: `plan/008-operations-reports-ui`
-Depends on: Plan 007
+Depends on: Plan 007 complete, reviewed, and integrated into `main`
 
 ## Goal
 
-Implement Realtime, Analytics & Reports, Alarms, Users & Groups, Organization, and Viewer Settings as polished dummy-first surfaces matching the approved product reference.
+Implement Realtime, Analytics & Reports, Alarms, Users & Groups, Organization, and Viewer Settings as polished **dummy-first/local-only** surfaces matching the approved reference.
+
+Even though the time-boxed POC may use one Read & Write Situm key, this UI plan must not add new Situm backend/REST/SDK feature integrations. Real integration comes after UI acceptance.
 
 ## Mandatory HTML-first implementation protocol
 
@@ -14,157 +16,139 @@ Canonical visual/interaction reference:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-**Every operations/report page in this plan must be read from the canonical HTML before implementation.**
+Every operations/report page must be read from the **current canonical HTML** before implementation.
 
 For each phase:
 
-1. Open the canonical HTML reference.
-2. Locate the exact `#app-*` section listed below.
-3. Inspect layout, card/table density, tabs, control grouping, responsive behavior and local JS interactions.
-4. Implement the same product composition in Nuxt/Vue.
+1. Open the canonical HTML.
+2. Locate the corresponding Realtime, Analytics, Alarms, Users, Organization, or Settings section semantically. Old selectors such as `#app-realtime`, `#app-analytics`, `#app-alarms`, `#app-users`, `#app-organization`, and `#app-settings` are locator hints if still present.
+3. Inspect hierarchy, card/table density, tabs, control grouping, responsive behavior, and local interaction intent.
+4. Implement the same product composition using Nuxt/Vue/Nuxt UI.
 5. Keep missing backend domains typed-dummy/local only.
-6. Reuse real existing data only when the current backend already exposes exactly what the UI needs.
-7. Compare the implemented page against that exact HTML section before completion.
-
-### Prototype sections required for this plan
-
-- Realtime: `#app-realtime`, realtime stat cards, live-map preview, device list, refresh/follow interactions.
-- Analytics/Reports: `#app-analytics`, `.analytics-tabs`, every `.report-pane`, chart/heatmap/table styles and export action.
-- Alarms: `#app-alarms`, filters, alarm table and status/type pills.
-- Users & Groups: `#app-users`, user table, group summary and shared details drawer behavior.
-- Organization: `#app-organization`, organization summary and POC credential-boundary panel.
-- Viewer Settings: `#app-settings`, `.settings-layout`, settings nav, each `.setting-pane`, switches/selects/reset behavior.
-
-Do not build these screens from generic SaaS/admin assumptions. The sections above are the required UI reference.
+6. Reuse only real behavior that already existed before the UI roadmap; do not add new Situm product-domain calls.
+7. Compare the implemented page against the same HTML area before completion.
 
 ## Required reading
 
 - `AGENTS.md`
+- `ARCHITECTURE.md`
 - `DESIGN.md`
-- `design/reference/situm-explore-interactive-prototype.html`
 - `design/IMPLEMENTATION.md`
-- completed Plans 004–007 implementation.
+- `design/data-source-matrix.md`
+- `design/reference/situm-explore-interactive-prototype.html`
+- completed Plans 004–007 implementation/state
+- this plan
 
 ## Data mode
 
-Dummy/local only unless an existing backend response already provides the exact information. Do not add Situm proxy endpoints, polling infrastructure, report jobs, or account-management models in this plan.
+Dummy/local only unless an existing foundation endpoint already provides the exact state being displayed.
+
+Do not add:
+
+- Situm proxy/API endpoints;
+- new Viewer feature-method wiring;
+- polling/subscription infrastructure;
+- report jobs;
+- account-management models;
+- database persistence for fixtures/settings.
 
 ## Phase 1 — Realtime `/app/realtime`
 
-**Before implementation, read the full `#app-realtime` section and its `moveRealtime()` / refresh / follow interactions.**
+Before implementation, inspect the complete Realtime reference state and its refresh/follow interaction intent.
 
-Match:
-
-- four compact stat cards;
-- live-map preview proportions;
-- user/device list density;
-- online/offline status treatment;
-- refresh action;
-- Follow action leading into map context.
-
-Tasks:
-
-- [ ] Stats for online/active/floor distribution use typed dummy fixture data.
-- [ ] Live-map preview uses local visual markers; do not instantiate a second Situm viewer just for decoration.
-- [ ] Refresh animates/repositions dummy markers locally like the prototype.
-- [ ] Follow action routes to `/app/map` and may set local query/state only.
-- [ ] Clearly keep source code dummy; user-facing UI stays production-like.
-- [ ] Compare desktop/mobile result against `#app-realtime` before completion.
+- [ ] Stats use typed dummy fixture data.
+- [ ] Live-map preview uses local visual markers; do not instantiate a second Situm viewer.
+- [ ] Refresh locally updates/repositions dummy records.
+- [ ] Follow routes into `/app/map` and may set only local/query UI context; do not claim real user-follow capability.
+- [ ] Reuse canonical fixture identities if the same dummy users/devices appear elsewhere.
+- [ ] No realtime Situm API/SDK integration in this plan.
+- [ ] Compare desktop/mobile output with current HTML.
 
 ## Phase 2 — Analytics & Reports `/app/analytics`
 
-**Before implementation, read `#app-analytics` in full, including all report tabs/panes and the report-switching JavaScript.**
+Before implementation, inspect every analytics/report state in the current HTML.
 
-Implement tabs represented in approved prototype:
+Represent only report tabs shown by the approved reference, such as:
 
-- [ ] Visitors;
-- [ ] Heatmap;
-- [ ] Geofence stay time;
-- [ ] Positioning time;
-- [ ] User positions;
-- [ ] Map Viewer usage.
+- Visitors;
+- Heatmap;
+- Geofence stay time;
+- Positioning time;
+- User positions;
+- Map Viewer usage.
 
 Rules:
 
-- typed fixture data;
-- match the prototype tab density and selected state;
-- lightweight CSS/SVG visuals that resemble the HTML chart/heatmap language;
-- no chart library solely for dummy charts;
-- date-range selector is local;
-- CSV export may generate a local dummy CSV or show a local prototype action; no server report job;
-- each report pane should preserve the prototype's information hierarchy rather than inventing new KPIs;
-- compare every report state against the matching `.report-pane` before phase completion.
+- [ ] typed local fixture data;
+- [ ] match tab density/selected state and information hierarchy;
+- [ ] lightweight CSS/SVG chart/heatmap visuals where suitable;
+- [ ] no chart dependency solely for dummy graphics;
+- [ ] date range is local state;
+- [ ] CSV action may create a local dummy CSV or local completion state only;
+- [ ] no report endpoint/job;
+- [ ] never silently mix fake metric values with a real source;
+- [ ] compare every state against the current HTML.
 
 ## Phase 3 — Alarms `/app/alarms`
 
-**Before implementation, read `#app-alarms` from header through filters/table.**
+Before implementation, inspect filters/table/status states in current HTML.
 
-- [ ] Match filter positioning and compact table density.
-- [ ] Match assistance/danger/deadman/geofence-style examples represented by reference data.
-- [ ] Match warning/error/resolved pill hierarchy.
-- [ ] Read-only states only.
-- [ ] No acknowledge/resolve remote actions.
-- [ ] Compare against `#app-alarms` before completion.
+- [ ] Typed synthetic rows only.
+- [ ] Match filter positioning, compact density, type/status hierarchy.
+- [ ] Read-only/local visual states only.
+- [ ] No real acknowledge/resolve/create action.
+- [ ] No Situm alarms API call in this plan.
 
 ## Phase 4 — Users & Groups `/app/users`
 
-**Before implementation, read `#app-users` plus the canonical shared `#detailDrawer`.**
+Before implementation, inspect Users/Groups and shared details-drawer behavior.
 
-- [ ] Match two-column users/groups composition on desktop and responsive stacking.
-- [ ] Match compact user table and group activity-list treatment.
-- [ ] Read-only directory UI and group summary.
+- [ ] Match desktop composition and responsive stacking.
 - [ ] Use synthetic fixtures.
-- [ ] Keep Situm organization users conceptually separate from Situm Explore app authentication.
+- [ ] Keep Situm organization users conceptually distinct from Situm Explore app auth/session identity.
 - [ ] Do not create user/account CRUD.
-- [ ] Reuse the details-drawer pattern from Plan 007 when appropriate rather than inventing a second drawer.
+- [ ] Reuse Plan 007 shared drawer where appropriate rather than inventing another drawer.
+- [ ] No Situm users/groups API integration in this plan.
 
 ## Phase 5 — Organization `/app/organization`
 
-**Before implementation, read the complete `#app-organization` section.**
+Before implementation, inspect the current Organization/credential-boundary composition.
 
-- [ ] Match two-panel organization/credential-boundary composition.
-- [ ] Organization summary uses synthetic data unless safe real context already exists.
-- [ ] Show current POC permission boundary as `Only Read`.
-- [ ] Never render or log the API key itself.
-- [ ] Explain browser POC boundary briefly without exposing security details as primary UI.
-- [ ] Match the reference's restrained read-only context rather than turning this into an admin screen.
+- [ ] Organization data stays synthetic/static unless an already-existing foundation response truly provides a field.
+- [ ] Never render/log the API key value.
+- [ ] If the approved reference shows a key-permission label, current explicit POC policy overrides stale prototype copy: use `Read & Write (POC)` or a neutral `POC key configured` label rather than falsely claiming `Only Read`.
+- [ ] Preserve the reference layout even if wording is adjusted for truthful current configuration.
+- [ ] Do not turn this into an admin interface.
 
 ## Phase 6 — Viewer Settings `/app/settings`
 
-**Before implementation, read `#app-settings`, `.settings-layout`, every `[data-setting-tab]`, all `.setting-pane` sections and switch/reset JavaScript.**
+Before implementation, inspect all settings tabs/rows/switches/reset states in current HTML.
 
-Tabs:
-
-- general;
-- navigation;
-- map configuration;
-- styles;
-- images.
+Typical reference areas may include general, navigation, map configuration, styles, and images.
 
 Tasks:
 
-- [ ] Match left settings navigation, setting-row density and responsive horizontal settings nav.
-- [ ] Controls are local UI state only unless already supported directly by the viewer with no persistence/write requirement.
-- [ ] Switches/selects/reset interactions reproduce the prototype behavior at UI level.
-- [ ] Light mode remains locked.
+- [ ] Match settings navigation/row density/responsive behavior using Nuxt UI primitives.
+- [ ] **All newly represented settings are local UI state in Plan 008.** Do not wire them to Situm simply because the POC key has Read & Write permission.
+- [ ] Switches/selects/reset reproduce approved local interaction intent.
+- [ ] Light mode stays locked.
 - [ ] Reset restores local defaults.
-- [ ] No map-style upload/update because POC key is read-only.
-- [ ] Compare every settings tab against the HTML before phase completion.
+- [ ] Map-style/image/config writes are explicitly deferred to later dedicated integration work if they are still needed after UI acceptance.
 
 ## Validation
 
-- [ ] every surface reachable from app sidebar;
-- [ ] dummy interactions work without backend calls;
+- [ ] Plan 007 is integrated in main before this branch starts;
+- [ ] every surface is reachable from the app sidebar;
+- [ ] dummy interactions work without new backend/Situm feature calls;
 - [ ] no fake remote-success wording;
-- [ ] no credentials/private resources;
-- [ ] Realtime matches `#app-realtime`;
-- [ ] Analytics/report states match `#app-analytics`;
-- [ ] Alarms matches `#app-alarms`;
-- [ ] Users/Groups matches `#app-users`;
-- [ ] Organization matches `#app-organization`;
-- [ ] Viewer Settings matches `#app-settings`;
-- [ ] responsive/accessibility pass uses prototype media-query behavior as baseline;
+- [ ] no credential value/private resource is exposed;
+- [ ] organization permission wording matches the current POC decision, not stale `Only Read` copy;
+- [ ] Realtime/Analytics/Alarms/Users/Organization/Settings compare against current HTML reference areas;
+- [ ] responsive/accessibility behavior is checked;
 - [ ] deliberate deviations are documented;
-- [ ] diff-check/lint/typecheck/build;
-- [ ] phase commits + pushes;
+- [ ] `git diff --check`;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] `npm run build`;
+- [ ] update plan + `.agents/`, commit, and push phases;
 - [ ] no PR until authorized.
