@@ -6,35 +6,51 @@ Do not place user-specific facts here; those belong in `../memory/`.
 
 ## Current knowledge
 
-### Situm Explore building resource discovery
+### Situm Explore building resources
 
-- Building floorplan resources and their Situm identifiers were removed from the repository current tree after the user decided they must not remain public. Historical Git blobs remain; do not restore or recommit the assets without a new explicit decision.
+- Local building floorplan resources and related Situm identifiers were removed from the repository current tree after the user decided they must not remain publicly distributed.
+- Historical Git blobs may still exist; do not restore/recommit those assets without a new explicit user decision.
+- A missing local `NUXT_PUBLIC_SITUM_BUILDING_ID` may be resolved from the official Buildings REST listing using the local API key, with the selected ID written only to ignored local `.env`.
 
-Source: observed from Situm API discovery during resource gathering on 2026-08-12.
+Source: repository history and current POC setup decision, 2026-08-12.
 
-### Shared PostgreSQL runtime
+### PostgreSQL application boundary
 
-- The local shared PostgreSQL runtime is defined in `/home/farismnrr/Documents/shared/docker-compose.shared-infra.yml` and runs as container `sensio-postgres` on host port `5432`.
-- The instance is PostgreSQL 17.10 with existing databases including `atja_db`, `bnsp`, `keycloak`, `lms`, `masihawam`, `plane`, `plane_preview`, `sensio-iot`, `sensio-notes`, `tuya_manager`, and `postgres`.
-- Existing schemas include `public`, TimescaleDB schemas, `broker-auth`, `drizzle`, and `sensio_notes_drizzle`; `situm_explore` is not currently present and is available as the dedicated application schema candidate.
+- Situm Explore uses the shared PostgreSQL runtime through `DATABASE_URL`.
+- Application-owned Drizzle objects are fixed to the dedicated `situm_explore` schema.
+- The earlier resource-gathering observation that `situm_explore` was only an available schema candidate is historical; subsequent foundation work created/applied the application migration and verified `/api/me` against PostgreSQL.
+- Do not introduce `DB_SCHEMA` variability or touch unrelated databases/schemas.
 
-Source: observed from the local Compose file, running container, and read-only PostgreSQL inspection on 2026-08-12.
+Source: foundation implementation/hardening and manual verification on 2026-08-12.
 
-### Situm web SDK credential boundary
+### Situm browser/API credential boundary for the POC
 
-- The installed official `@situm/sdk-js` browser integration initializes `SitumSDK` with `auth.apiKey` and creates a viewer against a DOM element and building ID. This means the chosen web slice must use a clearly named public browser credential rather than pretending a server-only key can initialize the browser SDK.
-- Official Situm SDK JS documentation confirms the browser initialization requires an API key and supports `ViewerEventType.MAP_IS_READY`. Repository/environment metadata cannot establish whether a local key is dedicated or least-privilege; use `NUXT_PUBLIC_SITUM_VIEWER_API_KEY` only after confirming that in the Situm account.
+- The official `@situm/sdk-js` browser Viewer initializes `SitumSDK` with `auth.apiKey` and creates a Viewer against a DOM element and building ID.
+- Current repository environment naming is `NUXT_PUBLIC_SITUM_API_KEY` plus `NUXT_PUBLIC_SITUM_BUILDING_ID`.
+- The time-boxed POC intentionally uses one browser-visible Situm key and the user may provision it with Read & Write permission for speed; revoke/replace it after the POC.
+- This broader credential permission does not change Plans 004–009: the existing Viewer lifecycle stays real, while new product-domain Situm integrations remain deferred until after UI acceptance.
+- Never persist or print the actual key value in repository context.
 
-Source: observed in the installed SDK README during web-foundation implementation on 2026-08-12.
+Source: installed SDK behavior plus current user/project decision, 2026-08-12.
+
+### UI reference translation boundary
+
+- `design/reference/situm-explore-interactive-prototype.html` is the only visual/interaction reference once the user replaces its placeholder.
+- Its HTML/CSS/JS describes UI/UX intent only.
+- Production translation must remain Nuxt 4 + Vue + Nuxt UI and follow `ARCHITECTURE.md` / `design/IMPLEMENTATION.md`.
+- Plans 004–009 are dummy-first for missing product domains; later integration plans replace selected fixtures after the UI is accepted.
+
+Source: current design/architecture decisions, 2026-08-12.
 
 ### Repo-native Codex context pattern
 
 - Keep root `AGENTS.md` concise and navigational rather than turning it into a large encyclopedia.
-- Put detailed, maintainable context in a structured repository directory and let `AGENTS.md` point to it.
+- Put detailed, maintainable context in structured repository files and let root routers point to them.
 - Use targeted reads as the knowledge base grows instead of loading everything on every task.
+- Historical plans/session logs are evidence, not higher-priority truth than current durable contracts/state.
 
-Source: project design informed by current Codex guidance and this repository's chosen architecture.
+Source: repository operating model.
 
 ## When this grows
 
-Split substantial topics into dedicated Markdown files and keep this file as the index with one-line descriptions and links.
+Split substantial topics into dedicated Markdown files and keep this file as the index with short descriptions/links.
