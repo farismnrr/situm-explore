@@ -1,6 +1,6 @@
 # Plan 000 — Resource Gathering
 
-Status: blocked pending local `DATABASE_URL`
+Status: complete
 Scope: collect and normalize inputs before implementation  
 Principle: gather what we already have, discover what the APIs/database can tell us, and avoid blocking on information Codex can inspect itself.
 
@@ -107,11 +107,11 @@ DATABASE_URL=
 DB_SCHEMA=situm_explore
 ```
 
-- [ ] User supplies/maintains the real `DATABASE_URL` locally; never commit it.
-- [ ] Codex connects read-first and inventories existing schemas.
-- [ ] Confirm `DB_SCHEMA` does not collide with an unrelated schema.
-- [ ] Do not create or alter anything until the existing database layout has been inspected.
-- [ ] Record only non-sensitive architectural discoveries.
+- [x] User supplies/maintains the real `DATABASE_URL` locally; never commit it.
+- [x] Codex connects read-first and inventories existing schemas.
+- [x] Confirm `DB_SCHEMA` does not collide with an unrelated schema.
+- [x] Do not create or alter anything until the existing database layout has been inspected.
+- [x] Record only non-sensitive architectural discoveries.
 
 No database dump is required for resource gathering unless connectivity is unavailable and the user explicitly chooses to provide one.
 
@@ -173,13 +173,10 @@ Before starting `plans/001-web-foundation.md`:
 - [x] Resource manifest exists.
 - [x] Situm API key is available locally, not in git.
 - [x] Situm building/floor metadata can be discovered or there is a clear reason it cannot.
-- [ ] `DATABASE_URL` is available locally, not in git.
-- [ ] Existing PostgreSQL schemas can be inspected safely.
-- [ ] No additional credentials are being requested without a concrete implementation need.
+- [x] `DATABASE_URL` is available locally, not in git.
+- [x] Existing PostgreSQL schemas can be inspected safely.
+- [x] No additional credentials are being requested without a concrete implementation need.
 
-### Current blocker
-
-The local environment did not provide `DATABASE_URL`, so existing PostgreSQL schemas could not be inspected read-first. No database changes were made. Resume this plan when the local connection configuration is available.
 
 ## Definition of done
 

@@ -12,6 +12,14 @@ Do not place user-specific facts here; those belong in `../memory/`.
 
 Source: observed from Situm API discovery during resource gathering on 2026-08-12.
 
+### Shared PostgreSQL runtime
+
+- The local shared PostgreSQL runtime is defined in `/home/farismnrr/Documents/shared/docker-compose.shared-infra.yml` and runs as container `sensio-postgres` on host port `5432`.
+- The instance is PostgreSQL 17.10 with existing databases including `atja_db`, `bnsp`, `keycloak`, `lms`, `masihawam`, `plane`, `plane_preview`, `sensio-iot`, `sensio-notes`, `tuya_manager`, and `postgres`.
+- Existing schemas include `public`, TimescaleDB schemas, `broker-auth`, `drizzle`, and `sensio_notes_drizzle`; `situm_explore` is not currently present and is available as the dedicated application schema candidate.
+
+Source: observed from the local Compose file, running container, and read-only PostgreSQL inspection on 2026-08-12.
+
 ### Repo-native Codex context pattern
 
 - Keep root `AGENTS.md` concise and navigational rather than turning it into a large encyclopedia.

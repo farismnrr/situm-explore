@@ -4,11 +4,11 @@ _Last reviewed: 2026-08-12_
 
 ## Current focus
 
-Gathered building assets and Situm metadata; PostgreSQL discovery is blocked until local `DATABASE_URL` is available.
+Gathered building assets, Situm metadata, and local PostgreSQL runtime/schema information; ready to start the Nuxt web foundation.
 
 ## Phase
 
-**Phase 0.5 — Resource gathering (blocked on PostgreSQL credentials)**
+**Phase 1 — Web foundation ready to start**
 
 ## Active decisions
 
@@ -45,9 +45,8 @@ Gathered building assets and Situm metadata; PostgreSQL discovery is blocked unt
 
 ## Open loops
 
-- Confirm local PostgreSQL connectivity and inspect existing schemas read-first.
 - After plan 000 is complete and pushed, start `plans/001-web-foundation.md` in a **new** branch/worktree `plan/001-web-foundation` / `../situm-explore-worktrees/001-web-foundation`; do not continue 001 in the 000 branch.
 
 ## Next likely action
 
-Provide/configure the local `DATABASE_URL`, then complete the read-only PostgreSQL inspection before starting plan 001. Do not create a PR until explicitly requested.
+Start `plans/001-web-foundation.md` in its new dedicated branch/worktree. Use the existing PostgreSQL instance with a dedicated `situm_explore` schema. Do not create a PR until explicitly requested.
