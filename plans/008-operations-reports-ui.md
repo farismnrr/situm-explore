@@ -93,11 +93,11 @@ Rules:
 
 Before implementation, inspect filters/table/status states in current HTML.
 
-- [ ] Typed synthetic rows only.
-- [ ] Match filter positioning, compact density, type/status hierarchy.
-- [ ] Read-only/local visual states only.
-- [ ] No real acknowledge/resolve/create action.
-- [ ] No Situm alarms API call in this plan.
+- [x] Typed synthetic rows only.
+- [x] Match filter positioning, compact density, type/status hierarchy.
+- [x] Read-only/local visual states only.
+- [x] No real acknowledge/resolve/create action.
+- [x] No Situm alarms API call in this plan.
 
 ## Phase 4 — Users & Groups `/app/users`
 
