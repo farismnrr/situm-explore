@@ -2,7 +2,7 @@
 
 `.agents/` is the persistent context layer for Situm Explore.
 
-Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in root contracts; `.agents/` stores current state, durable decisions, operating protocols, verified knowledge, lessons, and concise history.
+Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in the root contracts; `.agents/` stores current state, durable decisions, operating protocols, verified knowledge, lessons, and concise history.
 
 ## Directory map
 
@@ -79,14 +79,15 @@ Never store credentials, API keys, JWTs, passwords, or sensitive payloads.
 
 The UI roadmap through Plan 009B is historical and integrated into `main`.
 
-Plans **010–016 have completed their stacked implementation pass**. The cumulative current branch is:
+Plans **010–016 have completed their stacked implementation pass**. Do not restart or recreate them from `main`.
 
-`plan/016-situm-viewer-settings-integration`
+The active closeout/hardening follow-up is **Plan 016A — Situm Credential Split & Runtime Verification**:
 
-Do not restart Plan 010 or recreate Plans 011–016 from `main`.
+- plan file: `plans/016a-situm-credential-split-runtime-verification.md`;
+- branch: `plan/016a-situm-credential-split-runtime-verification`.
 
-The user explicitly authorized this completed stacked sequence to branch each plan from the previous plan HEAD, with **no PR and no merge to `main`**.
+Plan 016A is intentionally small: credential-role split, env/runtime contract cleanup, live smoke for already implemented Situm paths, and evidence capture for unresolved REST domains. It does not own broad Reports/Groups/Alarms implementation.
 
-Current implementation is not fully runtime-verified: configured Situm credentials/authenticated session were unavailable for manual API/Viewer smoke. Reports, Groups, Alarms, route-result details, some realtime semantics, trajectory/follow, and unverified generic Viewer settings remain evidence-gated/absent.
+The briefly created Plan 017 credential-split draft is superseded by 016A and is not an active roadmap step. Plan 017 remains reserved for substantive future feature scope.
 
-Read `.agents/state.md` for the exact current truth and next action.
+No PR or merge is authorized. Read `.agents/state.md` for the exact current truth and next action.
