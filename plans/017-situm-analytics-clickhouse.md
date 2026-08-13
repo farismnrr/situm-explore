@@ -160,10 +160,26 @@ Raw data, user-position history, broad trajectory analytics, and every possible 
 
 This phase is conditional and must not block Plan 017 completion if the exact contracts/data are impractical.
 
-- [ ] evaluate Map Viewer usage report against the current dashboard/product intent;
-- [ ] evaluate heatmap report payload size/coordinates and whether a truthful web visualization is practical;
-- [ ] implement only the optional item(s) that pass evidence/runtime review cleanly;
-- [ ] mark unsupported/impractical items explicitly unresolved and continue to closeout without fake substitutes.
+- [x] evaluate Map Viewer usage report against the current dashboard/product intent;
+- [x] evaluate heatmap report payload size/coordinates and whether a truthful web visualization is practical;
+- [x] implement only the optional item(s) that pass evidence/runtime review cleanly;
+- [x] mark unsupported/impractical items explicitly unresolved and continue to closeout without fake substitutes.
+
+### Phase 5 evaluation record (2026-08-13)
+
+- Map Viewer usage remains **UNRESOLVED**. Official evidence confirms the
+  `map_viewer.{format}` report family and general user-event purpose, but does
+  not verify the consumed event schema, filters, aggregation semantics,
+  permission behavior, or a runtime response for the configured account.
+  The current dashboard intent is summary analytics already backed by the
+  three verified report families; adding an event metric without those
+  contracts would relabel or synthesize data.
+- Heatmap remains **UNRESOLVED**. Official evidence confirms a heatmap report
+  family and positioning-density purpose, but no verified payload shape,
+  coordinate system/fields, bounds, volume limits, or runtime sample exists.
+  A truthful map visualization therefore cannot be implemented safely in this
+  phase. No optional endpoints, ClickHouse tables, or UI substitutes were
+  added.
 
 ## Phase 6 — Validation and closeout
 

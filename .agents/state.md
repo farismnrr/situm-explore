@@ -143,7 +143,7 @@ Phase 4 implementation completed on 2026-08-13. `/app/analytics` now presents re
 
 ## Next action
 
-Execute Plan 017 Phase 5 optional evaluation using the verified report and ClickHouse contracts above, then continue Plans 017→020 sequentially using the explicit stacked mode above.
+Plan 017 Phase 5 optional evaluation completed on 2026-08-13. Map Viewer usage and heatmap remain explicitly unresolved: official evidence confirms only endpoint families/purpose, not the exact consumed schemas, filters, runtime payloads, or truthful visualization semantics. No optional implementation was added. Continue with Plan 017 Phase 6 validation and closeout.
 
 Start by switching to `roadmap/017-020-next-features`, creating `plan/017-situm-analytics-clickhouse` from its final HEAD, and executing Plan 017 phase-by-phase with the configured `worker` subagent.
 
