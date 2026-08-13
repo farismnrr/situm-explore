@@ -4,78 +4,45 @@ _Last reviewed: 2026-08-13_
 
 ## Integrated baseline
 
-Plans 017–020 are complete and integrated into `main` by PR #12. Current canonical baseline before this roadmap is `main`.
+Plans 017–020 are complete and integrated into `main` by PR #12.
+
+The Plans 021–025 backend-refactor roadmap and reconciled documentation are integrated into `main` by PR #13.
 
 ## Active roadmap
 
-Planning branch:
-
-`roadmap/021-025-backend-refactor`
-
 ```text
-Plan 021 — Identity & Auth Foundation                       [ready after roadmap integration]
+Plan 021 — Identity & Auth Foundation                       [ready / next]
 Plan 022 — Private Workspaces & Situm Configuration         [queued]
 Plan 023 — Observability, Correlation & Safe Error Boundary [queued]
 Plan 024 — Workspace-scoped Situm Backend Migration         [queued]
 Plan 025 — Workspace UX & Full Regression                   [queued]
 ```
 
-No stacked implementation authorization exists for Plans 021–025. Normal workflow requires this roadmap planning branch to be reviewed/integrated into `main` before Plan 021 starts from updated `main`.
+No stacked implementation authorization exists. Plan 021 must start from updated `main`; later plans remain sequential dependencies.
 
-## Mandatory roadmap reads
+The former roadmap planning branch is historical after PR #13 and is not an implementation base.
 
-While Plans 021–025 are active, read current authority in this order after the general protocols:
+## Current authority
 
-1. `.agents/memory/decisions.md`;
-2. `.agents/memory/roadmap-021-025.md`;
-3. `ARCHITECTURE.md`;
-4. `plans/README.md`;
-5. `plans/021-025-prerequisites.md`;
-6. `design/data-source-matrix.md` when Situm/product capability scope matters;
-7. the active plan;
-8. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
+Read `.agents/memory/decisions.md`, `.agents/memory/roadmap-021-025.md`, `ARCHITECTURE.md`, `plans/README.md`, `plans/021-025-prerequisites.md`, the capability matrix when relevant, and the active plan.
 
-These current documents are reconciled for Plans 021–025. Historical plans/sessions remain evidence only and do not override them.
+Historical plans, sessions, and branches remain evidence only.
 
-## Locked product direction
+## Locked direction
 
-- database-backed application users replace the env-defined owner login;
-- working email/password registration/login is acceptance-critical;
-- Google OAuth is prepared but real runtime acceptance is deferred to the user;
-- one user may own many private single-owner workspaces;
-- no workspace invites/members/org hierarchy in this roadmap;
-- external Situm account/org association is not globally unique; multiple users may configure the same external account;
-- Situm configuration becomes protected workspace-managed server data rather than permanent global runtime configuration;
-- product modes are `VIEW_ONLY` and `VIEW_WRITE`, while verified upstream permission remains authoritative;
-- stored long-lived workspace credentials must not be returned to browser code;
-- existing observability infrastructure must be discovered with local `docker ps`/runtime inspection and reused;
-- frontend requests gain trace/correlation context;
-- critical/internal error details stay server-side and client responses remain sanitized;
-- workspace isolation must extend to ClickHouse analytics and account-specific Viewer/building context.
+- database-backed application users;
+- working email/password registration/login;
+- Google OAuth prepared for later manual acceptance;
+- many private single-owner workspaces per user;
+- workspace-managed Situm configuration;
+- `VIEW_ONLY` / `VIEW_WRITE` product modes with upstream permission authoritative;
+- workspace-scoped Situm, Viewer/building, and analytics context;
+- reuse existing observability infrastructure;
+- end-to-end correlation/tracing;
+- sanitized client errors with detailed diagnostics retained server-side.
 
-## Known prerequisites / potential blockers
-
-See `plans/021-025-prerequisites.md` for the detailed matrix.
-
-Important current items:
-
-1. **Workflow gate:** roadmap planning must land in `main` before Plan 021 under normal workflow, unless the user explicitly authorizes stacking.
-2. **Plan 021:** requires working PostgreSQL migration access and `NUXT_SESSION_PASSWORD`; Google OAuth credentials are not required for acceptance.
-3. **Plan 022:** requires a server-only workspace encryption master key; local value may be generated into `.env` only without printing/committing it.
-4. **Viewer auth gate:** if browser auth for a write-capable workspace cannot be proven safe from current Situm/SDK evidence, stop that exact path and ask the user.
-5. **Plan 023:** observability endpoint/auth/network prerequisites depend on what local `docker ps` and runtime configuration discover; do not provision duplicates.
-6. **Plan 024:** legacy ClickHouse rows have no workspace owner and must not be assigned arbitrarily; global Situm building/account context must also be migrated.
-7. **Plan 025:** full real permission smoke ideally needs both Situm `Only Read` and `Read & Write` test configurations.
-
-## Documentation state
-
-Current authority/docs have been reconciled for this roadmap:
-
-- `AGENTS.md` / `.agents/README.md` route current context;
-- `.agents/memory/decisions.md` no longer treats the previous global Situm env model as the final target;
-- `ARCHITECTURE.md`, `DESIGN.md`, `design/IMPLEMENTATION.md`, and `design/data-source-matrix.md` describe the approved transition directly;
-- completed plans and old sessions remain historical evidence and are intentionally not rewritten.
+Detailed prerequisites and potential blockers live in `plans/021-025-prerequisites.md` and are intentionally handled in a later user-gated step.
 
 ## Next action
 
-Review/integrate the planning-only branch `roadmap/021-025-backend-refactor` into `main`. After that, create `plan/021-auth-identity-foundation` from updated `main` and execute Plan 021 only.
+When the user authorizes implementation, create `plan/021-auth-identity-foundation` from updated `main` and execute Plan 021 only.
