@@ -108,10 +108,15 @@ Target surfaces:
 
 ## Phase 4 — Existing dashboard/home integration
 
-- [ ] inspect existing Home/Dashboard alarm/user/group metrics;
-- [ ] replace only metrics whose semantics exactly match the new real data;
-- [ ] remove or leave unresolved any placeholder whose denominator/status meaning cannot be derived truthfully;
-- [ ] do not add a synthetic activity feed.
+- [x] inspect existing Home/Dashboard alarm/user/group metrics;
+- [x] replace only metrics whose semantics exactly match the new real data;
+- [x] remove or leave unresolved any placeholder whose denominator/status meaning cannot be derived truthfully;
+- [x] do not add a synthetic activity feed.
+
+### Phase 4 implementation record (2026-08-13)
+
+- Reviewed dashboard/home metrics and replaced the stale Plan 014 wording with a truthful unresolved-metrics notice linking users to real Reports.
+- Alarm, user, and group totals remain absent because their source scopes/denominators are not equivalent. No synthetic activity or relabeled metric was added.
 
 ## Phase 5 — Validation and closeout
 

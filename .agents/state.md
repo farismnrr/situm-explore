@@ -166,3 +166,7 @@ Phase 2 Groups surface completed on 2026-08-13. `/app/groups` now provides real 
 ## Plan 018 Phase 3 result
 
 Phase 3 Alarms surface completed on 2026-08-13. `/app/alarms` now provides real protected list/detail reads, required building selection, verified active/type filters, truthful states, responsive presentation, and read-only detail context without mutation controls. Phase 4 is next.
+
+## Plan 018 Phase 4 result
+
+Phase 4 dashboard/home review completed on 2026-08-13. Stale dashboard wording was replaced with a truthful unresolved-metrics notice; alarm/user/group totals remain absent because their scopes and denominators do not exactly match. No synthetic activity or metric relabeling was added. Phase 5 validation/closeout is next.
