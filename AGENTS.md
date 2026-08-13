@@ -33,15 +33,17 @@ Historical plans/sessions are evidence only and must not override current state/
 
 The UI roadmap through Plan 009B is historical and integrated.
 
-Plans 010–016 completed a user-authorized **stacked implementation pass**. Do not restart them or recreate them from `main`.
-
-The active follow-up is **Plan 016A — Situm Credential Split & Runtime Verification** on:
+Plans 010–016 completed a user-authorized **stacked implementation pass**. Plan 016A then completed the small credential/config/runtime hardening closeout on the cumulative branch:
 
 `plan/016a-situm-credential-split-runtime-verification`
 
+Do not restart Plans 010–016 or Plan 016A, and do not recreate them from `main`.
+
 The earlier Plan 017 credential-split draft/name is superseded and must not be executed as a separate step. Plan 017 is reserved for future substantive feature scope.
 
-No PR or merge is authorized. Read `.agents/state.md` for exact completed/skipped/unresolved status and runtime-smoke requirements.
+Plan 016A is complete and the cumulative branch is ready for user-gated PR review/integration. A PR may be opened when the user requests/reviews it; merge remains explicitly user-gated.
+
+Read `.agents/state.md` for exact completed/skipped/unresolved status and the final two-key Situm credential contract.
 
 ## No-hallucination external integration rule
 
@@ -59,7 +61,12 @@ Use the current Nuxt 4 structure under `app/`, `server/`, and optional `shared/`
 
 Prefer KISS. Do not introduce speculative services, repositories, stores, event buses, generic API clients, caches, background workers, or parallel design systems.
 
-Situm REST/domain calls use private Nitro runtime credentials behind authenticated routes. The browser Viewer credential is a separate public boundary. Native indoor positioning/bluedot and movement-aware handset navigation remain outside the Nuxt web roadmap.
+Situm uses exactly two credential boundaries unless a future concrete requirement changes that decision:
+
+- `NUXT_PUBLIC_SITUM_API_KEY` for the browser Viewer;
+- `NUXT_SITUM_API_KEY` for private Nitro Situm operations.
+
+Protected server Situm routes require the application session. Native indoor positioning/bluedot and movement-aware handset navigation remain outside the Nuxt web roadmap.
 
 ## Git workflow
 
@@ -67,11 +74,12 @@ Situm REST/domain calls use private Nitro runtime credentials behind authenticat
 - never implement directly on `main`;
 - no linked worktrees unless explicitly requested;
 - complete phases with plan/state updates, validation, commit, and push;
-- never open a PR or merge without explicit user authorization;
+- never merge without explicit user authorization;
+- PR creation/review is user-gated;
 - dependent plans normally start after integration into updated `main`;
 - **exception:** when `.agents/state.md` / durable decisions record explicit stacked execution, the next plan must branch from the completed previous plan HEAD instead of `main`.
 
-Plan 016A is an explicitly authorized post-stack follow-up continuing the cumulative Plan 016 lineage.
+Plans 010–016 plus 016A form one completed cumulative lineage awaiting review/integration.
 
 ## Mandatory closeout
 
