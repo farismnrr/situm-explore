@@ -2,29 +2,21 @@
 
 `.agents/` is the persistent context layer for Situm Explore.
 
-Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in the root contracts; `.agents/` stores current state, durable decisions, operating protocols, and concise history.
+Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in root contracts; `.agents/` stores current state, durable decisions, operating protocols, verified knowledge, lessons, and concise history.
 
 ## Directory map
 
 | Path | Purpose |
 | --- | --- |
 | `identity.md` | Mission, behavior, and stable agent principles. |
-| `state.md` | Current focus, blockers, active branch, and next action. |
+| `state.md` | Current focus, blockers, active/cumulative branch, and next action. |
 | `protocols/chat-lifecycle.md` | Conversation workflow. |
 | `protocols/persistence.md` | What must be persisted after a conversation. |
-| `protocols/git-workflow.md` | Plan branch, validation, commit/push, and PR gates. |
+| `protocols/git-workflow.md` | Plan branch, validation, commit/push, stacked-branch exception, and PR gates. |
 | `memory/` | Durable user/project decisions and preferences. |
 | `knowledge/` | Reusable verified domain knowledge. |
 | `reflections/` | Reusable lessons about process/agent behavior. |
 | `sessions/` | Chronological evidence; may become stale. |
-
-Architecture/design authority intentionally lives outside `.agents/`:
-
-- `ARCHITECTURE.md` — current application/runtime/dependency contract;
-- `DESIGN.md` — visual authority router and capability-truth boundary;
-- `design/IMPLEMENTATION.md` — current Nuxt UI implementation rules;
-- `design/data-source-matrix.md` — current web/native/remove/data ownership matrix;
-- active plan — executable scope and evidence requirements.
 
 ## Mandatory read order for implementation
 
@@ -36,73 +28,65 @@ Architecture/design authority intentionally lives outside `.agents/`:
 6. `.agents/memory/decisions.md` when roadmap/product boundaries matter.
 7. `ARCHITECTURE.md`.
 8. `plans/README.md`.
-9. `design/data-source-matrix.md` for Plans 010–016.
-10. active plan.
-11. `DESIGN.md` and `design/IMPLEMENTATION.md` when presentation/UI is changed.
+9. `design/data-source-matrix.md` when Situm/product capability scope matters.
+10. active/follow-up plan, if one exists.
+11. `DESIGN.md` and `design/IMPLEMENTATION.md` for UI/presentation changes.
 
-Do not load every historical plan/session blindly. Historical material is evidence, not current authority.
+Historical plans/session notes are evidence, not current authority.
 
 ## Truth hierarchy
 
 When guidance conflicts, prefer:
 
 1. user's latest explicit instruction;
-2. current durable state/decisions and current root contracts;
-3. active plan + current capability/data matrix;
-4. current source code/runtime behavior;
-5. historical plans/session notes;
-6. agent inference.
+2. current `.agents/state.md` and durable decisions;
+3. current root architecture/design contracts;
+4. active plan + current capability/data matrix;
+5. current source/runtime behavior;
+6. historical plans/session notes;
+7. agent inference.
 
-Never silently promote inference above verified/current instructions.
+Never silently promote inference above current explicit instructions.
 
 ## Evidence rule
 
-For external Situm behavior, memory is not evidence.
+For external Situm behavior, memory is not implementation evidence.
 
-Before implementation, an agent must verify the exact current contract required by the active plan using official Situm documentation/source and the installed SDK version where relevant.
+Before implementation, verify the exact current contract using official Situm documentation/source and the installed SDK version where relevant.
 
-Do not invent:
+Do not invent endpoint paths, SDK methods, payload fields, permissions, browser/server ownership, native/web ownership, or fake fallback values.
 
-- endpoint paths;
-- Viewer/SDK method names;
-- request/response fields;
-- permission requirements;
-- browser-vs-server capability;
-- native-vs-web capability;
-- fallback data.
-
-If a required capability is not verified, mark it `UNRESOLVED` in Plan 010/capability mapping and do not implement it. A truthful removal or explicit blocked item is preferable to a guessed integration.
+If a required capability is not verified, keep it `UNRESOLVED`/absent rather than guessing.
 
 ## Persistence model
 
 Session notes answer **what happened?** and may become stale.
 
-Durable files answer **what is still true?** They must be revised when newer decisions supersede older ones.
+Durable files answer **what is still true?** They must be revised when newer decisions supersede older wording.
 
-Before committing a completed plan phase:
+Before a completed implementation-phase commit:
 
 1. update active plan/checklist;
 2. update `.agents/state.md`;
-3. update durable decisions only if the decision actually changed;
-4. add/update the current session note;
-5. run the phase validation;
+3. update durable decisions/knowledge only when changed;
+4. append the current session note;
+5. run required validation;
 6. commit and push the plan branch.
 
-Never store credentials, API keys, JWTs, passwords, or sensitive response payloads.
+Never store credentials, API keys, JWTs, passwords, or sensitive payloads.
 
 ## Current scope
 
-The UI roadmap through Plan 009B is historical, accepted after manual correction, and integrated into `main`.
+The UI roadmap through Plan 009B is historical and integrated into `main`.
 
-The active roadmap stage is **Plan 010 — Web Capability Pruning & Situm Integration Contract** on `plan/010-progressive-situm-data-integration`.
+Plans **010–016 have completed their stacked implementation pass**. The cumulative current branch is:
 
-Plan 010 must make the product contract truthful before backend integration by:
+`plan/016-situm-viewer-settings-integration`
 
-- pruning native-only/fake/unsupported web UI;
-- freezing the web/native boundary;
-- freezing the browser Viewer vs private Nitro credential boundary;
-- mapping every retained Situm-domain field/action to exact verified evidence and one later owner.
+Do not restart Plan 010 or recreate Plans 011–016 from `main`.
 
-Plans 011–016 must not restore UI removed by Plan 010 and must not invent unsupported Situm capabilities.
+The user explicitly authorized this completed stacked sequence to branch each plan from the previous plan HEAD, with **no PR and no merge to `main`**.
 
-Native indoor positioning/bluedot and motion-aware handset navigation are outside the current Nuxt web roadmap.
+Current implementation is not fully runtime-verified: configured Situm credentials/authenticated session were unavailable for manual API/Viewer smoke. Reports, Groups, Alarms, route-result details, some realtime semantics, trajectory/follow, and unverified generic Viewer settings remain evidence-gated/absent.
+
+Read `.agents/state.md` for the exact current truth and next action.
