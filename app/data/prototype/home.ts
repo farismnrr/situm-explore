@@ -26,10 +26,10 @@ export const homeBuilding: HomeBuilding = {
 export const homePois = cartographyPois
 
 export const homeExplore: HomeExploreItem[] = [
-  { icon: '◇', title: 'Buildings & floors', detail: 'Browse venue and floor metadata.', to: '/app/buildings' },
-  { icon: '●', title: 'POIs', detail: 'Search destinations and categories.', to: '/app/pois' },
-  { icon: '◉', title: 'Realtime', detail: 'Track current positions.', to: '/app/realtime' },
-  { icon: '↗', title: 'Directions', detail: 'Preview routes and accessibility.', to: '/app/paths' },
-  { icon: '▥', title: 'Reports', detail: 'Visitors, heatmaps and stay time.', to: '/app/analytics' },
-  { icon: '⚙', title: 'Viewer config', detail: 'Preview map behavior preferences.', to: '/app/settings' }
+  { icon: 'i-lucide-building-2', title: 'Buildings & floors', detail: 'Browse venue and floor metadata.', to: '/app/buildings' },
+  { icon: 'i-lucide-map-pin', title: 'POIs', detail: 'Search destinations and categories.', to: '/app/pois' },
+  { icon: 'i-lucide-radio', title: 'Realtime', detail: 'Track current positions.', to: '/app/realtime' },
+  { icon: 'i-lucide-route', title: 'Directions', detail: 'Preview routes and accessibility.', to: '/app/paths' },
+  { icon: 'i-lucide-bar-chart-3', title: 'Reports', detail: 'Visitors, heatmaps and stay time.', to: '/app/analytics' },
+  { icon: 'i-lucide-settings', title: 'Viewer config', detail: 'Preview map behavior preferences.', to: '/app/settings' }
 ]

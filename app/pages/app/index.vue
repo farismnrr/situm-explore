@@ -82,7 +82,7 @@ const previewFloorMapUrl = computed(() => previewFloors.value.find(floor => floo
       <div class="panel-head"><div><h2 class="font-semibold text-highlighted">Quick explore</h2><p class="mt-1 text-xs text-muted">Common Situm web surfaces</p></div></div>
       <div class="quick-grid p-4">
         <NuxtLink v-for="item in homeExplore" :key="item.to" :to="item.to" class="quick-card soft-card p-4 transition hover:border-primary hover:bg-elevated">
-          <span class="mb-4 grid size-9 place-items-center rounded-lg border border-default bg-elevated text-lg text-highlighted" aria-hidden="true">{{ item.icon }}</span><strong class="block text-sm text-highlighted">{{ item.title }}</strong><span class="mt-1 block text-xs leading-5 text-muted">{{ item.detail }}</span>
+          <span class="mb-4 grid size-9 place-items-center rounded-lg border border-default bg-elevated text-highlighted" aria-hidden="true"><UIcon :name="item.icon" class="size-4" /></span><strong class="block text-sm text-highlighted">{{ item.title }}</strong><span class="mt-1 block text-xs leading-5 text-muted">{{ item.detail }}</span>
         </NuxtLink>
       </div>
     </UCard>
@@ -106,5 +106,5 @@ const previewFloorMapUrl = computed(() => previewFloors.value.find(floor => floo
 .activity-row:last-child { border-bottom: 0; }
 .activity-dot { flex: 0 0 auto; width: 0.4rem; height: 0.4rem; border-radius: 999px; background: var(--ui-text-muted); }.tone-success { background: #168754; }.tone-info { background: #2563eb; }.tone-warning { background: #d97706; }
 @media (max-width: 900px) { .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 640px) { .content-grid, .quick-grid { grid-template-columns: 1fr; } .stat-grid { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .content-grid, .quick-grid { grid-template-columns: 1fr; } .stat-grid { grid-template-columns: 1fr; } .building-preview { padding: 0 0.75rem; } }
 </style>
