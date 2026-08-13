@@ -30,9 +30,8 @@ Plan 016A continues the cumulative Plan 016 lineage and preserves the credential
 
 Plan 016A owns only the post-stack hardening/verification work:
 
-1. split Situm credentials into Viewer/public, Nitro read-only, and Nitro read-write responsibilities;
-2. migrate current Nitro reads away from temporary `NUXT_SITUM_API_KEY` to `NUXT_SITUM_READ_API_KEY`;
-3. keep `NUXT_SITUM_WRITE_API_KEY` private and unused unless a real approved mutation requires it;
+1. enforce exactly 2 Situm keys: Viewer/public and a single private Nitro key;
+2. migrate all current Nitro operations to `NUXT_SITUM_API_KEY`;
 4. audit `.env.example` against actual runtime consumers in both directions, including stale variables such as `DB_SCHEMA` and potentially unused `NUXT_PUBLIC_APP_URL`;
 5. perform real authenticated runtime smoke for the integrations already implemented in Plans 011–016;
 6. capture exact evidence for Reports/Groups/Alarms only far enough to decide later plan scope.
@@ -42,12 +41,10 @@ Plan 016A does **not** implement the full Reports/Groups/Alarms feature set. Sub
 ## Credential target — implemented (Phase 1 complete)
 
 - `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer only.
-- `NUXT_SITUM_READ_API_KEY` — private Nitro read operations; intended Situm role: Only Read.
-- `NUXT_SITUM_WRITE_API_KEY` — private Nitro mutations only; intended Situm role: Read and Write.
+- `NUXT_SITUM_API_KEY` — private Nitro operations.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier.
-- `NUXT_SITUM_API_KEY` — removed; no current code or `.env.example` entry references it.
 
-All current Nitro read paths now use `NUXT_SITUM_READ_API_KEY`. `/api/situm/status` reports `readConfigured`, `writeConfigured`, and `viewerConfigured` separately without exposing values. Never expose private read/write credentials to browser/public runtime config, logs, docs, or error payloads.
+All current Nitro paths now use `NUXT_SITUM_API_KEY`. `/api/situm/status` reports `serverConfigured` and `viewerConfigured` separately without exposing values. Never expose the private credential to browser/public runtime config, logs, docs, or error payloads.
 
 `NUXT_PUBLIC_APP_URL` had no real consumer (Phase 0 finding) and has been removed from `nuxt.config.ts` runtimeConfig.public and `.env.example` rather than kept as documented-but-unused.
 
@@ -60,7 +57,7 @@ Plans 010–016 passed static/local validation where applicable:
 - `npm run typecheck`;
 - `npm run build`.
 
-**Runtime Situm smoke is NOT complete**. The missing-credential and unauthorized semantics were verified without secret exposure, but the success-path tests are blocked because `NUXT_SITUM_READ_API_KEY` is not configured in the local environment. Code/build blockers preventing the smoke test execution were resolved, but success behavior is untested.
+**Runtime Situm smoke is NOT complete**. The missing-credential and unauthorized semantics were verified without secret exposure, but the success-path tests are blocked because `NUXT_SITUM_API_KEY` is not configured in the local environment. Code/build blockers preventing the smoke test execution were resolved, but success behavior is untested.
 
 ## Evidence-gated follow-up gaps
 

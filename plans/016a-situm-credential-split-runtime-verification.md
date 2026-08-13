@@ -32,18 +32,12 @@ This is a small post-Plan-016 hardening plan. It does **not** reopen or replay P
 Target environment contract:
 
 - `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only; minimum Viewer permission that works for the POC.
-- `NUXT_SITUM_READ_API_KEY` — private Nitro credential for Situm read operations; intended role: Only Read.
-- `NUXT_SITUM_WRITE_API_KEY` — private Nitro credential reserved for explicitly approved Situm mutations; intended role: Read and Write.
+- `NUXT_SITUM_API_KEY` — private Nitro credential for all Situm server operations.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier, not a secret.
-
-Temporary compatibility variable:
-
-- `NUXT_SITUM_API_KEY` — remove after every existing Nitro read path has migrated to `NUXT_SITUM_READ_API_KEY`.
 
 Rules:
 
-- never expose read/write server credentials through public runtime config;
-- never use the write key for reads when the read key is sufficient;
+- never expose the server credential through public runtime config;
 - do not add a mutation merely because the write key exists;
 - no secret values in logs, docs, sessions, tests, or error payloads.
 
@@ -61,13 +55,10 @@ See `.agents/sessions/016a-phase0-config-inventory.md` for full findings.
 
 ## Phase 1 — Runtime credential split
 
-- [x] add private runtime config for `NUXT_SITUM_READ_API_KEY`;
-- [x] add private runtime config for `NUXT_SITUM_WRITE_API_KEY`;
+- [x] use a single private runtime config for `NUXT_SITUM_API_KEY`;
 - [x] keep `NUXT_PUBLIC_SITUM_API_KEY` Viewer-only;
-- [x] migrate all current Situm Nitro read clients/routes to the read key;
-- [x] keep write-key plumbing minimal and unused unless an approved mutation genuinely requires it;
-- [x] remove `NUXT_SITUM_API_KEY` compatibility plumbing after all reads migrate;
-- [x] update `/api/situm/status` semantics so Viewer/read/write configuration is reported separately without exposing values.
+- [x] migrate all current Situm Nitro clients/routes to the single private key;
+- [x] update `/api/situm/status` semantics so server/Viewer configuration is reported separately without exposing values.
 
 ## Phase 2 — Documentation and durable context
 
@@ -134,9 +125,7 @@ Rules:
 - [x] `npm run lint`;
 - [x] `npm run typecheck`;
 - [x] `npm run build`;
-- [x] no browser bundle contains `NUXT_SITUM_READ_API_KEY` or `NUXT_SITUM_WRITE_API_KEY`;
-- [x] no current Nitro read depends on removed `NUXT_SITUM_API_KEY`;
-- [x] no read path uses the write key unnecessarily;
+- [x] no browser bundle contains `NUXT_SITUM_API_KEY`;
 - [x] `.env.example` matches actual implemented consumers;
 - [x] current authority docs agree;
 - [x] update plan + `.agents` persistence;

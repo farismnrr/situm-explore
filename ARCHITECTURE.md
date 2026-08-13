@@ -264,11 +264,7 @@ Do not:
 Plan 016A implemented the final credential split. Situm credentials are separated by responsibility:
 
 - `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only; minimum Viewer permission that works for the POC; public by design because Nuxt exposes `NUXT_PUBLIC_*` to the browser.
-- `NUXT_SITUM_READ_API_KEY` — private Nitro credential for Situm read operations; intended role: Only Read.
-- `NUXT_SITUM_WRITE_API_KEY` — private Nitro credential reserved for explicitly approved Situm mutations; intended role: Read and Write; stays unused until a real mutation is implemented.
-- `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier, not a secret.
-
-The temporary `NUXT_SITUM_API_KEY` compatibility variable has been fully removed; no current Nitro read depends on it.
+- `NUXT_SITUM_API_KEY` — private Nitro credential for all Situm server operations.
 
 Rules:
 
