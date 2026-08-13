@@ -16,7 +16,7 @@ Required configuration for the **current baseline**:
 - `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`: configured-owner login credential.
 - `DATABASE_URL`: shared PostgreSQL instance; the application-owned schema is `situm_explore`.
 - `NUXT_PUBLIC_SITUM_API_KEY`: **legacy current Map Viewer POC credential only**. Current `SitumViewer` still requires it; do not reuse this public value for new REST/domain backend integrations.
-- `NUXT_SITUM_API_KEY`: private Nitro credential reserved for future authenticated Situm REST/domain reads. It must never enter browser runtime config or client bundles.
+- `NUXT_SITUM_API_KEY`: private Nitro credential reserved for authenticated Situm REST/domain reads and the protected Situm configuration status. It must never enter browser runtime config or client bundles.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID`: building loaded by the current Map Viewer. This is an identifier, not a secret.
 
 Plan 010 freezes the product contract so future Situm REST/domain reads use `NUXT_SITUM_API_KEY` through private Nitro runtime credentials behind authenticated `/api/situm/*` routes. Browser Viewer authentication remains a separate legacy boundary until a later plan verifies and migrates it safely.
@@ -37,7 +37,7 @@ Drizzle owns only the dedicated `situm_explore` schema. Review migrations before
 
 The authenticated workspace is rooted at `/app`. Login uses the existing Nitro endpoint/session flow and `/app/**` remains protected by the current auth middleware. Protected product API routes, including `/api/situm/*`, must enforce the existing server-side session independently of client route middleware.
 
-The current POC does not have a real self-service account-registration backend; the historical dummy `/register` flow is removed. `/api/situm/status` reports configuration presence only and is not a Situm health check or Viewer readiness signal.
+The current POC does not have a real self-service account-registration backend; the historical dummy `/register` flow is removed. `/api/situm/status` requires the app session and reports private Situm configuration presence only; `viewerConfigured` separately reports the legacy browser Viewer configuration. It is not a Situm health check or Viewer readiness signal.
 
 ## Situm integration roadmap
 

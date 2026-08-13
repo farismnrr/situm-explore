@@ -14,7 +14,7 @@ Branch base:
 
 `main` at `170110c1d60c32600e1641a0f89cc53823bba9cc`
 
-Plan 010 implementation is complete on the dedicated branch. It pruned web-invalid/fake UI, protected the Situm status route, froze the private Nitro credential name, and recorded the evidence/ownership ledger. It is awaiting user review/integration authorization.
+Plan 010 implementation and post-completion review are complete on the dedicated branch. Review tightened the protected status route to report private server configuration separately from legacy Viewer configuration and clarified unresolved Situm endpoint/schema evidence. It is awaiting user review/integration authorization.
 
 ## Historical UI state
 
