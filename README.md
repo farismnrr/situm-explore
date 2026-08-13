@@ -1,6 +1,42 @@
 # Situm Explore
 
-Situm Explore is a single full-stack Nuxt application using Nuxt UI and Nitro server routes.
+Situm Explore is a full-stack Nuxt 4 web operations/exploration application using Nuxt UI, Nitro, PostgreSQL/Drizzle, Situm web integrations, and ClickHouse analytics.
+
+## Current status
+
+Plans 017–020 are complete and integrated into `main` by PR #12.
+
+The active planning roadmap is Plans 021–025 on `roadmap/021-025-backend-refactor`:
+
+```text
+Plan 021 — Identity & Auth Foundation
+-> Plan 022 — Private Workspaces & Situm Configuration
+-> Plan 023 — Observability, Correlation & Safe Error Boundary
+-> Plan 024 — Workspace-scoped Situm Backend Migration
+-> Plan 025 — Workspace UX & Full Regression
+```
+
+Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, `plans/021-025-backend-refactor-roadmap.md`, and `plans/021-025-prerequisites.md` before executing roadmap work.
+
+Under the normal Git protocol, the planning branch must be reviewed/integrated into `main` before Plan 021 starts. No stacked implementation authorization currently exists.
+
+## Current runtime vs target
+
+The current integrated runtime still contains the previous PoC's env-defined app login and global Situm account/Viewer/building context. Those are migration inputs, not the final target.
+
+Plans 021–025 move the product to:
+
+- database-backed users with real email/password registration and login;
+- Google OAuth plumbing prepared for later manual acceptance;
+- many private single-owner workspaces per user;
+- protected server-side Situm configuration per workspace;
+- `VIEW_ONLY` / `VIEW_WRITE` product modes with upstream permission authoritative;
+- workspace-scoped Situm, Viewer/building, and ClickHouse analytics context;
+- reuse of the user's existing observability stack;
+- end-to-end request correlation/tracing;
+- sanitized client errors while detailed diagnostics remain server-side.
+
+Current architecture/design documents are already reconciled for this roadmap. Historical plans/sessions remain evidence only and should not be read as current execution authority.
 
 ## Setup
 
@@ -10,56 +46,25 @@ cp .env.example .env
 npm run dev
 ```
 
-Required configuration for the **current baseline**:
+Current runtime configuration is documented in `.env.example`. New roadmap prerequisites are introduced by their owning plan and summarized in `plans/021-025-prerequisites.md`.
 
-- `NUXT_SESSION_PASSWORD`: at least 32 characters; used by `nuxt-auth-utils` for sealed sessions.
-- `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`: configured-owner login credential.
-- `DATABASE_URL`: shared PostgreSQL instance; the application-owned schema is `situm_explore`.
-- `NUXT_PUBLIC_SITUM_API_KEY`: browser-visible Map Viewer credential only. Use the minimum Situm role that supports retained Viewer behavior and never reuse it as the server REST credential.
-- `NUXT_SITUM_API_KEY`: single private Nitro credential for all server-side Situm operations. It must never enter browser runtime config or client bundles.
-- `NUXT_PUBLIC_SITUM_BUILDING_ID`: building loaded by the current Map Viewer. This is an identifier, not a secret.
+Never commit local environment files, credentials, session material, encryption material, or credential-bearing output.
 
-The final Situm credential model intentionally uses exactly **two Situm keys**: one public Viewer key and one private Nitro key. Do not introduce separate private read/write keys without a concrete future requirement.
+## Validation
 
-## Current status
+Code-changing plans use at least:
 
-Plans 010–016 plus Plan 016A are complete on the cumulative branch `plan/016a-situm-credential-split-runtime-verification`.
-
-Plan 016A completed the final credential/config boundary, Nuxt 4 TypeScript configuration cleanup, static/security validation, and live runtime smoke for the implemented Situm server read paths. `/api/situm/status` reports server and Viewer configuration separately without exposing credential values.
-
-The cumulative branch is ready for user-gated PR review/integration into `main`.
-
-Do not commit `.env`, API keys, JWTs, or credential-bearing command output.
-
-## Database
-
-Drizzle owns only the dedicated `situm_explore` schema. Review migrations before running `npm run db:migrate`; migrations are never applied automatically. The protected `/api/me` endpoint reports safe application/database state.
-
-## Authentication
-
-The authenticated workspace is rooted at `/app`. Login uses the existing Nitro endpoint/session flow and `/app/**` remains protected by the current auth middleware. Protected product API routes, including `/api/situm/*`, must enforce the existing server-side session independently of client route middleware.
-
-The current POC does not have a self-service account-registration backend; the historical dummy `/register` flow is removed. `/api/situm/status` requires the app session and reports private Situm configuration presence only; Viewer configuration is reported separately. It is not a Situm health check or Viewer readiness signal.
-
-Plan 017 analytics uses the existing local ClickHouse instance through the server-only `CLICKHOUSE_URL`, `CLICKHOUSE_USER`, `CLICKHOUSE_PASSWORD`, and `CLICKHOUSE_DB` variables documented in `.env.example`. The authenticated `/api/health` endpoint reports ClickHouse availability separately from Situm configuration without returning connection details. The app-owned `situm_explore_analytics` schema uses `ReplacingMergeTree` keyed by report window and row dimensions; sync identity keys provide deterministic re-sync foundations. Do not add a second ClickHouse server or expose these variables through public runtime config.
-
-## Situm integration roadmap
-
-The completed cumulative roadmap is:
-
-```text
-010   capability pruning + security/data contract
-011   Buildings/Floors/POIs/Categories
-012   Geofences/Paths/static directions evidence boundary
-013   Realtime monitoring
-014   Reports/Analytics — skipped/unresolved implementation
-015   Organization/Users + Groups/Alarms evidence boundary
-016   verified web-safe Viewer/Settings capabilities
-016A  credential/config/runtime hardening + live verification
+```sh
+git diff --check
+npm run lint
+npm run typecheck
+npm run build
 ```
 
-Implemented Situm server read paths have been runtime-smoked with configured credentials. Remaining evidence-gated areas such as full Reports/Analytics, Groups, Alarms, richer routing results, and some realtime/Viewer semantics should become Plan 017 or later only when exact official contracts and concrete product scope justify them.
+Runtime acceptance uses a production build plus `npm run preview`; Nuxt dev mode is not acceptance evidence.
 
-Device indoor positioning/bluedot and movement-aware navigation are intentionally outside this Nuxt web roadmap.
+## Product boundary
 
-See `design/data-source-matrix.md` and `.agents/state.md` for current capability/source authority and unresolved follow-up scope.
+The Nuxt web app remains an operations/admin/exploration product. Device indoor positioning, sensor-generated blue dot, handset live navigation, and movement-aware rerouting remain outside this web roadmap.
+
+For Situm behavior: **no evidence, no implementation**. Verify exact official/current contracts and installed SDK compatibility instead of inferring behavior from historical UI, old plans, or model memory.

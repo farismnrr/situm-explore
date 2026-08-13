@@ -1,86 +1,106 @@
 # Knowledge Index
 
-This store contains reusable verified concepts/references/frameworks learned through work with the user.
+This store contains reusable verified project/domain knowledge. It must not compete with current state or durable decisions.
 
-Do not place user-specific facts here; those belong in `../memory/`.
+Current `.agents/state.md`, active durable decisions, roadmap addenda, and the active plan override older observations. Historical findings remain useful only when their scope/date is clear.
 
-Current durable decisions override stale knowledge entries. Historical observations should be explicitly labeled historical.
+## PostgreSQL application boundary
 
-## Current knowledge
+- Situm Explore uses PostgreSQL through `DATABASE_URL`.
+- Application-owned Drizzle objects live in the dedicated `situm_explore` schema.
+- Do not introduce schema variability or touch unrelated schemas/databases.
+- Plans 021–022 add concrete app-owned relational persistence for users, provider identities, workspaces, and protected workspace configuration.
+- External Situm resources are not automatically cached in PostgreSQL unless a concrete product requirement owns that persistence.
 
-### Situm Explore building resources
+Source: current architecture + roadmap 021–025.
 
-- Local building floorplan resources and related Situm identifiers were removed from the public repository tree after the user decided they must not remain publicly distributed.
-- Historical Git blobs may still exist; do not restore/recommit those assets without a new explicit user decision.
-- `NUXT_PUBLIC_SITUM_BUILDING_ID` is an identifier, not a credential, and may remain public when required by the browser Viewer.
-- Building discovery/auth mechanics must follow the current Plan 010 credential contract rather than historical setup snippets when those conflict.
+## Authentication transition
 
-Source: repository history + current Plan 010 boundary, reviewed 2026-08-13.
+- Current pre-refactor runtime still has an env-defined single-user login.
+- Plan 021 replaces that authority with database-backed application users while retaining the sealed Nuxt session mechanism.
+- Email/password register/login is required.
+- Google OAuth plumbing is prepared in Plan 021, but real provider acceptance is user-owned/manual for now.
+- Provider IDs are not application user IDs; app users keep stable application-owned identity.
 
-### PostgreSQL application boundary
+Source: Plan 021 / roadmap durable decisions.
 
-- Situm Explore uses the shared PostgreSQL runtime through `DATABASE_URL`.
-- Application-owned Drizzle objects are fixed to the dedicated `situm_explore` schema.
-- Do not introduce `DB_SCHEMA` variability or touch unrelated databases/schemas.
-- External Situm data is not automatically persisted/cached in PostgreSQL; new persistence requires a concrete app-owned requirement.
+## Workspace model
 
-Source: foundation implementation/hardening + current architecture contract.
+- One application user may own many private workspaces.
+- A workspace has one owner in Plans 021–025; no invite/member/team tenancy is introduced.
+- Different app users may independently configure workspaces that refer to the same external Situm account/organization.
+- Situm organization identity is external metadata and must not be treated as application tenancy.
 
-### Situm credential/runtime boundary
+Source: user-approved Plans 021–025 model.
 
-- The accepted baseline historically initializes the browser Viewer from `NUXT_PUBLIC_SITUM_API_KEY`; this is legacy POC behavior, not the future REST integration contract.
-- New Situm REST/domain integrations use private Nitro runtime credentials behind authenticated product routes.
-- The server REST credential must never be exposed through public runtime config or browser code.
-- Browser Viewer authentication is a separate integration boundary and must be verified against current official Situm documentation/source and the installed `@situm/sdk-js` version before migration.
-- Never persist or print actual key/JWT/token values.
+## Situm credential/runtime transition
 
-Source: current Plan 010, architecture, and durable security decision, reviewed 2026-08-13.
+- The historical baseline uses global Viewer/server Situm environment configuration.
+- Plans 021–025 replace that as the final architecture with workspace-managed server-side configuration.
+- Stored long-lived workspace credentials must not be returned to browser code.
+- Product modes are `VIEW_ONLY` and `VIEW_WRITE`; verified upstream permission remains authoritative.
+- Browser Viewer authentication is a separate evidence gate. Current official Situm material supports JWT-based auth, but Plan 022 must verify exact behavior against the installed `@situm/sdk-js` version and the configured account before changing the Viewer path.
+- Never persist or print real API key/JWT/token values in repository docs, sessions, logs, or tests.
 
-### Situm web vs native boundary
+Source: roadmap 021–025 + current official Situm evidence gate.
 
-- The Nuxt web app is an operations/admin/exploration client, not the device positioning engine.
-- Web may consume realtime locations produced by positioned devices and may use verified browser Viewer behavior.
-- Sensor-generated indoor blue dot, positioning permission/runtime management, and movement-aware navigation/rerouting belong to a future native/mobile roadmap.
-- A UI label or prototype interaction does not prove that a capability exists on web.
+## Situm web vs native boundary
 
-Source: Plan 010 capability review, 2026-08-13.
+- The Nuxt app is an operations/admin/exploration web product, not the device positioning engine.
+- Web may consume realtime positions produced by devices and may use verified browser Viewer behavior.
+- Sensor-generated indoor blue dot, positioning permission/runtime management, handset live navigation, and movement-aware rerouting remain outside this roadmap.
+- UI labels or prototype behavior do not prove Situm capability.
 
-### Situm external evidence rule
+Source: current product boundary.
 
-- Model recollection, prototype labels, fixture shapes, and historical plans are not implementation evidence.
-- Before coding a Situm capability, verify exact current official endpoint/SDK method, web/native availability, browser/server owner, auth/permission, and fields/events consumed.
-- Installed SDK compatibility matters for Viewer methods.
+## Situm external evidence rule
+
+- Model recollection, old plan wording, fixture shapes, and prototype labels are not implementation evidence.
+- Verify exact current official endpoint/SDK method, installed-version compatibility, browser/server owner, web/native owner, auth/permission, consumed fields/events, and failure semantics before implementing a new Situm behavior.
 - Missing material evidence means `UNRESOLVED`; do not guess or fabricate a successful fallback.
 
-Source: current Plan 010 execution contract, 2026-08-13.
+Source: active durable decision.
 
-### Situm SDK JS realtime/trajectory Viewer evidence
+## Situm SDK JS Viewer evidence
 
-- Installed `@situm/sdk-js` is version `0.25.0` and exposes `loadRealtimePositions`, `cleanRealtimePositions`, `loadTrajectory`, and `cleanTrajectory`.
-- Official current source verifies realtime building-ID filtering, 10-second default refresh, immediate fetch plus interval lifecycle, customization of device ID/tooltip/icon, failure logging, and cleanup by clearing external features.
-- Official source verifies trajectory Date/building/optional UUID inputs and Viewer PLAY/clear dispatch, but does not establish date bounds or special empty/error UI semantics. Hydrated account/browser trajectory behavior remains unresolved and must not be implemented until smoked.
+- Installed `@situm/sdk-js` baseline observed in the completed roadmap is version `0.25.0`.
+- Existing integrated Viewer work verified realtime overlay and static directions behavior used by the product.
+- Trajectory remains unresolved/omitted because full hydrated runtime semantics were not established.
+- Static directions remain limited to the verified typed surface; no raw Viewer/generic invoke escape hatch.
+- Re-verify installed version/contracts during a future plan when exact SDK behavior materially matters.
 
-Source: installed package typings/runtime + official `situmtech/situm-sdk-js` source and example, reviewed 2026-08-13.
+Source: completed Plans 019/019A/020 evidence.
 
-### UI reference translation boundary
+## ClickHouse analytics boundary
 
-- `design/reference/situm-explore-interactive-prototype.html` remains the single visual/interaction reference.
+- Reuse the user's existing local ClickHouse instance; do not provision a second one.
+- ClickHouse remains server-side analytics storage; PostgreSQL remains application relational storage.
+- Plans 021–025 must make analytics reads/writes workspace-isolated before multi-workspace behavior is complete.
+- Legacy pre-workspace rows have no proven owner and must not be assigned to a workspace arbitrarily.
+
+Source: completed Plan 017 + roadmap 021–025.
+
+## Observability discovery rule
+
+- The user already has local observability infrastructure.
+- Plan 023 must inspect `docker ps` plus runtime/repository configuration and reuse the existing stack/protocols.
+- Do not install duplicate logging/metrics/tracing infrastructure by assumption.
+- Correlation/tracing must avoid sensitive values, and detailed internal failures stay server-side.
+
+Source: user-approved Plan 023 direction.
+
+## UI reference translation boundary
+
+- `design/reference/situm-explore-interactive-prototype.html` remains visual/interaction guidance.
 - Production remains Nuxt 4 + Vue + Nuxt UI.
-- Visual fidelity and capability truth are separate: Plan 010 may remove native-only/fake/unsupported controls even when they exist in the prototype.
-- Current capability/data truth lives in `design/data-source-matrix.md` + active plan, not historical UI plans.
+- Visual fidelity cannot override current capability/security truth.
 
-Source: current design contracts, reviewed 2026-08-13.
+Source: current design contract.
 
-### Repo-native Codex context pattern
+## Historical knowledge files
 
-- Keep root `AGENTS.md` concise and navigational.
-- Put current detailed context in maintainable structured files.
-- Use targeted reads as context grows.
-- Historical plans/session logs are evidence, not higher-priority truth than current durable contracts/state.
-- Current architecture docs must describe current structure, not completed migration instructions.
-
-Source: repository operating model.
+Dedicated knowledge files with an older plan/phase in their title are scoped evidence from that plan. They remain reusable when the exact external contract is still relevant, but they do not reactivate the old roadmap or its execution state.
 
 ## When this grows
 
-Split substantial verified topics into dedicated Markdown files and keep this file as an index with short descriptions/links.
+Split substantial verified topics into focused files and keep this index short enough to act as a router.

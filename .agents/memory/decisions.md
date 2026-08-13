@@ -1,158 +1,124 @@
 # Decisions
 
-This file contains **currently active durable decisions**. Historical/superseded details belong in session logs and completed plans, not as competing active instructions.
+This file contains **currently active durable decisions**. Completed execution history belongs in plans/session evidence, not as competing active instructions.
 
-## 2026-08-12 — Repo-native agent context
+## Repository-native agent context
 
 - Root `AGENTS.md` stays concise and routes persistent context into `.agents/`.
-- `.agents/` owns durable state/memory/protocols; architecture/design guidance stays in root contracts.
-- Session history is chronological evidence; durable stores contain current truth.
-- Never persist credentials, API keys, passwords, tokens, session cookies, or unnecessary sensitive data.
+- `.agents/state.md` owns current focus, blockers, branch, and next action.
+- Session logs and completed plans are historical evidence and may become stale.
+- Never persist credentials, API keys, passwords, tokens, session cookies, encryption-key values, or unnecessary sensitive payloads.
 
 Status: active.
 
-## 2026-08-12 — Full-stack Nuxt architecture
+## Full-stack Nuxt architecture
 
-- Build one full-stack Nuxt 4 web application with Nitro server routes; native/mobile is separate scope.
-- Use Nuxt UI, `nuxt-auth-utils`, and PostgreSQL/Drizzle for application-owned relational data in schema `situm_explore`.
-- Use Nuxt-native `app/`, `server/`, and genuinely shared `shared/` boundaries.
-- KISS is the default tie-breaker. Do not add generic repositories/services, DI, global stores, event buses, generic API clients, caches, or workers without concrete need.
-
-Status: active.
-
-## 2026-08-13 — Web vs native Situm boundary
-
-- The product is a web operations/admin/exploration console.
-- Web may own verified Map Viewer interaction, cartography reads, static directions, realtime monitoring, reports, and read-only operations/admin views.
-- Device indoor positioning/bluedot, sensor/permission handling, current-handset navigation, movement-aware rerouting, and native turn-by-turn behavior remain outside the Nuxt web roadmap.
-- Web may consume positions produced by devices; it must not claim the browser performs Situm indoor positioning.
-- Situm-domain UI without a truthful real owner is removed rather than kept fake.
+- Situm Explore remains one full-stack Nuxt 4 application with Nitro server routes.
+- Use Nuxt UI, `nuxt-auth-utils`, PostgreSQL/Drizzle in the application-owned `situm_explore` schema, and the existing ClickHouse analytics integration.
+- Keep `app/`, `server/`, and genuinely shared `shared/` boundaries Nuxt-native.
+- KISS is the default tie-breaker. Do not add generic repositories/services, DI, global stores, event buses, caches, workers, or a second backend without concrete need.
 
 Status: active.
 
-## 2026-08-13 — Situm credential/security boundary
+## Web vs native Situm boundary
 
-The final Situm credential model intentionally uses exactly two keys:
-
-- `NUXT_PUBLIC_SITUM_API_KEY` — browser-visible credential used only by the Map Viewer integration;
-- `NUXT_SITUM_API_KEY` — single private Nitro credential for server-side Situm operations.
-
-Rules:
-
-- do not maintain separate private read/write variables without a future concrete requirement;
-- protected product `/api/situm/*` routes require the existing application session;
-- never expose `NUXT_SITUM_API_KEY` through public runtime config, browser code, logs, docs, tests, built client assets, or error payloads;
-- never create a generic unauthenticated Situm proxy;
-- `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public because it is an identifier;
-- no mutation is added merely because the private key could support it.
+- The web product is an operations/admin/exploration console.
+- Web may own verified Viewer interaction, cartography, static directions, realtime monitoring, reports, and admin/read surfaces.
+- Device indoor positioning, sensor/permission handling, handset blue-dot positioning, movement-aware rerouting, and native turn-by-turn behavior remain outside this Nuxt roadmap.
+- Situm-domain UI without a truthful owner is removed or left unresolved rather than faked.
 
 Status: active.
 
-## 2026-08-13 — Evidence-backed Situm integration
+## Plans 021–025 identity/workspace model
 
-- **No evidence, no implementation.** External Situm behavior must be evidence-backed, not memory-backed.
-- Verify exact endpoint/SDK method, installed-version compatibility, web/native ownership, browser/server ownership, auth/permission, request inputs, consumed response/event fields, and relevant failure/empty/runtime semantics.
-- If a material part is not verified, keep that capability `UNRESOLVED`/absent instead of guessing or fabricating success.
-- Lack of an `@situm/sdk-js` wrapper is not proof the official REST API lacks a capability; Nitro may call a verified official REST endpoint directly when that is the smallest correct path.
+- Real application users are persisted in PostgreSQL.
+- Email/password registration/login is acceptance-critical.
+- Google OAuth is prepared through schema/provider/config plumbing; real OAuth runtime acceptance is deferred to the user.
+- One application user may own many private workspaces.
+- A workspace has exactly one application owner in this roadmap; no invite/member/team hierarchy is introduced.
+- Different application users may independently configure workspaces that refer to the same external Situm account/organization.
+- Situm organization identity is external metadata, not application tenancy.
 
-Status: active.
+Status: active roadmap decision.
 
-## 2026-08-13 — Plans 010–016A integrated lineage
+## Plans 021–025 Situm credential transition
 
-- Plans 010–016A are complete/integrated and historical for current execution.
-- PR #8 integrated the cumulative Plans 010–016A lineage into `main`.
-- Do not restart or recreate Plans 010–016A from historical plan branches.
-- The old credential-split Plan 017 name was superseded by Plan 016A and is historical only.
+The previous two-global-env-key model is **pre-refactor runtime only** and is no longer the final target.
 
-Status: complete/integrated.
+Approved target:
 
-## 2026-08-13 — Local ClickHouse analytics architecture
+- Situm configuration is owned by an authenticated workspace and persisted server-side;
+- stored long-lived workspace credentials use authenticated encryption at rest;
+- browser code must not receive the stored long-lived workspace API key;
+- product access modes are `VIEW_ONLY` and `VIEW_WRITE`;
+- verified upstream permission remains authoritative;
+- unsupported/intermediate permission states are handled conservatively;
+- workspace/account/building context must not remain process-global after migration.
 
-- Plan 017 uses the user's existing local ClickHouse instance for Situm analytics/report persistence and querying.
-- Do not install/provision another ClickHouse server or add Docker/Compose for it.
-- Keep ClickHouse server-only behind Nitro; browser code never connects directly or receives ClickHouse credentials.
-- PostgreSQL/Drizzle remains the application relational store; ClickHouse is the analytics store, not a replacement.
-- Explicit product sync is sufficient for the PoC; no background worker/queue/cron is required.
-- Never alter/drop unrelated ClickHouse databases/tables.
+Viewer authentication must be verified against current official Situm contracts and the installed SDK. Prefer a proven short-lived/least-privilege browser auth mechanism. If a write-capable workspace cannot produce a safely scoped Viewer credential, stop that exact path and ask the user instead of exposing broad authority silently.
 
-Status: active architecture decision; Plan 017 implementation complete.
+Status: active roadmap decision; migration not yet implemented.
 
-## 2026-08-13 — Completed feature lineage through Plan 019
+## Evidence-backed Situm integration
 
-- Plan 017 completed real Situm Reports analytics using local ClickHouse; optional Map Viewer usage/heatmap remain unresolved.
-- Plan 018 completed Groups + Alarms read-only integration; group-membership relationships remain unresolved/absent.
-- Plan 019 completed realtime Viewer overlay and hydrated Playwright smoke; trajectory remains unresolved/omitted because exact hydrated date/user/empty/error semantics were not verified.
-- Final pushed Plan 019 HEAD is `513f65e820635e05a22a54270f3bf21f5925e6c8`.
-
-Status: complete.
-
-## 2026-08-13 — Completed Plan 019A and Plan 020 lineage
-
-The user explicitly changed the stacked roadmap after the first Plan 020 Phase 0 attempt exposed a sequencing problem.
-
-The resulting branch chain is complete and integrated into `main` by PR #12:
-
-```text
-roadmap/017-020-next-features
--> plan/017-situm-analytics-clickhouse            [complete]
--> plan/018-situm-groups-alarms-read              [complete]
--> plan/019-situm-realtime-viewer-trajectory      [complete]
--> plan/019a-situm-static-directions-foundation   [complete]
--> plan/020-situm-static-directions-v2            [complete]
-```
-
-Plan 019A exists because a real `startDirections(...)` runtime proof could not be performed through the product before the product exposed the minimal verified command surface.
-
-Plan 019A therefore owns both:
-
-1. the smallest production-safe directions wiring whose contracts are already verified; and
-2. the hydrated Playwright runtime proof against the real configured Viewer/account.
-
-The earlier `plan/020-situm-static-directions` branch created before 019A is superseded as an execution base and is historical evidence only where still accurate. It is not current authority and must not be merged/cherry-picked into the completed lineage.
-
-The stale pre-019A Plan 020 branch was deleted after PR #12 integration; its historical evidence remains in repository plans and sessions.
-
-Status: complete roadmap decision; current authority is the completed lineage above.
-
-PR #12 merged the cumulative `plan/020-situm-static-directions-v2` branch into `main` at `5163af2a71c92441b01bccb81faac44933a91d1c`. `main` is now the canonical execution baseline; all non-main roadmap/plan branches are historical or superseded and may be removed without replaying their commits.
-
-## 2026-08-13 — Static directions architecture boundary
-
-For Plan 019A and Plan 020:
-
-- static routes use real known Situm POIs/endpoints only;
-- current evidence supports numeric Situm POI IDs as route endpoint identifiers for the configured cartography;
-- the single `SitumViewer` instance remains the only Viewer owner;
-- expose only small typed directions commands; no raw Viewer or generic invoke escape hatch;
-- Viewer owns route calculation/rendering;
-- `/app/map` route controls remain outside the Viewer canvas;
-- no `startNavigation`, `My location`, browser indoor positioning, turn-by-turn guidance, live rerouting, follow-user, save-car, or flight semantics;
-- do not invent route distance, duration, steps, instructions, ETA, geometry, completion events, or route-summary payloads;
-- unresolved directions events/result details/tag semantics remain absent until exact runtime evidence exists;
-- Playwright/Chrome is available locally and should be used for real hydrated directions smoke in Plan 019A.
+- **No evidence, no implementation.**
+- Verify exact endpoint/SDK method, installed-version compatibility, browser/server ownership, web/native ownership, auth/permission, request inputs, consumed fields/events, and relevant failure/empty/runtime semantics.
+- Missing material evidence stays `UNRESOLVED`/absent.
+- Direct authenticated Nitro REST remains valid when the installed SDK lacks a suitable wrapper and the official endpoint is verified.
+- The single `SitumViewer.vue` instance remains the Viewer lifecycle owner; expose only small typed commands, never raw Viewer access or a generic invoke escape hatch.
 
 Status: active.
 
-## 2026-08-13 — Completed worker-only stacked execution
+## ClickHouse analytics boundary
 
-For the completed stacked feature lineage:
+- Reuse the user's existing local ClickHouse instance; do not provision another ClickHouse server or Docker/Compose stack.
+- PostgreSQL/Drizzle remains relational application storage; ClickHouse remains analytics storage.
+- Browser code never connects directly to ClickHouse or receives ClickHouse credentials.
+- Plans 021–025 must make analytics workspace-isolated before multi-workspace product reads are considered complete.
+- Legacy unscoped analytics rows must not be assigned arbitrarily to a user/workspace. Preserve them non-destructively unless attribution is proven or the user supplies a retention/migration policy.
 
-- implementation and implementation fixes for each phase are delegated specifically to the configured `worker` subagent;
-- parent agent owns orchestration, review, plan/state/session persistence, commits, pushes, and phase/plan transitions;
-- use the same worker for targeted follow-up when practical;
-- if the configured worker cannot be spawned, stop rather than silently substituting another agent/model;
-- no PR and no merge during the stacked run;
-- each successor plan starts from the preceding plan's exact final validated/pushed HEAD.
+Status: active.
 
-Status: complete historical execution authorization.
+## Observability and safe errors
 
-## 2026-08-12 — Git workflow default
+- Plan 023 must inspect `docker ps` and existing runtime/repository configuration before selecting telemetry integration.
+- Reuse the user's existing observability stack and supported protocols; do not provision duplicate observability infrastructure by assumption.
+- Propagate request correlation/trace context from browser through Nitro and meaningful downstream boundaries.
+- Do not put secrets or sensitive payloads into headers, baggage, logs, spans, or client errors.
+- Client responses expose sanitized product errors; detailed critical/internal diagnostics remain server-side in observability.
+
+Status: active roadmap decision.
+
+## Static directions boundary
+
+- Static routes use real known Situm POIs/endpoints and numeric POI IDs already proven by the completed directions work.
+- Viewer owns route calculation/rendering.
+- No `startNavigation`, browser `My location`, indoor positioning, live rerouting, or synthetic route distance/duration/steps/geometry/ETA.
+- Unresolved route lifecycle/result contracts remain absent until exact evidence exists.
+
+Status: active product boundary.
+
+## Git workflow default
 
 - One plan = one dedicated `plan/<number>-<slug>` branch in the normal repository working directory.
 - Never implement a plan directly on `main`.
 - Each completed phase updates plan/relevant `.agents`, validates, commits, and pushes.
 - PR creation/integration is user-gated.
-- Normal dependent plans start after integration into updated `main`; explicit stacked execution is allowed only when the user authorizes it and current durable state records the exception.
-- Historical plan branches may be deleted only after safe containment/integration or explicit user direction.
+- Normal dependent plans start only after the preceding dependency is integrated into updated `main`.
+- Stacked execution requires explicit user authorization recorded in current state.
+- Do not force-push or destructively rewrite shared history as normal workflow.
+
+Status: active.
+
+## Current roadmap transition
+
+Plans 017–020 are complete/integrated historical execution. Plans 021–025 are the active backend-refactor roadmap.
+
+While this roadmap is active, also read:
+
+- `.agents/memory/roadmap-021-025.md`;
+- `plans/021-025-prerequisites.md`;
+- `design/ROADMAP-021-025-OVERRIDES.md`;
+- the active plan.
 
 Status: active.
