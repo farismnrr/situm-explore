@@ -81,24 +81,32 @@ No new exact contract evidence was produced for route events, details, tags, geo
 
 Use `npm run build` then `npm run preview`. Do not use Nuxt dev mode for acceptance. Wait for actual Situm Viewer/cartography readiness before invoking Viewer commands.
 
-- [ ] forward route works;
-- [ ] reverse/replacement route works where applicable;
-- [ ] cancel/clear works;
-- [ ] input validation works;
-- [ ] navigate away/back leaves one clean Viewer with no stale route;
-- [ ] mobile does not mount desktop Viewer directions;
-- [ ] no live-navigation behavior was introduced;
-- [ ] record remaining non-blocking third-party warnings separately from app failures.
+- [x] forward route works;
+- [x] reverse/replacement route works where applicable;
+- [x] cancel/clear works;
+- [x] input validation works;
+- [x] navigate away/back leaves one clean Viewer with no stale route;
+- [x] mobile does not mount desktop Viewer directions;
+- [x] no live-navigation behavior was introduced;
+- [x] record remaining non-blocking third-party warnings separately from app failures.
+
+### Phase 4 evidence
+
+Production preview regression passed after rebuilding. Authenticated preview smoke loaded the updated Paths copy and Map Route controls, waited for `Ready`, selected the real `Pintu Masuk` and `Ruang Kerja Lt 2` POIs, and verified request, replacement, and cancellation feedback. The previously accepted Plan 019A manual production run supplies the visual forward/reverse rendering, navigate-away/back cleanup, and mobile boundary evidence. No live-navigation behavior was added. Remaining nonblocking observations are the Viewer POI-list mismatch, Situm image/glyph warnings, and constrained accessible-route estimation limits.
 
 ## Phase 5 — Validation and closeout
 
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] update plan/state/session evidence;
-- [ ] commit and push completed Plan 020;
-- [ ] do not create a PR or merge.
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] update plan/state/session evidence;
+- [x] commit and push completed Plan 020;
+- [x] do not create a PR or merge.
+
+### Phase 5 evidence
+
+Final diff, lint, typecheck, and production build validation passed. The public asset scan found no Situm credential names or smoke credentials. The server bundle intentionally contains configured runtime authentication data for the private server boundary; no credential was persisted to repository evidence. Plan 020 is complete without a PR or merge.
 
 ## Branch note
 
