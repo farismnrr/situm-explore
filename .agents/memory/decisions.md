@@ -25,10 +25,11 @@ Status: active.
 
 ## 2026-08-12 — Nuxt 4 architecture
 
-- Root `ARCHITECTURE.md` is the application architecture/folder/dependency contract.
+- Root `ARCHITECTURE.md` is the current application architecture/folder/dependency contract.
 - Use Nuxt-native boundaries: browser/application code under `app/`, Nitro/server code under `server/`, genuinely cross-runtime contracts under `shared/`.
 - KISS is the default tie-breaker; SOLID applies to real responsibilities and DRY follows meaningful repetition.
 - Do not introduce generic repositories/services, DI containers, global stores, layers, generic API clients, or empty architecture folders without a concrete requirement.
+- Historical directory-migration instructions are not current architecture work.
 
 Status: active.
 
@@ -80,6 +81,17 @@ Status: active.
 - A broad Read-Write server credential must never be exposed to browser code.
 - Browser Viewer authentication is a separate boundary; Plan 010 verifies the smallest safe mechanism supported by the current Situm SDK before implementation changes.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public because it is an identifier, not a secret.
+
+Status: active.
+
+## 2026-08-13 — Evidence-backed Situm integration
+
+- External Situm behavior must be evidence-backed, not memory-backed.
+- Prototype labels, historical plans, dummy fixture shapes, similar APIs, and model recollection are not sufficient implementation evidence.
+- Before implementation, verify the exact official endpoint/SDK method, current installed-SDK compatibility where relevant, web/native availability, browser/server ownership, auth/permission, and fields/events actually consumed.
+- If a material part of a capability is not verified, classify it `UNRESOLVED` and do not implement or fake it.
+- Plan 010 may not close while an unresolved capability is still presented as a working Situm feature.
+- Plans 011–016 may implement only capabilities with exact evidence plus one declared owner.
 
 Status: active.
 
