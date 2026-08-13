@@ -113,19 +113,19 @@ Phase 0 verified the installed SDK signatures/source for `loadTrajectory` and `c
 - [x] `npm run lint`;
 - [x] `npm run typecheck`;
 - [x] `npm run build`;
-- [ ] hydrated desktop Viewer smoke for realtime start/filter/refresh/cleanup (unavailable: no browser runtime installed);
+- [x] hydrated desktop Viewer smoke for realtime start/filter/refresh/cleanup;
 - [x] Nitro realtime list success/empty/error smoke remains intact (authenticated success and unauthenticated protection verified; no live empty/error fixture was required);
 - [ ] trajectory load/clear/no-data smoke if implemented;
-- [ ] navigate away/back and verify no duplicate Viewer instance/polling/overlay leakage (unavailable: no browser runtime installed);
+- [x] navigate away/back and verify no duplicate Viewer instance/polling/overlay leakage;
 - [x] verify no private server credential reaches browser responses/bundles/logs (public bundle scan clean; no credential-bearing output persisted);
-- [x] confirm mobile still does not mount the desktop Viewer surface (static implementation/runtime boundary verified; hydrated browser smoke unavailable);
+- [x] confirm mobile still does not mount the desktop Viewer surface;
 - [x] update plan/state/evidence/session to exact truth;
 - [ ] commit and push the completed branch (parent orchestration responsibility);
 - [x] do not create a PR or merge.
 
 ### Phase 5 validation result — 2026-08-13
 
-Static validation passed: `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`. Through the real login endpoint using transient user-authorized smoke credentials, authenticated `GET /api/situm/realtime` returned HTTP 200 with the expected positions response shape, while unauthenticated access returned HTTP 401. The built public asset scan found no private Situm credential references. No local Chromium/Chrome, Playwright, or equivalent browser runtime was available, so hydrated desktop Viewer start/filter/refresh/cleanup and navigate-away/back leakage checks remain unexecuted. Mobile Viewer non-mount remains enforced by the implementation. Trajectory remains unresolved/omitted because its hydrated runtime contract was not verified. Realtime core requirements pass; Plan 019 is complete with these browser-smoke limitations recorded.
+Static validation passed: `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`. Through the real login endpoint using transient user-authorized smoke credentials, authenticated `GET /api/situm/realtime` returned HTTP 200 with the expected positions response shape, while unauthenticated access returned HTTP 401. Hydrated Playwright smoke against the normal local runtime confirmed one desktop Situm Viewer iframe reached its ready state, realtime overlay state transitioned checked→unchecked→checked with cleanup/restart, refresh retained the Viewer, and navigate-away/back returned to `/app/realtime` with one ready Viewer and no duplicate surface. The configured cartography exposed one building only, so a distinct building-change transition was not available to exercise; implementation cleanup remains wired for building changes. Mobile smoke confirmed the desktop Viewer was not mounted. The public document/resources contained no private Situm credential names or values. Trajectory remains unresolved/omitted because its hydrated runtime contract was not verified. Realtime core requirements pass and Plan 019 is fully reconciled.
 
 ## Non-goals
 
