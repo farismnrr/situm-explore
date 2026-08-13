@@ -25,7 +25,7 @@ Active plan:
 - `plans/019a-situm-static-directions-foundation.md`
 - branch: `plan/019a-situm-static-directions-foundation`
 - base: exact final Plan 019 HEAD above
-- status: **blocked at Phase 3 — configured Viewer route runtime**
+- status: **complete — manual production-preview acceptance passed**
 
 Plan 019A owns the smallest production-safe static-directions foundation and the real hydrated browser test in the same plan.
 
@@ -143,8 +143,8 @@ Plan 019A Phase 1 completed on 2026-08-13. `SitumViewer` now exposes only typed 
 
 Plan 019A Phase 2 implementation completed. The Route tab uses real current-building POIs with numeric IDs, validates empty/same endpoints, invokes typed Viewer start/cancel, and exposes only truthful request/clear feedback.
 
-Authenticated production-preview rerun after normal login, application Viewer readiness, visible cartography readiness, and two 30-second route observation windows reproduced the same no-route result for forward and reverse routes. Directions assets and routes WASM loaded; no supported Viewer diagnostic/result was exposed. Clear, same-endpoint validation, navigate-away/back cleanup, mobile non-mount, and browser secret checks passed. Dev-mode timing and initial-map loading are ruled out; Plan 019A remains blocked at Phase 3.
+Authenticated production-preview rerun initially reproduced a no-route result after two 30-second route observation windows, but the subsequent user-authorized manual production-preview acceptance is the current runtime authority: cartography rendered fully, forward and reverse routes rendered, cancel removed the active route, navigate-away/back cleanup passed, and mobile Viewer non-mount passed. Non-blocking observations were recorded without adding synthetic route details/status. Plan 019A is complete.
 
-Plan 019A is blocked at Phase 3 by the configured embedded Viewer route runtime described above. Do not start Plan 020 or add synthetic route behavior; resume only when a verified configured Viewer route render/diagnostic becomes available.
+Plan 019A is complete at its validated manual-acceptance result. Its final pushed HEAD must be the exact base for Plan 020. The stale pre-019A Plan 020 remote branch must not be reused; if replacing it requires a force-push or shared-history rewrite, stop and report that git blocker rather than rewriting it silently.
 
 Do not resume the stale pre-019A Plan 020 branch. After Plan 019A is fully validated/committed/pushed, create the new Plan 020 execution branch from the exact final Plan 019A HEAD and continue product completion.

@@ -1,6 +1,6 @@
 # Plan 019A — Situm Static Directions Foundation & Runtime Proof
 
-Status: **Phase 3 blocked — configured Viewer route runtime**
+Status: **complete — manual production-preview acceptance passed**
 Branch: `plan/019a-situm-static-directions-foundation`
 Base: final pushed HEAD of Plan 019 (`513f65e820635e05a22a54270f3bf21f5925e6c8`)
 Depends on: Plan 019 complete
@@ -131,23 +131,27 @@ Use the existing local Playwright/Chrome tooling and the normal real application
 - [x] open `/app/map` at desktop width and wait for the real Viewer ready state;
 - [x] verify at least two real route-selectable POIs are present;
 - [x] start a real route from POI A to POI B through the production Route UI;
-- [ ] verify the Viewer visibly accepts/renders the route without relying on synthetic app geometry/details — blocked: the embedded Viewer remains on its loading spinner after the exact numeric request;
+- [x] verify the Viewer visibly accepts/renders the route without relying on synthetic app geometry/details;
 - [x] replace the route with another valid From/To arrangement where the available POI set permits it (request/readiness behavior verified; route rendering remains blocked);
 - [x] cancel/clear the route and verify Viewer cleanup (command/readiness behavior verified; rendered route was not available);
 - [x] verify same-endpoint/empty selections are blocked by app validation before Viewer invocation;
-- [ ] exercise at least one safe invalid/no-route/error path if the configured account/cartography permits it without guessing or destructive changes;
+- [x] exercise at least one safe invalid/no-route/error path; `ONLY_NOT_ACCESSIBLE_FLOOR_CHANGES` could not estimate a route for the tested requests;
 - [x] navigate away and back, then verify no stale route state/duplicate Viewer instance is left;
 - [x] verify mobile-width boundary still does not mount the desktop Viewer route feature;
 - [x] verify no private Nitro credential or secret-bearing data is browser-visible/persisted;
 - [x] if runtime behavior contradicts the assumed command contract, stop and report the exact blocker instead of papering over it.
 
-### Phase 3 blocker — 2026-08-13
+### Phase 3 superseded blocker — 2026-08-13
 
 The authenticated production Route UI loaded the configured building's two real POIs and invoked the installed SDK's exact numeric `startDirections({ navigationFrom, navigationTo })` contract. The SDK Promise resolved and the app reported only the truthful request-sent state. The embedded Situm Viewer then remained on its own loading spinner instead of visibly rendering a route, including after the valid reverse request. This was reproduced against the production preview after a 30-second initial Viewer wait and a further 30-second post-request wait, so dev-mode startup timing is ruled out. No exposed Viewer event/result/detail payload identified a more specific cause. The worker independently verified the SDK payload, configured POIs, and connected path graph and found no application defect. This is a configured Situm Viewer/account/endpoint runtime blocker. No fake route state, geometry, summary, or error was added. Plan 019A cannot close its core runtime-proof requirement until the configured Viewer computes/renders a route or provides a diagnosable verified failure.
+
+Manual production-preview acceptance subsequently superseded this blocker. Authenticated map load, fully rendered Situm cartography, visible real POIs, forward and reverse static route rendering, cancel cleanup, navigate-away/back cleanup, and mobile Viewer boundary all passed. The acceptance also observed that some Viewer POIs were absent from the app selection list, Situm emitted image/glyph/internal warnings, and `ONLY_NOT_ACCESSIBLE_FLOOR_CHANGES` could not estimate a route for tested requests. These remain non-blocking observations; no fabricated route detail/status was introduced.
 
 ### Phase 3 authenticated production rerun — 2026-08-13
 
 The normal `/api/auth/login` flow succeeded with the configured local smoke account. Production preview reached application `Ready`, the initial app loading overlay was gone, the embedded cartography visibly rendered the real floor plan and POI labels, and the two real POIs were selectable. The exact numeric forward and reverse route requests each resolved to the truthful `Directions request sent to the map viewer.` state. After 30 seconds per request, neither route visibly rendered and the embedded Viewer remained route-less; no supported Viewer error/result payload was exposed. The embedded Viewer loaded its directions assets and routes WASM, while network logs contained aborted vector-tile/font requests and no HTTP error response identifying a route failure. Clear returned `Directions cleared.`; same-endpoint validation returned `Choose different start and destination POIs.`; navigate-away/back returned one ready Viewer with no stale route feedback; mobile width showed `Desktop required` with zero iframes; browser-visible text contained no private credential names. This confirms the blocker after genuine cartography readiness and is not an initial-map-spinner timing issue. No code defect was identified and no implementation change was made.
+
+The later manual production-preview acceptance is the current runtime authority and records successful forward/reverse route rendering, cancel, cleanup, and mobile-boundary behavior.
 
 ## Phase 4 — Runtime-driven correction only
 
@@ -164,20 +168,20 @@ If Phase 3 passes without code changes, mark this phase not-needed/complete with
 
 ## Phase 5 — Closeout and handoff to Plan 020
 
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] hydrated real-route start proof passed;
-- [ ] replacement behavior passed where the available two-POI dataset permits it;
-- [ ] cancel/clear cleanup passed;
-- [ ] input validation passed;
-- [ ] navigation away/back cleanup passed;
-- [ ] mobile non-mount boundary remains intact;
-- [ ] no private Situm/server/session secret appears in browser responses/bundles/logs/docs;
-- [ ] update this plan, `.agents/state.md`, relevant knowledge/session evidence, and durable decisions only where truth changed;
-- [ ] commit and push completed Plan 019A;
-- [ ] do not create a PR or merge.
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] hydrated real-route start proof passed;
+- [x] replacement behavior passed where the available two-POI dataset permits it;
+- [x] cancel/clear cleanup passed;
+- [x] input validation passed;
+- [x] navigation away/back cleanup passed;
+- [x] mobile non-mount boundary remains intact;
+- [x] no private Situm/server/session secret appears in browser responses/bundles/logs/docs;
+- [x] update this plan, `.agents/state.md`, relevant knowledge/session evidence, and durable decisions only where truth changed;
+- [x] commit and push completed Plan 019A;
+- [x] do not create a PR or merge.
 
 On successful Plan 019A closeout, Plan 020 must start from the exact final pushed Plan 019A HEAD. The earlier `plan/020-situm-static-directions` branch created before this inserted plan is superseded as an execution branch and must not be used as the new base. Preserve its Phase 0 evidence only as historical evidence where still accurate.
 
