@@ -2,423 +2,326 @@
 
 This file is the current architecture contract for Situm Explore.
 
-It describes the repository **as it exists now and how new code should fit it**. Historical migrations belong in completed plans/session history, not here.
+It describes both the **integrated pre-refactor runtime** and the **approved Plans 021–025 transition**. Historical migrations belong in completed plans/session evidence.
 
 ## Core principles
 
-Use these in order:
+Apply these in order:
 
 1. correctness and security;
 2. Nuxt framework convention;
 3. KISS;
 4. clear responsibility/dependency direction;
 5. DRY after meaningful repetition is proven;
-6. abstraction only when a concrete requirement exists.
+6. abstraction only for concrete requirements.
 
-A little explicit duplication is better than a speculative framework.
+A little explicit duplication is better than speculative infrastructure.
 
-## Current runtime model
+## Runtime model
 
-Situm Explore is one full-stack Nuxt 4 application.
+Situm Explore remains one full-stack Nuxt 4 application.
 
 ```text
 browser / Vue / Nuxt UI
         │
-        ├── browser-safe Situm Viewer behavior
+        │ authenticated HTTP + correlation/trace context
+        ▼
+      Nitro API
         │
-        └── authenticated HTTP
-                ↓
-             Nitro API
-                │
-                ├── relational app data -> Drizzle/PostgreSQL
-                ├── analytics data -> ClickHouse (Plan 017+ only)
-                └── external integration -> Situm REST
+        ├── PostgreSQL / Drizzle
+        │     app users, provider identities, workspaces,
+        │     encrypted workspace configuration
+        │
+        ├── ClickHouse
+        │     workspace-isolated analytics
+        │
+        ├── Situm REST
+        │     resolved per authenticated workspace
+        │
+        └── existing observability stack
+              logs / traces / metrics as supported
+
+browser Situm Viewer
+        ▲
+        └── only evidence-backed browser authentication;
+            never the stored long-lived workspace API key
 ```
 
-Do not introduce a second backend application, microservice, or client-side direct database access.
+Do not introduce a second backend application, microservice, client-side database access, or duplicate observability stack.
 
-ClickHouse is a concrete additional analytics-store requirement beginning in Plan 017. It does not replace PostgreSQL and does not justify a generic multi-database abstraction.
+## Transition status
 
-## Current directory ownership
+Current integrated `main` still contains:
+
+- env-defined single-user authentication;
+- process-global Situm server/Viewer configuration;
+- a process-global public building identifier;
+- analytics created before workspace ownership existed.
+
+These are migration inputs, **not the approved final architecture**.
+
+Plans 021–025 replace them incrementally. Do not remove a working legacy path until its replacement is implemented and accepted.
+
+## Directory ownership
 
 ```text
-app/
-├── app.vue
-├── app.config.ts
-├── assets/
-├── components/
-├── composables/
-├── data/
-│   └── prototype/      # transitional fixtures only
-├── layouts/
-├── middleware/
-├── pages/
-├── types/
-└── utils/              # only when needed
-
-server/
-├── api/                # HTTP transport
-├── db/                 # Drizzle/PostgreSQL relational app persistence
-├── integrations/       # Situm, ClickHouse, other concrete external/data integrations
-├── services/           # only real orchestration/use cases
-└── utils/              # server-only helpers when justified
-
-shared/                 # only genuinely cross-runtime contracts/helpers
+app/                 browser/presentation/runtime UI
+server/api/          HTTP transport and request boundary
+server/db/           PostgreSQL/Drizzle application persistence
+server/integrations/ concrete Situm/ClickHouse/telemetry integrations
+server/services/     only real orchestration/use cases
+server/utils/        narrow server-only helpers
+shared/              genuinely cross-runtime contracts/helpers only
 ```
 
-Do not create empty folders merely to satisfy this diagram.
+Do not create folders or abstraction layers solely to satisfy a diagram.
 
 ## Presentation layer — `app/`
 
 Owns:
 
-- routes/pages;
-- layouts/navigation;
-- Vue/Nuxt UI components;
+- pages/layouts/navigation;
+- Nuxt UI components;
 - client middleware;
 - reactive composables;
-- browser-safe Viewer coordination;
-- transitional prototype fixtures;
-- client-only pure helpers.
+- browser-safe Viewer lifecycle/commands;
+- workspace selection UX;
+- safe product error/toast presentation.
 
-Presentation may depend on:
-
-- Nuxt/Vue/Nuxt UI;
-- `shared/` contracts/helpers;
-- app HTTP contracts through `useFetch`, `useAsyncData`, `$fetch`;
-- the browser Situm Viewer only for verified Viewer-owned behavior.
-
-Presentation must not import:
-
-- `server/` source files;
-- Drizzle/PostgreSQL libraries;
-- ClickHouse clients/drivers;
-- server credentials/private runtime configuration.
-
-## Pages
-
-Pages are route composition, not feature monoliths.
-
-A page normally owns:
-
-- route metadata;
-- route-level data loading;
-- composition of existing feature/product components;
-- small route-specific state/glue.
-
-Move meaningful repeated reactive behavior into composables and meaningful repeated product composition into components.
-
-Do not create generic wrappers merely because two pages look similar.
-
-Current web route family is centered on:
-
-```text
-/
-/login
-/app
-/app/dashboard
-/app/map
-/app/buildings
-/app/pois
-/app/geofences
-/app/paths
-/app/realtime
-/app/analytics
-/app/alarms
-/app/users
-/app/organization
-/app/settings
-```
-
-Plans may add a small route such as `/app/groups` only when the product scope requires it.
-
-## Components and Nuxt UI
-
-Nuxt UI is the primitive component foundation.
-
-Use:
-
-- `app/app.config.ts` for project-wide Nuxt UI theme/config;
-- `app/assets/css/main.css` for semantic tokens/global styling;
-- Nuxt UI primitives for standard controls/surfaces;
-- product components only when they own a real semantic/composition responsibility.
-
-Do not build a parallel design system over Nuxt UI.
-
-## Client composables
-
-A composable exists because logic is reactive/lifecycle-aware or reused meaningfully.
-
-Good examples:
-
-- shared keyboard/feedback lifecycle behavior;
-- feature state reused by multiple components;
-- a small API-backed view model reused across surfaces.
-
-Avoid:
-
-- mega `useApp()` objects;
-- generic state buses;
-- Pinia/global store without a concrete multi-surface need;
-- wrapping every `$fetch` call merely for symmetry.
-
-## Transitional fixtures — `app/data/prototype/`
-
-Fixtures are temporary source data, not a fake backend.
-
-Rules:
-
-- typed and centralized;
-- no Nitro endpoint just to return fixture JSON;
-- no DB persistence;
-- no repository/service abstraction around fixtures;
-- remove fixture data after its real owner replaces it;
-- real failures must never silently fall back to plausible fixture success.
-
-## Shared contracts — `shared/`
-
-Use sparingly for contracts genuinely needed by both browser and server, for example an API response DTO/schema consumed on both sides.
-
-`shared/` must not depend on Vue/Nuxt client runtime or Nitro/server runtime APIs.
-
-Do not move a five-line local type into shared merely to avoid duplication.
+Presentation must not import server source, database clients, private runtime configuration, stored workspace credentials, or observability backend credentials.
 
 ## Nitro transport — `server/api/`
 
-API handlers own the HTTP boundary:
+Handlers own the HTTP boundary:
 
-1. authenticate/authorize when required;
-2. validate request input;
-3. call the smallest appropriate DB/integration/service function;
-4. translate known failures into HTTP errors;
-5. return a small product-facing response.
+1. authenticate the application user when required;
+2. resolve/authorize workspace context when required;
+3. validate request input;
+4. call the smallest DB/integration/service function;
+5. normalize known failures into safe product semantics;
+6. attach/preserve correlation context;
+7. return a minimal response.
 
-A simple handler may call an integration helper directly. Do not create service/repository ceremony for every endpoint.
+Client-provided workspace identity is context, never authorization proof. Ownership is verified server-side.
 
-Protected product endpoints that expose Situm or ClickHouse-backed product data must enforce the existing Situm Explore session server-side. Client middleware is UX, not API security.
+## Identity and sessions — Plan 021 target
 
-GET/read requests should not hide external ingestion side effects. Plan 017 uses an explicit user-triggered analytics sync operation rather than silently syncing on analytics reads.
+- Application users are PostgreSQL-backed and have stable app-owned IDs.
+- Email/password registration/login is real product behavior.
+- Passwords are stored only as secure hashes using the project auth utility.
+- Nuxt sealed sessions remain the app session mechanism unless concrete evidence requires otherwise.
+- Session identity references the stable app user, not an env-defined email and not an OAuth provider ID.
+- Google OAuth provider wiring is prepared; real Google runtime acceptance remains user-owned/manual for now.
+- Provider account identifiers are unique per provider.
+- Account linking must not guess. Auto-link only when the verified provider identity gives sufficient safe evidence according to Plan 021.
 
-## Application services — `server/services/`
+Do not add auth bypass/dev-login endpoints.
 
-Create a service only when real orchestration/business logic exists, such as:
+## Workspace ownership — Plan 022 target
 
-- coordinating a Situm report fetch and a ClickHouse write;
-- combining multiple verified reads into one product response;
-- coordinating DB + external API behavior;
-- applying real application rules before a mutation.
+- One app user may own many workspaces.
+- A workspace has exactly one app owner in Plans 021–025.
+- No invite/member/team/org tenancy is introduced.
+- Different app users may independently point their workspaces at the same external Situm account/organization.
+- Situm organization identity is external metadata, not app tenancy.
+- Every workspace-backed API verifies ownership server-side.
 
-Prefer named functions over broad noun classes such as `SitumService` or `AnalyticsService`.
+## Workspace Situm configuration — Plan 022 target
 
-## Relational database — `server/db/`
-
-Owns Drizzle/PostgreSQL infrastructure and application-owned relational persistence.
-
-- DB access is server-only.
-- The existing PostgreSQL `situm_explore` schema remains application-owned.
-- Do not cache arbitrary Situm resources in PostgreSQL merely because integration work exists.
-- New tables/migrations require a concrete relational application-persistence requirement.
-- Plan 017 analytics/report rows belong in ClickHouse, not PostgreSQL.
-
-## ClickHouse analytics integration — Plan 017+
-
-ClickHouse is a server-side analytics store with a concrete Plan 017 requirement.
-
-The user already has a local ClickHouse instance. Reuse it.
+Situm configuration moves from global environment variables to authenticated workspace-managed server persistence.
 
 Rules:
 
-- do not install/provision another ClickHouse server;
-- do not add Docker/Compose just for ClickHouse;
-- discover the actual local connection/config safely without printing or persisting secrets;
-- inspect existing databases/tables before creating app-owned objects;
-- never alter/drop unrelated ClickHouse objects;
-- prefer an isolated app-owned namespace (`situm_explore` database when appropriate, otherwise clearly prefixed app-owned tables);
-- ClickHouse credentials/config are private Nitro runtime configuration;
-- browser code never imports a ClickHouse client and never connects directly to ClickHouse;
-- use the official current Node.js ClickHouse client when a client library is needed, after verifying its current API;
-- keep schema/query code purpose-built for the analytics feature rather than introducing an ORM/repository framework;
-- explicit sync + idempotent writes are sufficient for the PoC; do not add queues/workers/cron without a new concrete requirement.
+- long-lived workspace credentials are encrypted at rest using authenticated encryption;
+- encryption uses one server-only master key configured outside the database;
+- stored envelopes are versioned so future rotation/migration is possible;
+- raw stored credentials are never returned by read APIs;
+- raw credentials are never logged, traced, persisted in docs/tests, or exposed through public runtime config;
+- missing/invalid encryption configuration fails closed;
+- product modes are `VIEW_ONLY` and `VIEW_WRITE`;
+- upstream Situm authorization remains authoritative;
+- do not run a mutation merely to discover whether a key can write.
 
-Intended Plan 017 flow:
-
-```text
-Situm Reports REST
--> authenticated Nitro ingestion
--> local ClickHouse app-owned tables
--> authenticated analytics query/export API
--> browser analytics UI
-```
-
-## Situm REST integration — `server/integrations/situm/`
-
-Keep this boundary small and domain-specific only when reuse/complexity is real.
-
-Example shape only:
-
-```text
-server/integrations/situm/
-├── client.ts
-├── cartography.ts    # only if actual grouped reuse exists
-└── reports.ts        # justified by Plan 017 if multiple report operations share real logic
-```
-
-Rules:
-
-- `NUXT_SITUM_API_KEY` is private Nitro configuration;
-- never pass it to browser code;
-- no generic unauthenticated Situm proxy;
-- no generic repository layer around external REST resources;
-- direct verified REST is allowed when the installed SDK lacks an appropriate wrapper;
-- one capability gets one primary access path unless a concrete reason requires otherwise.
+Exact crypto encoding/library details are frozen by Plan 022 after inspecting the runtime. Avoid inventing a home-grown crypto protocol.
 
 ## Browser Situm Viewer
 
-The real Viewer remains a client integration under `app/components/situm/SitumViewer.vue`.
+`app/components/situm/SitumViewer.vue` remains the single Viewer instance/lifecycle owner.
 
-`SitumViewer.vue` is the single owner of the Viewer instance/lifecycle.
+Keep a small typed command surface only for verified product behavior. Never expose the raw Viewer or a generic method-invocation escape hatch.
 
-Keep truthful lifecycle behavior:
+The historical browser-visible API-key path is legacy pre-refactor behavior. The target is an evidence-backed short-lived/least-privilege browser authentication path derived server-side without exposing the stored long-lived workspace credential.
 
-- configuration/init state;
-- `MAP_IS_READY`;
-- `APP_ERROR`;
-- explicit missing-config/error behavior.
+Plan 022 must verify the installed `@situm/sdk-js` contract and current official Situm behavior before changing Viewer auth.
 
-When retained UI needs Viewer actions, expose only a **small typed command surface** containing exact verified commands needed by the product.
+If a write-capable workspace cannot produce a browser token whose authority is safely understood/acceptable, leave that exact path unresolved and ask the user rather than silently exposing broad write authority.
 
-Plans 019 and 020 may expand that typed surface for verified realtime/trajectory/static-directions methods.
+## Situm REST integration
 
-Do not:
-
-- instantiate independent Viewer clients across pages;
-- expose a generic `invoke(method, payload)` API;
-- expose the raw Viewer object to arbitrary pages;
-- infer SDK methods from UI labels or model memory.
-
-## Situm credential boundary
-
-The final credential model intentionally uses exactly two Situm keys:
-
-- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only; public by design because Nuxt exposes `NUXT_PUBLIC_*` to the browser.
-- `NUXT_SITUM_API_KEY` — private Nitro credential for all Situm server operations.
+Situm server operations resolve their credential/account context **per authenticated workspace request** after Plan 024.
 
 Rules:
 
-- REST/domain Situm calls use `NUXT_SITUM_API_KEY`, never the Viewer key;
-- every product Situm API route requires app session auth;
-- private credentials never enter public runtime config, browser bundles, logs, docs, or error payloads;
-- browser Viewer authentication/permissions are verified separately against the installed/current SDK;
-- `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public;
-- do not reintroduce separate private read/write keys without a concrete future requirement;
-- do not add a mutation merely because the private key permits it;
-- do not invent credential names, token flows, or permissions without exact evidence.
+- no global account singleton remains authoritative after migration;
+- no generic unauthenticated Situm proxy;
+- one verified capability should have one primary access path;
+- direct official REST from Nitro is allowed where verified and simpler than an SDK wrapper;
+- existing capabilities are migrated, not expanded speculatively;
+- `VIEW_ONLY` prevents product writes locally where known, while upstream authorization remains the final truth;
+- upstream forbidden/internal details are normalized before reaching the client.
+
+Account-specific building context must also become workspace/product state; one global public building ID cannot remain authoritative for multiple workspaces.
+
+## PostgreSQL / Drizzle
+
+PostgreSQL owns application relational state, including the concrete Plans 021–022 requirements:
+
+- users;
+- password/provider identity records as needed;
+- private workspace ownership;
+- encrypted workspace Situm configuration metadata/envelope.
+
+Use the dedicated `situm_explore` schema. Do not touch unrelated schemas/databases.
+
+Do not persist arbitrary Situm resources merely as a cache.
+
+## ClickHouse analytics
+
+ClickHouse remains a concrete server-side analytics store and does not replace PostgreSQL.
+
+Rules:
+
+- reuse the existing local instance;
+- do not install/provision a second server or Compose stack;
+- browser code never connects directly or receives ClickHouse credentials;
+- analytics reads/writes must become workspace-isolated before multi-workspace behavior is complete;
+- workspace identity must participate in the storage/query identity needed to prevent cross-workspace reads;
+- legacy pre-workspace rows have no proven owner and must not be assigned arbitrarily;
+- preserve legacy rows non-destructively unless the user explicitly chooses a retention/attribution policy;
+- explicit product sync remains sufficient unless a later requirement authorizes background processing.
+
+## Observability / correlation — Plan 023 target
+
+Before adding telemetry dependencies or endpoints, inspect local `docker ps` plus relevant runtime/repository configuration.
+
+Reuse the user's existing observability stack and supported protocols. Do not provision a duplicate stack by assumption.
+
+Desired request path:
+
+```text
+browser request
+-> correlation/trace context
+-> Nitro request span/log
+-> authenticated user/workspace context
+-> PostgreSQL / ClickHouse / Situm downstream context
+-> normalized response
+```
+
+Rules:
+
+- prefer standard W3C Trace Context/OpenTelemetry where supported by the existing stack;
+- a small support/reference request ID may coexist;
+- never put API keys, tokens, cookies, passwords, raw sensitive request bodies, or encrypted credential material into headers/baggage/logs/spans;
+- instrument meaningful boundaries, not every helper;
+- critical/internal diagnostics remain server-side.
+
+## Safe error boundary
+
+Expected product error classes include validation, unauthenticated, forbidden, not found, conflict, upstream failure, and internal failure.
+
+Client responses may expose:
+
+- safe product-facing message/code;
+- appropriate HTTP status;
+- correlation/reference ID when useful.
+
+Client responses must not expose stack traces, SQL/DB details, crypto details, raw upstream bodies, SDK internals, secret material, or critical diagnostics.
+
+Detailed diagnostics belong in server observability with redaction.
+
+## Situm capability evidence gate
+
+For external Situm behavior, **no evidence = no implementation**.
+
+Before adding or changing a capability, verify as applicable:
+
+- exact official endpoint/SDK method;
+- installed SDK compatibility;
+- browser/server ownership;
+- web/native ownership;
+- auth and permission behavior;
+- request inputs actually used;
+- response/event fields actually consumed;
+- error/empty/stale/runtime semantics.
+
+Missing material evidence stays unresolved/absent. Historical plans and prototype labels are not contracts.
 
 ## Web/native boundary
 
-The Nuxt product may monitor data produced by positioned devices, but the web app does not pretend to be the native positioning engine.
-
-Current web roadmap may include verified:
+Web may retain verified:
 
 - cartography/map exploration;
-- static directions between known points (Plan 020);
-- realtime monitoring and Viewer visualization (Plan 019);
-- analytics/reports (Plan 017);
-- organization/groups/alarms read views (Plan 018);
+- static directions between known points;
+- realtime monitoring of positioned devices;
+- analytics/reports;
+- organization/users/groups/alarms read views;
 - browser-safe Viewer settings/actions.
 
-Native-only scope includes:
+Outside this roadmap:
 
-- sensor-generated indoor blue dot;
-- handset positioning permissions/runtime;
+- sensor-generated handset indoor blue dot;
+- device positioning permissions/runtime;
 - movement-aware turn-by-turn navigation;
 - rerouting based on the handset's actual position.
 
-Native implementation remains outside Plans 017–020.
+## Data fetching / validation
 
-## External capability evidence gate
+Use Nuxt-native `useFetch` / `useAsyncData` for render-time reads and `$fetch` for explicit actions.
 
-For Situm integration, **memory is not a contract**.
+Use Zod where request/external-input validation provides value.
 
-Before implementation, verify from current official Situm documentation/source and installed SDK version where relevant:
+Do not create a broad API client abstraction until repeated cross-cutting behavior proves it is needed. Plan 023 may justify a small correlation/error wrapper if it is genuinely reused.
 
-- exact endpoint/method;
-- auth/permission requirements;
-- request/response/event fields;
-- browser vs server ownership;
-- web vs native availability;
-- relevant failure/empty/stale semantics.
-
-If evidence is incomplete, record the exact capability as unresolved in the active plan and do not implement it.
-
-Never create a believable fake fallback to hide an unresolved integration.
-
-## Data fetching
-
-Use Nuxt-native fetching:
-
-- `useFetch` / `useAsyncData` for render-time data;
-- `$fetch` for explicit user-triggered actions such as Plan 017 analytics sync.
-
-Create a custom fetch composable only when actual repeated cross-cutting behavior exists.
-
-## Validation and schemas
-
-Use Zod when external/user input validation provides value.
-
-Typical server flow:
-
-```text
-request
--> auth
--> validation
--> direct integration/DB call or real use-case orchestration
--> product response
-```
-
-Shared schemas belong in `shared/` only when both runtimes genuinely consume them.
-
-## KISS / deferred by default
+## Deferred by default
 
 Do not add without a concrete requirement:
 
 - Pinia/global store;
 - DI container;
 - event bus;
-- generic API client abstraction;
-- generic repository base class;
-- CQRS/command bus/domain-event framework;
-- workers/queues/background sync;
-- generic DB cache for Situm resources;
+- generic repository base classes;
+- CQRS/command bus/domain-event frameworks;
+- worker/queue/background sync infrastructure;
 - microservices/second backend;
-- Nuxt layers for feature folders;
-- another component library/design system.
+- new observability containers;
+- generic Situm cache;
+- workspace invite/member hierarchy;
+- password reset/email verification flows;
+- native positioning/navigation behavior.
 
-The Plan 017 ClickHouse store is **not** a generic Situm cache; it is the concrete analytics persistence/query layer authorized for verified report data.
+## Active roadmap execution order
 
-## Architecture gate for every new file
+```text
+Plan 021 — Identity & Auth Foundation
+-> Plan 022 — Private Workspaces & Situm Configuration
+-> Plan 023 — Observability, Correlation & Safe Error Boundary
+-> Plan 024 — Workspace-scoped Situm Backend Migration
+-> Plan 025 — Workspace UX & Full Regression
+```
 
-Before adding a file, answer:
-
-1. browser, server, or genuinely shared?
-2. which Nuxt-native directory owns it?
-3. what single responsibility does it own?
-4. does an existing component/composable/API/integration already own it?
-5. is the abstraction required by current behavior, or only imagined future use?
-
-If #5 is only “maybe later”, keep it simpler.
+Normal Git workflow requires each dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking.
 
 ## Review checklist
 
-- [ ] app/server/shared runtime boundaries are respected;
-- [ ] pages remain route composition;
-- [ ] Nuxt UI primitives/shared product components are reused appropriately;
-- [ ] server API handlers remain transport-oriented;
-- [ ] services/repositories exist only for real complexity;
-- [ ] PostgreSQL and ClickHouse have distinct concrete ownership;
-- [ ] all database access and private credentials remain server-only;
-- [ ] Viewer has one lifecycle owner and only a small verified typed command surface;
-- [ ] no native-only behavior is implemented as browser positioning/navigation;
-- [ ] no Situm capability is implemented without exact evidence;
-- [ ] no real failure silently falls back to fake fixture success;
+- [ ] current user/session identity is server-authoritative;
+- [ ] workspace ownership is verified server-side;
+- [ ] stored long-lived Situm credentials never enter browser/public config/logs/errors;
+- [ ] Viewer remains single-owner with a typed verified surface;
+- [ ] Situm/analytics context is workspace-isolated after migration;
+- [ ] ClickHouse cannot cross workspace boundaries;
+- [ ] observability reuses existing infrastructure;
+- [ ] correlation does not carry sensitive values;
+- [ ] client 5xx/internal failures are sanitized;
+- [ ] no Situm capability is invented without evidence;
+- [ ] web/native boundary remains truthful;
 - [ ] lint/typecheck/build plus active-plan runtime gates pass.
