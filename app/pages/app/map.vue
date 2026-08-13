@@ -26,7 +26,6 @@ const selectedFloorId = ref<number | null>(null)
 const activeBuilding = computed(() => buildings.value.find(building => building.id === selectedBuildingId.value) ?? buildings.value[0] ?? null)
 const activeFloors = computed(() => floors.value.filter(floor => floor.buildingId === activeBuilding.value?.id))
 const selectedBuilding = computed(() => activeBuilding.value?.name ?? 'No building')
-const selectedFloor = computed(() => activeFloors.value.find(floor => floor.id === selectedFloorId.value) ?? activeFloors.value[0] ?? null)
 
 watch([buildings, activeFloors], () => {
   if (selectedBuildingId.value === null && buildings.value[0]) selectedBuildingId.value = buildings.value[0].id
