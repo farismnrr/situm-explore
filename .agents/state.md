@@ -4,66 +4,59 @@ _Last reviewed: 2026-08-13_
 
 ## Current focus
 
-The Situm backend/web integration roadmap Plans 010–016 has finished its **stacked implementation pass**.
-
-The active small hardening follow-up is:
-
-`plans/016a-situm-credential-split-runtime-verification.md`
-
-Active branch:
+The Situm backend/web integration roadmap Plans 010–016 plus the small Plan 016A hardening follow-up are complete on the cumulative branch:
 
 `plan/016a-situm-credential-split-runtime-verification`
 
-Plan 016A continues the cumulative Plan 016 lineage and preserves the credential-split preparation commits that were briefly created under a superseded Plan 017 draft. Do not restart Plans 010–016, recreate their branches from `main`, or use the old Plan 017 draft as active authority.
+Plan 016A continued the cumulative Plan 016 lineage and absorbed the credential/runtime preparation that was briefly drafted under a superseded Plan 017 name. Do not restart Plans 010–016, recreate their branches from `main`, or execute the old Plan 017 credential-split draft as a separate roadmap step.
 
-## Roadmap result before Plan 016A
+## Completed roadmap result
 
 - Plan 010 — implementation/review complete; web/native/security/evidence boundary frozen.
 - Plan 011 — implementation complete: Buildings/Floors/POIs/Categories reads and map selection context.
 - Plan 012 — implementation complete for verified Geofences/Paths reads; static route-result/product mapping remains unresolved and absent.
 - Plan 013 — implementation complete for current-position monitoring; stale/offline semantics, Viewer realtime overlay, trajectory/follow remain unresolved and absent.
-- Plan 014 — **skipped-unresolved**, not implemented. Official REST report endpoints exist, but exact report filter/schema/permission/runtime mapping still requires follow-up verification and live smoke.
-- Plan 015 — implementation complete for Organization + Users reads; Groups + Alarms remain unresolved/absent and require direct REST follow-up evidence/runtime verification.
+- Plan 014 — skipped-unresolved; report paths/purpose now have partial evidence, but exact implementation contract remains insufficient.
+- Plan 015 — implementation complete for Organization + Users reads; Groups + Alarms remain unresolved/absent pending exact REST evidence.
 - Plan 016 — implementation complete for verified Viewer language, font-size, accessibility-panel, and location-picker commands.
+- Plan 016A — complete: final Situm credential contract, environment/config cleanup, Nuxt 4 tsconfig cleanup, static/security validation, and live runtime smoke for implemented Situm server reads.
 
-## Plan 016A purpose
+## Final Situm credential contract
 
-Plan 016A owns only the post-stack hardening/verification work:
+Exactly two Situm keys are intentional:
 
-1. enforce exactly 2 Situm keys: Viewer/public and a single private Nitro key;
-2. migrate all current Nitro operations to `NUXT_SITUM_API_KEY`;
-4. audit `.env.example` against actual runtime consumers in both directions, including stale variables such as `DB_SCHEMA` and potentially unused `NUXT_PUBLIC_APP_URL`;
-5. perform real authenticated runtime smoke for the integrations already implemented in Plans 011–016;
-6. capture exact evidence for Reports/Groups/Alarms only far enough to decide later plan scope.
-
-Plan 016A does **not** implement the full Reports/Groups/Alarms feature set. Substantive follow-up feature work should start at Plan 017 or later.
-
-## Credential target — implemented (Phase 1 complete)
-
-- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer only.
-- `NUXT_SITUM_API_KEY` — private Nitro operations.
+- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only.
+- `NUXT_SITUM_API_KEY` — single private Nitro credential for all server-side Situm operations.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier.
 
-All current Nitro paths now use `NUXT_SITUM_API_KEY`. `/api/situm/status` reports `serverConfigured` and `viewerConfigured` separately without exposing values. Never expose the private credential to browser/public runtime config, logs, docs, or error payloads.
+Do not reintroduce separate private read/write keys unless a future concrete requirement justifies that complexity.
 
-`NUXT_PUBLIC_APP_URL` had no real consumer (Phase 0 finding) and has been removed from `nuxt.config.ts` runtimeConfig.public and `.env.example` rather than kept as documented-but-unused.
+All current Nitro Situm operations use the private `NUXT_SITUM_API_KEY`. `/api/situm/status` reports server and Viewer configuration separately without exposing values. The private key must never enter browser/public runtime config, client bundles, logs, docs, or error payloads.
+
+`NUXT_PUBLIC_APP_URL` and `DB_SCHEMA` are not part of the current runtime contract.
 
 ## Validation truth
 
-Plans 010–016 passed static/local validation where applicable:
+Plan 016A closeout passed:
 
 - `git diff --check`;
 - `npm run lint`;
 - `npm run typecheck`;
-- `npm run build`.
+- `npm run build`;
+- client-bundle/private-credential leakage checks;
+- unauthorized and missing/invalid credential behavior checks;
+- real authenticated Situm success-path smoke for cartography, geofences, paths, realtime positions, organization, and users;
+- truthful empty/error handling where applicable.
 
-**Runtime Situm smoke is complete**. The missing-credential and unauthorized semantics were verified without secret exposure, and success-path tests were fully executed using the configured `NUXT_SITUM_API_KEY`. Endpoints exhibit correct behavior for both populated and empty results, without leaking credentials.
+Runtime Situm smoke is complete for the implemented server read paths using configured credentials. No private Situm credential leakage was observed in API responses, logs, or built public client assets.
+
+The retained Plan 016 Viewer command surface remains bounded by its verified Viewer contract. Full browser automation of every hydrated interaction was not required for Plan 016A closeout.
 
 ## Evidence-gated follow-up gaps
 
-The following remain intentionally absent rather than faked until exact evidence/runtime verification exists:
+The following remain intentionally absent rather than faked:
 
-- report/analytics data and CSV integration;
+- full Reports/Analytics/CSV implementation;
 - Groups read integration;
 - Alarms read integration;
 - static route-result/details/constraints presentation;
@@ -71,7 +64,7 @@ The following remain intentionally absent rather than faked until exact evidence
 - trajectory/follow semantics;
 - unverified generic Viewer config/settings operations.
 
-Official Situm REST documentation confirms Reports, Groups, and Alarms endpoint families exist. Their absence in the current implementation is a follow-up contract/runtime-verification gap, not proof that Situm lacks those capabilities.
+Reports, Groups, and Alarms may become Plan 017 or later only if exact official contracts and a concrete product scope justify implementation.
 
 ## No-hallucination rule
 
@@ -92,22 +85,19 @@ Native-only scope remains outside this roadmap:
 
 Web may consume positions produced by devices; it must not pretend the browser performs Situm indoor positioning.
 
-## Git / branch truth
+## Git / integration truth
 
-The user explicitly uses stacked plan branches for this roadmap:
+Plans 010–016 and 016A were executed as a cumulative stacked lineage without intermediate PRs/merges to `main`.
 
-- one plan = one branch;
-- a dependent follow-up branch starts from the completed cumulative predecessor when explicitly requested;
-- no PR;
-- no merge to `main`;
-- no force-push/history rewrite.
+Plan 016A is now closed and the cumulative branch is ready for user-gated review/integration. Opening a PR is now an appropriate next step if the user chooses to integrate this lineage into `main`.
 
-Plan 016A therefore continues from the cumulative Plan 016 lineage, not from `main`.
-
-The old `plan/017-situm-credential-split-runtime-verification` branch/name is superseded by Plan 016A and must not be executed as a separate roadmap step.
+The old `plan/017-situm-credential-split-runtime-verification` branch/name is superseded and must not be treated as a separate active plan.
 
 ## Next action
 
-Execute Plan 016A phase-by-phase from the existing branch.
+No further Plan 016A implementation work is required.
 
-Do not create a PR or merge. Do not reopen Plans 010–016. Keep the scope limited to credential split, environment/runtime verification, and evidence capture; create Plan 017 or later only for substantive new feature implementation.
+Next action is one of:
+
+1. open/review a PR from `plan/016a-situm-credential-split-runtime-verification` into `main`;
+2. after integration, start a genuinely new Plan 017+ only for substantive follow-up scope.
