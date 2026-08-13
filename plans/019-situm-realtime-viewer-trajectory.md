@@ -71,14 +71,20 @@ Plan 019 must use those typed Viewer capabilities when the installed version/run
 
 ## Phase 2 — Realtime page Viewer composition
 
-- [ ] replace the placeholder `Live map` treatment in `/app/realtime` with the real `SitumViewer` on desktop;
-- [ ] start Viewer realtime positions only after Viewer readiness;
-- [ ] scope realtime overlay by the selected building when a verified building filter is available;
-- [ ] use a reasonable refresh interval supported by the SDK and avoid duplicate app polling solely for the map overlay;
-- [ ] keep Nitro `/api/situm/realtime` for the side list/count/status context where useful;
-- [ ] keep controls outside/alongside the Viewer canvas so app chrome does not collide with Situm's own controls;
-- [ ] provide truthful loading/no-position/Viewer-error/server-list-error states independently;
-- [ ] clean realtime Viewer data when leaving the page or disabling the overlay.
+- [x] replace the placeholder `Live map` treatment in `/app/realtime` with the real `SitumViewer` on desktop;
+- [x] start Viewer realtime positions only after Viewer readiness;
+- [x] scope realtime overlay by the selected building when a verified building filter is available;
+- [x] use a reasonable refresh interval supported by the SDK and avoid duplicate app polling solely for the map overlay;
+- [x] keep Nitro `/api/situm/realtime` for the side list/count/status context where useful;
+- [x] keep controls outside/alongside the Viewer canvas so app chrome does not collide with Situm's own controls;
+- [x] provide truthful loading/no-position/Viewer-error/server-list-error states independently;
+- [x] clean realtime Viewer data when leaving the page or disabling the overlay.
+
+### Phase 2 implementation evidence — 2026-08-13
+
+`/app/realtime` now mounts the single `SitumViewer` only at desktop width, loads protected cartography for a selected building, and starts `loadRealtimePositions(selectedBuildingId, 10_000)` only after the Viewer emits ready. The existing Nitro realtime response remains the source for list/count/no-position context; map overlay, Viewer, cartography, and server-list states are presented independently. Building selection, overlay enablement, and refresh controls stay outside the Viewer canvas. Overlay cleanup runs on disable, desktop-to-mobile transition, building changes, and page unmount. No custom markers, coordinate projection, or synthetic status was added.
+
+Static validation passed: `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`. Hydrated desktop Viewer/realtime API smoke and navigation leakage smoke remain Phase 5 closeout requirements.
 
 ## Phase 3 — People/devices operations panel
 
