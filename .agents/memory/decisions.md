@@ -54,28 +54,27 @@ Status: active — final two-key credential model implemented and runtime-verifi
 
 Status: active.
 
-## 2026-08-13 — Plans 010–016 explicit stacked execution
+## 2026-08-13 — Plans 010–016A integrated lineage
 
-- The user explicitly authorized Plans 010–016 to execute as **stacked plan branches**, with each next branch created from the completed previous plan HEAD.
-- This stack intentionally did **not** require intermediate integration into `main`.
-- No PR and no merge to `main` were authorized for the stack.
-- One plan still owns one branch; no force-push/history rewrite is implied.
-- The stacked sequence has completed through `plan/016-situm-viewer-settings-integration`, which is the cumulative implementation lineage continued by Plan 016A.
-- Do not restart Plan 010 or recreate Plans 011–016 from `main`.
+- Plans 010–016 were explicitly executed as stacked plan branches, each continuing from the previous completed HEAD.
+- Plan 016A continued the same cumulative lineage as the small credential/config/runtime closeout.
+- PR #8 integrated the complete Plans 010–016A lineage into `main`.
+- `main` is now canonical; there is no active plan branch.
+- Historical plan branches no longer own current authority and may be deleted after integration because their commits are contained in `main`.
+- Do not restart or recreate Plans 010–016A from historical branches.
+- The old `plan/017-situm-credential-split-runtime-verification` branch/name was superseded by Plan 016A and is disposable.
 
-Status: active/completed-sequence.
+Status: active/completed-and-integrated.
 
 ## 2026-08-13 — Plan 016A credential/runtime closeout
 
-- The credential/runtime follow-up is **Plan 016A**, not Plan 017, because it is a small hardening/closeout step for the Plans 010–016 stack rather than a new substantive feature domain.
-- Branch: `plan/016a-situm-credential-split-runtime-verification`.
-- It continues the cumulative Plan 016 lineage and preserves the preparation commits briefly created under the superseded Plan 017 draft.
+- Plan 016A was a small hardening/closeout step for Plans 010–016 rather than a new substantive feature domain.
 - Final scope: enforce the two-key Situm model, reconcile environment/docs/runtime consumers, perform real authenticated runtime smoke, and capture evidence for unresolved Reports/Groups/Alarms without implementing a broad new feature domain.
 - Runtime smoke was completed with configured Situm credentials: implemented read paths returned real success responses where data existed, truthful empty/error behavior was observed where applicable, unauthorized/missing-credential behavior was verified, and no private credential leaked through responses/logs/client bundles.
-- Reports, Groups, and Alarms remain evidence-gated follow-up candidates; substantive implementation belongs in Plan 017 or later if justified.
-- The old `plan/017-situm-credential-split-runtime-verification` name/branch is superseded and must not be executed as a separate roadmap step.
+- Reports, Groups, and Alarms remain evidence-gated follow-up candidates; substantive implementation belongs in a future plan only if justified.
+- Plan 016A was integrated into `main` through PR #8 and is closed.
 
-Status: complete.
+Status: complete/integrated.
 
 ## 2026-08-13 — Post-stack implementation truth
 
@@ -97,5 +96,6 @@ Status: active current truth.
 - Each completed phase updates plan/relevant `.agents`, validates, commits, and pushes.
 - PR creation/integration is user-gated.
 - Normal sequential dependencies start from updated `main` after integration; explicit stacked execution is allowed only when the user authorizes it and current durable state records it.
+- After a plan lineage is integrated, historical plan branches may be deleted; `main` becomes the canonical starting point for future work.
 
 Status: active.
