@@ -1,13 +1,13 @@
-# Plan 016A — Situm Credential Split & Runtime Verification
+# Plan 016A — Situm Credential Boundary & Runtime Verification
 
 Status: **complete**
 Branch: `plan/016a-situm-credential-split-runtime-verification`
-Base: final cumulative Plan 016 lineage, preserving the credential-split preparation commits previously created under the superseded Plan 017 draft
+Base: final cumulative Plan 016 lineage, preserving the credential/runtime preparation commits previously created under the superseded Plan 017 draft
 Depends on: Plans 010–016 stacked implementation pass complete
 
 ## Goal
 
-Close out the Plans 010–016 Situm integration stack by splitting Situm credentials by responsibility, removing the temporary generic server credential, auditing the environment contract, and runtime-verifying the integrations that are already implemented.
+Close out the Plans 010–016 Situm integration stack by enforcing the final two-key Situm credential boundary, cleaning the environment/runtime contract, and runtime-verifying the integrations already implemented.
 
 This is a small post-Plan-016 hardening plan. It does **not** reopen or replay Plans 010–016 and it must not silently become a broad Reports/Groups/Alarms feature plan.
 
@@ -27,19 +27,21 @@ This is a small post-Plan-016 hardening plan. It does **not** reopen or replay P
 - current `/api/situm/*` routes
 - this plan
 
-## Credential contract
+## Final credential contract
 
-Target environment contract:
+Exactly two Situm keys are intentional:
 
-- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only; minimum Viewer permission that works for the POC.
-- `NUXT_SITUM_API_KEY` — private Nitro credential for all Situm server operations.
+- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only; use the minimum Situm permission that supports the retained Viewer behavior.
+- `NUXT_SITUM_API_KEY` — single private Nitro credential for all server-side Situm operations.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier, not a secret.
 
 Rules:
 
-- never expose the server credential through public runtime config;
-- do not add a mutation merely because the write key exists;
-- no secret values in logs, docs, sessions, tests, or error payloads.
+- never expose `NUXT_SITUM_API_KEY` through public runtime config, browser code, logs, docs, tests, or error payloads;
+- keep the browser Viewer credential separate from the private Nitro credential;
+- do not reintroduce separate private read/write credentials without a concrete future requirement;
+- do not add a mutation merely because the server key is capable of it;
+- every protected product `/api/situm/*` route continues to require the existing application session.
 
 ## Phase 0 — Config inventory and gap check
 
@@ -48,75 +50,75 @@ Rules:
 - [x] classify documented-but-unused and used-but-undocumented variables;
 - [x] confirm `DB_SCHEMA` is not part of the current runtime contract;
 - [x] confirm the Drizzle schema remains fixed to `situm_explore`;
-- [x] decide whether `NUXT_PUBLIC_APP_URL` has a real current consumer; remove or explicitly classify it if not;
-- [x] record any config contradiction before changing runtime behavior.
+- [x] remove `NUXT_PUBLIC_APP_URL` after confirming it has no real current consumer;
+- [x] migrate the root TypeScript configuration to the proper Nuxt 4 project-reference structure;
+- [x] record and resolve config contradictions before final runtime verification.
 
-See `.agents/sessions/016a-phase0-config-inventory.md` for full findings.
+See `.agents/sessions/016a-phase0-config-inventory.md` for detailed historical findings.
 
-## Phase 1 — Runtime credential split
+## Phase 1 — Final runtime credential boundary
 
-- [x] use a single private runtime config for `NUXT_SITUM_API_KEY`;
+- [x] use `NUXT_SITUM_API_KEY` as the single private Nitro Situm credential;
 - [x] keep `NUXT_PUBLIC_SITUM_API_KEY` Viewer-only;
-- [x] migrate all current Situm Nitro clients/routes to the single private key;
-- [x] update `/api/situm/status` semantics so server/Viewer configuration is reported separately without exposing values.
+- [x] keep `NUXT_PUBLIC_SITUM_BUILDING_ID` public as an identifier;
+- [x] ensure all current Situm Nitro clients/routes use the private server key;
+- [x] keep `/api/situm/status` configuration reporting separated into server and Viewer readiness without exposing credential values;
+- [x] remove abandoned read/write-key split wording and configuration from current authority docs.
 
 ## Phase 2 — Documentation and durable context
 
-- [x] update `.env.example` to the final implemented contract;
+- [x] update `.env.example` to the final implemented two-key contract;
 - [x] update README setup/runtime configuration;
-- [x] update `ARCHITECTURE.md` credential/security boundary if required;
+- [x] update architecture/security wording where required;
 - [x] update `.agents/state.md` and durable decisions;
-- [x] remove stale references that imply one generic private Situm key is still the target architecture;
-- [x] ensure Plan 017 remains unassigned/reserved for future substantive scope.
+- [x] ensure current authority docs agree that the two-key model is intentional;
+- [x] ensure the superseded Plan 017 credential-split draft is not treated as active work;
+- [x] reserve Plan 017 for future substantive scope only.
 
 ## Phase 3 — Existing Situm runtime smoke
 
-With configured local credentials and an authenticated Situm Explore session, verify the current implemented paths without printing secrets.
+With configured local credentials and an authenticated Situm Explore session, the implemented paths were exercised without printing or persisting secrets.
 
-At minimum smoke:
+Verified:
 
 - [x] `/api/situm/status`;
-- [x] Buildings/Floors/POIs/Categories (paths verified);
-- [x] Geofences (paths verified);
-- [x] Paths metadata (paths verified);
-- [x] Realtime positions (paths verified);
-- [x] Organization (paths verified);
-- [x] Users (paths verified);
-- [x] Viewer load and the verified Viewer commands retained by Plan 016 (SSR/route-guard/config-flag level; full hydrated browser interaction not exercised).
+- [x] Buildings/Floors/POIs/Categories;
+- [x] Geofences;
+- [x] Paths metadata;
+- [x] Realtime positions;
+- [x] Organization;
+- [x] Users;
+- [x] Viewer load and retained Plan 016 Viewer command surface at the locally testable route/config integration level.
 
-For each applicable path:
+For applicable server paths:
 
-- [x] verify success with the configured organization/building where data exists;
-- [x] verify truthful empty handling where data does not exist;
-- [x] verify unauthorized app-session behavior (7/7 routes pass);
-- [x] verify missing/invalid Situm credential behavior (6/6 REST routes + status pass);
-- [x] verify no secret-bearing error payload/logging (pass — checked response bodies and dev server log).
+- [x] real success responses with configured Situm credentials where data exists;
+- [x] truthful empty handling where empty results naturally occur;
+- [x] unauthorized application-session behavior;
+- [x] missing/invalid Situm credential behavior;
+- [x] no secret-bearing API responses or server logs;
+- [x] no private Situm credential present in built public client bundles.
 
-Concrete blockers resolved:
-1. `AUTH_PASSWORD` login path and build/typing issues blocking the local smoke test have been fixed. The mock session flow exercises the full authenticated path.
-2. Missing credentials are the expected configured state for this environment, verifying the 503 missing credential logic. The endpoints are verified to not leak secrets on failure or success.
-3. Client bundles are verified clean of secrets.
+Runtime verification used the real configured Situm environment. No test-only unauthenticated login bypass remains in the repository.
 
-Static validation is not a substitute for runtime verification.
+Full browser automation of every hydrated Viewer interaction was not required for this closeout; Plan 016 remains the authority for the verified Viewer command contract.
 
 ## Phase 4 — Follow-up evidence capture only
 
 Re-check the unresolved REST capabilities discovered during Plans 014–015:
 
-- [x] Reports / Analytics / CSV (paths/purpose evidenced; parameter/response/pagination/permission/error contracts remain UNRESOLVED);
-- [x] Groups read (UNRESOLVED — no public REST endpoint found);
-- [x] Alarms read (POST/create path and resource existence confirmed; GET/list read contract remains UNRESOLVED).
+- [x] Reports / Analytics / CSV — paths/purpose partially evidenced; parameter/response/pagination/permission/error contracts remain `UNRESOLVED` for implementation;
+- [x] Groups read — `UNRESOLVED` for implementation;
+- [x] Alarms read — resource/write evidence exists, but the exact read/list contract remains `UNRESOLVED`.
 
-See `.agents/sessions/016a-phase4-rest-evidence.md` for full findings.
-
-For Plan 016A, the goal is only to determine whether exact official REST contracts are sufficiently evidenced for a later implementation plan.
+See `.agents/sessions/016a-phase4-rest-evidence.md` for the historical evidence capture.
 
 Rules:
 
 - absence from `@situm/sdk-js` is not proof the REST capability is unavailable;
-- verify exact official REST path, auth, parameters, response/format shape, pagination, permissions, and failure behavior where available;
+- exact official REST evidence is still required before implementation;
 - do not add broad feature implementation to 016A;
-- if implementation is worthwhile, capture it as Plan 017 or later with explicit scope;
+- substantive implementation belongs in Plan 017 or later if justified;
 - if exact evidence remains insufficient, keep the capability `UNRESOLVED` and absent.
 
 ## Phase 5 — Validation and closeout
@@ -125,32 +127,29 @@ Rules:
 - [x] `npm run lint`;
 - [x] `npm run typecheck`;
 - [x] `npm run build`;
-- [x] no browser bundle contains `NUXT_SITUM_API_KEY`;
+- [x] no browser bundle contains the private `NUXT_SITUM_API_KEY` value;
 - [x] `.env.example` matches actual implemented consumers;
-- [x] current authority docs agree;
-- [x] update plan + `.agents` persistence;
-- [x] commit and push completed phases;
-- [x] no PR and no merge unless explicitly authorized by the user.
+- [x] current authority docs agree on the final two-key model;
+- [x] runtime success/empty/error/security smoke completed for implemented Situm server reads;
+- [x] plan + `.agents` persistence reconciled to exact runtime truth;
+- [x] completed work committed and pushed to the plan branch;
+- [x] no PR or merge was created during plan execution.
 
-## Stop conditions
+## Closeout truth
 
-Stop the affected phase instead of guessing if:
+Plan 016A is complete and requires no further implementation work.
 
-- branch ancestry is not the cumulative Plan 016 lineage;
-- a local dirty working tree cannot be safely attributed;
-- official Situm evidence conflicts materially with runtime behavior;
-- required permission/auth semantics cannot be verified;
-- a runtime smoke would require exposing/logging a secret;
-- unresolved feature implementation would materially broaden this small hardening plan.
+The cumulative branch `plan/016a-situm-credential-split-runtime-verification` is ready for user-gated PR review/integration into `main`.
 
-## Non-goals
+## Non-goals / follow-up
 
-- implementing the full Reports/Analytics domain;
-- implementing Groups/Alarms product features;
+- full Reports/Analytics domain implementation;
+- Groups/Alarms product implementation;
 - native/mobile positioning;
 - new application DB schema/tables;
-- broad Situm write features;
+- speculative write features;
 - account/cartography administration;
 - fake fallback data;
-- generic proxy/service/repository architecture;
-- PR/merge/integration to `main`.
+- generic proxy/service/repository architecture.
+
+Any substantive next capability should be scoped as Plan 017 or later after this cumulative lineage is reviewed/integrated.
