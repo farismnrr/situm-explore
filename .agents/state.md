@@ -150,3 +150,7 @@ Phase 6 runtime smoke completed on 2026-08-13 through the real login endpoint. F
 Plan 017 Phase 5 optional evaluation completed on 2026-08-13. Map Viewer usage and heatmap remain explicitly unresolved: official evidence confirms only endpoint families/purpose, not the exact consumed schemas, filters, runtime payloads, or truthful visualization semantics. No optional implementation was added. Plan 017 Phase 6 and closeout are complete; next is Plan 018 from Plan 017's exact pushed HEAD.
 
 Do not create a PR or merge during the run. After Plan 020 is fully complete, stop with a concise final summary and leave the final cumulative Plan 020 branch pushed for user review/integration.
+
+## Plan 018 Phase 0 result
+
+Phase 0 exact-contract and live evidence completed on 2026-08-13. Official OpenAPI verifies Groups list-only reads with `has_parent` and no documented detail/membership/pagination contract. Alarms list/detail reads, filters, stable fields, enums, authenticated errors, empty arrays, and detail 404 semantics were verified. Safe live probes returned one group, zero alarms for the configured building (including active-only), and 404 for a nonexistent alarm detail. Group membership presentation remains unresolved; no implementation was performed. Phase 1 is next.

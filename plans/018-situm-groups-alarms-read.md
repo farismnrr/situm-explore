@@ -43,13 +43,22 @@ Target surfaces:
 
 ## Phase 0 — Exact contract + live evidence
 
-- [ ] inspect the latest official Situm OpenAPI and verify the exact Groups list/detail/membership operations needed by the UI;
-- [ ] verify exact Alarms list/detail operations, supported filters/pagination, state/type fields, timestamps, subject/user/device/building references, permissions, and error/empty semantics;
-- [ ] inspect installed SDK/source only as supporting evidence; do not treat wrapper absence as REST absence;
-- [ ] run safe authenticated live probes with configured credentials and record only consumed non-secret field names/semantics;
-- [ ] identify which user/group relationships can truthfully be shown without extra speculative joins;
-- [ ] identify which alarm fields are stable enough for list/detail/status badges;
-- [ ] if one sub-capability remains materially unresolved, mark only that sub-capability unresolved and continue when the other core capability remains meaningful; stop only if both Groups and Alarms core read contracts cannot be verified.
+- [x] inspect the latest official Situm OpenAPI and verify the exact Groups list/detail/membership operations needed by the UI;
+- [x] verify exact Alarms list/detail operations, supported filters/pagination, state/type fields, timestamps, subject/user/device/building references, permissions, and error/empty semantics;
+- [x] inspect installed SDK/source only as supporting evidence; do not treat wrapper absence as REST absence;
+- [x] run safe authenticated live probes with configured credentials and record only consumed non-secret field names/semantics;
+- [x] identify which user/group relationships can truthfully be shown without extra speculative joins;
+- [x] identify which alarm fields are stable enough for list/detail/status badges;
+- [x] if one sub-capability remains materially unresolved, mark only that sub-capability unresolved and continue when the other core capability remains meaningful; stop only if both Groups and Alarms core read contracts cannot be verified.
+
+### Phase 0 evidence (2026-08-13)
+
+- Official source: [Situm REST OpenAPI](https://developers.situm.com/pages/rest/openapi/) and its published `situm_public_api.yaml`.
+- Groups: `GET /api/v1/groups` returns an array of `Group`; the only documented list filter is `has_parent` (boolean). `Group` fields are `id`, `uuid`, `name`, `organization_id`, `parent_group_id`, `icon_colour`, and `is_staff`. No group detail endpoint, membership endpoint, pagination contract, or user/device membership payload is documented. Group membership remains unresolved for product display; users can truthfully expose their existing `group_ids`/`groups` fields only after the current SDK response mapping is explicitly extended and verified.
+- Alarms: `GET /api/v1/alarms` returns an array of `Alarm`; `GET /api/v1/alarms/{id}` returns one `Alarm` or `404`. Documented filters are `organization_id`, required-by-schema `building_id` (though the live server also accepted omission), `active`, repeated/array `type`, `startDate`, `endDate`, `created_by`, and `secondsFromCreation`. No pagination parameters are documented. Stable schema fields are `uuid`, `x`, `y`, `lat`, `lng`, `building_id`, `floor_id`, `outside`, `inside`, `created_at`, `updated_at`, `type`, `status_changes`, `active`, `current_state`, and `custom_fields`; `chat_room` is explicitly deprecated. Alarm type/state enums and timestamp semantics are recorded in `.agents/knowledge/situm-groups-alarms-phase0.md`.
+- Permissions/errors: official OpenAPI documents authenticated API access and `401`, `403`, `422`, and `500` for list; detail additionally documents `404`. The configured read probe used the private API key transiently and returned `200` with arrays (including empty arrays); a nonexistent detail returned `404` with an error object. No mutation was attempted.
+- Live probe observations: Groups list returned HTTP 200 with one item; `has_parent=true` returned HTTP 200 with zero items. Alarms for the configured building returned HTTP 200 with zero items; `active=true` also returned HTTP 200 with zero items. A users probe returned an object with `data` and `metadata`; its sampled user fields included `group_ids` and `groups`, but no relationship claim is made until explicitly consumed/verified.
+- Installed `@situm/sdk-js` is present at the repository-declared `^0.25.0`; its declaration surface exposes user/cartography/realtime/reports domains but no Groups or Alarms wrapper. This is supporting evidence only; direct authenticated Nitro REST remains the verified access path.
 
 ## Phase 1 — Shared contracts + server reads
 
