@@ -41,7 +41,7 @@ Do not copy its HTML/CSS/JS wholesale into production.
 7. current source/runtime behavior;
 8. historical plans/prototype behavior.
 
-While Plans 021–025 execute, `design/ROADMAP-021-025-OVERRIDES.md` remains a compatibility note for older historical wording. Current versions of this file, `ARCHITECTURE.md`, and `design/IMPLEMENTATION.md` already reflect the approved transition and should not depend on stale Plan 010-era rules.
+Current `ARCHITECTURE.md`, this file, `design/IMPLEMENTATION.md`, and `design/data-source-matrix.md` are reconciled for Plans 021–025. Historical Plan 010-era design wording is evidence only.
 
 ## Product direction
 
