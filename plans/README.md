@@ -51,23 +51,53 @@ Do not branch a stacked dependent plan from stale `main` and do not merge/cherry
 
 ## Current roadmap state
 
-The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are complete and integrated into `main`.
+The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are complete/integrated. The user's final UI/mobile refinement pass is also integrated into `main` through PRs #10 and #11.
 
-PR #8 integrated the cumulative Plans 010–016A lineage. `main` is canonical and there is no active plan branch.
+The new roadmap is prepared on `roadmap/017-020-next-features` and has explicit stacked execution authorization:
 
-Do **not** replay Plans 010–016A. The old `plans/017-situm-credential-split-runtime-verification.md` draft was superseded by Plan 016A and is not an active step.
+1. `plans/017-situm-analytics-clickhouse.md` — **ready / next active**;
+2. `plans/018-situm-groups-alarms-read.md` — queued;
+3. `plans/019-situm-realtime-viewer-trajectory.md` — queued;
+4. `plans/020-situm-static-directions.md` — queued.
 
-Historical plan branches may be deleted because their commits are already contained in `main`; plan files and Git history preserve the implementation record.
+Required branch chain:
 
-Current outcome:
+```text
+roadmap/017-020-next-features
+-> plan/017-situm-analytics-clickhouse
+-> plan/018-situm-groups-alarms-read
+-> plan/019-situm-realtime-viewer-trajectory
+-> plan/020-situm-static-directions
+```
 
-- implemented where exact evidence existed;
-- runtime-smoked for the implemented Situm server read paths using configured credentials;
-- skipped/unresolved where exact implementation contracts remain insufficient;
-- no fake fallback behavior;
-- no native positioning scope added to web.
+Do **not** replay Plans 010–016A. The old credential-split Plan 017 draft was superseded by Plan 016A and is historical only; the new Plan 017 is the analytics/ClickHouse plan above.
 
-Read `.agents/state.md` for the exact completed/skipped/unresolved items and current canonical state.
+The abandoned `chore/ui-refine-login-map-feedback` branch is superseded by the UI refinement already integrated into `main`; do not use it as a base.
+
+## Current stacked-run rules
+
+For Plans 017–020 only, the user explicitly authorized:
+
+- uninterrupted sequential execution without waiting for confirmation between phases/plans;
+- implementation/testing of every phase delegated specifically to the configured `worker` subagent;
+- parent agent owns orchestration, review, plan/state updates, commits, pushes, and phase/plan transitions;
+- if the configured `worker` profile cannot be spawned, stop and report the blocker rather than substituting another agent/model;
+- after a plan is validated/committed/pushed, create the next branch from that exact final HEAD;
+- no PR and no merge during the entire 017–020 run.
+
+Optional sub-capabilities that a plan explicitly marks conditional may remain unresolved if exact evidence/runtime is insufficient. Core behavior must never be faked merely to check a box.
+
+## Plan 017 ClickHouse rule
+
+Plan 017 must reuse the user's existing local ClickHouse instance.
+
+- Do not install/provision another ClickHouse server.
+- Do not add Docker/Compose for ClickHouse.
+- Discover the real local connection safely; do not print/persist credentials or ask the user to paste secrets.
+- Inspect the existing instance before creating app-owned objects and never alter/drop unrelated databases/tables.
+- ClickHouse access is Nitro/server-only.
+- PostgreSQL/Drizzle remains the relational app store.
+- No background worker/queue/cron is required for the PoC; the plan uses an explicit analytics sync operation.
 
 ## Capability evidence gate
 
@@ -106,8 +136,8 @@ A phase is only complete when applicable checks are truthfully recorded:
 2. `.agents` persistence updated;
 3. required validation run;
 4. phase committed and pushed;
-5. unresolved/manual-smoke items remain visibly unchecked or explicitly marked pending.
+5. unresolved/manual-smoke items remain visibly unchecked or explicitly marked pending/unresolved.
 
-Plan 016A satisfied its closeout requirements, including live runtime smoke for implemented Situm server read paths, before integration through PR #8.
+Repository baseline checks remain `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`; each active plan adds its own runtime checks.
 
 CI and a standalone unit-test runner remain deferred unless a later requirement changes that decision.
