@@ -76,18 +76,18 @@ With configured local credentials and an authenticated Situm Explore session, ve
 At minimum smoke:
 
 - [x] `/api/situm/status`;
-- [ ] Buildings/Floors/POIs/Categories (paths verified);
-- [ ] Geofences (paths verified);
-- [ ] Paths metadata (paths verified);
-- [ ] Realtime positions (paths verified);
-- [ ] Organization (paths verified);
-- [ ] Users (paths verified);
+- [x] Buildings/Floors/POIs/Categories (paths verified);
+- [x] Geofences (paths verified);
+- [x] Paths metadata (paths verified);
+- [x] Realtime positions (paths verified);
+- [x] Organization (paths verified);
+- [x] Users (paths verified);
 - [x] Viewer load and the verified Viewer commands retained by Plan 016 (SSR/route-guard/config-flag level; full hydrated browser interaction not exercised).
 
 For each applicable path:
 
-- [ ] verify success with the configured organization/building where data exists;
-- [ ] verify truthful empty handling where data does not exist;
+- [x] verify success with the configured organization/building where data exists;
+- [x] verify truthful empty handling where data does not exist;
 - [x] verify unauthorized app-session behavior (7/7 routes pass);
 - [x] verify missing/invalid Situm credential behavior (6/6 REST routes + status pass);
 - [x] verify no secret-bearing error payload/logging (pass — checked response bodies and dev server log).
