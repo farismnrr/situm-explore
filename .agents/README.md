@@ -9,7 +9,7 @@ Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in t
 | Path | Purpose |
 | --- | --- |
 | `identity.md` | Mission, behavior, and stable agent principles. |
-| `state.md` | Current focus, blockers, active/cumulative branch, and next action. |
+| `state.md` | Current focus, blockers, canonical branch, and next action. |
 | `protocols/chat-lifecycle.md` | Conversation workflow. |
 | `protocols/persistence.md` | What must be persisted after a conversation. |
 | `protocols/git-workflow.md` | Plan branch, validation, commit/push, stacked-branch exception, and PR gates. |
@@ -77,17 +77,12 @@ Never store credentials, API keys, JWTs, passwords, or sensitive payloads.
 
 ## Current scope
 
-The UI roadmap through Plan 009B is historical and integrated into `main`.
+The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are historical and integrated into `main`.
 
-Plans **010–016 have completed their stacked implementation pass**. Do not restart or recreate them from `main`.
+PR #8 integrated the cumulative Plans 010–016A lineage. `main` is now the only canonical branch and there is no active implementation plan.
 
-The active closeout/hardening follow-up is **Plan 016A — Situm Credential Split & Runtime Verification**:
+Do not restart or recreate Plans 010–016A from historical plan branches. The old Plan 017 credential-split draft was superseded by Plan 016A and is not an active roadmap step.
 
-- plan file: `plans/016a-situm-credential-split-runtime-verification.md`;
-- branch: `plan/016a-situm-credential-split-runtime-verification`.
+Historical plan branches may be deleted after integration because their commits are contained in `main`; plan files and Git history remain the historical record.
 
-Plan 016A is intentionally small: credential-role split, env/runtime contract cleanup, live smoke for already implemented Situm paths, and evidence capture for unresolved REST domains. It does not own broad Reports/Groups/Alarms implementation.
-
-The briefly created Plan 017 credential-split draft is superseded by 016A and is not an active roadmap step. Plan 017 remains reserved for substantive future feature scope.
-
-No PR or merge is authorized. Read `.agents/state.md` for the exact current truth and next action.
+Future substantive work should start from updated `main` on a newly scoped plan branch only when explicitly needed. Read `.agents/state.md` for exact current truth and unresolved capability gaps.
