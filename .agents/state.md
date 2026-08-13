@@ -154,3 +154,7 @@ Do not create a PR or merge during the run. After Plan 020 is fully complete, st
 ## Plan 018 Phase 0 result
 
 Phase 0 exact-contract and live evidence completed on 2026-08-13. Official OpenAPI verifies Groups list-only reads with `has_parent` and no documented detail/membership/pagination contract. Alarms list/detail reads, filters, stable fields, enums, authenticated errors, empty arrays, and detail 404 semantics were verified. Safe live probes returned one group, zero alarms for the configured building (including active-only), and 404 for a nonexistent alarm detail. Group membership presentation remains unresolved; no implementation was performed. Phase 1 is next.
+
+## Plan 018 Phase 1 result
+
+Phase 1 server reads completed on 2026-08-13. Protected Groups and Alarms list/detail endpoints now use the verified direct Nitro REST contracts, strict DTO normalization, supported filters, truthful empty/error/404 behavior, and no mutations or speculative relationships. Phase 2 is next.

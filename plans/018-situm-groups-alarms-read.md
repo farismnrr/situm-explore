@@ -62,13 +62,20 @@ Target surfaces:
 
 ## Phase 1 — Shared contracts + server reads
 
-- [ ] add small shared DTO/types for only the verified fields consumed by the app;
-- [ ] add protected Groups server read endpoint(s) using the smallest correct Situm access path;
-- [ ] add protected Alarms list endpoint and detail endpoint only if detail is verified/useful;
-- [ ] map pagination/filter inputs explicitly and validate user-controlled query parameters;
-- [ ] normalize Situm failures into truthful product errors without leaking credential/upstream internals;
-- [ ] preserve truthful empty arrays/absence instead of fixture fallback;
-- [ ] reuse existing Situm client/auth/error patterns rather than adding generic API architecture.
+- [x] add small shared DTO/types for only the verified fields consumed by the app;
+- [x] add protected Groups server read endpoint(s) using the smallest correct Situm access path;
+- [x] add protected Alarms list endpoint and detail endpoint only if detail is verified/useful;
+- [x] map pagination/filter inputs explicitly and validate user-controlled query parameters;
+- [x] normalize Situm failures into truthful product errors without leaking credential/upstream internals;
+- [x] preserve truthful empty arrays/absence instead of fixture fallback;
+- [x] reuse existing Situm client/auth/error patterns rather than adding generic API architecture.
+
+### Phase 1 implementation record (2026-08-13)
+
+- Added shared DTOs for verified Group and Alarm fields, protected `/api/situm/groups`, `/api/situm/alarms`, and `/api/situm/alarms/:uuid` reads, using direct authenticated Nitro REST.
+- Groups support only the verified `has_parent` filter; membership/detail/pagination remain absent. Alarms support the verified building-required list plus documented filters and detail 404 behavior; no undocumented pagination or mutation paths were added.
+- Normalization strictly validates verified numeric, boolean, timestamp, enum, and identifier fields. The full official alarm type enum is accepted, including deprecated types if returned; deprecated status is not reinterpreted as a mutation/state action.
+- Static validation passed in the worker; Phase 2 UI work is next.
 
 ## Phase 2 — Groups product surface
 
