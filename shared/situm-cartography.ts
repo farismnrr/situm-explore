@@ -12,6 +12,7 @@ export interface SitumCartographyFloor {
   buildingId: number
   level: number
   name: string
+  mapUrl: string
 }
 
 export interface SitumCartographyCategory {

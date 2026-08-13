@@ -63,8 +63,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <UCard :ui="{ body: 'p-0 sm:p-0' }">
-    <div class="relative min-h-[22rem] h-[min(70vh,48rem)] w-full overflow-hidden rounded-lg bg-muted">
+  <UCard :ui="{ root: 'h-full flex flex-col', body: 'h-full flex-1 p-0 sm:p-0' }">
+    <div class="relative min-h-[22rem] h-full w-full overflow-hidden rounded-lg bg-muted">
       <div ref="container" class="h-full w-full" />
 
       <div
