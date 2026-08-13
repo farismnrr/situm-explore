@@ -77,7 +77,7 @@ Never store credentials, API keys, JWTs, passwords, ClickHouse credentials, or s
 
 ## Current scope
 
-Plans 017, 018, 019, 019A, and 020 in the completed stacked feature lineage are integrated into `main`. The feature branches are historical and are being removed after the successful PR #12 merge.
+Plans 017, 018, 019, 019A, and 020 in the completed stacked feature lineage are integrated into `main`. The former feature branches are historical and have been removed after the successful PR #12 merge.
 
 Current chain:
 

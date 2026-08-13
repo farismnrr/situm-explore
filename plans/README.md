@@ -45,7 +45,7 @@ The user inserted Plan 019A after the first Plan 020 Phase 0 attempt exposed a s
 
 The earlier `plan/020-situm-static-directions` branch created before 019A is superseded as an execution base. Its Phase 0 evidence may be consulted historically where still accurate, but it is not current authority and must not be merged/cherry-picked into the completed lineage.
 
-Do not delete the stale Plan 020 branch unless the user explicitly asks.
+The stale Plan 020 branch was deleted after PR #12 integration; its historical evidence remains in repository plans and sessions.
 
 ## Completed Plans 019A and 020
 

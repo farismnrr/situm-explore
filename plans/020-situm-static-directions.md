@@ -110,4 +110,4 @@ Final diff, lint, typecheck, and production build validation passed. The public 
 
 ## Branch note
 
-The earlier remote `plan/020-situm-static-directions` branch is stale pre-019A history and is superseded as an execution branch. The completed review branch was `plan/020-situm-static-directions-v2`, created directly from exact final Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71` and integrated into `main` by PR #12. Do not merge/cherry-pick the stale branch or rewrite shared history.
+The earlier remote `plan/020-situm-static-directions` branch was stale pre-019A history, superseded, and deleted after PR #12 integration. The completed review branch was `plan/020-situm-static-directions-v2`, created directly from exact final Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71` and integrated into `main` by PR #12. Do not revive or replay either deleted branch, and do not rewrite shared history.

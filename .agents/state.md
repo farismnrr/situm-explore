@@ -20,13 +20,13 @@ Non-blocking observations retained for Plan 020 review: some Viewer-visible POIs
 ## Completed plan — 020
 
 - plan: `plans/020-situm-static-directions.md`
-- branch: `plan/020-situm-static-directions-v2`
+- source branch: `plan/020-situm-static-directions-v2` (deleted after integration)
 - base: exact final Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
 - status: **complete; integrated into main**
 
 `plan/020-situm-static-directions-v2` was created directly from the exact final Plan 019A HEAD and integrated into `main` by PR #12.
 
-The earlier remote `plan/020-situm-static-directions` branch at stale pre-019A lineage (`c902e53`) is superseded as an execution branch. Do not merge, cherry-pick, reset, force-push, or use it as current authority. Historical evidence from it may be consulted only where still accurate.
+The earlier `plan/020-situm-static-directions` branch at stale pre-019A lineage (`c902e53`) was superseded and deleted after integration. Do not revive, merge, cherry-pick, reset, or force-push it. Historical evidence from it remains in repository plans/sessions where still accurate.
 
 Completed chain:
 

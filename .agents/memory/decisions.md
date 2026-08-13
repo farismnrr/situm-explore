@@ -110,7 +110,7 @@ Plan 019A therefore owns both:
 
 The earlier `plan/020-situm-static-directions` branch created before 019A is superseded as an execution base and is historical evidence only where still accurate. It is not current authority and must not be merged/cherry-picked into the completed lineage.
 
-Do not delete the stale pre-019A Plan 020 branch unless the user explicitly asks.
+The stale pre-019A Plan 020 branch was deleted after PR #12 integration; its historical evidence remains in repository plans and sessions.
 
 Status: complete roadmap decision; current authority is the completed lineage above.
 
