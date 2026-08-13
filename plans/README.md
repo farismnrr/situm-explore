@@ -51,13 +51,13 @@ Do not branch a stacked dependent plan from stale `main` and do not merge/cherry
 
 ## Current roadmap state
 
-Plans 010–016 completed their explicit stacked implementation pass. Plan 016A then completed the credential/config/runtime hardening closeout on the same cumulative lineage.
+The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are complete and integrated into `main`.
 
-Cumulative review branch:
+PR #8 integrated the cumulative Plans 010–016A lineage. `main` is canonical and there is no active plan branch.
 
-`plan/016a-situm-credential-split-runtime-verification`
+Do **not** replay Plans 010–016A. The old `plans/017-situm-credential-split-runtime-verification.md` draft was superseded by Plan 016A and is not an active step.
 
-Plan 016A is **complete**. Do not replay Plans 010–016 or Plan 016A. Do not execute the old `plans/017-situm-credential-split-runtime-verification.md` draft; that naming was superseded. Plan 017 remains available only for genuinely new substantive feature scope after the current lineage is reviewed/integrated.
+Historical plan branches may be deleted because their commits are already contained in `main`; plan files and Git history preserve the implementation record.
 
 Current outcome:
 
@@ -65,10 +65,9 @@ Current outcome:
 - runtime-smoked for the implemented Situm server read paths using configured credentials;
 - skipped/unresolved where exact implementation contracts remain insufficient;
 - no fake fallback behavior;
-- no native positioning scope added to web;
-- cumulative branch ready for user-gated PR review/integration.
+- no native positioning scope added to web.
 
-Read `.agents/state.md` for the exact completed/skipped/unresolved items and next integration action.
+Read `.agents/state.md` for the exact completed/skipped/unresolved items and current canonical state.
 
 ## Capability evidence gate
 
@@ -109,6 +108,6 @@ A phase is only complete when applicable checks are truthfully recorded:
 4. phase committed and pushed;
 5. unresolved/manual-smoke items remain visibly unchecked or explicitly marked pending.
 
-Plan 016A satisfies its closeout requirements, including live runtime smoke for implemented Situm server read paths.
+Plan 016A satisfied its closeout requirements, including live runtime smoke for implemented Situm server read paths, before integration through PR #8.
 
 CI and a standalone unit-test runner remain deferred unless a later requirement changes that decision.
