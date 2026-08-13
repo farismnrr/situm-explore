@@ -198,6 +198,13 @@ This phase is conditional and must not block Plan 017 completion if the exact co
 - [ ] commit and push the completed phase/plan branch;
 - [ ] do not create a PR or merge.
 
+### Phase 6 continuation record (2026-08-13)
+
+- Re-read the repository-local `.env` directly and inspected the normal `POST /api/auth/login` contract. The local environment contains `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`, but no plaintext password accepted by the login endpoint.
+- A worker-only retry used only the real login flow and did not mint a session, bypass auth, alter authentication, or attempt hash reversal/cracking. The required authenticated smoke therefore remains blocked by missing plaintext login input.
+- The previously observed geofencing HTTP 400 was re-probed against the verified report contract and returned HTTP 200 on the retry; no geofencing implementation change was justified. The earlier 400 remains unresolved as a transient/request-window observation, not evidence for a guessed contract change.
+- No secrets, hashes, cookies, or raw payloads were persisted.
+
 ## Non-goals
 
 - ClickHouse installation/provisioning/cluster operations;
