@@ -215,6 +215,8 @@ Phase 0 is complete only when there is one unambiguous current authority chain.
 
 ## Phase 3 — Exact capability evidence ledger
 
+- [x] complete the evidence ledger below for every retained Situm-domain capability;
+
 For **every surviving Situm-domain UI field/action**, record all required evidence fields from the no-hallucination gate.
 
 At minimum cover:
@@ -237,6 +239,8 @@ Rules:
 - if evidence is not worth resolving, remove the capability rather than leaving it fake.
 
 ## Phase 4 — Later plan ownership
+
+- [x] assign every retained capability to exactly one later implementation owner;
 
 - Plan 011 — Buildings/Floors/POIs/Categories and Map selection context.
 - Plan 012 — Geofences/Paths/static routing and route constraints.
@@ -296,8 +300,8 @@ The report, groups, alarms and Viewer-settings rows are not presented as working
 - [x] `npm run typecheck`;
 - [x] `npm run build`;
 - [x] update `.agents/state.md`, durable decisions, and current session;
-- [ ] commit/push branch;
-- [ ] no PR/merge until user authorization.
+- [x] commit/push branch;
+- [x] no PR/merge until user authorization.
 
 ## Stop conditions
 
