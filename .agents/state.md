@@ -22,6 +22,12 @@ Plan 025 — Workspace UX & Full Regression                   [queued]
 
 No stacked implementation authorization exists for Plans 021–025. Use the normal one-plan/one-branch transition workflow unless the user explicitly changes it.
 
+## Roadmap conflict rule
+
+While Plans 021–025 are active, read `.agents/memory/roadmap-021-025.md` after the general decisions file. That roadmap addendum plus this state file supersede stale pre-refactor wording that treats permanent single-user/global-Situm configuration as the end state.
+
+`ARCHITECTURE.md` still describes parts of the current pre-refactor runtime until implementation updates the architecture contract. Treat it as current-runtime evidence, not as authority to cancel the approved roadmap transition.
+
 ## Locked direction
 
 - real application users replace the current single-user runtime model;
