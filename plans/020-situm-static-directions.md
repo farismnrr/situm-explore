@@ -24,12 +24,16 @@ Plan 020 must not replay that foundation. It owns only evidence-backed completio
 
 ## Phase 0 — Consume Plan 019A truth
 
-- [ ] confirm this branch starts from `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`;
-- [ ] confirm stale `plan/020-situm-static-directions` is not used as execution authority;
-- [ ] list exactly which route behaviors Plan 019A proved;
-- [ ] preserve unresolved route details/events/tags as unresolved;
-- [ ] review the observed POI-list mismatch and constrained-route failures without assuming an app defect;
-- [ ] identify only concrete remaining product gaps.
+- [x] confirm this branch starts from `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`;
+- [x] confirm stale `plan/020-situm-static-directions` is not used as execution authority;
+- [x] list exactly which route behaviors Plan 019A proved;
+- [x] preserve unresolved route details/events/tags as unresolved;
+- [x] review the observed POI-list mismatch and constrained-route failures without assuming an app defect;
+- [x] identify only concrete remaining product gaps.
+
+### Phase 0 evidence and concrete gaps
+
+Plan 019A manual acceptance proved authenticated production map/cartography load, real POI route selection, forward and reverse route rendering, replacement, cancel cleanup, navigate-away/back cleanup, and mobile non-mount. The current SDK/UI still exposes no verified route result/details/events/tags contract. The Viewer-visible POI mismatch is not attributable to the app from current evidence: the app consumes the authenticated cartography POI read and does not scrape Viewer internals. The constrained `ONLY_NOT_ACCESSIBLE_FLOOR_CHANGES` failure is a runtime route-availability limitation, not evidence of an app defect. Concrete product gaps are limited to stale `/app/paths` copy and conservative route UX wording/feedback; no route summary or POI fabrication is justified.
 
 ## Phase 1 — Route UX polish
 

@@ -80,4 +80,4 @@ Never expose raw Viewer access or a generic invoke surface.
 
 ## Next action
 
-Execute Plan 020 from `plan/020-situm-static-directions-v2`. Start with Phase 0 by consuming Plan 019A runtime truth and identifying only concrete remaining product gaps. Do not replay the resolved Plan 019A foundation or resume the stale pre-019A Plan 020 branch.
+Plan 020 Phase 0 is complete on `plan/020-situm-static-directions-v2`. Plan 019A runtime truth is accepted; the Viewer-visible POI mismatch is not proven app-owned, constrained route failures remain runtime limitations, and unresolved route details/events/tags remain absent. Concrete gaps are stale `/app/paths` copy and conservative route UX wording/feedback. Phase 1 is next. Do not replay the resolved foundation or use the stale pre-019A branch.
