@@ -14,6 +14,8 @@ const routeStart = ref<number | undefined>(undefined)
 const routeDestination = ref<number | undefined>(undefined)
 const accessibleRoute = ref(false)
 const routeFeedback = ref('')
+const routeRequestPending = ref(false)
+const routeRequested = ref(false)
 const layerState = reactive({ realtime: true, geofence: false, trajectory: false })
 const viewerToolStatus = ref('')
 const viewer = ref<{
@@ -68,6 +70,7 @@ function openDirections(poiId: number) {
 }
 
 async function startRoute() {
+  if (routeRequestPending.value) return
   if (viewerState.value !== 'ready' || !viewer.value) {
     routeFeedback.value = 'The map viewer is not ready.'
     return
@@ -83,22 +86,28 @@ async function startRoute() {
 
   const from = routeStart.value
   const to = routeDestination.value
-  routeFeedback.value = 'Requesting directions…'
+  routeRequestPending.value = true
+  routeFeedback.value = routeRequested.value ? 'Replacing directions…' : 'Requesting directions…'
   try {
     await viewer.value.startDirections(from, to, accessibleRoute.value ? RouteType.ONLY_ACCESSIBLE : undefined)
-    routeFeedback.value = 'Directions request sent to the map viewer.'
+    routeRequested.value = true
+    routeFeedback.value = 'Directions request sent to the map viewer. Route availability depends on the map data.'
   } catch (error) {
     routeFeedback.value = error instanceof Error ? error.message : 'Directions could not be requested.'
+  } finally {
+    routeRequestPending.value = false
   }
 }
 
 async function clearRoute() {
+  if (routeRequestPending.value) return
   if (viewerState.value !== 'ready' || !viewer.value) {
     routeFeedback.value = 'The map viewer is not ready.'
     return
   }
   try {
     await viewer.value.cancelDirections()
+    routeRequested.value = false
     routeFeedback.value = 'Directions cleared.'
   } catch (error) {
     routeFeedback.value = error instanceof Error ? error.message : 'Directions could not be cleared.'
@@ -211,10 +220,11 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map', fullWidth: tru
         <div v-else-if="activeTab === 'route'" role="tabpanel" class="space-y-4">
           <UFormField label="Start"><USelect v-model="routeStart" :items="routeOptions" class="w-full" /></UFormField>
           <UFormField label="Destination"><USelect v-model="routeDestination" :items="routeOptions" class="w-full" /></UFormField>
-          <UCheckbox v-model="accessibleRoute" label="Prefer accessible floor changes" />
+          <UCheckbox v-model="accessibleRoute" label="Use accessible floor changes only" :disabled="routeRequestPending" />
+          <p class="text-[11px] leading-4 text-muted">Uses the verified accessible route type. A route is not guaranteed if the map cannot estimate one.</p>
           <div class="flex flex-wrap gap-2">
-            <UButton label="Start route" icon="i-lucide-navigation" color="primary" :disabled="viewerState !== 'ready'" @click="startRoute" />
-            <UButton label="Clear" color="neutral" variant="soft" :disabled="viewerState !== 'ready'" @click="clearRoute" />
+            <UButton :label="routeRequestPending ? 'Requesting…' : routeRequested ? 'Replace route' : 'Request directions'" icon="i-lucide-navigation" color="primary" :loading="routeRequestPending" :disabled="viewerState !== 'ready' || routeRequestPending" @click="startRoute" />
+            <UButton label="Cancel directions" color="neutral" variant="soft" :disabled="viewerState !== 'ready' || routeRequestPending" @click="clearRoute" />
           </div>
           <p v-if="routeFeedback" class="map-feedback" role="status" aria-live="polite">{{ routeFeedback }}</p>
         </div>

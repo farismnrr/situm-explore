@@ -42,12 +42,16 @@ Delegate implementation to `worker` only where a concrete gap exists.
 - [ ] refine From/To selection/search using real POIs while preserving numeric IDs;
 - [ ] investigate why some Viewer-visible POIs were absent from the product POI list; fix only if app ownership is proven;
 - [ ] improve building/floor context only where verified;
-- [ ] refine start/replace/cancel affordances;
-- [ ] preserve empty/same-endpoint validation;
-- [ ] retain route-type controls only where current behavior is truthful;
-- [ ] treat observed constrained-route estimation failures as a runtime limitation, not success;
-- [ ] keep feedback conservative;
-- [ ] do not add synthetic route summaries.
+- [x] refine start/replace/cancel affordances;
+- [x] preserve empty/same-endpoint validation;
+- [x] retain route-type controls only where current behavior is truthful;
+- [x] treat observed constrained-route estimation failures as a runtime limitation, not success;
+- [x] keep feedback conservative;
+- [x] do not add synthetic route summaries.
+
+### Phase 1 evidence
+
+The route controls now distinguish the initial request, replacement, and cancellation states, prevent overlapping commands, and explain that availability depends on map data. The accessible option is explicitly scoped to the verified accessible route type. No POI normalization, Viewer-internal scraping, or building/floor inference was added because current evidence does not establish those as app-owned gaps.
 
 ## Phase 2 — Paths/discoverability alignment
 
