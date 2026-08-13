@@ -2,7 +2,7 @@
 
 `.agents/` is the persistent context layer for Situm Explore.
 
-Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in the root contracts; `.agents/` stores current state, durable decisions, operating protocols, verified knowledge, lessons, and concise history.
+Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in root contracts; `.agents/` stores current state, durable decisions, operating protocols, verified knowledge, lessons, and concise history.
 
 ## Directory map
 
@@ -29,7 +29,7 @@ Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in t
 7. `ARCHITECTURE.md`.
 8. `plans/README.md`.
 9. `design/data-source-matrix.md` when Situm/product capability scope matters.
-10. active/follow-up plan, if one exists.
+10. active/follow-up plan.
 11. `DESIGN.md` and `design/IMPLEMENTATION.md` for UI/presentation changes.
 
 Historical plans/session notes are evidence, not current authority.
@@ -69,7 +69,7 @@ Before a completed implementation-phase commit:
 1. update active plan/checklist;
 2. update `.agents/state.md`;
 3. update durable decisions/knowledge only when changed;
-4. append/update the current session note;
+4. append/update current session evidence;
 5. run required validation;
 6. commit and push the plan branch.
 
@@ -77,23 +77,26 @@ Never store credentials, API keys, JWTs, passwords, ClickHouse credentials, or s
 
 ## Current scope
 
-The UI roadmap through Plan 009B and Situm Plans 010–016A are historical/integrated. PRs #10 and #11 also integrated the user's final UI/mobile refinement pass into `main`.
+Plans 017, 018, and 019 in the current stacked feature lineage are complete. The user explicitly inserted Plan 019A before Plan 020.
 
-The current roadmap authority is `roadmap/017-020-next-features` with explicit stacked execution authorization:
+Current chain:
 
 ```text
-Plan 017 — Analytics & Reports with existing local ClickHouse
--> Plan 018 — Groups & Alarms read-only
--> Plan 019 — Realtime Viewer overlay & conditional trajectory
--> Plan 020 — Static directions
+Plan 017 — Analytics & Reports with existing local ClickHouse   [complete]
+-> Plan 018 — Groups & Alarms read-only                        [complete]
+-> Plan 019 — Realtime Viewer overlay                          [complete]
+-> Plan 019A — Static Directions Foundation & Runtime Proof    [ACTIVE]
+-> Plan 020 — Static Directions Product Completion             [queued]
 ```
 
-Plan 017 is next active/ready. Plans 018–020 are queued.
+Active branch:
 
-Each implementation plan gets its own branch and, for this explicitly authorized stack, each next plan starts from the previous plan's final validated/pushed HEAD. Do not create a PR or merge during the run.
+`plan/019a-situm-static-directions-foundation`
 
-Implementation/testing for each phase must be delegated specifically to the configured `worker` subagent. If that worker profile cannot be spawned, stop rather than silently substituting another agent/model.
+Plan 019A starts from final Plan 019 HEAD `513f65e820635e05a22a54270f3bf21f5925e6c8`.
 
-The old credential-split Plan 017 was superseded by Plan 016A and must not be confused with the new analytics Plan 017. The abandoned `chore/ui-refine-login-map-feedback` branch is also superseded by the UI work already integrated into `main` and must not be used as a base.
+The pre-019A `plan/020-situm-static-directions` branch is superseded as an execution base. Keep it only as historical evidence; do not merge/cherry-pick it into 019A. After 019A completes, Plan 020 starts from the exact final Plan 019A HEAD.
 
-Read `.agents/state.md` for the exact branch chain, ClickHouse boundary, completed/unresolved capability truth, and next action.
+Implementation/testing for each implementation phase remains delegated specifically to the configured `worker` subagent. The parent owns review, state/plan/session persistence, commits, pushes, and phase transitions. No PR or merge during this stacked run.
+
+Read `.agents/state.md` for the exact current truth, evidence boundaries, branch chain, and next action.
