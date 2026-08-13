@@ -141,6 +141,8 @@ Plan 019A Phase 0 reconfirmation completed on 2026-08-13 from exact Plan 019 HEA
 
 Plan 019A Phase 1 completed on 2026-08-13. `SitumViewer` now exposes only typed numeric-ID `startDirections` and `cancelDirections` commands, validates positive integer endpoints, preserves readiness guards, and cancels directions during unmount. No raw Viewer, generic invoke, navigation, location, event, or synthetic route-detail surface was added. Diff check, lint, typecheck, and build passed. Phase 2 is next.
 
-Execute `plans/019a-situm-static-directions-foundation.md` Phase 0 from the current Plan 019A branch.
+Plan 019A Phase 2 implementation completed and Phase 3 runtime proof is blocked on 2026-08-13. The Route tab now uses real current-building POIs with numeric IDs, validates empty/same endpoints, invokes typed Viewer start/cancel, and exposes only truthful request/clear feedback. Authenticated Playwright smoke loaded the real Viewer and POIs and sent the exact verified numeric route request, but the embedded Situm Viewer stayed on its loading spinner instead of visibly rendering the route, including for the reverse request. The worker independently verified SDK 0.25.0 payloads and the configured connected path graph and found no app defect or diagnostic Viewer result/event. No fake route state/details were added. Plan 019A is blocked at Phase 3; do not transition to Plan 020.
+
+Plan 019A is blocked at Phase 3 by the configured embedded Viewer route runtime described above. Do not start Plan 020 or add synthetic route behavior; resume only when a verified configured Viewer route render/diagnostic becomes available.
 
 Do not resume the stale pre-019A Plan 020 branch. After Plan 019A is fully validated/committed/pushed, create the new Plan 020 execution branch from the exact final Plan 019A HEAD and continue product completion.

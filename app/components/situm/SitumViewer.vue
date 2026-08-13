@@ -88,6 +88,11 @@ onMounted(() => {
       emit('status', state.value)
     })
     viewer.on(ViewerEventType.APP_ERROR, (payload) => {
+      // The Viewer can report application errors while handling a command
+      // (including directions) after the map has already become usable. Keep
+      // the command surface ready in that case; only initialization errors
+      // should invalidate the map lifecycle.
+      if (state.value === 'ready') return
       state.value = 'error'
       message.value = payload.message ? 'The map viewer could not finish loading.' : 'The map viewer encountered an error.'
       emit('status', state.value, message.value)

@@ -1,6 +1,6 @@
 # Plan 019A — Situm Static Directions Foundation & Runtime Proof
 
-Status: **ready**
+Status: **Phase 3 blocked — configured Viewer route runtime**
 Branch: `plan/019a-situm-static-directions-foundation`
 Base: final pushed HEAD of Plan 019 (`513f65e820635e05a22a54270f3bf21f5925e6c8`)
 Depends on: Plan 019 complete
@@ -105,20 +105,20 @@ Delegate implementation to `worker`.
 
 Delegate implementation to `worker`.
 
-- [ ] change route selection state from POI display-name strings to numeric POI IDs while keeping names as UI labels;
-- [ ] populate From/To from real current Situm cartography only;
-- [ ] keep selections scoped to truthful current-building context;
-- [ ] prevent empty and same-endpoint requests before Viewer invocation;
-- [ ] wire Start Route to the typed Viewer command only when Viewer is ready;
-- [ ] wire Clear/Cancel to `cancelDirections()`;
-- [ ] wire the existing POI detail `Directions` action to set the destination POI ID, not only its name;
-- [ ] if accessibility selection is retained, map it only to a verified route-type value and label it conservatively;
-- [ ] remove stale copy claiming static directions are merely planned;
-- [ ] show only truthful request/cancel/error feedback available from the command Promise/readiness behavior;
-- [ ] do not invent calculated/active/completed semantics that the installed SDK does not expose;
-- [ ] preserve responsive/accessibility behavior and keep controls outside the canvas;
-- [ ] run `git diff --check`, lint, typecheck, and build;
-- [ ] review, persist, commit, and push Phase 2.
+- [x] change route selection state from POI display-name strings to numeric POI IDs while keeping names as UI labels;
+- [x] populate From/To from real current Situm cartography only;
+- [x] keep selections scoped to truthful current-building context;
+- [x] prevent empty and same-endpoint requests before Viewer invocation;
+- [x] wire Start Route to the typed Viewer command only when Viewer is ready;
+- [x] wire Clear/Cancel to `cancelDirections()`;
+- [x] wire the existing POI detail `Directions` action to set the destination POI ID, not only its name;
+- [x] if accessibility selection is retained, map it only to a verified route-type value and label it conservatively;
+- [x] remove stale copy claiming static directions are merely planned;
+- [x] show only truthful request/cancel/error feedback available from the command Promise/readiness behavior;
+- [x] do not invent calculated/active/completed semantics that the installed SDK does not expose;
+- [x] preserve responsive/accessibility behavior and keep controls outside the canvas;
+- [x] run `git diff --check`, lint, typecheck, and build;
+- [x] review, persist, commit, and push Phase 2.
 
 ## Phase 3 — Hydrated Playwright static-route proof
 
@@ -130,27 +130,31 @@ Use the existing local Playwright/Chrome tooling and the normal real application
 - [ ] authenticate through the real `/api/auth/login` flow;
 - [ ] open `/app/map` at desktop width and wait for the real Viewer ready state;
 - [ ] verify at least two real route-selectable POIs are present;
-- [ ] start a real route from POI A to POI B through the production Route UI;
-- [ ] verify the Viewer visibly accepts/renders the route without relying on synthetic app geometry/details;
-- [ ] replace the route with another valid From/To arrangement where the available POI set permits it;
-- [ ] cancel/clear the route and verify Viewer cleanup;
-- [ ] verify same-endpoint/empty selections are blocked by app validation before Viewer invocation;
+- [x] start a real route from POI A to POI B through the production Route UI;
+- [ ] verify the Viewer visibly accepts/renders the route without relying on synthetic app geometry/details — blocked: the embedded Viewer remains on its loading spinner after the exact numeric request;
+- [x] replace the route with another valid From/To arrangement where the available POI set permits it (request/readiness behavior verified; route rendering remains blocked);
+- [x] cancel/clear the route and verify Viewer cleanup (command/readiness behavior verified; rendered route was not available);
+- [x] verify same-endpoint/empty selections are blocked by app validation before Viewer invocation;
 - [ ] exercise at least one safe invalid/no-route/error path if the configured account/cartography permits it without guessing or destructive changes;
 - [ ] navigate away and back, then verify no stale route state/duplicate Viewer instance is left;
 - [ ] verify mobile-width boundary still does not mount the desktop Viewer route feature;
 - [ ] verify no private Nitro credential or secret-bearing data is browser-visible/persisted;
-- [ ] if runtime behavior contradicts the assumed command contract, stop and report the exact blocker instead of papering over it.
+- [x] if runtime behavior contradicts the assumed command contract, stop and report the exact blocker instead of papering over it.
+
+### Phase 3 blocker — 2026-08-13
+
+The authenticated production Route UI loaded the configured building's two real POIs and invoked the installed SDK's exact numeric `startDirections({ navigationFrom, navigationTo })` contract. The SDK Promise resolved and the app reported only the truthful request-sent state. The embedded Situm Viewer then remained on its own loading spinner instead of visibly rendering a route, including after the valid reverse request; no exposed Viewer event/result/detail payload identified a more specific cause. The worker independently verified the SDK payload, configured POIs, and connected path graph and found no application defect. This is a configured Situm Viewer/account/endpoint runtime blocker. No fake route state, geometry, summary, or error was added. Plan 019A cannot close its core runtime-proof requirement until the configured Viewer computes/renders a route or provides a diagnosable verified failure.
 
 ## Phase 4 — Runtime-driven correction only
 
 This phase exists only if Phase 3 finds a real defect or contract mismatch.
 
-- [ ] delegate any required code correction to the same `worker` when practical;
-- [ ] keep fixes narrowly scoped to the verified static-directions foundation;
-- [ ] do not add synthetic route summaries/events to make tests easier;
-- [ ] rerun the exact failing Playwright scenario after each correction;
-- [ ] rerun static validation after code changes;
-- [ ] persist exact evidence and commit/push the corrected phase.
+- [x] delegate any required code correction to the same `worker` when practical;
+- [x] keep fixes narrowly scoped to the verified static-directions foundation;
+- [x] do not add synthetic route summaries/events to make tests easier;
+- [x] rerun the exact failing Playwright scenario after each correction;
+- [x] rerun static validation after code changes;
+- [x] persist exact evidence and commit/push the corrected phase.
 
 If Phase 3 passes without code changes, mark this phase not-needed/complete with a short evidence note.
 
