@@ -147,4 +147,6 @@ Authenticated production-preview rerun initially reproduced a no-route result af
 
 Plan 019A is complete at its validated manual-acceptance result. Its final pushed HEAD must be the exact base for Plan 020. The stale pre-019A Plan 020 remote branch must not be reused; if replacing it requires a force-push or shared-history rewrite, stop and report that git blocker rather than rewriting it silently.
 
+Plan 019A final pushed HEAD after manual acceptance closeout and transition audit is `dee182c4005b75afdd57a845aa6ea525eaf3b06c`. The existing remote `plan/020-situm-static-directions` remains at stale pre-019A commit `c902e53` and is not an ancestor of that final HEAD. Creating the required Plan 020 branch under the existing name would require replacing the stale remote ref with a force-push/shared-history rewrite. Plan 020 is therefore blocked pending explicit authorization for that destructive ref replacement.
+
 Do not resume the stale pre-019A Plan 020 branch. After Plan 019A is fully validated/committed/pushed, create the new Plan 020 execution branch from the exact final Plan 019A HEAD and continue product completion.
