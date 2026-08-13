@@ -1,4 +1,4 @@
-# Plan 015 — Situm Organization, Users & Alarms Read Integration
+# Plan 015 — Situm Organization, Users, Groups & Alarms Read Integration
 
 Status: planned-later
 Branch: `plan/015-situm-organization-alarms-read-integration`
@@ -6,94 +6,82 @@ Depends on: Plan 014 complete, reviewed, and integrated into `main`
 
 ## Goal
 
-Replace remaining Organization/Users/Groups/Alarms dummy context with real Situm read data **only where those surfaces are still useful to the POC**, while preserving the accepted UI.
+Replace retained Organization/Users/Groups/Alarms fixtures with real Situm **read-only** data where those screens remain useful after Plan 010 pruning.
 
-Reuse the same single POC API key. It may have Read & Write permission, but this plan does not perform organization/user/alarm mutations.
+Do not turn the POC into an account-administration console.
 
 ## Required reading
 
 - `AGENTS.md`
 - `ARCHITECTURE.md`
-- `DESIGN.md`
-- `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
-- current canonical Organization/Users/Alarms/shared-detail reference areas
-- accepted Nuxt implementation
-- Plan 010 mapping notes and completed Plans 011–014
+- completed Plan 010 capability mapping
+- completed Plans 011–014
+- current Organization/Users/Alarms implementation
 - this plan
 
-## UI-preservation rule
+## Retained product boundary
 
-Real Situm metadata must map into the existing accepted UI contract. Do not broaden these pages into admin consoles because the API exposes additional fields/actions.
+Expected retained scope:
 
-Old selectors such as `#app-organization`, `#app-users`, `#app-alarms`, and `#detailDrawer` are only locator hints if they still exist in the current user-populated HTML.
+- current Situm organization summary using safe non-secret fields;
+- Users & Groups directory context, separate from Situm Explore application auth;
+- Alarms read-only list/filter/status.
 
-## Credential/data-path rules
+Plan 010 removes credential/key-detail product UI. Do not display API keys, permission secrets, or implementation credential cards.
 
-- Reuse `NUXT_PUBLIC_SITUM_API_KEY`.
-- Do not create another Situm key/env variable.
-- Never render/log/commit its value.
-- Use the data paths chosen by Plan 010.
-- Keep Situm organization identities separate from Situm Explore application auth/session users.
+No create/update/delete users/groups, no organization mutation, and no acknowledge/resolve/create alarm mutation unless a separate explicit future requirement is approved.
 
-## Phases
+## Credential/data path
 
-### Phase 1 — Revalidate mappings/value
+- All organization/user/group/alarm REST reads use authenticated Nitro routes and private server credential configuration.
+- Never expose the server credential or permission details to browser UI.
+- Keep Situm directory identities separate from the configured Situm Explore login/session identity.
+- No generic Situm admin proxy.
 
-- [ ] Re-read accepted Organization/Users/Alarms UI.
-- [ ] Revalidate current official read capabilities identified in Plan 010.
-- [ ] Confirm which of these surfaces still matter to the POC demo.
-- [ ] Explicitly mark any low-value/unsupported surface to remain dummy rather than creating unnecessary backend work.
+## Phase 1 — Revalidate value and contracts
 
-### Phase 2 — Organization
+- [ ] Confirm retained screens from Plan 010.
+- [ ] Verify exact current read endpoints and minimal UI fields.
+- [ ] Drop any field/panel with no useful real mapping rather than keeping a fixture.
 
-- [ ] Replace synthetic organization summary only with safe fields required by accepted UI.
-- [ ] Preserve current composition.
-- [ ] Permission/status wording must remain truthful to the POC (`Read & Write (POC)` or neutral configured wording when shown), never stale `Only Read` copy.
-- [ ] Never expose credential/private configuration values.
+## Phase 2 — Organization
 
-### Phase 3 — Users & Groups
+- [ ] Replace synthetic organization summary with real safe fields.
+- [ ] Remove stale POC credential-boundary copy if still present.
+- [ ] Add truthful loading/empty/error handling.
 
-- [ ] Replace dummy directory/group data only if it still adds POC value.
-- [ ] Preserve accepted table/group/detail hierarchy.
-- [ ] Keep app auth identity conceptually and technically separate.
-- [ ] No create/update/delete membership/user operation.
+## Phase 3 — Users & Groups
 
-### Phase 4 — Alarms
+- [ ] Replace directory/group fixtures if retained by Plan 010.
+- [ ] Preserve read-only table/detail hierarchy.
+- [ ] Do not conflate Situm users with app login users.
 
-- [ ] Replace dummy alarm rows/status only if supported and valuable.
-- [ ] Preserve accepted filters/table/status treatment.
-- [ ] No acknowledge/resolve/create mutation.
-- [ ] Real empty/error states must not silently fall back to dummy success rows.
+## Phase 4 — Alarms
 
-### Phase 5 — Final read-integration cleanup
-
-- [ ] Remove only fixtures replaced by real data.
-- [ ] Keep intentionally dummy/unsupported actions clearly local in source.
-- [ ] Verify all integrations still follow `ARCHITECTURE.md` and share the same POC credential contract.
-- [ ] Do not create a mutation plan automatically; only add one if the user still wants specific real write actions.
+- [ ] Replace alarm fixtures with real read/status data.
+- [ ] Preserve read-only filters/status treatment.
+- [ ] Do not add mobile-side alarm triggers or mutation controls.
 
 ## Validation
 
-- [ ] Plan 014 is integrated in main before branch creation.
-- [ ] accepted UI composition remains stable.
-- [ ] no organization/user/alarm mutation occurs.
-- [ ] no credential leakage.
-- [ ] loading/empty/error states are truthful.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
-- [ ] manual API smoke for integrated domains.
-- [ ] update plan + `.agents/`, commit/push phases.
-- [ ] no PR until authorized.
+- [ ] no organization/user/group/alarm mutation;
+- [ ] no credential/key UI;
+- [ ] no public REST credential;
+- [ ] no silent fake fallback rows;
+- [ ] `git diff --check`;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] `npm run build`;
+- [ ] manual API smoke;
+- [ ] update plan + `.agents/`, commit/push;
+- [ ] no PR until user authorization.
 
 ## Non-goals
 
 - Situm user administration;
-- app account management;
+- app account registration/management;
 - alarm acknowledgement/resolution;
 - API-key management UI;
-- new credential architecture;
-- new application DB tables;
-- automatic write-feature expansion merely because the POC key has Read & Write permission.
+- native/mobile alarm behavior;
+- new application DB tables.

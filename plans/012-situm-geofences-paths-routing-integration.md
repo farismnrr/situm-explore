@@ -1,4 +1,4 @@
-# Plan 012 — Situm Geofences, Paths & Routing Integration
+# Plan 012 — Situm Geofences, Paths & Static Routing Integration
 
 Status: planned-later
 Branch: `plan/012-situm-geofences-paths-routing-integration`
@@ -6,86 +6,90 @@ Depends on: Plan 011 complete, reviewed, and integrated into `main`
 
 ## Goal
 
-Replace selected Geofence/Path dummy data and wire real supported routing behavior where useful, while preserving the accepted UI and using the same single POC Situm credential.
-
-The POC key may have Read & Write permission, but this plan does not perform cartography mutations.
+Replace retained Geofence/Path fixtures and wire **web-safe static directions/routing** only. Device-positioning navigation belongs to a future native roadmap, not this web plan.
 
 ## Required reading
 
 - `AGENTS.md`
 - `ARCHITECTURE.md`
-- `DESIGN.md`
-- `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
-- current canonical HTML reference areas for Geofences, Paths, and Map Route/Layers
-- accepted Nuxt implementation
-- Plan 010 mapping notes and completed Plan 011 integration
+- completed Plan 010 capability mapping
+- completed Plan 011
+- current Geofences/Paths/Map implementation
 - this plan
 
-## UI-preservation rule
+## Web/native boundary
 
-Real capability wiring must fit the accepted Geofences, Paths, and Map workspace composition. Extra Situm fields/capabilities do not automatically become product UI.
+Web may support:
 
-If old prototype IDs such as `#app-geofences`, `#app-paths`, or `#mapTab-route` no longer exist, locate the corresponding current HTML area semantically.
+- geofence definitions/metadata;
+- path metadata;
+- route constraints/options verified by Plan 010;
+- static route/directions between known points/POIs;
+- Viewer-rendered route presentation.
 
-## Credential/data-path rules
+Web must not claim:
 
-- Reuse `NUXT_PUBLIC_SITUM_API_KEY`; no second credential/env variable.
-- Never log/render/commit its value.
-- Use the data/access paths chosen in Plan 010.
-- Keep server integration under `server/integrations/situm/` only when a Nitro REST path is actually needed.
-- No DB persistence/cache for POC routing/cartography data.
+- indoor `My location` from browser sensors;
+- continuous blue-dot positioning;
+- walking turn-by-turn based on handset motion;
+- automatic rerouting as the handset moves;
+- custom positioning engine.
 
-## Phases
+Do not restore native-only controls removed in Plan 010.
 
-### Phase 1 — Revalidate capability mapping
+## Credential/data path
 
-- [ ] Re-read accepted UI/reference areas.
-- [ ] Verify current official geofence/path/directions/viewer contracts from Plan 010.
-- [ ] Confirm required fields and actual accessible-route capability.
-- [ ] Use safe read probes only for feasibility confirmation.
+- Geofence/path REST reads use the private authenticated Nitro path frozen by Plan 010.
+- Viewer static directions use the single browser Viewer integration with accepted browser auth.
+- Never expose the server Situm credential to browser code.
+- No DB routing cache and no custom routing service/algorithm.
 
-### Phase 2 — Geofences
+## Phase 1 — Revalidate contracts
 
-- [ ] Replace only geofence records supported by real data.
-- [ ] Map payloads to existing UI types.
-- [ ] Preserve accepted list/table/detail/loading/empty/error states.
-- [ ] Keep report-derived stay/session metrics dummy unless Plan 014 later replaces them with real report data.
-- [ ] Connect map overlay/context only where supported cleanly.
+- [ ] Confirm exact geofence/path endpoints and required fields.
+- [ ] Confirm exact static directions payload and accessibility/tag constraints available in the installed/current Viewer SDK.
+- [ ] Confirm UI no longer offers browser self-positioning semantics.
 
-### Phase 3 — Paths
+## Phase 2 — Geofences
 
-- [ ] Replace useful path metadata/summaries where the API provides them.
-- [ ] Keep unsupported visual path-preview details dummy rather than building a custom routing model.
-- [ ] Do not mutate paths/cartography.
+- [ ] Replace geofence fixture definitions with real reads.
+- [ ] Preserve list/detail/map context.
+- [ ] Keep stay/session report metrics out of this phase; Plan 014 owns report-derived values.
+- [ ] Add truthful loading/empty/error states.
 
-### Phase 4 — Routing/Viewer behavior
+## Phase 3 — Paths
 
-- [ ] Wire real directions/navigation only when official Viewer/API support cleanly matches the accepted Start/Destination flow.
-- [ ] Keep accessibility option truthful to actual supported route constraints.
-- [ ] If a route detail shown by the UI cannot come from real capability, clearly keep that specific detail dummy/local in source rather than fabricating API data.
-- [ ] No custom routing engine/server algorithm.
+- [ ] Replace useful path metadata with real data where the retained UI needs it.
+- [ ] Do not recreate a synthetic/custom path map merely to match the old fixture canvas.
+- [ ] Prefer the real Viewer for visual route/map presentation.
 
-### Phase 5 — Validation
+## Phase 4 — Static directions
 
-- [ ] Plan 011 is integrated in main before this branch starts.
-- [ ] accepted Geofence/Paths/Map composition is preserved.
-- [ ] loading/empty/error states are truthful.
-- [ ] no cartography mutation request.
-- [ ] no credential leakage.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
-- [ ] manual API/viewer smoke.
-- [ ] update plan + `.agents/`, commit/push phases.
-- [ ] no PR until authorized.
+- [ ] Wire retained Start/Destination flow to real Viewer static directions.
+- [ ] Remove hard-coded duration/step output unless an exact supported real source was mapped by Plan 010.
+- [ ] Keep accessible/excluded-tag controls only when verified and mapped.
+- [ ] Use wording such as `Show route` / `Directions`; do not imply live handset navigation.
+
+## Validation
+
+- [ ] no native-positioning claim remains in web;
+- [ ] no custom routing engine;
+- [ ] no cartography mutation;
+- [ ] no public REST credential;
+- [ ] `git diff --check`;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] `npm run build`;
+- [ ] manual geofence/path/static-route smoke;
+- [ ] update plan + `.agents/`, commit/push;
+- [ ] no PR until user authorization.
 
 ## Non-goals
 
-- editing POIs/geofences/paths;
-- new credential architecture;
-- custom routing engine;
+- POI/building writes;
+- live device navigation;
+- native/mobile SDK integration;
 - route persistence;
 - realtime;
-- reports integration.
+- reports.

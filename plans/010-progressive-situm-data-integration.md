@@ -1,187 +1,196 @@
-# Plan 010 — Situm Integration Feasibility & Contract Mapping
+# Plan 010 — Web Capability Pruning & Situm Integration Contract
 
-Status: **planned-ready**
+Status: **in-progress-planning**
 Branch: `plan/010-progressive-situm-data-integration`
-Depends on: Plans 009A and 009B closed, the user's final manually corrected UI explicitly accepted, and the cumulative UI baseline integrated into `main`
+Depends on: accepted cumulative UI integrated into `main`
 
 ## Goal
 
-Prepare later Situm backend/data integration work **without replacing any UI dummy dataset yet**.
+Before real backend/data integration, turn the accepted UI prototype into a truthful **web product contract**.
 
-Plan 010 is feasibility/contract-mapping only. Plans 011–015 own real read/data domains; Plan 016 conditionally owns any remaining accepted Viewer/settings/write actions that still need to become real. This prevents duplicate or ownerless implementation during sequential execution.
+Plan 010 now owns three things:
 
-## UI gate status
+1. classify every current UI capability as web-supported, native-only, product-owned, or unsupported/low-value;
+2. remove misleading native-only/fake/unsupported Situm-domain UI before backend work;
+3. freeze the credential, data-path, and later-plan ownership contract for every surviving capability.
 
-The UI gate is satisfied and the accepted cumulative UI is integrated into `main` through integration PR #6.
+This replaces the older rule that every manually accepted UI control must be preserved. The visual baseline remains valuable, but unsupported or misleading product behavior must not survive merely for fidelity.
 
-Current integration baseline at the time this plan was updated:
+## Core classification
 
-`873253075dfbb79410d4f3c94865759ccac43a02`
+Every current screen/control must end Plan 010 in exactly one class:
 
-Before creating the Plan 010 branch, perform only the normal baseline preflight:
+- **WEB / SITUM** — real Situm REST or JS Viewer capability exists and is useful to this product;
+- **WEB / PRODUCT** — app-owned behavior such as login, navigation, search, theme, session UI;
+- **NATIVE-ONLY** — requires device positioning/sensors or mobile runtime semantics; remove from web and record for a possible future native roadmap;
+- **REMOVE** — no credible Situm backing, fake demo behavior, redundant custom visualization, or low-value capability outside the POC.
 
-1. fetch the latest `main`;
-2. confirm `main` still contains the accepted UI baseline and has no unexpected integration blocker;
-3. create `plan/010-progressive-situm-data-integration` from current `main`.
+For a Situm-domain control, `remain dummy forever` is no longer a valid default. It must either get a real later owner or be removed.
 
-Do not reopen 009B/009C as a prerequisite and do not branch Plan 010 from historical 009A/009B branches now that the cumulative UI has been integrated.
+## Current high-confidence web contract
 
-## Hard boundary
+Keep as web surfaces, subject to exact field/action verification:
 
-During Plan 010:
+- Landing and Login;
+- Home and Dashboard using real aggregate data only;
+- Map Viewer;
+- Buildings & Floors;
+- POIs/Categories;
+- Geofences;
+- Paths metadata and static routing/directions;
+- Realtime monitoring;
+- Analytics & Reports;
+- Alarms read-only;
+- Users & Groups read-only;
+- Organization read-only;
+- Viewer Settings only for verified web-safe Viewer/config capabilities.
 
-- do not replace dummy datasets;
-- do not redesign the accepted UI;
-- do not introduce remote write actions;
-- do not create broad backend infrastructure merely for future plans.
+## Current prune candidates
 
-## Required reading
+Unless Phase 1 finds a concrete verified web/product reason to retain them, remove:
 
-- `AGENTS.md`
-- `ARCHITECTURE.md`
-- `DESIGN.md`
-- `design/IMPLEMENTATION.md`
-- `design/data-source-matrix.md`
-- current accepted Nuxt UI implementation on `main`
-- populated canonical HTML reference as historical/reference context where still useful
-- closed Plans 009A and 009B
-- Plans 011–016 so feasibility decisions match later scopes
-- this plan
+- dummy `/register` flow;
+- global fake `Sync` action;
+- route origin `My location` when it implies browser indoor positioning;
+- dynamic/self-position turn-by-turn navigation or rerouting;
+- end-user `Set user location` developer control;
+- save-car / navigate-to-car UI for this POC;
+- current remote-person `Follow user` semantics unless an exact supported mapping is verified;
+- `Select flight` because this product has no flight domain;
+- hard-coded route duration/steps when Situm Viewer should own the real route presentation;
+- custom fake path-network canvas when no real product need justifies a second map renderer;
+- generic Images inventory tab without a real list/read contract;
+- invented Map Style cards if no useful real read/list contract is verified;
+- organization credential/key-detail card;
+- unsourced Recent Activity feed;
+- unsourced capacity percentages;
+- any other Situm-domain metric/control with no exact source or method.
 
-## UI-preservation rule
+## Native boundary
 
-For every candidate dataset/action inspect:
+Do not build a native app in Plan 010.
 
-1. the final manually accepted Nuxt route/components/types on current `main`;
-2. corresponding current local fixture/action contract;
-3. canonical HTML only as secondary reference when it still agrees with the accepted manual UI.
+Record future-native concerns only:
 
-Later Situm payloads/capabilities are adapted into the accepted UI contract; external API shape does not redesign the product.
+- indoor positioning/bluedot generated from device sensors;
+- permission handling for positioning;
+- device-motion-aware turn-by-turn navigation and rerouting;
+- current-location wayfinding that depends on the handset's actual indoor position;
+- mobile-specific positioning/alarm behavior.
 
-## POC credential and server-security contract
+Web may consume realtime positions produced by devices; it must not pretend the browser itself is performing Situm indoor positioning.
 
-Current environment contract:
+## Credential and security contract
 
-```text
-NUXT_PUBLIC_SITUM_API_KEY
-NUXT_PUBLIC_SITUM_BUILDING_ID
-```
+Current code still contains the historical POC browser credential path. Treat it as **legacy to be constrained/migrated**, not the backend architecture.
 
-The time-boxed POC uses one Situm key and the user may provision it with Read & Write permission for speed.
+Target rules:
 
-Rules:
+- Situm REST/data calls from the product go through authenticated Nitro routes when server-side data is required;
+- Nitro-side Situm credentials are private runtime configuration and never `public` runtime config;
+- every product Situm API route requires the existing Situm Explore session;
+- never build a generic unauthenticated Situm proxy;
+- do not expose a Read-Write server credential to browser code;
+- `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public because it is an identifier, not a secret;
+- browser Viewer authentication must use the smallest safe mechanism supported by the installed/current Situm SDK and official contract; verify JWT/token flow before changing implementation;
+- until that migration is implemented, the existing Viewer may remain operational, but its public credential must not be reused for new REST/domain integration.
 
-- reuse the same environment variable unless the user changes the decision;
-- never commit/render/log the key value;
-- do not create a second Situm key/env merely for architectural purity;
-- broader key permission does not mean every plan performs writes;
-- Plan 010 uses safe read/discovery probes only;
-- a real mutation requires an explicit later owner and an accepted UI action;
-- if a later domain uses Nitro/server API routes to expose Situm data to Vue, those routes must require the existing Situm Explore authenticated session (`requireUserSession` or equivalent current server guard);
-- client route middleware is not API security;
-- never create a generic unauthenticated Situm proxy.
+Plan 010 must record the exact final environment-variable/runtimeConfig contract before Plan 011 starts.
 
-## Phase 1 — Verify current local setup and accepted UI baseline
+## Architecture rule
 
-- [ ] Confirm Plans 009A and 009B are closed.
-- [ ] Record the exact current `main` HEAD used to create the Plan 010 branch.
-- [ ] Confirm ignored local `.env` has the POC key without printing it.
-- [ ] If building ID is missing, follow documented `/api/v1/buildings` discovery and write only selected ID to local `.env`.
-- [ ] Do not change environment naming.
-
-## Phase 2 — Official API/SDK capability inventory
-
-Using current official Situm docs and safe local read probes, map **every accepted non-static UI capability**, including:
-
-- Buildings/Floors/POIs/Categories;
-- Geofences/Paths/Routing;
-- Realtime positions and any device metadata required by the accepted Realtime UI;
-- Reports/Analytics;
-- Organization/Users/Groups/Alarms;
-- accepted Map Viewer tools represented in the final UI, such as POI selection/favorites, location picker, follow/trajectory/navigation, save-car/navigation-to-car, search/accessibility settings, or other tools actually present in the accepted UI;
-- Viewer/map configuration, styles, images, or other settings actually represented by the accepted Settings UI;
-- any accepted action that would require a remote mutation.
-
-For each capability record:
-
-- official endpoint/SDK method;
-- required permission;
-- fields/state required by accepted UI only;
-- browser Viewer vs authenticated Nitro/server access path;
-- read vs write behavior;
-- expected loading/empty/error behavior;
-- exact later plan owner;
-- explicit `remain dummy/local` decision when real integration is unsupported or not worth POC scope.
-
-Do not add product fields/actions merely because Situm exposes them.
-
-## Phase 3 — Decide one data path per domain
-
-Choose the smallest appropriate approach:
-
-- existing browser Viewer capability when behavior genuinely belongs to Viewer; or
-- a small authenticated Nitro/server integration when the app needs REST data.
-
-Rules:
-
-- do not implement browser + server paths for the same capability without concrete reason;
-- new server routes returning Situm organization/building/user/device/report data require the existing app session;
-- follow `ARCHITECTURE.md`;
-- do not create generic repository/service layers preemptively;
-- a small Situm request helper can be introduced by the first later plan that actually needs it.
-
-## Phase 4 — Assign every accepted capability an owner
-
-Required baseline ownership:
-
-- Plan 011 — Buildings/Floors/POIs/Categories;
-- Plan 012 — Geofences/Paths/Routing;
-- Plan 013 — Realtime positions **plus only device metadata needed by the accepted realtime experience**;
-- Plan 014 — Reports/Analytics;
-- Plan 015 — Organization/Users/Groups/Alarms;
-- Plan 016 — conditional remaining Viewer tools, Viewer settings/config/styles/images, favorites/local-to-real actions, and any accepted remote writes not owned above.
-
-For each accepted screen/control, record one of:
+Follow `ARCHITECTURE.md`:
 
 ```text
-real in Plan 011-016
-or
-intentionally remains local/dummy for POC
+Vue page/component
+  -> /api/situm/* when server data is needed
+      -> small server/integrations/situm/* helper
+          -> Situm REST
+
+SitumViewer.vue
+  -> browser Viewer SDK only for verified Viewer-owned behavior
 ```
 
-**No accepted interactive control may leave Plan 010 with ambiguous ownership.**
+No generic repository layer, no generic `SitumService`, no Pinia requirement, no cache/database/background job without a concrete need.
 
-Do not delete/replace fixtures in Plan 010.
+`SitumViewer.vue` should remain the single owner of the real Viewer instance. Later implementation may expose a small typed command surface (`selectBuilding`, `selectFloor`, `selectPoi`, static directions, realtime/trajectory, location picker, etc.) instead of scattering SDK instances across pages.
 
-## Phase 5 — Plan 016 go/no-go decision
+## Phase 0 — Freeze source inventory
 
-- [ ] Identify accepted Viewer/settings/write actions still needing real integration after Plans 011–015.
-- [ ] Record the exact subset in Plan 016 before it is executed.
-- [ ] If none are needed, mark Plan 016 `skipped-not-needed` and do not create implementation work merely because the POC key can write.
-- [ ] If needed, keep Plan 016 narrow to those accepted actions only.
+- [ ] Record current `main` SHA used to create this branch.
+- [ ] Inventory every public/authenticated route, sidebar entry, major metric, Map action, and Settings control.
+- [ ] Read current Nuxt implementation first; prototype HTML is secondary historical visual evidence.
+- [ ] Update `design/data-source-matrix.md` as the canonical capability/source matrix.
 
-## Validation / completion
+## Phase 1 — Prune web-invalid UI
 
-- [ ] No accepted UI composition changed.
-- [ ] No dummy source replaced.
-- [ ] No remote mutation occurred.
-- [ ] No credential value committed/logged.
-- [ ] Every planned Nitro/server data route has an existing-session auth boundary in its later mapping.
-- [ ] Every accepted non-static capability has exactly one later owner or explicit `remain dummy/local` decision.
-- [ ] Devices needed by Realtime are assigned to Plan 013.
-- [ ] Remaining Viewer/settings/write actions are assigned to conditional Plan 016 or explicitly skipped.
-- [ ] Dependency/order is unambiguous.
-- [ ] `git diff --check` for docs/config changes.
-- [ ] Update `.agents/` and this plan.
-- [ ] Commit/push plan branch.
-- [ ] No PR until user authorization.
+- [ ] Remove confirmed native-only controls from web navigation/pages.
+- [ ] Remove fake demo flows/actions with no future product owner.
+- [ ] Remove unsupported/low-value Situm-domain panels and metrics.
+- [ ] Preserve visual composition where practical, but correctness outranks fidelity.
+- [ ] Do not replace surviving fixtures with real Situm data yet.
+- [ ] Do not add native implementation.
+
+## Phase 2 — Freeze credential boundary
+
+- [ ] Verify current official Situm auth contracts for REST and JS Viewer.
+- [ ] Define private Nitro credential/runtimeConfig naming.
+- [ ] Define safe browser Viewer auth path.
+- [ ] Mark `NUXT_PUBLIC_SITUM_API_KEY` as legacy/retirement path if it is no longer required after Viewer auth migration.
+- [ ] Confirm no future Plan 011–016 instruction requires exposing a server credential.
+
+## Phase 3 — Exact capability mapping
+
+For every surviving Situm-domain UI field/action record:
+
+- route/screen;
+- UI field/action;
+- exact REST endpoint or Viewer SDK method;
+- read/write;
+- browser Viewer vs authenticated Nitro;
+- minimal response fields needed;
+- loading/empty/error semantics;
+- later plan owner.
+
+No ambiguous ownership may leave Plan 010.
+
+## Phase 4 — Later plan ownership
+
+- Plan 011 — Buildings/Floors/POIs/Categories and Map selection context.
+- Plan 012 — Geofences/Paths/static routing and route constraints.
+- Plan 013 — Realtime positions/device context and realtime Viewer overlay.
+- Plan 014 — Reports/Analytics and real CSV/report output.
+- Plan 015 — Organization/Users/Groups/Alarms read-only.
+- Plan 016 — only remaining verified **web-safe** Viewer/config/settings actions not already owned above; no native positioning work.
+
+If a retained Situm capability has no owner, fix the mapping before Plan 010 closes.
+
+## Phase 5 — Dead fixture/type cleanup
+
+- [ ] Remove fixtures/types used only by UI removed in Phase 1.
+- [ ] Keep fixtures needed by Plans 011–016 until their real integration replaces them.
+- [ ] Do not introduce fixture API routes or persistence.
+
+## Phase 6 — Validation and closeout
+
+- [ ] No web UI claims browser indoor positioning.
+- [ ] No retained Situm-domain control is permanently fake/ownerless.
+- [ ] No fake Register/Sync/unsourced business metric remains unless explicitly reclassified as product-owned with a real source.
+- [ ] Future plans use the new credential boundary.
+- [ ] Native-only features are documented but absent from web.
+- [ ] `git diff --check`.
+- [ ] `npm run lint` for code-changing pruning.
+- [ ] `npm run typecheck`.
+- [ ] `npm run build`.
+- [ ] update `.agents/state.md` and durable decisions.
+- [ ] commit/push branch.
+- [ ] no PR/merge until user authorization.
 
 ## Non-goals
 
-- actual domain data replacement;
-- UI redesign;
-- new DB tables;
-- background workers/queues;
-- credential split;
-- remote Situm writes;
-- unauthenticated Situm proxy endpoints.
+- replacing domain fixtures with real Situm data;
+- native/mobile implementation;
+- new application DB tables;
+- background sync/workers;
+- broad admin/write console;
+- UI redesign unrelated to pruning truthfulness.
