@@ -43,20 +43,28 @@ complete Plan N
 -> validate + update plan/.agents
 -> commit + push Plan N
 -> take Plan N final HEAD
--> create/continue Plan N+1 from that HEAD
+-> create/continue the next plan from that HEAD
 ```
 
 Do not branch a stacked dependent plan from stale `main` and do not merge/cherry-pick merely to simulate the stack.
 
 ## Current roadmap state
 
-Plans 010–016 already completed their explicit stacked implementation pass. The cumulative current branch is:
+Plans 010–016 already completed their explicit stacked implementation pass.
 
-`plan/016-situm-viewer-settings-integration`
+The active closeout/hardening follow-up is:
 
-Do **not** replay Plans 010–016.
+`plans/016a-situm-credential-split-runtime-verification.md`
 
-Current outcome is intentionally mixed:
+Branch:
+
+`plan/016a-situm-credential-split-runtime-verification`
+
+Plan 016A continues the cumulative Plan 016 lineage. It owns only credential split, environment-contract cleanup, runtime verification of already implemented Situm paths, and evidence capture for unresolved REST domains.
+
+Do **not** replay Plans 010–016. Do **not** execute the old `plans/017-situm-credential-split-runtime-verification.md` draft; that naming was superseded by Plan 016A. Plan 017 remains available for future substantive feature scope.
+
+Current outcome before 016A is intentionally mixed:
 
 - implemented where exact evidence existed;
 - skipped/unresolved where exact contract/runtime evidence was insufficient;
@@ -80,7 +88,9 @@ Do not treat lack of an `@situm/sdk-js` wrapper as proof the Situm REST API lack
 
 Follow `ARCHITECTURE.md` and keep implementation small:
 
-- private Situm server credentials stay in Nitro runtime config;
+- browser Viewer credential is separate from private Nitro credentials;
+- current/future Nitro reads use the private read-only credential;
+- write credential remains private and unused unless an approved mutation requires it;
 - protected product `/api/situm/*` routes require the app session;
 - no generic unauthenticated Situm proxy;
 - no speculative services/repositories/stores/caches/workers;
