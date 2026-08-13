@@ -6,24 +6,73 @@ _Last reviewed: 2026-08-13_
 
 The UI roadmap through Plan 009B and the Situm backend/web roadmap Plans 010–016A are complete and integrated into `main`.
 
-PR #8 merged the cumulative Plans 010–016A lineage. `main` is the canonical branch. There is no active implementation plan or required plan branch.
+The user's manual UI refinement pass is also integrated into `main` through PRs #10 and #11. Treat updated `main` (including those refinements) as the product/code baseline. The abandoned `chore/ui-refine-login-map-feedback` branch is superseded and must not be used as a base or source of truth.
 
-Do not restart Plans 010–016A, recreate their historical branches, or execute the superseded Plan 017 credential-split draft as a separate roadmap step.
+A new substantive roadmap is prepared on `roadmap/017-020-next-features`:
 
-## Completed roadmap result
+- Plan 017 — Situm Analytics & Reports with the user's existing local ClickHouse instance;
+- Plan 018 — Situm Groups & Alarms read-only integration;
+- Plan 019 — Situm realtime Viewer overlay + conditional trajectory;
+- Plan 020 — Situm static directions between known points/POIs.
+
+Plan 017 is the next active/ready plan. Plans 018–020 are queued.
+
+## Explicit stacked execution authorization — Plans 017–020
+
+The user explicitly authorized one uninterrupted stacked execution for Plans 017→018→019→020.
+
+Branch chain:
+
+```text
+roadmap/017-020-next-features
+-> plan/017-situm-analytics-clickhouse
+-> plan/018-situm-groups-alarms-read
+-> plan/019-situm-realtime-viewer-trajectory
+-> plan/020-situm-static-directions
+```
+
+Rules for this stack:
+
+- create Plan 017 from the final HEAD of `roadmap/017-020-next-features`;
+- after each plan is fully validated, persisted, committed, and pushed, create the next plan branch from that plan's final HEAD;
+- do not branch Plans 018–020 from stale `main`;
+- do not merge/cherry-pick merely to simulate the stack;
+- do not create a PR and do not merge during this execution;
+- implementation for every phase is delegated specifically to the configured `worker` subagent; the parent agent owns orchestration, review, plan/state updates, commits, pushes, and phase/plan transitions;
+- if the configured `worker` profile cannot be spawned, stop and report that blocker instead of silently substituting another agent/model;
+- otherwise proceed through all phases/plans without waiting for user confirmation between phases;
+- a material core blocker must be reported truthfully rather than guessed around; optional sub-capabilities explicitly marked conditional in a plan may remain unresolved without blocking completion of the verified core.
+
+## Plan 017 ClickHouse decision
+
+The user already has a local ClickHouse installation/instance on the laptop and explicitly wants Plan 017 to use it.
+
+Plan 017 rules:
+
+- reuse the existing local ClickHouse server;
+- do not provision/install another ClickHouse server and do not add Docker/Compose for it;
+- safely discover the actual local connection/config at runtime without printing or persisting secrets;
+- never ask the user to paste credentials into chat;
+- inspect existing databases/tables before creating app-owned objects and never alter/drop unrelated objects;
+- keep ClickHouse access Nitro/server-only;
+- use ClickHouse for Situm analytics/report persistence/querying while PostgreSQL/Drizzle remains the application relational store;
+- no background worker/queue/cron is required for this PoC; analytics ingestion is an explicit product sync operation.
+
+## Current Situm implementation baseline
 
 - Plan 010 — implementation/review complete; web/native/security/evidence boundary frozen.
 - Plan 011 — implementation complete: Buildings/Floors/POIs/Categories reads and map selection context.
-- Plan 012 — implementation complete for verified Geofences/Paths reads; static route-result/product mapping remains unresolved and absent.
-- Plan 013 — implementation complete for current-position monitoring; stale/offline semantics, Viewer realtime overlay, trajectory/follow remain unresolved and absent.
-- Plan 014 — skipped-unresolved; report paths/purpose now have partial evidence, but exact implementation contract remains insufficient.
-- Plan 015 — implementation complete for Organization + Users reads; Groups + Alarms remain unresolved/absent pending exact REST evidence.
+- Plan 012 — implementation complete for verified Geofences/Paths reads; static directions were previously unresolved and now belong to Plan 020 evidence/runtime verification.
+- Plan 013 — implementation complete for current-position monitoring; Viewer realtime overlay/trajectory were previously unresolved and now belong to Plan 019 evidence/runtime verification.
+- Plan 014 — skipped-unresolved historically; official report surface is now sufficiently concrete to justify Plan 017, but exact consumed fields/filters/runtime behavior must still be re-verified before coding.
+- Plan 015 — implementation complete for Organization + Users reads; Groups + Alarms now belong to Plan 018 exact-contract/runtime verification.
 - Plan 016 — implementation complete for verified Viewer language, font-size, accessibility-panel, and location-picker commands.
 - Plan 016A — complete: final Situm credential contract, environment/config cleanup, Nuxt 4 tsconfig cleanup, static/security validation, and live runtime smoke for implemented Situm server reads.
+- PRs #10/#11 — current UI refinement baseline integrated into `main`, including the revised auth/map/settings/home/mobile behavior.
 
 ## Final Situm credential contract
 
-Exactly two Situm keys are intentional:
+Exactly two Situm keys remain intentional:
 
 - `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only.
 - `NUXT_SITUM_API_KEY` — single private Nitro credential for all server-side Situm operations.
@@ -31,46 +80,22 @@ Exactly two Situm keys are intentional:
 
 Do not reintroduce separate private read/write keys unless a future concrete requirement justifies that complexity.
 
-All current Nitro Situm operations use the private `NUXT_SITUM_API_KEY`. `/api/situm/status` reports server and Viewer configuration separately without exposing values. The private key must never enter browser/public runtime config, client bundles, logs, docs, or error payloads.
+All Nitro Situm operations use the private `NUXT_SITUM_API_KEY`. The private key must never enter browser/public runtime config, client bundles, logs, docs, or error payloads.
 
-`NUXT_PUBLIC_APP_URL` and `DB_SCHEMA` are not part of the current runtime contract.
-
-## Validation truth
-
-Plan 016A closeout passed:
-
-- `git diff --check`;
-- `npm run lint`;
-- `npm run typecheck`;
-- `npm run build`;
-- client-bundle/private-credential leakage checks;
-- unauthorized and missing/invalid credential behavior checks;
-- real authenticated Situm success-path smoke for cartography, geofences, paths, realtime positions, organization, and users;
-- truthful empty/error handling where applicable.
-
-Runtime Situm smoke is complete for the implemented server read paths using configured credentials. No private Situm credential leakage was observed in API responses, logs, or built public client assets.
-
-The retained Plan 016 Viewer command surface remains bounded by its verified Viewer contract. Full browser automation of every hydrated interaction was not required for Plan 016A closeout.
-
-## Evidence-gated follow-up gaps
-
-The following remain intentionally absent rather than faked:
-
-- full Reports/Analytics/CSV implementation;
-- Groups read integration;
-- Alarms read integration;
-- static route-result/details/constraints presentation;
-- realtime stale/offline semantics and Viewer overlay;
-- trajectory/follow semantics;
-- unverified generic Viewer config/settings operations.
-
-Reports, Groups, and Alarms may become Plan 017 or later only if exact official contracts and a concrete product scope justify implementation.
-
-## No-hallucination rule
+## Evidence gate
 
 For Situm behavior: **no evidence, no implementation**.
 
-Before adding a missing capability, verify exact official endpoint/SDK method, auth/permission, request parameters, response/event fields, web/native ownership, and relevant failure/empty/stale semantics. If material evidence is missing, keep it unresolved/absent rather than inventing behavior.
+Before adding a capability, verify the exact current official endpoint/SDK method, installed SDK compatibility where relevant, auth/permission, request parameters, consumed response/event fields, web/native ownership, browser/server ownership, and relevant failure/empty/stale semantics.
+
+Current official evidence indicates:
+
+- Situm Reports exposes multiple JSON/CSV analytics families suitable for Plan 017;
+- Groups/Alarms exist in Situm REST but Plan 018 still must freeze the exact list/detail/filter/relationship contracts actually consumed;
+- Viewer JS exposes realtime/trajectory methods suitable for Plan 019, subject to installed-version/runtime smoke;
+- Viewer JS exposes static directions methods suitable for Plan 020, subject to installed-version/runtime smoke.
+
+If a material contract remains unverified, keep that exact sub-capability unresolved/absent rather than inventing behavior.
 
 ## Web/native boundary
 
@@ -83,18 +108,23 @@ Native-only scope remains outside this roadmap:
 - movement-aware live turn-by-turn navigation/rerouting;
 - other mobile-runtime positioning behavior.
 
-Web may consume positions produced by devices; it must not pretend the browser performs Situm indoor positioning.
+Plan 019 may visualize device-produced realtime positions through the Viewer. Plan 020 is static directions only and must not introduce `My location` or live navigation semantics.
 
-## Git / integration truth
+## Validation baseline
 
-Plans 010–016 and 016A were executed as one cumulative stacked lineage and integrated into `main` through PR #8.
+Current repository validation commands remain:
 
-Historical plan branches no longer own current authority. They may be deleted after integration because their work is contained in `main`; the plan files and Git commit history remain the historical record.
+- `git diff --check`;
+- `npm run lint`;
+- `npm run typecheck`;
+- `npm run build`.
 
-The old `plan/017-situm-credential-split-runtime-verification` branch/name is superseded and disposable.
+Each new plan adds its own live/runtime smoke requirements and must persist exact tested vs unresolved truth before completion.
 
 ## Next action
 
-No further Plan 016A work is required.
+Execute Plans 017→020 sequentially using the explicit stacked mode above.
 
-Keep `main` as the only canonical branch. Future substantive work should start from updated `main` on a newly scoped branch only when needed.
+Start by switching to `roadmap/017-020-next-features`, creating `plan/017-situm-analytics-clickhouse` from its final HEAD, and executing Plan 017 phase-by-phase with the configured `worker` subagent.
+
+Do not create a PR or merge during the run. After Plan 020 is fully complete, stop with a concise final summary and leave the final cumulative Plan 020 branch pushed for user review/integration.
