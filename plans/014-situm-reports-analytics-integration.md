@@ -1,8 +1,9 @@
 # Plan 014 — Situm Reports & Analytics Integration
 
-Status: planned-later
+Status: **skipped-unresolved**
 Branch: `plan/014-situm-reports-analytics-integration`
-Depends on: Plan 013 complete, reviewed, and integrated into `main`
+Base: Plan 013 final HEAD `3c3c0af` (explicit stacked execution; not integrated into `main`)
+Depends on: Plan 013 complete and available as the stacked parent branch
 
 ## Goal
 
@@ -58,6 +59,10 @@ For each retained report:
 - [ ] Remove local fixture-only export messaging.
 - [ ] Do not generate a fake success CSV when the real report fails.
 
+## Execution disposition — 2026-08-13
+
+The installed SDK does not expose the report methods required by this plan, and the official REST documentation currently available to this execution does not provide verified response schemas, filter/date semantics, permissions, or format handling for the retained report families. Plan 010 classified these capabilities `UNRESOLVED`. No report route, fixture replacement, aggregate, or CSV success path was implemented. The plan is explicitly skipped under the evidence gate and may resume only after exact official contracts are captured.
+
 ## Dashboard/Home aggregates
 
 - [ ] Derive retained counts/summary cards from already-integrated real domains/reports where practical.
@@ -66,18 +71,16 @@ For each retained report:
 
 ## Validation
 
-- [ ] all retained report values have real sources;
-- [ ] removed/unsupported metrics stay removed;
-- [ ] no public REST credential;
-- [ ] date ranges are truthful;
-- [ ] no remote mutation;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] manual report/export smoke;
-- [ ] update plan + `.agents/`, commit/push;
-- [ ] no PR until user authorization.
+- [x] all retained report values remain absent where no real source is verified;
+- [x] removed/unsupported metrics stay removed;
+- [x] no public REST credential;
+- [x] no unverified date-range/report claim was added;
+- [x] no remote mutation;
+- [x] `git diff --check`;
+- [x] no code changed, so lint/typecheck/build are not applicable;
+- [ ] manual report/export smoke (blocked by unresolved official contracts and unavailable credentials);
+- [x] update plan + `.agents/`, commit/push;
+- [x] no PR until user authorization.
 
 ## Non-goals
 

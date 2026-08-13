@@ -14,7 +14,7 @@ Branch base:
 
 `main` at `170110c1d60c32600e1641a0f89cc53823bba9cc`
 
-Plan 010 implementation and post-completion review are complete at `657fb0f`. Plan 011 is complete at `138d5db`; Plan 012 is complete at `94c1247`; Plan 013 is complete at the current stacked child HEAD with authenticated current-position reads. Stale/offline cadence, trajectory and Viewer overlay semantics remain unresolved and absent.
+Plan 010 implementation and post-completion review are complete at `657fb0f`. Plan 011 is complete at `138d5db`; Plan 012 at `94c1247`; Plan 013 at `3c3c0af`; Plan 014 is explicitly skipped-unresolved because report schemas, filters, permissions and formats were not verified.
 
 ## Historical UI state
 
@@ -128,4 +128,4 @@ Native positioning is outside Plans 010–016.
 
 ## Next action
 
-Continue with Plan 014 from the final Plan 013 HEAD. Reports remain evidence-gated; do not invent response schemas or filters. Continue the explicit stacked sequence through Plan 016 without merging or opening a PR.
+Continue with Plan 015 from the final Plan 014 HEAD. Implement only safe organization/users reads with exact SDK evidence; keep groups/alarms unresolved if direct REST contracts remain incomplete. Continue the explicit stacked sequence through Plan 016 without merging or opening a PR.
