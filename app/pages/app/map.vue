@@ -42,6 +42,14 @@ watch([buildings, activeFloors], () => {
   if (!activeFloors.value.some(floor => floor.id === selectedFloorId.value)) selectedFloorId.value = activeFloors.value[0]?.id ?? null
 }, { immediate: true })
 
+watch(activeBuilding, (building, previousBuilding) => {
+  if (building?.id === previousBuilding?.id) return
+  routeStart.value = undefined
+  routeDestination.value = undefined
+  routeRequested.value = false
+  routeFeedback.value = ''
+})
+
 const routePois = computed(() => pois.value.filter(poi => poi.buildingId === activeBuilding.value?.id))
 const routeOptions = computed(() => routePois.value.map(poi => ({ label: poi.name, value: poi.id })))
 
@@ -81,6 +89,14 @@ async function startRoute() {
   }
   if (routeStart.value === routeDestination.value) {
     routeFeedback.value = 'Choose different start and destination POIs.'
+    return
+  }
+  const routePoiIds = new Set(routePois.value.map(poi => poi.id))
+  if (!routePoiIds.has(routeStart.value) || !routePoiIds.has(routeDestination.value)) {
+    routeStart.value = undefined
+    routeDestination.value = undefined
+    routeRequested.value = false
+    routeFeedback.value = 'Select route POIs from the active building.'
     return
   }
 
