@@ -15,21 +15,21 @@ Required configuration for the **current baseline**:
 - `NUXT_SESSION_PASSWORD`: at least 32 characters; used by `nuxt-auth-utils` for sealed sessions.
 - `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`: configured-owner login credential.
 - `DATABASE_URL`: shared PostgreSQL instance; the application-owned schema is `situm_explore`.
-- `NUXT_PUBLIC_SITUM_API_KEY`: browser-visible Map Viewer credential only. Current `SitumViewer` still requires it; use the minimum Situm role that supports Viewer behavior and never reuse it as a server REST credential.
-- `NUXT_SITUM_API_KEY`: private Nitro credential for all Situm server operations. Recommended Situm role: based on needed scope. Must never enter browser runtime config or client bundles.
+- `NUXT_PUBLIC_SITUM_API_KEY`: browser-visible Map Viewer credential only. Use the minimum Situm role that supports retained Viewer behavior and never reuse it as the server REST credential.
+- `NUXT_SITUM_API_KEY`: single private Nitro credential for all server-side Situm operations. It must never enter browser runtime config or client bundles.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID`: building loaded by the current Map Viewer. This is an identifier, not a secret.
+
+The final Situm credential model intentionally uses exactly **two Situm keys**: one public Viewer key and one private Nitro key. Do not introduce separate private read/write keys without a concrete future requirement.
 
 ## Current status
 
-Plan 016A enforces exactly 2 Situm keys: `NUXT_SITUM_API_KEY` for any private Nitro operations, and the browser Map Viewer keeps its own separate `NUXT_PUBLIC_SITUM_API_KEY`. `/api/situm/status` reports `serverConfigured` and `viewerConfigured` separately without exposing values.
+Plans 010–016 plus Plan 016A are complete on the cumulative branch `plan/016a-situm-credential-split-runtime-verification`.
 
-### Discover the Situm building ID during the current legacy setup
+Plan 016A completed the final credential/config boundary, Nuxt 4 TypeScript configuration cleanup, static/security validation, and live runtime smoke for the implemented Situm server read paths. `/api/situm/status` reports server and Viewer configuration separately without exposing credential values.
 
-If local `.env` contains the legacy Viewer key but `NUXT_PUBLIC_SITUM_BUILDING_ID` is blank, an operator may discover accessible buildings as a local/server-side setup step using Situm's REST API, then write only the selected building ID to ignored `.env`. This is not a browser feature and does not authorize a generic proxy.
+The cumulative branch is ready for user-gated PR review/integration into `main`.
 
 Do not commit `.env`, API keys, JWTs, or credential-bearing command output.
-
-This discovery step is setup for the existing Viewer only; it does not authorize application REST integrations from the browser.
 
 ## Database
 
@@ -39,29 +39,25 @@ Drizzle owns only the dedicated `situm_explore` schema. Review migrations before
 
 The authenticated workspace is rooted at `/app`. Login uses the existing Nitro endpoint/session flow and `/app/**` remains protected by the current auth middleware. Protected product API routes, including `/api/situm/*`, must enforce the existing server-side session independently of client route middleware.
 
-The current POC does not have a real self-service account-registration backend; the historical dummy `/register` flow is removed. `/api/situm/status` requires the app session and reports private Situm configuration presence only; `viewerConfigured` separately reports the legacy browser Viewer configuration. It is not a Situm health check or Viewer readiness signal.
+The current POC does not have a self-service account-registration backend; the historical dummy `/register` flow is removed. `/api/situm/status` requires the app session and reports private Situm configuration presence only; Viewer configuration is reported separately. It is not a Situm health check or Viewer readiness signal.
 
 ## Situm integration roadmap
 
-The current `main` baseline contains a real embedded Situm Map Viewer plus prototype data around many product screens. Starting with Plan 010, those prototype behaviors are classified before backend integration:
-
-- real web Situm capability -> retained and assigned to Plans 011–016;
-- app-owned web behavior -> retained as product functionality;
-- device/native-only capability -> removed from the web product and reserved for a possible future native roadmap;
-- unsupported/fake/low-value Situm-domain behavior -> removed.
-
-Current roadmap:
+The completed cumulative roadmap is:
 
 ```text
-010  capability pruning + security/data contract
-011  Buildings/Floors/POIs/Categories
-012  Geofences/Paths/static directions
-013  Realtime monitoring
-014  Reports/Analytics
-015  Organization/Users/Groups/Alarms read-only
-016  remaining web-safe Viewer/Settings capabilities (conditional)
+010   capability pruning + security/data contract
+011   Buildings/Floors/POIs/Categories
+012   Geofences/Paths/static directions evidence boundary
+013   Realtime monitoring
+014   Reports/Analytics — skipped/unresolved implementation
+015   Organization/Users + Groups/Alarms evidence boundary
+016   verified web-safe Viewer/Settings capabilities
+016A  credential/config/runtime hardening + live verification
 ```
 
-Device indoor positioning/bluedot and motion-aware navigation are intentionally outside this Nuxt web roadmap.
+Implemented Situm server read paths have been runtime-smoked with configured credentials. Remaining evidence-gated areas such as full Reports/Analytics, Groups, Alarms, richer routing results, and some realtime/Viewer semantics should become Plan 017 or later only when exact official contracts and concrete product scope justify them.
 
-See `design/data-source-matrix.md` for the current capability/source authority.
+Device indoor positioning/bluedot and movement-aware navigation are intentionally outside this Nuxt web roadmap.
+
+See `design/data-source-matrix.md` and `.agents/state.md` for current capability/source authority and unresolved follow-up scope.
