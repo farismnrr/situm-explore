@@ -1,94 +1,90 @@
 # Plan 014 — Situm Reports & Analytics Integration
 
-Status: planned-later
+Status: **skipped-unresolved**
 Branch: `plan/014-situm-reports-analytics-integration`
-Depends on: Plan 013 complete, reviewed, and integrated into `main`
+Base: Plan 013 final HEAD `3c3c0af` (explicit stacked execution; not integrated into `main`)
+Depends on: Plan 013 complete and available as the stacked parent branch
 
 ## Goal
 
-Replace dummy analytics datasets one report at a time with real Situm report data while preserving the accepted Analytics UI.
+Replace retained Analytics/Dashboard/Home report fixtures with real Situm report data, one report contract at a time.
 
-Reuse the same single POC Situm API key. The key may have Read & Write permission, but this plan only reads report/analytics data.
+Plan 010 may remove unsourced metrics before this plan. Do not restore removed metrics merely to match the old prototype.
 
 ## Required reading
 
 - `AGENTS.md`
 - `ARCHITECTURE.md`
-- `DESIGN.md`
-- `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
-- current canonical Analytics/report reference areas
-- accepted Nuxt Analytics implementation
-- Plan 010 mapping notes and completed Plans 011–013
+- completed Plan 010 capability mapping
+- completed Plans 011–013
+- current Analytics/Dashboard/Home implementation
 - this plan
 
-## UI-preservation rule
+## Retained report scope
 
-Before each report, read the corresponding current canonical HTML report state and accepted Nuxt implementation.
+Implement only reports retained and exactly mapped by Plan 010, expected to include where available/useful:
 
-The accepted tab structure, chart/heatmap/table density, date-range controls, and metric hierarchy remain stable. Real API payloads are adapted to that contract; extra fields do not automatically become UI.
+- visitors;
+- geofence stay time/session data;
+- positioning time;
+- user positions;
+- Map Viewer usage;
+- heatmap;
+- other retained Dashboard/Home aggregates that are direct derivatives of real mapped datasets.
 
-## Credential/data-path rules
+A metric with no real source is removed, not silently kept as fixture data.
 
-- Reuse `NUXT_PUBLIC_SITUM_API_KEY`.
-- Do not create a second credential/env variable.
-- Never log/render/commit the key.
-- Use the report access path selected by Plan 010.
-- No report persistence in PostgreSQL for the POC.
+## Credential/data path
 
-## Integration order
-
-Integrate only report states present in the accepted UI, normally one phase at a time:
-
-1. Visitors.
-2. Geofence stay time.
-3. Positioning time.
-4. User positions.
-5. Map Viewer usage.
-6. Heatmap only if the current API/data volume makes it practical.
-
-If Plan 010 marked a report unsupported/not valuable, leave that report dummy/local rather than blocking the whole plan.
+- Report reads use authenticated Nitro/server access with private Situm credentials.
+- No public Read-Write REST credential.
+- No report persistence/cache in PostgreSQL for the POC.
+- Use direct/small integration helpers; do not create a generic reports framework.
 
 ## Per-report workflow
 
-For each report:
+For each retained report:
 
-1. [ ] Re-open the current canonical HTML report state.
-2. [ ] Inspect accepted Nuxt component/type/fixture.
-3. [ ] Revalidate the official report endpoint/SDK identified by Plan 010.
-4. [ ] Document minimal response -> existing UI type mapping.
-5. [ ] Replace only that report's dummy data source.
-6. [ ] Add truthful loading/empty/error behavior inside existing composition.
-7. [ ] Never silently mix dummy and real values in the same metric group.
-8. [ ] Compare the resulting real-data state against the accepted reference.
-9. [ ] Validate before moving to the next report.
+1. [ ] verify exact current official endpoint and date/filter semantics;
+2. [ ] document minimal external response -> UI mapping;
+3. [ ] replace only that report fixture;
+4. [ ] add truthful loading/empty/error state;
+5. [ ] never mix fake and real values in one metric group;
+6. [ ] validate before moving to the next report.
 
-## Complexity rules
+## CSV/export
 
-- no chart library unless accepted UI cannot reasonably be produced with current approach;
-- no background jobs/queues unless actual API behavior proves them necessary and the user approves expanded scope;
-- no generic reports repository/service merely because multiple endpoints exist;
-- reuse a small integration helper only when actual repeated behavior is proven.
+- [ ] Prefer real report output/data for CSV export.
+- [ ] Remove local fixture-only export messaging.
+- [ ] Do not generate a fake success CSV when the real report fails.
+
+## Execution disposition — 2026-08-13
+
+The installed SDK does not expose the report methods required by this plan, and the official REST documentation currently available to this execution does not provide verified response schemas, filter/date semantics, permissions, or format handling for the retained report families. Plan 010 classified these capabilities `UNRESOLVED`. No report route, fixture replacement, aggregate, or CSV success path was implemented. The plan is explicitly skipped under the evidence gate and may resume only after exact official contracts are captured.
+
+## Dashboard/Home aggregates
+
+- [ ] Derive retained counts/summary cards from already-integrated real domains/reports where practical.
+- [ ] Do not create an event/audit backend solely to preserve the old `Recent activity` panel.
+- [ ] Do not show capacity percentages unless a real mapped source provides capacity.
 
 ## Validation
 
-- [ ] Plan 013 is integrated in main before branch creation.
-- [ ] accepted Analytics composition remains stable.
-- [ ] real failures do not fall back silently to fake success values.
-- [ ] date ranges behave truthfully.
-- [ ] no remote mutation is performed.
-- [ ] no credentials logged/rendered/committed.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
-- [ ] manual report smoke for each integrated report.
-- [ ] update plan + `.agents/`, commit/push phases.
-- [ ] no PR until authorized.
+- [x] all retained report values remain absent where no real source is verified;
+- [x] removed/unsupported metrics stay removed;
+- [x] no public REST credential;
+- [x] no unverified date-range/report claim was added;
+- [x] no remote mutation;
+- [x] `git diff --check`;
+- [x] no code changed, so lint/typecheck/build are not applicable;
+- [ ] manual report/export smoke (blocked by unresolved official contracts and unavailable credentials);
+- [x] update plan + `.agents/`, commit/push;
+- [x] no PR until user authorization.
 
 ## Non-goals
 
-- UI redesign;
 - report writes;
 - report persistence/background processing;
-- new credential architecture.
+- synthetic replacement values on API failure;
+- restoring UI pruned by Plan 010.

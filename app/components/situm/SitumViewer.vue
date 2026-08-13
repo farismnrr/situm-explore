@@ -9,6 +9,31 @@ const config = useRuntimeConfig()
 const container = ref<HTMLElement | null>(null)
 const state = ref<'loading' | 'ready' | 'error'>('loading')
 const message = ref('')
+let viewer: ReturnType<SitumSDK['viewer']['create']> | null = null
+
+async function runViewerCommand(command: () => Promise<void>) {
+  if (state.value !== 'ready' || !viewer) throw new Error('The map viewer is not ready.')
+  await command()
+}
+
+function selectBuilding(id: number) {
+  return runViewerCommand(() => viewer!.selectBuilding(id))
+}
+
+function selectFloor(id: number) {
+  return runViewerCommand(() => viewer!.selectFloor(id))
+}
+
+function selectPoi(id: number) {
+  return runViewerCommand(() => viewer!.selectPoiById(id))
+}
+
+function setLanguage(language: string) { return runViewerCommand(() => viewer!.setLanguage(language)) }
+function showUserSettings(visible: boolean) { return runViewerCommand(() => viewer!.showUserSettings(visible)) }
+function updateFontSize(size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl') { return runViewerCommand(() => viewer!.updateFontSize({ size })) }
+function openLocationPicker() { return runViewerCommand(() => viewer!.openLocationPicker()) }
+
+defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker })
 
 onMounted(() => {
   if (!config.public.situmApiKey || !config.public.situmBuildingId) {
@@ -19,7 +44,7 @@ onMounted(() => {
   }
   try {
     const sdk = new SitumSDK({ auth: { apiKey: config.public.situmApiKey } })
-    const viewer = sdk.viewer.create({ domElement: container.value!, buildingId: Number(config.public.situmBuildingId) })
+    viewer = sdk.viewer.create({ domElement: container.value!, buildingId: Number(config.public.situmBuildingId) })
     viewer.on(ViewerEventType.MAP_IS_READY, () => {
       state.value = 'ready'
       emit('status', state.value)

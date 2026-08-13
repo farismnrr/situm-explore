@@ -1,38 +1,13 @@
 <script setup lang="ts">
-import { realtimePositions, realtimeStats, type RealtimePosition } from '~/data/prototype/realtime'
+import type { SitumRealtimeResponse } from '#shared/situm-realtime'
 
-const positions = ref<RealtimePosition[]>(realtimePositions.map(position => ({ ...position, marker: { ...position.marker } })))
-const updatedAt = ref('just now')
-const refreshCount = ref(0)
+const { data, error, status, refresh } = await useFetch<SitumRealtimeResponse>('/api/situm/realtime')
+const positions = computed(() => data.value?.positions ?? [])
 const statusMessage = ref('')
-const { showFeedback } = useExploreFeedback()
 
-function refreshPositions() {
-  refreshCount.value += 1
-  positions.value = positions.value.map((position, index) => ({
-    ...position,
-    marker: {
-      ...position.marker,
-      left: Math.min(84, Math.max(16, position.marker.left + ((refreshCount.value + index) % 3 - 1) * 3)),
-      top: Math.min(76, Math.max(20, position.marker.top + ((refreshCount.value + index * 2) % 3 - 1) * 3))
-    }
-  }))
-  updatedAt.value = 'just now'
-  statusMessage.value = 'Local demo positions refreshed.'
-  showFeedback('Local positions refreshed.')
-}
-
-let refreshTimer: ReturnType<typeof setInterval> | undefined
-onMounted(() => {
-  refreshTimer = setInterval(refreshPositions, 5000)
-})
-onBeforeUnmount(() => {
-  if (refreshTimer) clearInterval(refreshTimer)
-})
-
-async function follow(position: RealtimePosition) {
-  statusMessage.value = `Following ${position.name} in the local map preview.`
-  await navigateTo({ path: '/app/map', query: { mode: 'realtime', follow: position.id } })
+async function refreshPositions() {
+  await refresh()
+  statusMessage.value = error.value ? 'Realtime refresh failed.' : `Loaded ${positions.value.length} current positions.`
 }
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
@@ -40,41 +15,29 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
 
 <template>
   <div class="operations-page space-y-6">
-    <ProductPageHeader eyebrow="Operations" title="Realtime positions" description="Current user and device locations across the indoor workspace.">
-      <template #actions><ProductStatusBadge label="Auto refresh · 5s" tone="success" dot /><UButton label="Refresh now" icon="i-lucide-refresh-cw" color="neutral" variant="outline" @click="refreshPositions" /></template>
+    <ProductPageHeader eyebrow="Operations" title="Realtime positions" description="Web monitoring for positions produced by tracked devices; the browser does not perform indoor positioning.">
+      <template #actions><ProductStatusBadge :label="error ? 'Unavailable' : `${positions.length} positions`" :tone="error ? 'error' : 'success'" /><UButton label="Refresh" icon="i-lucide-refresh-cw" color="neutral" variant="outline" :loading="status === 'pending'" @click="refreshPositions" /></template>
     </ProductPageHeader>
 
     <p v-if="statusMessage" class="sr-only" role="status">{{ statusMessage }}</p>
-
-    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-      <ProductStatCard v-for="stat in realtimeStats" :key="stat.label" :label="stat.label" :value="stat.value" :note="stat.note" />
-    </div>
 
     <div class="realtime-grid grid gap-4 lg:grid-cols-[1.4fr_.6fr]">
       <UCard :ui="{ body: 'p-0' }">
         <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3">
           <h2 class="text-sm font-semibold text-highlighted">Live map</h2>
-          <span class="text-xs text-muted">Updated {{ updatedAt }}</span>
+          <span class="text-xs text-muted">{{ positions.length }} current positions</span>
         </div>
-        <div class="realtime-map relative overflow-hidden border-t border-default" aria-label="Local realtime map preview">
-          <div class="realtime-floor" />
-          <span v-for="position in positions" :key="position.id" class="absolute z-10 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm transition-all duration-500" :class="position.status === 'online' ? 'bg-sky-500' : 'bg-gray-400'" :style="{ left: `${position.marker.left}%`, top: `${position.marker.top}%` }" :title="position.name" />
+          <div class="realtime-map relative overflow-hidden border-t border-default" aria-label="Realtime map awaiting Situm data">
+          <div class="flex h-full items-center justify-center p-6"><UAlert v-if="error" color="error" variant="subtle" title="Realtime unavailable" description="The authenticated Situm position read failed. No simulated markers are shown." class="max-w-md" /><UAlert v-else-if="positions.length === 0" color="neutral" variant="subtle" title="No current positions" description="Situm returned no current position features." class="max-w-md" /><div v-else class="text-sm text-muted">{{ positions.length }} current device-produced positions received.</div></div>
         </div>
       </UCard>
 
       <UCard :ui="{ body: 'p-0' }">
         <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3">
           <h2 class="text-sm font-semibold text-highlighted">People & devices</h2>
-          <span class="text-xs text-muted">24 total</span>
+          <span class="text-xs text-muted">{{ positions.length }} records</span>
         </div>
-        <div class="divide-y divide-default">
-            <div v-for="position in positions" :key="position.id" class="activity-row flex items-center gap-3 px-4 py-3">
-            <span class="size-2 shrink-0 rounded-full" :class="position.status === 'online' ? 'bg-success' : 'bg-gray-400'" aria-hidden="true" />
-            <div class="min-w-0 flex-1"><strong class="block text-sm text-highlighted">{{ position.name }}</strong><span class="mt-1 block text-xs text-muted">{{ position.status === 'online' ? `${position.floor} · ${position.location}` : position.location }}</span></div>
-            <UButton v-if="position.status === 'online'" label="Follow" color="neutral" variant="ghost" size="sm" @click="follow(position)" />
-            <UBadge v-else color="neutral" variant="soft">Offline</UBadge>
-          </div>
-        </div>
+        <div class="p-4"><UAlert v-if="error" color="error" variant="subtle" title="Positions unavailable" description="No fixture rows are shown." /><div v-else-if="positions.length === 0" class="text-sm text-muted">No current positions.</div><div v-else class="space-y-2"><div v-for="position in positions" :key="position.id" class="rounded-lg border border-default p-3"><div class="flex items-center justify-between"><strong class="text-sm text-highlighted">{{ position.deviceId || position.id }}</strong><span class="text-xs text-muted">Floor {{ position.floorId }}</span></div><p class="mt-1 text-xs text-muted">Building {{ position.buildingId }} · accuracy {{ position.accuracy }}m · {{ position.time }}</p></div></div></div>
       </UCard>
     </div>
   </div>

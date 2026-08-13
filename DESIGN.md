@@ -10,28 +10,46 @@ The only HTML visual/interaction reference is:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-The user will populate that file manually with the approved prototype.
-
-### Placeholder guard
-
-If the canonical HTML still contains only placeholder content such as `Hello World`, **do not implement or redesign UI from memory, prior screenshots, Plan 003, generic SaaS references, or agent taste**. Treat the visual reference as not yet available and stop UI implementation at that boundary.
-
-Once the user replaces the placeholder, the HTML defines visual and interaction intent only.
+The user owns that file. It defines visual hierarchy, composition, density, spacing, responsive intent, and interaction presentation.
 
 It is **not production code** and its HTML/CSS/JS must not be copied wholesale into the Nuxt application.
 
-## Authority order
+## Two different authorities
 
-When design guidance conflicts, prefer:
+Visual truth and capability truth are intentionally separated.
 
-1. the user's latest explicit direction;
-2. the populated canonical HTML reference;
-3. the active implementation plan;
+### Visual authority
+
+For appearance/composition, prefer:
+
+1. user's latest explicit visual direction;
+2. populated canonical HTML reference;
+3. active plan;
 4. `design/IMPLEMENTATION.md`;
-5. `design/data-source-matrix.md`;
-6. agent judgment only for gaps not covered above.
+5. agent judgment only for uncovered visual gaps.
 
-Plan 003 is historical implementation evidence only. Its rendered UI was not accepted as the design target.
+### Capability/data authority
+
+For whether a field/control should exist and how it is backed, prefer:
+
+1. user's latest explicit product/scope direction;
+2. current `.agents/state.md` and `.agents/memory/decisions.md`;
+3. active plan;
+4. `design/data-source-matrix.md`;
+5. verified official Situm contract + installed SDK behavior;
+6. current source/runtime behavior.
+
+The prototype **cannot force retention of unsupported, native-only, fake, or ownerless Situm-domain behavior**.
+
+If Plan 010 classifies a prototype control as `NATIVE-ONLY` or `REMOVE`, do not restore it for pixel fidelity.
+
+## Evidence rule for Situm behavior
+
+Do not infer Situm capabilities from labels, screenshots, prototype JavaScript, historical plans, or model memory.
+
+Before a Situm-domain behavior becomes real, the active plan must have exact verified evidence for the needed endpoint/SDK method, data fields, access path, and permission/runtime boundary.
+
+If the contract is not verified, the capability is unresolved. Do not invent it.
 
 ## Production implementation contract
 
@@ -40,39 +58,45 @@ Production remains:
 - Nuxt 4;
 - Vue;
 - Nuxt UI;
-- existing Nuxt UI semantic/theme configuration;
-- existing auth/PostgreSQL/Situm integrations.
+- existing semantic/theme configuration;
+- existing auth/PostgreSQL boundaries;
+- the official Situm JS Viewer only for verified browser Viewer behavior.
 
-Translate the reference into production using this order:
+Translation order:
 
-1. use an existing Nuxt UI primitive when it fits;
-2. configure it with props, variants, slots, semantic tokens, app config, and existing utility classes;
-3. compose a few Nuxt UI primitives for more complex patterns;
-4. create a small Vue component when reuse/readability is real;
-5. add small centralized custom CSS only for a visual gap that Nuxt UI/Tailwind cannot express cleanly.
+1. reuse an existing Nuxt UI primitive when it fits;
+2. configure props/variants/slots/tokens;
+3. compose a small number of primitives;
+4. create a small product component when real reuse/readability exists;
+5. add narrow custom CSS only for a real visual gap.
 
-Do **not**:
+Do not:
 
 - copy prototype CSS wholesale;
-- recreate prototype classes such as `.btn`, `.card`, or `.pill` as a second design system;
-- copy prototype JavaScript instead of using Vue state and Nuxt routing;
-- hardcode every prototype pixel/hex value across Vue files;
-- replace Nuxt UI with another component library;
-- redesign the reference merely because Nuxt UI defaults differ.
+- recreate a parallel `.btn/.card/.pill` design system;
+- copy prototype screen-switching JavaScript;
+- replace Nuxt UI with another framework;
+- build abstractions merely because multiple future features might exist.
 
-## Product direction
+## Current product direction
 
 - Clean minimalist SaaS.
 - Light mode only.
 - Premium but restrained.
-- Navigation-arrow product mark, not an `S` lettermark.
-- Authenticated desktop information architecture may use the compact sidebar represented by the populated reference; mobile should use an appropriate drawer/sheet behavior.
-- Preserve accessibility, keyboard behavior, focus visibility, truthful loading/error/ready states, and responsive hierarchy.
+- Navigation-arrow product mark.
+- Responsive authenticated sidebar/drawer behavior.
+- Preserve accessibility, keyboard behavior, focus visibility, and truthful loading/empty/error states.
 
-## Data boundary
+## Post-UI roadmap boundary
 
-Existing real behavior stays real. Missing product domains may use typed local dummy data during UI implementation.
+Plans 004–009 historically allowed typed local fixtures to establish the product UI.
 
-Do not add backend endpoints, database tables, migrations, Situm write operations, or account-registration infrastructure merely to populate UI reference screens.
+Starting with Plan 010:
 
-Read `design/IMPLEMENTATION.md`, `design/data-source-matrix.md`, and the active plan for the exact implementation/data mapping.
+- app-owned web behavior may remain app-owned;
+- retained Situm-domain behavior must receive an exact real owner in Plans 011–016;
+- native-only behavior must not appear as a working web capability;
+- unsupported/fake/low-value Situm-domain behavior is removed;
+- fixtures are transitional only and are deleted when their real owner replaces them or when the related UI is removed.
+
+Read `design/IMPLEMENTATION.md`, `design/data-source-matrix.md`, and the active plan before changing UI or integration behavior.

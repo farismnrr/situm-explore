@@ -51,13 +51,6 @@ export interface PrototypePath {
   accessible: boolean
 }
 
-export interface PrototypeRoutePreview {
-  duration: string
-  distance: string
-  accessible: boolean
-  steps: readonly string[]
-}
-
 export const cartographyBuildings: readonly PrototypeBuilding[] = [
   {
     id: 'building-main-demo',
@@ -111,10 +104,3 @@ export const cartographyGeofences: readonly PrototypeGeofence[] = [
 export const cartographyPaths: readonly PrototypePath[] = [
   { id: 'path-main-network', name: 'Main Building path network', buildingId: 'building-main-demo', accessible: true }
 ]
-
-export const cartographyRoutePreview: PrototypeRoutePreview = {
-  duration: '6 min',
-  distance: '114 m',
-  accessible: true,
-  steps: ['Walk to lift lobby', 'Take lift to Floor 2', 'Continue 42 m to Training Area']
-}

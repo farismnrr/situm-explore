@@ -10,32 +10,54 @@ cp .env.example .env
 npm run dev
 ```
 
-Required configuration:
+Required configuration for the **current baseline**:
 
-- `NUXT_SESSION_PASSWORD`: at least 32 characters; used by maintained `nuxt-auth-utils` for sealed secure sessions.
-- `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`: the single owner credential. Generate the scrypt hash with `hashPassword` from `nuxt-auth-utils`; login verifies it with `verifyPassword`.
-- `DATABASE_URL` for the shared PostgreSQL instance. The application-owned schema is fixed as `situm_explore`.
-- `NUXT_PUBLIC_SITUM_API_KEY`: the single Situm POC API key. The POC may temporarily use a Read & Write key for speed; revoke/replace it after the POC.
-- `NUXT_PUBLIC_SITUM_BUILDING_ID`: the building loaded by the Map Viewer. It may be filled manually or discovered locally from Situm using the configured API key.
+- `NUXT_SESSION_PASSWORD`: at least 32 characters; used by `nuxt-auth-utils` for sealed sessions.
+- `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`: configured-owner login credential.
+- `DATABASE_URL`: shared PostgreSQL instance; the application-owned schema is `situm_explore`.
+- `NUXT_PUBLIC_SITUM_API_KEY`: browser-visible Map Viewer credential only. Use the minimum Situm role that supports retained Viewer behavior and never reuse it as the server REST credential.
+- `NUXT_SITUM_API_KEY`: single private Nitro credential for all server-side Situm operations. It must never enter browser runtime config or client bundles.
+- `NUXT_PUBLIC_SITUM_BUILDING_ID`: building loaded by the current Map Viewer. This is an identifier, not a secret.
 
-### Discover the Situm building ID
+The final Situm credential model intentionally uses exactly **two Situm keys**: one public Viewer key and one private Nitro key. Do not introduce separate private read/write keys without a concrete future requirement.
 
-If the local `.env` already contains `NUXT_PUBLIC_SITUM_API_KEY` but `NUXT_PUBLIC_SITUM_BUILDING_ID` is blank, the agent may discover accessible buildings with the official Situm REST endpoint:
+## Current status
 
-```sh
-curl -fsS \
-  -H "X-API-KEY: ${NUXT_PUBLIC_SITUM_API_KEY}" \
-  https://api.situm.com/api/v1/buildings
-```
+Plans 010–016 plus Plan 016A are complete on the cumulative branch `plan/016a-situm-credential-split-runtime-verification`.
 
-The agent should inspect the returned building names/IDs, select the intended POC building, and write only the selected ID to the ignored local `.env` as `NUXT_PUBLIC_SITUM_BUILDING_ID`. Do not commit `.env`, API-key values, or credential-bearing command output.
+Plan 016A completed the final credential/config boundary, Nuxt 4 TypeScript configuration cleanup, static/security validation, and live runtime smoke for the implemented Situm server read paths. `/api/situm/status` reports server and Viewer configuration separately without exposing credential values.
+
+The cumulative branch is ready for user-gated PR review/integration into `main`.
+
+Do not commit `.env`, API keys, JWTs, or credential-bearing command output.
 
 ## Database
 
-Drizzle owns only the dedicated `situm_explore` schema. Review `drizzle/0000_silent_stick.sql`, then run `npm run db:migrate`; migrations are never applied automatically. The protected `/api/me` endpoint reads the `foundation` record from `app_settings` and reports a safe empty or not-migrated state.
+Drizzle owns only the dedicated `situm_explore` schema. Review migrations before running `npm run db:migrate`; migrations are never applied automatically. The protected `/api/me` endpoint reports safe application/database state.
 
-## Situm
+## Authentication
 
-The authenticated workspace is rooted at `/app`; its `/app/map` route creates the official `@situm/sdk-js` Map Viewer with the configured POC API key and building ID. Missing configuration and SDK initialization errors are shown in the UI. The legacy `/dashboard` URL redirects to `/app/map` for compatibility.
+The authenticated workspace is rooted at `/app`. Login uses the existing Nitro endpoint/session flow and `/app/**` remains protected by the current auth middleware. Protected product API routes, including `/api/situm/*`, must enforce the existing server-side session independently of client route middleware.
 
-During the UI roadmap, the Home and Dashboard product metrics and the surrounding product-domain screens use typed local prototype fixtures. The real session, `/api/me`, and Situm Viewer lifecycle remain active; `/api/situm/status` reports configuration only and is not a substitute for Viewer readiness.
+The current POC does not have a self-service account-registration backend; the historical dummy `/register` flow is removed. `/api/situm/status` requires the app session and reports private Situm configuration presence only; Viewer configuration is reported separately. It is not a Situm health check or Viewer readiness signal.
+
+## Situm integration roadmap
+
+The completed cumulative roadmap is:
+
+```text
+010   capability pruning + security/data contract
+011   Buildings/Floors/POIs/Categories
+012   Geofences/Paths/static directions evidence boundary
+013   Realtime monitoring
+014   Reports/Analytics — skipped/unresolved implementation
+015   Organization/Users + Groups/Alarms evidence boundary
+016   verified web-safe Viewer/Settings capabilities
+016A  credential/config/runtime hardening + live verification
+```
+
+Implemented Situm server read paths have been runtime-smoked with configured credentials. Remaining evidence-gated areas such as full Reports/Analytics, Groups, Alarms, richer routing results, and some realtime/Viewer semantics should become Plan 017 or later only when exact official contracts and concrete product scope justify them.
+
+Device indoor positioning/bluedot and movement-aware navigation are intentionally outside this Nuxt web roadmap.
+
+See `design/data-source-matrix.md` and `.agents/state.md` for current capability/source authority and unresolved follow-up scope.

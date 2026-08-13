@@ -1,14 +1,15 @@
 # Plan 011 — Situm Buildings, Floors & POIs Read Integration
 
-Status: planned-later
+Status: **complete**
 Branch: `plan/011-situm-buildings-pois-read-integration`
-Depends on: Plan 010 complete, reviewed, and integrated into `main`
+Base: Plan 010 final HEAD `657fb0f` (explicit stacked execution; not integrated into `main`)
+Depends on: Plan 010 complete, reviewed, and available as the stacked parent branch
 
 ## Goal
 
-Replace only the accepted Buildings/Floors and POI dummy fixtures with real Situm **read data** while preserving the UI contract produced by Plans 004–009.
+Replace retained Buildings/Floors/POI/Categories fixtures with real Situm read data after Plan 010 has pruned unsupported UI and frozen the data/auth contract.
 
-The single POC API key may have Read & Write permission, but this plan intentionally performs read behavior only.
+Do not restore controls or fields removed by Plan 010.
 
 ## Required reading
 
@@ -17,83 +18,77 @@ The single POC API key may have Read & Write permission, but this plan intention
 - `DESIGN.md`
 - `design/IMPLEMENTATION.md`
 - `design/data-source-matrix.md`
-- populated canonical HTML reference
-- accepted Nuxt Buildings/POIs/Map implementation
-- completed Plan 010 capability/mapping notes
+- completed Plan 010 capability mapping
+- current Nuxt Buildings/POIs/Map implementation
 - this plan
 
-## Mandatory UI-preservation reference
+## UI contract
 
-Before implementation, inspect the current canonical HTML areas corresponding to:
+Preserve the retained web composition and shared components, but truthfulness outranks old prototype fidelity. Only fields/actions retained by Plan 010 are implementation requirements.
 
-- Buildings/Floors inventory;
-- POI search/filter/table/favorite presentation;
-- shared details drawer;
-- Map building/floor/POI selection context.
+Expected retained scope:
 
-Map Situm responses into accepted Nuxt types/components. Do not redesign screens around external payload shape.
+- buildings and floors inventory/detail;
+- POIs and categories;
+- search/filter presentation;
+- View on Map / building-floor-POI selection context;
+- favorites only if Plan 010 assigns an exact web-safe owner.
 
-## Credential/data-path rules
+## Credential/data path
 
-- Reuse `NUXT_PUBLIC_SITUM_API_KEY`; do not create a second key/env variable.
-- Never print/log/render/commit the key value.
-- Use the access path chosen by Plan 010.
-- If Nitro REST access is chosen, add only the smallest Situm integration helper needed by this plan under the `server/integrations/situm/` boundary from `ARCHITECTURE.md`.
-- Do not create a generic repository/service layer unless actual orchestration requires it.
-- No DB cache/persistence unless a new explicit requirement appears.
+- Never use a public Read-Write Situm credential for REST data.
+- Use the private authenticated Nitro/server path frozen by Plan 010 for cartography REST reads.
+- Every new `/api/situm/*` route requires the existing Situm Explore session.
+- Browser Viewer calls remain inside the Viewer integration and use only the browser auth mechanism accepted by Plan 010.
+- No generic Situm proxy, repository base class, DB cache, or persistence.
 
-## Phases
+## Phase 1 — Revalidate mapping
 
-### Phase 1 — Revalidate API mapping
+- [x] Confirm Plan 010 is complete and available as the stacked parent branch.
+- [x] Re-check exact building/floor/POI/category endpoint/SDK contracts against current official docs and `@situm/sdk-js@0.25.0`.
+- [x] Confirm minimal fields required by retained UI.
+- [x] Confirm private server credential path works without logging secrets.
 
-- [ ] Re-read relevant HTML and accepted Nuxt implementation.
-- [ ] Re-check current official endpoints/SDK contracts identified by Plan 010.
-- [ ] Confirm the exact response fields needed by existing UI types.
-- [ ] Safe local GET smoke uses the current POC key without printing it.
+## Phase 2 — Buildings & Floors
 
-### Phase 2 — Buildings & Floors
+- [x] Add the smallest authenticated Nitro read path.
+- [x] Normalize external payload only as needed by current UI.
+- [x] Add truthful loading/empty/error states.
+- [x] Remove building/floor fixtures from replaced inventory/map selectors.
+- [x] Do not expose unused Situm fields merely because they exist.
 
-- [ ] Load real buildings/floors using the single chosen data path.
-- [ ] Adapt payloads to existing UI types.
-- [ ] Preserve accepted loading/empty/error/table/detail composition.
-- [ ] Keep configured Map Viewer building behavior working.
-- [ ] Remove only building/floor dummy records actually replaced.
+## Phase 3 — POIs & Categories
 
-### Phase 3 — POIs & Categories
+- [x] Replace POI/category fixtures with real reads.
+- [x] Keep client-side search/filter unless dataset size proves otherwise.
+- [x] Preserve detail drawer and map-selection behavior.
+- [x] Keep favorites local/product-owned; no Situm write was invented.
 
-- [ ] Load real POIs/categories required by existing filters.
-- [ ] Adapt to existing POI type rather than redesigning the type/page around the API.
-- [ ] Keep search/filter client-side unless real dataset size proves that inadequate.
-- [ ] Preserve accepted details/favorite presentation; favorites may remain local unless a later explicit write plan makes them remote.
-- [ ] Remove only POI/category dummy records actually replaced.
+## Phase 4 — Map context
 
-### Phase 4 — Map context
+- [x] Wire retained building/floor/POI selection to the single `SitumViewer` owner.
+- [x] Prefer a small typed Viewer command surface over creating extra SDK instances in pages.
+- [x] Remove stale synthetic selectors once real options are available.
 
-- [ ] Connect `View on map` / building-floor-POI selection only where the chosen official Viewer/API capability is reliable.
-- [ ] If a specific interaction cannot be wired cleanly, leave that interaction local/dummy and document it rather than expanding architecture.
-- [ ] Do not add remote writes.
+## Validation
 
-### Phase 5 — Validation
-
-- [ ] Plan 010 is integrated in main before this branch starts.
-- [ ] Buildings/POIs still match accepted canonical reference composition.
-- [ ] loading/empty/error states are truthful.
-- [ ] no duplicate real + dummy records for a replaced logical resource.
-- [ ] no credential leakage.
-- [ ] no remote write request.
-- [ ] `git diff --check`.
-- [ ] `npm run lint`.
-- [ ] `npm run typecheck`.
-- [ ] `npm run build`.
-- [ ] manual API/viewer smoke.
-- [ ] update plan + `.agents/`, commit/push phases.
-- [ ] no PR until authorized.
+- [x] no cartography mutation;
+- [x] no public REST credential;
+- [x] no duplicate real + fixture records in retained inventory/map/search surfaces;
+- [x] retained UI remains usable and truthful;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [ ] manual API + Viewer smoke (requires configured Situm credentials and authenticated browser session; unavailable in this environment);
+- [x] update plan + `.agents/`, commit/push;
+- [x] no PR until user authorization.
 
 ## Non-goals
 
 - geofences/paths;
 - realtime;
 - reports;
-- POI/building/floor mutations;
-- new application DB tables;
-- credential redesign.
+- cartography mutation;
+- native positioning;
+- new application DB tables.

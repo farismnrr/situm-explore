@@ -2,91 +2,92 @@
 
 `.agents/` is the persistent context layer for Situm Explore.
 
-The root `AGENTS.md` is intentionally small. This directory contains operating rules and durable context that Codex should read and maintain across conversations.
+Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in the root contracts; `.agents/` stores current state, durable decisions, operating protocols, verified knowledge, lessons, and concise history.
 
 ## Directory map
 
 | Path | Purpose |
 | --- | --- |
 | `identity.md` | Mission, behavior, and stable agent principles. |
-| `state.md` | Current focus, open loops, blockers, and next actions. |
-| `protocols/chat-lifecycle.md` | What to read and do during each conversation. |
-| `protocols/persistence.md` | Rules for deciding what gets written after a chat. |
-| `protocols/git-workflow.md` | Mandatory plan-branch, phase commit/push, lint, and PR-gate workflow. |
-| `memory/` | Durable context about the user: profile, preferences, goals, decisions. |
-| `knowledge/` | Reusable external/domain knowledge and frameworks. |
-| `reflections/` | Lessons that should improve future agent behavior. |
-| `sessions/` | Concise chronological records of conversations. |
+| `state.md` | Current focus, blockers, active/cumulative branch, and next action. |
+| `protocols/chat-lifecycle.md` | Conversation workflow. |
+| `protocols/persistence.md` | What must be persisted after a conversation. |
+| `protocols/git-workflow.md` | Plan branch, validation, commit/push, stacked-branch exception, and PR gates. |
+| `memory/` | Durable user/project decisions and preferences. |
+| `knowledge/` | Reusable verified domain knowledge. |
+| `reflections/` | Reusable lessons about process/agent behavior. |
+| `sessions/` | Chronological evidence; may become stale. |
 
-Architecture and design guidance intentionally live outside `.agents/` to avoid duplicate sources of truth:
+## Mandatory read order for implementation
 
-- root `ARCHITECTURE.md` is the application architecture/folder/dependency contract;
-- root `DESIGN.md` is the design router;
-- `design/IMPLEMENTATION.md` is the Nuxt UI implementation contract;
-- `design/data-source-matrix.md` defines real-vs-dummy data boundaries;
-- `design/reference/situm-explore-interactive-prototype.html` is the single visual/interaction reference once populated by the user.
+1. `AGENTS.md`.
+2. `.agents/identity.md`.
+3. `.agents/state.md`.
+4. `.agents/protocols/chat-lifecycle.md`.
+5. `.agents/protocols/git-workflow.md`.
+6. `.agents/memory/decisions.md` when roadmap/product boundaries matter.
+7. `ARCHITECTURE.md`.
+8. `plans/README.md`.
+9. `design/data-source-matrix.md` when Situm/product capability scope matters.
+10. active/follow-up plan, if one exists.
+11. `DESIGN.md` and `design/IMPLEMENTATION.md` for UI/presentation changes.
 
-## Read order
-
-At the start of a conversation:
-
-1. Read `identity.md`.
-2. Read `state.md`.
-3. Read `protocols/chat-lifecycle.md`.
-4. If executing a plan or changing repository implementation, read `protocols/git-workflow.md` and root `ARCHITECTURE.md` before editing.
-5. If doing UI/UX/styling/layout/component-composition work, also read root `DESIGN.md`, the active plan, and only the root `design/` documents they require.
-6. Read only the memory, knowledge, reflection, plan, and session files relevant to the task.
-7. If the conversation references prior work and the durable stores are insufficient, inspect recent session notes.
-
-Do not load the entire directory blindly when it becomes large. Use indexes and targeted search.
-
-## Write model
-
-There are two persistence layers.
-
-### 1. Session history
-
-Every conversation gets a concise session entry in `sessions/YYYY-MM-DD.md`.
-
-Session notes answer: **what happened?**
-
-They are chronological and may include context that later becomes stale.
-
-### 2. Durable context
-
-Memory, knowledge, reflections, decisions, and state are updated only when there is a meaningful durable change.
-
-Durable context answers: **what should still matter later?**
-
-It should be compact, deduplicated, and revised when newer information supersedes older information.
-
-For plan implementation, persistence is also a pre-commit checkpoint: relevant `.agents/` files and the active plan checklist must be updated before each completed phase is committed and pushed.
+Historical plans/session notes are evidence, not current authority.
 
 ## Truth hierarchy
 
-When information conflicts, prefer:
+When guidance conflicts, prefer:
 
-1. The user's latest explicit statement.
-2. Current durable files under `.agents/` and root contracts/routers such as `ARCHITECTURE.md` and `DESIGN.md`.
-3. Recent session notes.
-4. Agent inference.
+1. user's latest explicit instruction;
+2. current `.agents/state.md` and durable decisions;
+3. current root architecture/design contracts;
+4. active plan + current capability/data matrix;
+5. current source/runtime behavior;
+6. historical plans/session notes;
+7. agent inference.
 
-Never silently promote inference above explicit user statements.
+Never silently promote inference above current explicit instructions.
 
-## Maintenance principles
+## Evidence rule
 
-- Keep information atomic and easy to edit.
-- Prefer replacing stale facts to appending contradictory history.
-- Keep raw transcripts out of durable memory.
-- Add timestamps when recency matters.
-- Keep provenance clear: `user-stated`, `observed`, or `inferred`.
-- If confidence is low, say so in the stored entry.
-- Never persist secrets or credentials.
-- Keep each plan isolated on its own branch and preserve a reviewable phase-by-phase Git history.
-- Use the normal repository working directory; linked Git worktrees are optional only when explicitly requested.
-- For implementation work, follow the Nuxt 4 runtime/folder/dependency boundaries in `ARCHITECTURE.md`.
-- For UI work, do not invent a new visual direction when the canonical HTML reference is populated.
+For external Situm behavior, memory is not implementation evidence.
+
+Before implementation, verify the exact current contract using official Situm documentation/source and the installed SDK version where relevant.
+
+Do not invent endpoint paths, SDK methods, payload fields, permissions, browser/server ownership, native/web ownership, or fake fallback values.
+
+If a required capability is not verified, keep it `UNRESOLVED`/absent rather than guessing.
+
+## Persistence model
+
+Session notes answer **what happened?** and may become stale.
+
+Durable files answer **what is still true?** They must be revised when newer decisions supersede older wording.
+
+Before a completed implementation-phase commit:
+
+1. update active plan/checklist;
+2. update `.agents/state.md`;
+3. update durable decisions/knowledge only when changed;
+4. append the current session note;
+5. run required validation;
+6. commit and push the plan branch.
+
+Never store credentials, API keys, JWTs, passwords, or sensitive payloads.
 
 ## Current scope
 
-The Nuxt foundation and hardening are complete. Plan 003 is closed but its rendered UI was not accepted. Plan 004 now begins with a Nuxt 4 architecture-alignment phase that may run before the HTML reference is populated; visual Phase 1+ remains blocked until the user replaces the canonical HTML placeholder. Native/mobile, CI, and unit-test infrastructure remain deferred.
+The UI roadmap through Plan 009B is historical and integrated into `main`.
+
+Plans **010–016 have completed their stacked implementation pass**. Do not restart or recreate them from `main`.
+
+The active closeout/hardening follow-up is **Plan 016A — Situm Credential Split & Runtime Verification**:
+
+- plan file: `plans/016a-situm-credential-split-runtime-verification.md`;
+- branch: `plan/016a-situm-credential-split-runtime-verification`.
+
+Plan 016A is intentionally small: credential-role split, env/runtime contract cleanup, live smoke for already implemented Situm paths, and evidence capture for unresolved REST domains. It does not own broad Reports/Groups/Alarms implementation.
+
+The briefly created Plan 017 credential-split draft is superseded by 016A and is not an active roadmap step. Plan 017 remains reserved for substantive future feature scope.
+
+No PR or merge is authorized. Read `.agents/state.md` for the exact current truth and next action.

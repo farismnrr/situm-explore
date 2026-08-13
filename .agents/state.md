@@ -4,70 +4,100 @@ _Last reviewed: 2026-08-13_
 
 ## Current focus
 
-The UI stage is **closed, accepted by the user after manual correction, and integrated into `main`**.
+The Situm backend/web integration roadmap Plans 010–016 plus the small Plan 016A hardening follow-up are complete on the cumulative branch:
 
-Automated Plan 009B work was stopped after it regressed the rendered UI. The user completed the difficult UI correction manually, explicitly accepted that result, and then authorized integrating the cumulative UI roadmap into `main`.
+`plan/016a-situm-credential-split-runtime-verification`
 
-Do not reopen Plan 009B, its targeted addendum, or create Plan 009C from old audit findings unless the user explicitly requests new UI work.
+Plan 016A continued the cumulative Plan 016 lineage and absorbed the credential/runtime preparation that was briefly drafted under a superseded Plan 017 name. Do not restart Plans 010–016, recreate their branches from `main`, or execute the old Plan 017 credential-split draft as a separate roadmap step.
 
-## UI roadmap state
+## Completed roadmap result
 
-- Plan 009A: closed historically with known UI gaps.
-- Plan 009B: **closed-manual-accepted**.
-- Plan 009B Analytics/Users/Organization/Settings addendum: **closed-manual-accepted**.
-- No Plan 009C is active or required.
-- Final UI acceptance authority is the user's manual result and explicit acceptance, not the old automated 009B checklists.
+- Plan 010 — implementation/review complete; web/native/security/evidence boundary frozen.
+- Plan 011 — implementation complete: Buildings/Floors/POIs/Categories reads and map selection context.
+- Plan 012 — implementation complete for verified Geofences/Paths reads; static route-result/product mapping remains unresolved and absent.
+- Plan 013 — implementation complete for current-position monitoring; stale/offline semantics, Viewer realtime overlay, trajectory/follow remain unresolved and absent.
+- Plan 014 — skipped-unresolved; report paths/purpose now have partial evidence, but exact implementation contract remains insufficient.
+- Plan 015 — implementation complete for Organization + Users reads; Groups + Alarms remain unresolved/absent pending exact REST evidence.
+- Plan 016 — implementation complete for verified Viewer language, font-size, accessibility-panel, and location-picker commands.
+- Plan 016A — complete: final Situm credential contract, environment/config cleanup, Nuxt 4 tsconfig cleanup, static/security validation, and live runtime smoke for implemented Situm server reads.
 
-## Integrated baseline
+## Final Situm credential contract
 
-`main` is now the canonical cumulative baseline.
+Exactly two Situm keys are intentional:
 
-Integration PR: `#6` — **Integrate cumulative UI roadmap through Plan 009B**.
+- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only.
+- `NUXT_SITUM_API_KEY` — single private Nitro credential for all server-side Situm operations.
+- `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier.
 
-Merged `main` commit:
+Do not reintroduce separate private read/write keys unless a future concrete requirement justifies that complexity.
 
-`873253075dfbb79410d4f3c94865759ccac43a02`
+All current Nitro Situm operations use the private `NUXT_SITUM_API_KEY`. `/api/situm/status` reports server and Viewer configuration separately without exposing values. The private key must never enter browser/public runtime config, client bundles, logs, docs, or error payloads.
 
-The merge contains the cumulative Plan 004–009B history and the user's pushed manual UI revision. Historical `plan/009-ui-conformance-polish` diverged after 009A was created; its late tip was intentionally not merged separately because later work superseded/selectively reimplemented the relevant changes and re-merging it could reintroduce superseded UI.
+`NUXT_PUBLIC_APP_URL` and `DB_SCHEMA` are not part of the current runtime contract.
 
-Treat old plan branches as historical references. New roadmap work must branch from current `main` unless the user explicitly chooses another base.
+## Validation truth
 
-## Accepted UI preservation contract
+Plan 016A closeout passed:
 
-For later backend/Situm work:
+- `git diff --check`;
+- `npm run lint`;
+- `npm run typecheck`;
+- `npm run build`;
+- client-bundle/private-credential leakage checks;
+- unauthorized and missing/invalid credential behavior checks;
+- real authenticated Situm success-path smoke for cartography, geofences, paths, realtime positions, organization, and users;
+- truthful empty/error handling where applicable.
 
-- treat the manually accepted UI now on `main` as the product presentation contract;
-- adapt Situm/API data into the accepted UI rather than redesigning screens around API payloads;
-- do not revive old 009B abstractions unless the user explicitly asks;
-- make only necessary UI changes for truthful loading/empty/error/runtime states and preserve the accepted composition.
+Runtime Situm smoke is complete for the implemented server read paths using configured credentials. No private Situm credential leakage was observed in API responses, logs, or built public client assets.
 
-## Runtime/data boundary
+The retained Plan 016 Viewer command surface remains bounded by its verified Viewer contract. Full browser automation of every hydrated interaction was not required for Plan 016A closeout.
 
-Keep real and protected:
+## Evidence-gated follow-up gaps
 
-- `/api/auth/login`;
-- `useUserSession()` / logout / auth middleware;
-- `/api/me` and PostgreSQL/Drizzle behavior;
-- `/api/situm/status` configuration semantics;
-- real Situm Viewer initialization and lifecycle;
-- `MAP_IS_READY` / `APP_ERROR` / missing-config behavior.
+The following remain intentionally absent rather than faked:
 
-Product-domain data remains local/dummy until its assigned later integration plan replaces it.
+- full Reports/Analytics/CSV implementation;
+- Groups read integration;
+- Alarms read integration;
+- static route-result/details/constraints presentation;
+- realtime stale/offline semantics and Viewer overlay;
+- trajectory/follow semantics;
+- unverified generic Viewer config/settings operations.
 
-## Backend roadmap gate
+Reports, Groups, and Alarms may become Plan 017 or later only if exact official contracts and a concrete product scope justify implementation.
 
-**Plan 010 is unblocked and is the next roadmap plan.**
+## No-hallucination rule
 
-Plan 010 is feasibility/contract mapping only; it must preserve the accepted UI and must not replace dummy datasets yet.
+For Situm behavior: **no evidence, no implementation**.
 
-Normal preflight before execution:
+Before adding a missing capability, verify exact official endpoint/SDK method, auth/permission, request parameters, response/event fields, web/native ownership, and relevant failure/empty/stale semantics. If material evidence is missing, keep it unresolved/absent rather than inventing behavior.
 
-1. fetch latest refs;
-2. confirm `main` is current and clean;
-3. create `plan/010-progressive-situm-data-integration` from current `main`;
-4. follow Plan 010 sequentially;
-5. do not merge later plan work without explicit user authorization.
+## Web/native boundary
+
+The Nuxt product remains the web operations/admin/exploration console.
+
+Native-only scope remains outside this roadmap:
+
+- handset indoor positioning / blue dot from sensors;
+- Wi-Fi/BLE positioning and permission handling;
+- movement-aware live turn-by-turn navigation/rerouting;
+- other mobile-runtime positioning behavior.
+
+Web may consume positions produced by devices; it must not pretend the browser performs Situm indoor positioning.
+
+## Git / integration truth
+
+Plans 010–016 and 016A were executed as a cumulative stacked lineage without intermediate PRs/merges to `main`.
+
+Plan 016A is now closed and the cumulative branch is ready for user-gated review/integration. Opening a PR is now an appropriate next step if the user chooses to integrate this lineage into `main`.
+
+The old `plan/017-situm-credential-split-runtime-verification` branch/name is superseded and must not be treated as a separate active plan.
 
 ## Next action
 
-Start Plan 010 from current `main` when the user requests it.
+No further Plan 016A implementation work is required.
+
+Next action is one of:
+
+1. open/review a PR from `plan/016a-situm-credential-split-runtime-verification` into `main`;
+2. after integration, start a genuinely new Plan 017+ only for substantive follow-up scope.

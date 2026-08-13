@@ -4,81 +4,111 @@ Plans are executable implementation checklists for Codex.
 
 ## Mandatory execution workflow
 
-Before executing any plan in this directory, read:
+Before executing or continuing plan work, read:
 
-1. root `AGENTS.md`;
+1. `AGENTS.md`;
 2. `.agents/README.md`;
-3. `.agents/protocols/git-workflow.md`;
-4. root `ARCHITECTURE.md`;
-5. the active plan file;
-6. `DESIGN.md` and its linked implementation/reference documents when the plan changes UI/UX.
+3. `.agents/state.md`;
+4. `.agents/memory/decisions.md` when roadmap/product boundaries matter;
+5. `.agents/protocols/git-workflow.md`;
+6. `ARCHITECTURE.md`;
+7. `design/data-source-matrix.md` when Situm/product capability scope matters;
+8. the active/follow-up plan, if one exists;
+9. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
 
-Every plan must use its own branch. Use the repository's normal working directory; do not create a linked Git worktree unless the user explicitly asks for one.
+Historical plans are evidence only. Current state/contracts override stale plan wording.
 
-Naming convention:
+## Branch rule
 
-```text
-plan:   plans/004-ui-foundation-public-auth.md
-branch: plan/004-ui-foundation-public-auth
-```
+- one plan = one dedicated plan branch;
+- never implement directly on `main`;
+- reuse an existing valid plan branch instead of recreating/resetting it;
+- no force-push/destructive history rewrite as normal workflow;
+- PR creation/review is user-gated;
+- merge remains explicitly user-gated.
 
-Typical start:
+## Dependency modes
 
-```bash
-git status --short
-git fetch origin
-git switch main
-git pull --ff-only origin main
-git switch -c plan/004-ui-foundation-public-auth origin/main
-```
+### Normal mode
 
-Do not execute two plans in the same branch and do not implement a plan directly on `main`.
+A dependent plan starts from updated `main` only after its dependency has been reviewed and integrated.
 
-## Sequential dependency rule
+### Explicit stacked mode
 
-The roadmap is intended to be executed sequentially.
+Stacking is allowed only when the user explicitly authorizes it and current `.agents/state.md`/durable context records that decision.
 
-If a plan declares `Depends on: Plan N`, the dependency must already be complete and integrated into `main` before the next plan starts.
-
-Normal flow:
+In stacked mode:
 
 ```text
-finish plan branch
--> validate + push
--> user reviews
--> user explicitly authorizes PR/integration
--> dependency lands in main
--> sync main
--> create the next plan branch from updated origin/main
+complete Plan N
+-> validate + update plan/.agents
+-> commit + push Plan N
+-> take Plan N final HEAD
+-> create/continue the next plan from that HEAD
 ```
 
-Do **not** silently start the next plan from stale `main` and do not silently stack a new plan branch on an unmerged dependency.
+Do not branch a stacked dependent plan from stale `main` and do not merge/cherry-pick merely to simulate the stack.
 
-If the dependency is complete but has not been integrated because PR/merge authorization is still pending, stop at that boundary. Only use stacked plan branches when the user explicitly asks for that workflow.
+## Current roadmap state
 
-This rule prevents a sequential plan from losing files/routes/contracts created by the previous plan.
+Plans 010–016 completed their explicit stacked implementation pass. Plan 016A then completed the credential/config/runtime hardening closeout on the same cumulative lineage.
 
-## Historical plans
+Cumulative review branch:
 
-Plans marked complete/closed are implementation history, not current instructions.
+`plan/016a-situm-credential-split-runtime-verification`
 
-- Do not resurrect deleted paths, old environment-variable names, superseded architecture, or superseded design guidance merely because an old plan mentions them.
-- Current `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, durable `.agents/` decisions/state, and the active plan override historical plan details.
-- Plan 003 in particular is historical: its rendered UI was not accepted as the current visual source of truth.
+Plan 016A is **complete**. Do not replay Plans 010–016 or Plan 016A. Do not execute the old `plans/017-situm-credential-split-runtime-verification.md` draft; that naming was superseded. Plan 017 remains available only for genuinely new substantive feature scope after the current lineage is reviewed/integrated.
 
-## Architecture and documentation discipline
+Current outcome:
 
-All implementation must respect the Nuxt 4 app/server/shared boundaries in `ARCHITECTURE.md`. Do not introduce speculative services, repositories, stores, layers, or generic abstractions merely because a plan adds a new surface.
+- implemented where exact evidence existed;
+- runtime-smoked for the implemented Situm server read paths using configured credentials;
+- skipped/unresolved where exact implementation contracts remain insufficient;
+- no fake fallback behavior;
+- no native positioning scope added to web;
+- cumulative branch ready for user-gated PR review/integration.
 
-When a phase changes setup, environment-variable names, route entry points, architecture paths, or runtime behavior described by root documentation, update the relevant docs in the same phase. Do not knowingly leave README/architecture/setup instructions pointing at the pre-phase structure.
+Read `.agents/state.md` for the exact completed/skipped/unresolved items and next integration action.
 
-After each completed implementation phase:
+## Capability evidence gate
 
-1. update the plan checklist/status;
-2. update relevant `.agents/` memory/state/knowledge/session files;
-3. run required validation, including Nuxt lint for code-changing phases;
-4. commit the completed phase;
-5. push the plan branch;
-6. stop short of opening a PR unless the user explicitly asks for one.
+For Situm behavior: **no evidence, no implementation**.
 
-CI and unit-test infrastructure are intentionally deferred for now. See `.agents/protocols/git-workflow.md` for the full rules.
+Official endpoint/SDK existence alone is not enough when the UI requires specific filters, fields, permissions, or error semantics. Verify the exact contract actually consumed.
+
+If material evidence is missing, keep the feature unresolved/absent rather than inventing it.
+
+Do not treat lack of an `@situm/sdk-js` wrapper as proof the Situm REST API lacks a capability; server-side Nitro integrations may use exact official REST endpoints when verified and appropriate.
+
+## Architecture/security
+
+Follow `ARCHITECTURE.md` and keep implementation small.
+
+The final Situm credential model intentionally uses exactly two keys:
+
+- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer only;
+- `NUXT_SITUM_API_KEY` — single private Nitro credential for all server-side Situm operations.
+
+Additional rules:
+
+- do not introduce separate private read/write keys without a concrete future requirement;
+- protected product `/api/situm/*` routes require the app session;
+- no generic unauthenticated Situm proxy;
+- private credentials never enter browser/public runtime config, logs, docs, or error payloads;
+- no speculative services/repositories/stores/caches/workers;
+- browser Viewer behavior stays owned by the single Viewer integration;
+- native handset positioning/navigation stays outside the Nuxt web roadmap.
+
+## Phase completion
+
+A phase is only complete when applicable checks are truthfully recorded:
+
+1. plan checklist/status updated;
+2. `.agents` persistence updated;
+3. required validation run;
+4. phase committed and pushed;
+5. unresolved/manual-smoke items remain visibly unchecked or explicitly marked pending.
+
+Plan 016A satisfies its closeout requirements, including live runtime smoke for implemented Situm server read paths.
+
+CI and a standalone unit-test runner remain deferred unless a later requirement changes that decision.

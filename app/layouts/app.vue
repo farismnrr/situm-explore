@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { cartographyBuildings, cartographyPois } from '~/data/prototype/cartography'
-
 const { user, clear } = useUserSession()
 const mobileOpen = ref(false)
 const isDesktop = ref(false)
@@ -11,8 +9,6 @@ const displayName = computed(() => {
   return localPart.split(/[._-]/).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ')
 })
 const initials = computed(() => displayName.value.split(' ').map(part => part.charAt(0)).slice(0, 2).join('').toUpperCase())
-const syncStatus = ref('')
-const { showFeedback } = useExploreFeedback()
 
 const searchDestinations = [
   { label: 'Home', detail: 'Workspace', to: '/app', icon: '⌂' },
@@ -26,11 +22,7 @@ const searchDestinations = [
 ]
 
 const searchResults = computed(() => {
-  const records = [
-    ...searchDestinations,
-    ...cartographyBuildings.map(building => ({ label: building.name, detail: `Building · ${building.floors.length} floors`, to: '/app/buildings', icon: '◇' })),
-    ...cartographyPois.map(poi => ({ label: poi.name, detail: `POI · ${poi.category} · ${poi.floor}`, to: '/app/pois', icon: '●' }))
-  ]
+  const records = searchDestinations
   const query = searchQuery.value.trim().toLowerCase()
   return query ? records.filter((record) => `${record.label} ${record.detail}`.toLowerCase().includes(query)) : records
 })
@@ -81,11 +73,6 @@ async function logout() {
   await navigateTo('/')
 }
 
-function syncWorkspace() {
-  syncStatus.value = 'Workspace data refreshed locally.'
-  showFeedback('Local workspace data synced.')
-  window.setTimeout(() => { syncStatus.value = '' }, 2200)
-}
 </script>
 
 <template>
@@ -126,11 +113,9 @@ function syncWorkspace() {
         </div>
         <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <button class="search-trigger hidden sm:flex" type="button" aria-haspopup="dialog" @click="openSearch"><span class="flex items-center gap-2"><UIcon name="i-lucide-search" />Search anything…</span><kbd>⌘ K</kbd></button>
-          <UButton label="Sync" size="sm" class="hidden bg-[var(--explore-ink)] text-white hover:bg-[var(--explore-ink-hover)] sm:inline-flex" @click="syncWorkspace" />
           <ProductStatusBadge label="POC configured" tone="success" dot class="hidden sm:inline-flex" />
         </div>
       </header>
-      <p v-if="syncStatus" class="sr-only" role="status">{{ syncStatus }}</p>
       <main id="main-content" tabindex="-1" class="app-content mx-auto min-h-[calc(100vh-4rem)] w-full max-w-[1480px] px-4 py-6 outline-none sm:px-6 lg:px-7 lg:py-[30px]"><slot /></main>
     </div>
     </div>
