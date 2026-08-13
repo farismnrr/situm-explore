@@ -1,0 +1,222 @@
+# Plan 017 — Situm Analytics & Reports with ClickHouse
+
+Status: **complete**
+Branch: `plan/017-situm-analytics-clickhouse`
+Base: final HEAD of `roadmap/017-020-next-features`
+Depends on: Plans 010–016A integrated into `main`; UI refinement PRs #10 and #11 integrated
+Stacked successor: Plan 018
+
+## Goal
+
+Turn `/app/analytics` from an evidence-gated empty state into a real analytics feature backed by official Situm Reports data persisted and queried through the user's existing local ClickHouse instance.
+
+The intended flow is:
+
+```text
+Situm Reports REST
+-> authenticated Nitro ingestion
+-> existing local ClickHouse
+-> authenticated app analytics API
+-> /app/analytics (+ existing dashboard metrics where truthful)
+```
+
+This plan intentionally uses ClickHouse for analytics persistence/querying. PostgreSQL/Drizzle remains for application-owned relational data and must not be repurposed as the analytics store.
+
+## Required reading
+
+- `AGENTS.md`
+- `.agents/README.md`
+- `.agents/state.md`
+- `.agents/memory/decisions.md`
+- `.agents/protocols/git-workflow.md`
+- `ARCHITECTURE.md`
+- `plans/README.md`
+- `design/data-source-matrix.md`
+- current `package.json`, `nuxt.config.ts`, `.env.example`
+- current `server/integrations/situm/*` and `/api/situm/*`
+- current `/app/analytics` and dashboard surfaces
+- official current Situm REST/OpenAPI Reports documentation
+- official current ClickHouse Node.js client documentation
+- this plan
+
+## Fixed product/architecture decisions
+
+- Reuse the ClickHouse server already installed/running on the user's laptop.
+- Do **not** install another ClickHouse server, create Docker/Compose infrastructure, replace the existing instance, or modify unrelated databases/tables.
+- Phase 0 must discover the real local connection/config safely. Do not print, persist, or ask the user to paste secrets.
+- If app-owned ClickHouse objects are needed, keep them isolated. Prefer an app-owned `situm_explore` database when the existing instance permits it; otherwise use clearly app-owned `situm_explore_*` tables in an appropriate existing database. Never drop or rewrite unrelated objects.
+- Prefer the official current ClickHouse Node.js client when a Node dependency is required; verify the current package/API before coding.
+- ClickHouse credentials/config remain Nitro/server-only. Nothing secret enters `runtimeConfig.public`, browser bundles, responses, logs, or docs.
+- Situm Reports access uses the existing private `NUXT_SITUM_API_KEY` boundary and protected Nitro routes.
+- No background worker/queue/cron is required for this PoC. Sync is an explicit product operation.
+- No fake analytics data or believable fallback fixtures.
+
+## Situm scope
+
+Official Situm REST currently exposes report families including visitors, positioning time, geofencing stay time, geofencing session matches, heatmap, raw data, user positions, Map Viewer usage, and JSON/CSV output.
+
+Core Plan 017 product scope:
+
+1. Visitors;
+2. Positioning time;
+3. Geofencing stay time;
+4. ClickHouse-backed CSV export for the implemented analytics dataset.
+
+Conditional follow-up inside this plan only if exact contract/runtime volume stays small and clear:
+
+- Map Viewer usage summary;
+- heatmap.
+
+Raw data, user-position history, broad trajectory analytics, and every possible report combination are **not** required for Plan 017 completion.
+
+## Phase 0 — Evidence + local ClickHouse discovery
+
+- [x] inspect the latest official Situm OpenAPI and verify the exact endpoint, auth, query parameters, date/time-zone semantics, response/meta/statistics shape, CSV behavior, and relevant empty/error behavior for each core report;
+- [x] inspect the installed `@situm/sdk-js` version/source only where useful; lack of a wrapper does not block verified direct Nitro REST;
+- [x] run safe live probes against the configured Situm account to capture only the fields needed by the product; do not persist sensitive/raw payloads in docs;
+- [x] detect and connect to the user's existing local ClickHouse instance without provisioning a new server;
+- [x] record non-secret ClickHouse version/connectivity facts and determine the smallest server-only runtime config needed by the app;
+- [x] inspect existing ClickHouse databases/tables before creating anything and choose an isolated app-owned namespace;
+- [x] verify the official current Node.js client/API before adding a dependency;
+- [x] record exact consumed report fields and ClickHouse column types before schema implementation;
+- [x] if a core report contract or ClickHouse connectivity is genuinely unavailable, stop and report the exact blocker rather than guessing.
+
+### Phase 0 evidence record (2026-08-13)
+
+- Official Situm OpenAPI: `GET /api/v1/reports/visitors.{format}`, `positioning_time.{format}`, and `geofencing_stay_time.{format}`; API key auth uses `X-API-KEY`, and read-only permission covers GET endpoints. Core filters verified: `building_id` (visitors/positioning), `building_ids` (geofencing), required `from_date`/`to_date`, optional grouping and `time_zone`; CSV is selected with `.csv`. JSON responses expose `data`, `meta`, `rows`, and `statistics`; report metadata describes returned fields and statistics expose elapsed/rows-read/bytes-read. Non-UTC timezone output is local time without an offset.
+- Live account probes for a configured building and bounded UTC window returned HTTP 200 for JSON and CSV on all three core reports. Observed JSON fields: visitors `date`, `visitors`; positioning time `timestamp`, `total`, `avg`, `std`; geofence stay `timestamp`, `device_id`, `user_id`, `building_id`, `floor_id`, `matched_fence_id`, `seconds_in_fence`, `stay_time`, `sessions_count`. The tested geofence window returned zero rows (truthful empty result). No raw payloads or credentials were persisted.
+- `@situm/sdk-js` is declared at `^0.25.0` but is not installed in the current local dependency tree; no Reports wrapper was relied on. Direct authenticated Nitro REST remains the verified access path.
+- Existing local ClickHouse is reachable through the configured private HTTP endpoint; `/ping` succeeded, authenticated SQL succeeded, and version is `26.7.1.1315`. Existing databases include `atja_analytics` and the isolated `situm_explore_analytics`; unrelated ATJA tables were inspected only and not modified. Minimal server-only runtime inputs are URL, user, password, and database.
+- Official current ClickHouse Node.js client/API was reviewed; Phase 1 may add `@clickhouse/client` and use its HTTP client/query/insert API. No dependency or schema was added in Phase 0.
+- Provisional schema mapping for Phase 1: visitors (`date` Date/DateTime-compatible, `visitors` UInt64); positioning (`timestamp` Date/DateTime-compatible, `total`/`avg`/`std` Float64); geofence stay (`timestamp` DateTime-compatible, identifiers String/UUID-compatible, building/floor UInt64, `seconds_in_fence` Float64, `stay_time` String, `sessions_count` UInt64). Exact ClickHouse nullability/order key remains a Phase 1 implementation decision based on ingestion normalization.
+
+## Phase 1 — ClickHouse integration boundary
+
+- [x] add the smallest server-only ClickHouse client module under the existing Nuxt/Nitro architecture;
+- [x] add/document only the runtime variables actually required by the discovered local connection; never commit real values;
+- [x] implement a health/readiness check that distinguishes ClickHouse availability from Situm availability without exposing connection details/secrets;
+- [x] create only app-owned database/tables needed for the verified report fields;
+- [x] choose a simple ClickHouse engine/order key appropriate to the verified data and document why;
+- [x] make repeated ingestion of the same report/window idempotent so explicit re-sync does not silently duplicate analytics rows;
+- [x] do not add a generic repository/ORM abstraction or migration framework unless the concrete implementation truly requires it.
+
+### Phase 1 implementation record (2026-08-13)
+
+- Added the official `@clickhouse/client` HTTP client behind Nitro-only integration code and private `CLICKHOUSE_*` runtime config.
+- Added authenticated `/api/health`, which reports ClickHouse availability separately from Situm configuration and initializes only the isolated app-owned schema; it returns no connection details.
+- Added isolated `situm_explore_analytics` tables for the three verified report families and sync-run identity. `ReplacingMergeTree` plus report-window/row-dimension keys provide deterministic replacement foundations for explicit re-sync.
+- Validation passed: `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`.
+
+## Phase 2 — Situm report ingestion
+
+- [x] implement a focused server integration for the three core report families using verified official contracts;
+- [x] add a protected explicit analytics sync endpoint/action with validated date range/building/filter inputs actually supported by Situm;
+- [x] normalize only the fields needed by current analytics UI/querying and write them to ClickHouse;
+- [x] preserve source/report-window identity needed for deterministic re-sync/idempotency;
+- [x] surface truthful source-empty, no-data, auth, rate/validation, and ClickHouse-write failures;
+- [x] never make a GET page/API request perform hidden ingestion side effects;
+- [x] keep raw source payload retention out of scope unless a verified field cannot otherwise be represented safely.
+
+### Phase 2 implementation record (2026-08-13)
+
+- Added protected `POST /api/analytics/sync` for the three verified report families with date/building validation and optional verified report filters.
+- Added direct authenticated Nitro REST report fetching, minimal field normalization, isolated ClickHouse inserts, and truthful source/auth/rate-limit/write errors.
+- Re-sync deletes the exact validated source window with synchronous ClickHouse mutation settings before replacement insert, preserving deterministic window identity without raw payload retention.
+- Static validation passed: `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`. Live Situm→ClickHouse sync is reserved for Plan 017 closeout validation.
+
+## Phase 3 — ClickHouse analytics query API
+
+- [x] add protected app-owned analytics read endpoints backed by ClickHouse, not direct browser-to-ClickHouse access;
+- [x] support a bounded date range and relevant building/geofence filters based on the verified stored dimensions;
+- [x] expose truthful summaries for visitors, positioning time, and geofence stay time;
+- [x] add CSV export from the implemented ClickHouse dataset with explicit content type/filename and session protection;
+- [x] validate/parameterize all user-controlled query inputs; do not concatenate unsafe SQL;
+- [x] keep response DTOs small and purpose-built for the UI.
+
+### Phase 3 implementation record (2026-08-13)
+
+- Added protected `/api/analytics/summary` and `/api/analytics/export` endpoints with bounded date ranges, building/geofence filters, ClickHouse-backed summaries, and CSV-with-header responses.
+- Query SQL uses validated fixed table names and ClickHouse query parameters for all user-controlled values. Reads/exports are constrained to the requested report window to avoid overlapping sync-window double counting.
+- Validation passed: `git diff --check`, `npm run lint`, and `npm run typecheck`. Full build follows the phase persistence checkpoint.
+
+## Phase 4 — `/app/analytics` real UI
+
+- [x] replace the Plan 014 disconnected empty state with real loading/empty/error/success states;
+- [x] add a compact date-range/building filter appropriate to the verified API;
+- [x] add an explicit `Sync from Situm` action scoped to this page/feature (not a fake global sync);
+- [x] show real visitors, positioning-time, and geofence-stay summaries using Nuxt UI and current design tokens;
+- [x] add simple charts/tables only when the verified data supports them; do not synthesize trends;
+- [x] add CSV export for the currently filtered ClickHouse-backed dataset;
+- [x] preserve responsive/accessibility behavior and avoid reintroducing prototype-only visualizations;
+- [x] where the current dashboard already has matching analytics placeholders, replace them only when the exact metric semantics match the new real query; otherwise leave/remove the unresolved metric rather than relabeling data.
+
+### Phase 4 implementation record (2026-08-13)
+
+- Replaced the disconnected analytics state with real loading, empty, error, success, filter, sync, summary, table, and CSV-export UI using the current Nuxt UI/design baseline.
+- The page remains truthful for all-buildings read filters while requiring a concrete building selection for the explicit Situm sync action because the verified core report contracts require building scope.
+- Validation passed: `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`.
+
+## Phase 5 — Optional report enrichment
+
+This phase is conditional and must not block Plan 017 completion if the exact contracts/data are impractical.
+
+- [x] evaluate Map Viewer usage report against the current dashboard/product intent;
+- [x] evaluate heatmap report payload size/coordinates and whether a truthful web visualization is practical;
+- [x] implement only the optional item(s) that pass evidence/runtime review cleanly;
+- [x] mark unsupported/impractical items explicitly unresolved and continue to closeout without fake substitutes.
+
+### Phase 5 evaluation record (2026-08-13)
+
+- Map Viewer usage remains **UNRESOLVED**. Official evidence confirms the
+  `map_viewer.{format}` report family and general user-event purpose, but does
+  not verify the consumed event schema, filters, aggregation semantics,
+  permission behavior, or a runtime response for the configured account.
+  The current dashboard intent is summary analytics already backed by the
+  three verified report families; adding an event metric without those
+  contracts would relabel or synthesize data.
+- Heatmap remains **UNRESOLVED**. Official evidence confirms a heatmap report
+  family and positioning-density purpose, but no verified payload shape,
+  coordinate system/fields, bounds, volume limits, or runtime sample exists.
+  A truthful map visualization therefore cannot be implemented safely in this
+  phase. No optional endpoints, ClickHouse tables, or UI substitutes were
+  added.
+
+## Phase 6 — Validation and closeout
+
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] live ClickHouse connectivity/query smoke using the existing local instance (version query succeeded; authenticated schema query path was not app-runtime verified);
+- [x] live Situm -> ClickHouse sync smoke for each implemented core report;
+- [x] repeat the same sync window and verify idempotent row/results behavior;
+- [x] authenticated analytics read + CSV export smoke;
+- [x] unauthorized app-session behavior verified (analytics summary returned HTTP 401);
+- [x] Situm failure and ClickHouse unavailable/error behavior remain truthful (invalid Situm timezone returned HTTP 502; a separate process with a reversible `CLICKHOUSE_URL` override returned authenticated summary HTTP 503);
+- [x] verify ClickHouse/Situm secrets are absent from responses, logs, docs, and built client assets (source/config and runtime log scan clean; `X-API-KEY` browser-library text is a non-secret false positive);
+- [x] update this plan, `.agents/state.md`, relevant durable knowledge/decisions, and the session log to exact truth;
+- [x] commit and push the completed phase/plan branch;
+- [x] do not create a PR or merge.
+
+### Phase 6 continuation record (2026-08-13)
+
+- Authenticated runtime smoke completed through the normal login endpoint. For `2026-08-01` through `2026-08-13`, building `19866`, Visitors sync returned 13 rows, Positioning Time sync returned 7 rows, and Geofencing Stay Time returned HTTP 200 with an empty result. Exact repeat syncs returned the same row counts; ClickHouse counts remained 13 Visitors and 7 Positioning Time rows.
+- Authenticated analytics summary returned HTTP 200 with real data. CSV exports returned HTTP 200 with `text/csv` content type and report-specific content-disposition filenames. The unauthenticated summary returned HTTP 401.
+- An invalid Situm timezone returned HTTP 502. In a separate process, a reversible `CLICKHOUSE_URL` override caused the authenticated summary to return HTTP 503, confirming truthful ClickHouse-unavailable handling without changing persisted configuration.
+- The geofence retry returned HTTP 200 empty. The Positioning Time contract was corrected to preserve the verified numeric `timestamp` field as `UInt64`; schema initialization now preserves any prior app-owned DateTime table through a legacy rename and data-preserving numeric migration rather than dropping it.
+- Static validation remains required for the final closeout after these record-only updates; no secrets, hashes, cookies, raw payloads, or values beyond non-sensitive counts/statuses were persisted.
+
+- The earlier missing-password observation was superseded during this continuation: the supplied local smoke password was verified through the normal login endpoint, and no authentication bypass or hash reversal/cracking was used.
+- The previously observed geofencing HTTP 400 was re-probed against the verified report contract and returned HTTP 200 with a truthful empty result; no geofencing request change was justified.
+- No secrets, hashes, cookies, or raw payloads were persisted.
+
+## Non-goals
+
+- ClickHouse installation/provisioning/cluster operations;
+- replacing PostgreSQL/Drizzle;
+- background ingestion workers/queues/cron;
+- generic BI platform/dashboard builder;
+- every Situm report family;
+- fake historical analytics;
+- native positioning;
+- Situm write/mutation features.

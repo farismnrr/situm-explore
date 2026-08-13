@@ -54,6 +54,14 @@ Source: Plan 010 capability review, 2026-08-13.
 
 Source: current Plan 010 execution contract, 2026-08-13.
 
+### Situm SDK JS realtime/trajectory Viewer evidence
+
+- Installed `@situm/sdk-js` is version `0.25.0` and exposes `loadRealtimePositions`, `cleanRealtimePositions`, `loadTrajectory`, and `cleanTrajectory`.
+- Official current source verifies realtime building-ID filtering, 10-second default refresh, immediate fetch plus interval lifecycle, customization of device ID/tooltip/icon, failure logging, and cleanup by clearing external features.
+- Official source verifies trajectory Date/building/optional UUID inputs and Viewer PLAY/clear dispatch, but does not establish date bounds or special empty/error UI semantics. Hydrated account/browser trajectory behavior remains unresolved and must not be implemented until smoked.
+
+Source: installed package typings/runtime + official `situmtech/situm-sdk-js` source and example, reviewed 2026-08-13.
+
 ### UI reference translation boundary
 
 - `design/reference/situm-explore-interactive-prototype.html` remains the single visual/interaction reference.

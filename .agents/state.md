@@ -2,99 +2,80 @@
 
 _Last reviewed: 2026-08-13_
 
-## Current focus
+## Completed lineage
 
-The UI roadmap through Plan 009B and the Situm backend/web roadmap Plans 010–016A are complete and integrated into `main`.
+- Plan 017 — complete.
+- Plan 018 — complete.
+- Plan 019 — complete; trajectory remains unresolved/omitted.
+- Plan 019A — complete; manual production-preview acceptance passed.
 
-PR #8 merged the cumulative Plans 010–016A lineage. `main` is the canonical branch. There is no active implementation plan or required plan branch.
+Final pushed Plan 019A HEAD:
 
-Do not restart Plans 010–016A, recreate their historical branches, or execute the superseded Plan 017 credential-split draft as a separate roadmap step.
+`e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
 
-## Completed roadmap result
+Manual Plan 019A acceptance proved real map/cartography load, forward and reverse static-route rendering, cancel cleanup, navigate-away/back cleanup, and the mobile desktop-Viewer boundary.
 
-- Plan 010 — implementation/review complete; web/native/security/evidence boundary frozen.
-- Plan 011 — implementation complete: Buildings/Floors/POIs/Categories reads and map selection context.
-- Plan 012 — implementation complete for verified Geofences/Paths reads; static route-result/product mapping remains unresolved and absent.
-- Plan 013 — implementation complete for current-position monitoring; stale/offline semantics, Viewer realtime overlay, trajectory/follow remain unresolved and absent.
-- Plan 014 — skipped-unresolved; report paths/purpose now have partial evidence, but exact implementation contract remains insufficient.
-- Plan 015 — implementation complete for Organization + Users reads; Groups + Alarms remain unresolved/absent pending exact REST evidence.
-- Plan 016 — implementation complete for verified Viewer language, font-size, accessibility-panel, and location-picker commands.
-- Plan 016A — complete: final Situm credential contract, environment/config cleanup, Nuxt 4 tsconfig cleanup, static/security validation, and live runtime smoke for implemented Situm server reads.
+Non-blocking observations retained for Plan 020 review: some Viewer-visible POIs were absent from the product POI list; constrained `ONLY_NOT_ACCESSIBLE_FLOOR_CHANGES` requests could fail to estimate; Situm/Mapbox emitted internal image/glyph warnings. Treat these as evidence, not automatic app bugs.
 
-## Final Situm credential contract
+## Completed plan — 020
 
-Exactly two Situm keys are intentional:
+- plan: `plans/020-situm-static-directions.md`
+- branch: `plan/020-situm-static-directions-v2`
+- base: exact final Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
+- status: **complete; awaiting PR/merge decision**
 
-- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only.
-- `NUXT_SITUM_API_KEY` — single private Nitro credential for all server-side Situm operations.
-- `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier.
+`plan/020-situm-static-directions-v2` was created directly from the exact final Plan 019A HEAD to preserve non-destructive history.
 
-Do not reintroduce separate private read/write keys unless a future concrete requirement justifies that complexity.
+The earlier remote `plan/020-situm-static-directions` branch at stale pre-019A lineage (`c902e53`) is superseded as an execution branch. Do not merge, cherry-pick, reset, force-push, or use it as current authority. Historical evidence from it may be consulted only where still accurate.
 
-All current Nitro Situm operations use the private `NUXT_SITUM_API_KEY`. `/api/situm/status` reports server and Viewer configuration separately without exposing values. The private key must never enter browser/public runtime config, client bundles, logs, docs, or error payloads.
+Completed chain:
 
-`NUXT_PUBLIC_APP_URL` and `DB_SCHEMA` are not part of the current runtime contract.
+```text
+roadmap/017-020-next-features
+-> plan/017-situm-analytics-clickhouse            [complete]
+-> plan/018-situm-groups-alarms-read              [complete]
+-> plan/019-situm-realtime-viewer-trajectory      [complete]
+-> plan/019a-situm-static-directions-foundation   [complete]
+-> plan/020-situm-static-directions-v2            [complete]
+```
 
-## Validation truth
+## Execution rules
 
-Plan 016A closeout passed:
+- Plan 020 phases are complete;
+- the branch is awaiting the user's separately gated PR/merge decision;
+- no PR or merge has been created;
+- runtime acceptance uses production build + preview, not Nuxt dev mode;
+- wait for actual Situm Viewer/cartography readiness before Viewer commands.
+
+## Static-directions evidence boundary
+
+Already proven by Plan 019A:
+
+- numeric POI-id From/To selection;
+- typed `startDirections` and `cancelDirections`;
+- Viewer-owned route rendering;
+- forward/reverse route rendering;
+- cancel cleanup;
+- navigate-away/back cleanup;
+- mobile non-mount boundary.
+
+Keep absent unless exact evidence proves otherwise:
+
+- route completion/result payloads;
+- distance/duration/steps/instructions/geometry/ETA;
+- reliable route lifecycle events;
+- tag semantics;
+- live navigation/current-position/rerouting behavior.
+
+Never expose raw Viewer access or a generic invoke surface.
+
+## Validation baseline
 
 - `git diff --check`;
 - `npm run lint`;
 - `npm run typecheck`;
-- `npm run build`;
-- client-bundle/private-credential leakage checks;
-- unauthorized and missing/invalid credential behavior checks;
-- real authenticated Situm success-path smoke for cartography, geofences, paths, realtime positions, organization, and users;
-- truthful empty/error handling where applicable.
-
-Runtime Situm smoke is complete for the implemented server read paths using configured credentials. No private Situm credential leakage was observed in API responses, logs, or built public client assets.
-
-The retained Plan 016 Viewer command surface remains bounded by its verified Viewer contract. Full browser automation of every hydrated interaction was not required for Plan 016A closeout.
-
-## Evidence-gated follow-up gaps
-
-The following remain intentionally absent rather than faked:
-
-- full Reports/Analytics/CSV implementation;
-- Groups read integration;
-- Alarms read integration;
-- static route-result/details/constraints presentation;
-- realtime stale/offline semantics and Viewer overlay;
-- trajectory/follow semantics;
-- unverified generic Viewer config/settings operations.
-
-Reports, Groups, and Alarms may become Plan 017 or later only if exact official contracts and a concrete product scope justify implementation.
-
-## No-hallucination rule
-
-For Situm behavior: **no evidence, no implementation**.
-
-Before adding a missing capability, verify exact official endpoint/SDK method, auth/permission, request parameters, response/event fields, web/native ownership, and relevant failure/empty/stale semantics. If material evidence is missing, keep it unresolved/absent rather than inventing behavior.
-
-## Web/native boundary
-
-The Nuxt product remains the web operations/admin/exploration console.
-
-Native-only scope remains outside this roadmap:
-
-- handset indoor positioning / blue dot from sensors;
-- Wi-Fi/BLE positioning and permission handling;
-- movement-aware live turn-by-turn navigation/rerouting;
-- other mobile-runtime positioning behavior.
-
-Web may consume positions produced by devices; it must not pretend the browser performs Situm indoor positioning.
-
-## Git / integration truth
-
-Plans 010–016 and 016A were executed as one cumulative stacked lineage and integrated into `main` through PR #8.
-
-Historical plan branches no longer own current authority. They may be deleted after integration because their work is contained in `main`; the plan files and Git commit history remain the historical record.
-
-The old `plan/017-situm-credential-split-runtime-verification` branch/name is superseded and disposable.
+- `npm run build`.
 
 ## Next action
 
-No further Plan 016A work is required.
-
-Keep `main` as the only canonical branch. Future substantive work should start from updated `main` on a newly scoped branch only when needed.
+Plan 020 is complete on `plan/020-situm-static-directions-v2` at final pushed HEAD. Production preview smoke passed for the updated Paths copy and Map Route request/replacement/cancellation controls; accepted Plan 019A manual evidence covers visual forward/reverse rendering, cleanup, and mobile boundary. The Viewer-visible POI mismatch is not proven app-owned, constrained route failures remain runtime limitations, and unresolved route details/events/tags remain absent. The branch is ready for the user's separately gated review/merge decision; no PR or merge was created. Do not replay the resolved foundation or use the stale pre-019A branch.

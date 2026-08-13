@@ -2,14 +2,14 @@
 
 `.agents/` is the persistent context layer for Situm Explore.
 
-Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in the root contracts; `.agents/` stores current state, durable decisions, operating protocols, verified knowledge, lessons, and concise history.
+Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in root contracts; `.agents/` stores current state, durable decisions, operating protocols, verified knowledge, lessons, and concise history.
 
 ## Directory map
 
 | Path | Purpose |
 | --- | --- |
 | `identity.md` | Mission, behavior, and stable agent principles. |
-| `state.md` | Current focus, blockers, canonical branch, and next action. |
+| `state.md` | Current focus, blockers, canonical/working branch, and next action. |
 | `protocols/chat-lifecycle.md` | Conversation workflow. |
 | `protocols/persistence.md` | What must be persisted after a conversation. |
 | `protocols/git-workflow.md` | Plan branch, validation, commit/push, stacked-branch exception, and PR gates. |
@@ -29,7 +29,7 @@ Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in t
 7. `ARCHITECTURE.md`.
 8. `plans/README.md`.
 9. `design/data-source-matrix.md` when Situm/product capability scope matters.
-10. active/follow-up plan, if one exists.
+10. active/follow-up plan.
 11. `DESIGN.md` and `design/IMPLEMENTATION.md` for UI/presentation changes.
 
 Historical plans/session notes are evidence, not current authority.
@@ -69,20 +69,34 @@ Before a completed implementation-phase commit:
 1. update active plan/checklist;
 2. update `.agents/state.md`;
 3. update durable decisions/knowledge only when changed;
-4. append the current session note;
+4. append/update current session evidence;
 5. run required validation;
 6. commit and push the plan branch.
 
-Never store credentials, API keys, JWTs, passwords, or sensitive payloads.
+Never store credentials, API keys, JWTs, passwords, ClickHouse credentials, or sensitive payloads.
 
 ## Current scope
 
-The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are historical and integrated into `main`.
+Plans 017, 018, and 019 in the current stacked feature lineage are complete. The user explicitly inserted Plan 019A before Plan 020.
 
-PR #8 integrated the cumulative Plans 010–016A lineage. `main` is now the only canonical branch and there is no active implementation plan.
+Current chain:
 
-Do not restart or recreate Plans 010–016A from historical plan branches. The old Plan 017 credential-split draft was superseded by Plan 016A and is not an active roadmap step.
+```text
+Plan 017 — Analytics & Reports with existing local ClickHouse   [complete]
+-> Plan 018 — Groups & Alarms read-only                        [complete]
+-> Plan 019 — Realtime Viewer overlay                          [complete]
+-> Plan 019A — Static Directions Foundation & Runtime Proof    [ACTIVE]
+-> Plan 020 — Static Directions Product Completion             [queued]
+```
 
-Historical plan branches may be deleted after integration because their commits are contained in `main`; plan files and Git history remain the historical record.
+Active branch:
 
-Future substantive work should start from updated `main` on a newly scoped plan branch only when explicitly needed. Read `.agents/state.md` for exact current truth and unresolved capability gaps.
+`plan/019a-situm-static-directions-foundation`
+
+Plan 019A starts from final Plan 019 HEAD `513f65e820635e05a22a54270f3bf21f5925e6c8`.
+
+The pre-019A `plan/020-situm-static-directions` branch is superseded as an execution base. Keep it only as historical evidence; do not merge/cherry-pick it into 019A. After 019A completes, Plan 020 starts from the exact final Plan 019A HEAD.
+
+Implementation/testing for each implementation phase remains delegated specifically to the configured `worker` subagent. The parent owns review, state/plan/session persistence, commits, pushes, and phase transitions. No PR or merge during this stacked run.
+
+Read `.agents/state.md` for the exact current truth, evidence boundaries, branch chain, and next action.

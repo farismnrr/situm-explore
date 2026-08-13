@@ -1,14 +1,123 @@
 <script setup lang="ts">
+import type { SitumCartographyResponse } from '#shared/situm-cartography'
 import type { SitumRealtimeResponse } from '#shared/situm-realtime'
 
+type ViewerApi = {
+  loadRealtimePositions: (buildingId?: number, refreshRateMs?: number) => Promise<void>
+  cleanRealtimePositions: () => Promise<void>
+}
+
+const isDesktopViewport = useDesktopViewport()
+const viewer = ref<ViewerApi | null>(null)
+const viewerState = ref<'loading' | 'ready' | 'error'>('loading')
+const overlayEnabled = ref(true)
+const overlayState = ref<'idle' | 'loading' | 'active' | 'error'>('idle')
+const overlayMessage = ref('')
+const selectedBuildingId = ref<number | null>(null)
+const statusMessage = ref('')
+
+const { data: cartography, error: cartographyError, status: cartographyStatus } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
 const { data, error, status, refresh } = await useFetch<SitumRealtimeResponse>('/api/situm/realtime')
 const positions = computed(() => data.value?.positions ?? [])
-const statusMessage = ref('')
+const buildings = computed(() => cartography.value?.buildings ?? [])
+const searchQuery = ref('')
+const selectedBuilding = computed(() => buildings.value.find(building => building.id === selectedBuildingId.value) ?? buildings.value[0] ?? null)
+const filteredPositions = computed(() => {
+  const query = searchQuery.value.trim().toLocaleLowerCase()
+  return positions.value.filter((position) => {
+    if (selectedBuilding.value && position.buildingId !== selectedBuilding.value.id) return false
+    if (!query) return true
+    const floor = cartography.value?.floors.find(item => item.id === position.floorId)
+    return [
+      position.id,
+      position.deviceId,
+      String(position.buildingId),
+      selectedBuilding.value?.name,
+      String(position.floorId),
+      floor?.name,
+    ].filter(Boolean).some(value => String(value).toLocaleLowerCase().includes(query))
+  })
+})
+
+function formatSourceTime(value: string) {
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'medium' }).format(date)
+}
+
+function floorLabel(floorId: number) {
+  const floor = cartography.value?.floors.find(item => item.id === floorId)
+  return floor ? `${floor.name} (ID ${floorId})` : `ID ${floorId}`
+}
+
+watch(buildings, (value) => {
+  if (selectedBuildingId.value === null && value[0]) selectedBuildingId.value = value[0].id
+}, { immediate: true })
+
+function handleViewerStatus(state: 'loading' | 'ready' | 'error') {
+  viewerState.value = state
+  if (state === 'ready') void syncOverlay()
+  if (state === 'error') {
+    overlayState.value = 'idle'
+    overlayMessage.value = ''
+  }
+}
+
+async function cleanOverlay() {
+  if (!viewer.value || viewerState.value !== 'ready') return
+  await viewer.value.cleanRealtimePositions()
+  overlayState.value = 'idle'
+}
+
+async function syncOverlay() {
+  if (!isDesktopViewport.value || !overlayEnabled.value || viewerState.value !== 'ready' || !selectedBuilding.value) return
+  overlayState.value = 'loading'
+  overlayMessage.value = ''
+  try {
+    await viewer.value?.loadRealtimePositions(selectedBuilding.value.id, 10_000)
+    overlayState.value = 'active'
+  } catch (commandError) {
+    overlayState.value = 'error'
+    overlayMessage.value = commandError instanceof Error ? commandError.message : 'The realtime overlay could not be started.'
+  }
+}
+
+async function toggleOverlay(enabled: boolean) {
+  overlayEnabled.value = enabled
+  if (enabled) await syncOverlay()
+  else {
+    try { await cleanOverlay() }
+    catch (commandError) {
+      overlayState.value = 'error'
+      overlayMessage.value = commandError instanceof Error ? commandError.message : 'The realtime overlay could not be cleared.'
+    }
+  }
+}
+
+async function changeBuilding(buildingId: number) {
+  selectedBuildingId.value = buildingId
+  if (overlayEnabled.value) {
+    try {
+      await cleanOverlay()
+      await syncOverlay()
+    } catch (commandError) {
+      overlayState.value = 'error'
+      overlayMessage.value = commandError instanceof Error ? commandError.message : 'The building overlay could not be refreshed.'
+    }
+  }
+}
 
 async function refreshPositions() {
   await refresh()
   statusMessage.value = error.value ? 'Realtime refresh failed.' : `Loaded ${positions.value.length} current positions.`
 }
+
+watch(isDesktopViewport, (desktop) => {
+  if (!desktop) void cleanOverlay().catch(() => undefined)
+  else void syncOverlay()
+})
+watch(selectedBuilding, () => void syncOverlay())
+
+onBeforeUnmount(() => { void cleanOverlay().catch(() => undefined) })
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
 </script>
@@ -23,32 +132,46 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
 
     <div class="realtime-grid grid gap-4 lg:grid-cols-[1.4fr_.6fr]">
       <UCard :ui="{ body: 'p-0' }">
-        <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3">
-          <h2 class="text-sm font-semibold text-highlighted">Live map</h2>
-          <span class="text-xs text-muted">{{ positions.length }} current positions</span>
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-default px-4 py-3">
+          <div><h2 class="text-sm font-semibold text-highlighted">Live map</h2><p class="mt-1 text-xs text-muted">{{ selectedBuilding?.name || 'No building selected' }}</p></div>
+          <div class="flex items-center gap-3"><USelect v-if="buildings.length" :model-value="selectedBuildingId ?? undefined" :items="buildings.map(building => ({ label: building.name, value: building.id }))" aria-label="Realtime building" class="w-44" @update:model-value="changeBuilding(Number($event))" /><USwitch :model-value="overlayEnabled" label="Realtime overlay" :disabled="viewerState !== 'ready' || !selectedBuilding" @update:model-value="toggleOverlay" /></div>
         </div>
-          <div class="realtime-map relative overflow-hidden border-t border-default" aria-label="Realtime map awaiting Situm data">
-          <div class="flex h-full items-center justify-center p-6"><UAlert v-if="error" color="error" variant="subtle" title="Realtime unavailable" description="The authenticated Situm position read failed. No simulated markers are shown." class="max-w-md" /><UAlert v-else-if="positions.length === 0" color="neutral" variant="subtle" title="No current positions" description="Situm returned no current position features." class="max-w-md" /><div v-else class="text-sm text-muted">{{ positions.length }} current device-produced positions received.</div></div>
+        <div v-if="!isDesktopViewport" class="flex h-[420px] items-center justify-center border-t border-default p-6 text-center"><UAlert color="neutral" variant="subtle" title="Desktop Viewer unavailable" description="The realtime Situm Viewer is not mounted on mobile. The current position list remains available below." class="max-w-md" /></div>
+        <div v-else class="realtime-map relative overflow-hidden border-t border-default" aria-label="Situm realtime map">
+          <SitumViewer ref="viewer" class="h-full" @status="handleViewerStatus" />
+          <div v-if="viewerState === 'loading'" class="absolute inset-0 flex items-center justify-center bg-default/70 p-6"><UAlert color="neutral" variant="subtle" title="Loading Viewer" description="Waiting for the Situm map to become ready." class="max-w-md" /></div>
+          <div v-else-if="viewerState === 'error'" class="absolute inset-0 flex items-center justify-center bg-default/80 p-6"><UAlert color="error" variant="subtle" title="Viewer unavailable" description="The Situm map could not be loaded. The server position context remains independent." class="max-w-md" /></div>
+          <div v-else-if="overlayState === 'loading'" class="absolute left-4 top-4"><UBadge color="warning" variant="soft">Starting realtime overlay…</UBadge></div>
+          <div v-else-if="overlayState === 'error'" class="absolute left-4 right-4 top-4"><UAlert color="error" variant="subtle" title="Realtime overlay unavailable" :description="overlayMessage" /></div>
+          <div v-else-if="overlayEnabled && overlayState === 'active' && positions.length === 0" class="absolute inset-0 flex items-center justify-center pointer-events-none p-6"><UAlert color="neutral" variant="subtle" title="No current positions" description="The Viewer is ready, but the server returned no current position records." class="max-w-md" /></div>
         </div>
       </UCard>
 
       <UCard :ui="{ body: 'p-0' }">
-        <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3">
-          <h2 class="text-sm font-semibold text-highlighted">People & devices</h2>
-          <span class="text-xs text-muted">{{ positions.length }} records</span>
+        <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3"><h2 class="text-sm font-semibold text-highlighted">People & devices</h2><span class="text-xs text-muted">{{ filteredPositions.length }} of {{ positions.length }} records</span></div>
+        <div class="space-y-4 p-4">
+          <UInput v-model="searchQuery" icon="i-lucide-search" placeholder="Search IDs or building/floor context" aria-label="Search realtime positions" />
+          <UAlert v-if="error" color="error" variant="subtle" title="Positions unavailable" description="The authenticated Situm position read failed." />
+          <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading positions" description="Reading current positions from Situm." />
+          <UAlert v-else-if="positions.length === 0" color="neutral" variant="subtle" title="No current positions" description="Situm returned no current position records." />
+          <UAlert v-else-if="filteredPositions.length === 0" color="neutral" variant="subtle" title="No matching positions" description="Try another identifier or clear the search and building context." />
+          <div v-else class="space-y-2">
+            <div v-for="position in filteredPositions" :key="position.id" class="rounded-lg border border-default p-3">
+              <div class="flex items-center justify-between gap-3"><strong class="text-sm text-highlighted">{{ position.deviceId ? `Device ID ${position.deviceId}` : `Position ID ${position.id}` }}</strong><span class="text-right text-xs text-muted">{{ floorLabel(position.floorId) }}</span></div>
+              <p class="mt-1 text-xs text-muted">Building {{ selectedBuilding?.name || `ID ${position.buildingId}` }} (ID {{ position.buildingId }}) · accuracy {{ position.accuracy }}m</p>
+              <p class="mt-1 text-xs text-muted">Location {{ position.lat }}, {{ position.lng }} · last seen {{ formatSourceTime(position.time) }}</p>
+            </div>
+          </div>
         </div>
-        <div class="p-4"><UAlert v-if="error" color="error" variant="subtle" title="Positions unavailable" description="No fixture rows are shown." /><div v-else-if="positions.length === 0" class="text-sm text-muted">No current positions.</div><div v-else class="space-y-2"><div v-for="position in positions" :key="position.id" class="rounded-lg border border-default p-3"><div class="flex items-center justify-between"><strong class="text-sm text-highlighted">{{ position.deviceId || position.id }}</strong><span class="text-xs text-muted">Floor {{ position.floorId }}</span></div><p class="mt-1 text-xs text-muted">Building {{ position.buildingId }} · accuracy {{ position.accuracy }}m · {{ position.time }}</p></div></div></div>
       </UCard>
     </div>
+    <UAlert v-if="cartographyError" color="error" variant="subtle" title="Building context unavailable" description="The Viewer overlay cannot be scoped until Situm buildings load." />
+    <p v-else-if="cartographyStatus === 'pending'" class="text-xs text-muted">Loading building context…</p>
   </div>
 </template>
 
 <style scoped>
 .operations-page { max-width: 1480px; }
-.realtime-map { height: 420px; background: repeating-linear-gradient(0deg,#fafbfc 0 26px,#f0f2f4 27px),repeating-linear-gradient(90deg,transparent 0 26px,#f0f2f4 27px); }
-.realtime-floor { position:absolute; inset:12% 10%; border:2px solid #d6dae0; border-radius:18px; background:#fff; transform:rotate(-2deg); }
-.realtime-floor::before { content:''; position:absolute; inset:15% 12%; border:1px solid #e0e3e7; border-radius:9px; }
-.activity-row strong { font-size: .6875rem; }
-.activity-row span { font-size: .625rem; }
+.realtime-map { height: 420px; }
 @media (max-width: 1023px) { .realtime-grid { grid-template-columns: 1fr; } }
 </style>

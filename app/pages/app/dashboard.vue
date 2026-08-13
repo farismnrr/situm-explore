@@ -18,7 +18,7 @@ const situmColor = computed(() => situm.value?.configured ? 'success' : 'warning
     </ProductPageHeader>
 
     <div class="content-grid mb-4">
-      <UCard><UAlert color="neutral" variant="subtle" title="Reports are not connected" description="Visitor, positioning, geofence, heatmap and map viewer metrics will be sourced in Plan 014. No fixture values are shown as current facts." /></UCard>
+      <UCard><UAlert color="neutral" variant="subtle" title="Dashboard metrics remain unresolved" description="Real report summaries are available in Reports. Alarm, user and group totals are not shown here because their source scope and denominator are not equivalent to one another." /></UCard>
       <UCard :ui="{ body: 'p-0' }"><div class="panel-head"><h2 class="font-semibold text-highlighted">System status</h2><span class="text-xs text-muted">Just now</span></div><div class="status-list panel-body"><div><span>Map Viewer</span><ProductStatusBadge label="Open map to verify" /></div><div><span>Database</span><ProductStatusBadge :label="databaseLabel" :tone="databaseColor" /></div><div><span>Situm configuration</span><ProductStatusBadge :label="situmLabel" :tone="situmColor" /></div></div></UCard>
     </div>
   </div>

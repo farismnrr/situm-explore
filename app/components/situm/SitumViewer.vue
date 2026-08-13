@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SitumSDK, { ViewerEventType } from '@situm/sdk-js'
+import type { RouteType } from '@situm/sdk-js'
 
 const emit = defineEmits<{
   status: [state: 'loading' | 'ready' | 'error', message?: string]
@@ -33,7 +34,44 @@ function showUserSettings(visible: boolean) { return runViewerCommand(() => view
 function updateFontSize(size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl') { return runViewerCommand(() => viewer!.updateFontSize({ size })) }
 function openLocationPicker() { return runViewerCommand(() => viewer!.openLocationPicker()) }
 
-defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker })
+function requirePositiveInteger(value: number, name: string) {
+  if (!Number.isInteger(value) || value <= 0) throw new Error(`${name} must be a positive integer.`)
+  return value
+}
+
+function loadRealtimePositions(buildingId?: number, refreshRateMs?: number) {
+  const resolvedBuildingId = requirePositiveInteger(
+    buildingId ?? Number(config.public.situmBuildingId),
+    'buildingId',
+  )
+  if (refreshRateMs !== undefined) requirePositiveInteger(refreshRateMs, 'refreshRateMs')
+
+  return runViewerCommand(() => viewer!.loadRealtimePositions({
+    filter: { buildingIds: [resolvedBuildingId] },
+    ...(refreshRateMs === undefined ? {} : { refreshRateMs }),
+  }))
+}
+
+function cleanRealtimePositions() {
+  return runViewerCommand(() => viewer!.cleanRealtimePositions())
+}
+
+function startDirections(navigationFrom: number, navigationTo: number, routeType?: RouteType) {
+  const from = requirePositiveInteger(navigationFrom, 'navigationFrom')
+  const to = requirePositiveInteger(navigationTo, 'navigationTo')
+
+  return runViewerCommand(() => viewer!.startDirections({
+    navigationFrom: from,
+    navigationTo: to,
+    ...(routeType === undefined ? {} : { routeType }),
+  }))
+}
+
+function cancelDirections() {
+  return runViewerCommand(() => viewer!.cancelDirections())
+}
+
+defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker, loadRealtimePositions, cleanRealtimePositions, startDirections, cancelDirections })
 
 onMounted(() => {
   if (!config.public.situmApiKey || !config.public.situmBuildingId) {
@@ -50,6 +88,11 @@ onMounted(() => {
       emit('status', state.value)
     })
     viewer.on(ViewerEventType.APP_ERROR, (payload) => {
+      // The Viewer can report application errors while handling a command
+      // (including directions) after the map has already become usable. Keep
+      // the command surface ready in that case; only initialization errors
+      // should invalidate the map lifecycle.
+      if (state.value === 'ready') return
       state.value = 'error'
       message.value = payload.message ? 'The map viewer could not finish loading.' : 'The map viewer encountered an error.'
       emit('status', state.value, message.value)
@@ -59,6 +102,11 @@ onMounted(() => {
     message.value = error instanceof Error ? 'The map viewer could not be initialized.' : 'The map viewer encountered an error.'
     emit('status', state.value, message.value)
   }
+})
+
+onBeforeUnmount(() => {
+  if (viewer) void viewer.cleanRealtimePositions().catch(() => undefined)
+  if (viewer) void viewer.cancelDirections().catch(() => undefined)
 })
 </script>
 

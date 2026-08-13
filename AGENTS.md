@@ -2,85 +2,59 @@
 
 This repository is a persistent agent workspace for Situm Explore.
 
-Keep this file short. It is a router, not the knowledge base.
+Keep this file short. Current authority lives in `.agents/state.md`.
 
 ## Mandatory read order
-
-At minimum every conversation reads:
 
 1. `.agents/identity.md`
 2. `.agents/state.md`
 3. `.agents/protocols/chat-lifecycle.md`
-
-For plan execution or repository changes also read:
-
-4. `.agents/protocols/git-workflow.md`
+4. `.agents/protocols/git-workflow.md` for repository work
 5. `.agents/memory/decisions.md` when roadmap/product boundaries matter
 6. `ARCHITECTURE.md`
 7. `plans/README.md`
-8. `design/data-source-matrix.md` when Situm/product capability scope matters
-9. the active/follow-up plan, if one exists
+8. `design/data-source-matrix.md` when Situm capability scope matters
+9. the relevant plan
 
-For UI/UX/presentation work also read:
-
-10. `DESIGN.md`
-11. `design/IMPLEMENTATION.md`
-12. the canonical HTML only as visual/interaction evidence
-
-Historical plans/sessions are evidence only and must not override current state/contracts.
+Historical plans/sessions/branches are evidence only.
 
 ## Current roadmap truth
 
-The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are integrated into `main`.
+```text
+Plan 017  [complete]
+-> Plan 018  [complete]
+-> Plan 019  [complete]
+-> Plan 019A [complete]
+-> Plan 020  [complete]
+```
 
-PR #8 integrated the cumulative Plans 010–016A lineage. `main` is now canonical and there is no active implementation plan.
+Completed review branch:
 
-Do not restart Plans 010–016A or recreate them from historical plan branches. The earlier Plan 017 credential-split draft/name was superseded by Plan 016A and must not be executed as a separate step.
+`plan/020-situm-static-directions-v2`
 
-Historical plan branches are disposable after integration; plan files and Git history preserve the record.
+It started from exact final Plan 019A HEAD:
 
-Read `.agents/state.md` for exact completed/skipped/unresolved status and the final two-key Situm credential contract.
+`e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
 
-## No-hallucination external integration rule
+The older `plan/020-situm-static-directions` branch is stale pre-019A history and is superseded as an execution branch. Do not use it as current authority.
 
-For Situm behavior, model memory is not evidence.
+## External integration rule
 
-Before implementation, verify the exact current contract from official Situm documentation/source and the installed SDK version where relevant.
-
-Do not invent endpoint paths, SDK/Viewer methods, payload/event fields, permissions/auth behavior, web/native availability, browser/server ownership, or fake fallback values.
-
-If exact evidence is incomplete, keep the capability `UNRESOLVED`/absent instead of guessing.
+For Situm behavior: no evidence, no implementation. Verify current official contracts and installed SDK/runtime behavior. Keep unresolved capabilities absent rather than guessing.
 
 ## Architecture boundary
 
-Use the current Nuxt 4 structure under `app/`, `server/`, and optional `shared/`.
-
-Prefer KISS. Do not introduce speculative services, repositories, stores, event buses, generic API clients, caches, background workers, or parallel design systems.
-
-Situm uses exactly two credential boundaries unless a future concrete requirement changes that decision:
-
-- `NUXT_PUBLIC_SITUM_API_KEY` for the browser Viewer;
-- `NUXT_SITUM_API_KEY` for private Nitro Situm operations.
-
-Protected server Situm routes require the application session. Native indoor positioning/bluedot and movement-aware handset navigation remain outside the Nuxt web roadmap.
+Use the current Nuxt 4 structure and keep one Viewer owner with a small typed surface. Static directions remain Viewer-owned; live handset navigation/current-location behavior stays outside this web roadmap.
 
 ## Git workflow
 
 - one plan = one dedicated plan branch;
 - never implement directly on `main`;
-- no linked worktrees unless explicitly requested;
-- complete phases with plan/state updates, validation, commit, and push;
-- never merge without explicit user authorization;
-- PR creation/review is user-gated;
-- dependent plans normally start after integration into updated `main`;
-- explicit stacked execution is allowed only when current durable state records that exception.
-
-There is currently no active plan branch. New substantive work starts from updated `main` on a newly scoped branch.
+- avoid destructive history rewriting;
+- do not create a PR or merge unless explicitly authorized;
+- implementation/fixes for active plan phases go specifically to the configured `worker` subagent;
+- parent owns orchestration, review, plan/state updates, commits, pushes, and transitions.
 
 ## Mandatory closeout
 
-Before finishing a conversation, follow `.agents/protocols/persistence.md`.
-
-Update current state/session evidence and revise durable memory/knowledge/decisions only when something durable changed.
-
-Never persist credentials, API keys, JWTs, passwords, or unnecessary sensitive payloads.
+Follow `.agents/protocols/persistence.md` and keep durable state aligned with exact current truth.

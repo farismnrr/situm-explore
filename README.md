@@ -41,6 +41,8 @@ The authenticated workspace is rooted at `/app`. Login uses the existing Nitro e
 
 The current POC does not have a self-service account-registration backend; the historical dummy `/register` flow is removed. `/api/situm/status` requires the app session and reports private Situm configuration presence only; Viewer configuration is reported separately. It is not a Situm health check or Viewer readiness signal.
 
+Plan 017 analytics uses the existing local ClickHouse instance through the server-only `CLICKHOUSE_URL`, `CLICKHOUSE_USER`, `CLICKHOUSE_PASSWORD`, and `CLICKHOUSE_DB` variables documented in `.env.example`. The authenticated `/api/health` endpoint reports ClickHouse availability separately from Situm configuration without returning connection details. The app-owned `situm_explore_analytics` schema uses `ReplacingMergeTree` keyed by report window and row dimensions; sync identity keys provide deterministic re-sync foundations. Do not add a second ClickHouse server or expose these variables through public runtime config.
+
 ## Situm integration roadmap
 
 The completed cumulative roadmap is:

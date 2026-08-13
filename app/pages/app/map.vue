@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SitumCartographyPoi, SitumCartographyResponse } from '#shared/situm-cartography'
+import { RouteType } from '@situm/sdk-js'
 
 const activeTab = ref<'explore' | 'route' | 'layers'>('explore')
 const sidebarCollapsed = ref(false)
@@ -9,12 +10,21 @@ const poiSearch = ref('')
 const showFavorites = ref(false)
 const favoritePoiIds = ref<number[]>([])
 const selectedPoiId = ref<number | null>(null)
-const routeStart = ref('')
-const routeDestination = ref('')
+const routeStart = ref<number | undefined>(undefined)
+const routeDestination = ref<number | undefined>(undefined)
 const accessibleRoute = ref(false)
+const routeFeedback = ref('')
+const routeRequestPending = ref(false)
+const routeRequested = ref(false)
 const layerState = reactive({ realtime: true, geofence: false, trajectory: false })
 const viewerToolStatus = ref('')
-const viewer = ref<{ selectBuilding: (id: number) => Promise<void>, selectFloor: (id: number) => Promise<void>, selectPoi: (id: number) => Promise<void> } | null>(null)
+const viewer = ref<{
+  selectBuilding: (id: number) => Promise<void>
+  selectFloor: (id: number) => Promise<void>
+  selectPoi: (id: number) => Promise<void>
+  startDirections: (from: number, to: number, routeType?: RouteType) => Promise<void>
+  cancelDirections: () => Promise<void>
+} | null>(null)
 const { showFeedback } = useExploreFeedback()
 const { data: cartography, error: cartographyError, status: cartographyStatus } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
 const buildings = computed(() => cartography.value?.buildings ?? [])
@@ -26,14 +36,22 @@ const selectedFloorId = ref<number | null>(null)
 const activeBuilding = computed(() => buildings.value.find(building => building.id === selectedBuildingId.value) ?? buildings.value[0] ?? null)
 const activeFloors = computed(() => floors.value.filter(floor => floor.buildingId === activeBuilding.value?.id))
 const selectedBuilding = computed(() => activeBuilding.value?.name ?? 'No building')
-const selectedFloor = computed(() => activeFloors.value.find(floor => floor.id === selectedFloorId.value) ?? activeFloors.value[0] ?? null)
 
 watch([buildings, activeFloors], () => {
   if (selectedBuildingId.value === null && buildings.value[0]) selectedBuildingId.value = buildings.value[0].id
   if (!activeFloors.value.some(floor => floor.id === selectedFloorId.value)) selectedFloorId.value = activeFloors.value[0]?.id ?? null
 }, { immediate: true })
 
-const routeOptions = computed(() => pois.value.map(poi => poi.name))
+watch(activeBuilding, (building, previousBuilding) => {
+  if (building?.id === previousBuilding?.id) return
+  routeStart.value = undefined
+  routeDestination.value = undefined
+  routeRequested.value = false
+  routeFeedback.value = ''
+})
+
+const routePois = computed(() => pois.value.filter(poi => poi.buildingId === activeBuilding.value?.id))
+const routeOptions = computed(() => routePois.value.map(poi => ({ label: poi.name, value: poi.id })))
 
 const filteredPois = computed(() => pois.value.filter((poi) => {
   const query = poiSearch.value.trim().toLowerCase()
@@ -53,10 +71,63 @@ async function selectPoi(poi: SitumCartographyPoi) {
   }
 }
 
-function openDirections(poiName: string) {
-  routeDestination.value = poiName
+function openDirections(poiId: number) {
+  routeDestination.value = poiId
   activeTab.value = 'route'
-  showFeedback('Destination selected. Static directions will be enabled in Plan 012.')
+  routeFeedback.value = ''
+}
+
+async function startRoute() {
+  if (routeRequestPending.value) return
+  if (viewerState.value !== 'ready' || !viewer.value) {
+    routeFeedback.value = 'The map viewer is not ready.'
+    return
+  }
+  if (routeStart.value === undefined || routeDestination.value === undefined) {
+    routeFeedback.value = 'Select a start and destination POI.'
+    return
+  }
+  if (routeStart.value === routeDestination.value) {
+    routeFeedback.value = 'Choose different start and destination POIs.'
+    return
+  }
+  const routePoiIds = new Set(routePois.value.map(poi => poi.id))
+  if (!routePoiIds.has(routeStart.value) || !routePoiIds.has(routeDestination.value)) {
+    routeStart.value = undefined
+    routeDestination.value = undefined
+    routeRequested.value = false
+    routeFeedback.value = 'Select route POIs from the active building.'
+    return
+  }
+
+  const from = routeStart.value
+  const to = routeDestination.value
+  routeRequestPending.value = true
+  routeFeedback.value = routeRequested.value ? 'Replacing directions…' : 'Requesting directions…'
+  try {
+    await viewer.value.startDirections(from, to, accessibleRoute.value ? RouteType.ONLY_ACCESSIBLE : undefined)
+    routeRequested.value = true
+    routeFeedback.value = 'Directions request sent to the map viewer. Route availability depends on the map data.'
+  } catch (error) {
+    routeFeedback.value = error instanceof Error ? error.message : 'Directions could not be requested.'
+  } finally {
+    routeRequestPending.value = false
+  }
+}
+
+async function clearRoute() {
+  if (routeRequestPending.value) return
+  if (viewerState.value !== 'ready' || !viewer.value) {
+    routeFeedback.value = 'The map viewer is not ready.'
+    return
+  }
+  try {
+    await viewer.value.cancelDirections()
+    routeRequested.value = false
+    routeFeedback.value = 'Directions cleared.'
+  } catch (error) {
+    routeFeedback.value = error instanceof Error ? error.message : 'Directions could not be cleared.'
+  }
 }
 
 function toggleFavorite(id: number) {
@@ -165,8 +236,13 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map', fullWidth: tru
         <div v-else-if="activeTab === 'route'" role="tabpanel" class="space-y-4">
           <UFormField label="Start"><USelect v-model="routeStart" :items="routeOptions" class="w-full" /></UFormField>
           <UFormField label="Destination"><USelect v-model="routeDestination" :items="routeOptions" class="w-full" /></UFormField>
-          <UCheckbox v-model="accessibleRoute" label="Prefer accessible floor changes" />
-          <UAlert color="neutral" variant="subtle" title="Static directions are planned" description="The viewer supports verified static directions; Plan 012 will connect this selection to the single Viewer instance." />
+          <UCheckbox v-model="accessibleRoute" label="Use accessible floor changes only" :disabled="routeRequestPending" />
+          <p class="text-[11px] leading-4 text-muted">Uses the verified accessible route type. A route is not guaranteed if the map cannot estimate one.</p>
+          <div class="flex flex-wrap gap-2">
+            <UButton :label="routeRequestPending ? 'Requesting…' : routeRequested ? 'Replace route' : 'Request directions'" icon="i-lucide-navigation" color="primary" :loading="routeRequestPending" :disabled="viewerState !== 'ready' || routeRequestPending" @click="startRoute" />
+            <UButton label="Cancel directions" color="neutral" variant="soft" :disabled="viewerState !== 'ready' || routeRequestPending" @click="clearRoute" />
+          </div>
+          <p v-if="routeFeedback" class="map-feedback" role="status" aria-live="polite">{{ routeFeedback }}</p>
         </div>
 
         <div v-else role="tabpanel" class="space-y-1">
@@ -193,7 +269,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map', fullWidth: tru
         </div>
         <p class="mt-3 text-xs text-muted">{{ selectedPoi.info || 'No additional information provided.' }}</p>
         <div class="mt-4 flex flex-wrap gap-2">
-          <UButton label="Directions" icon="i-lucide-navigation" color="info" size="sm" @click="openDirections(selectedPoi.name)" />
+          <UButton label="Directions" icon="i-lucide-navigation" color="info" size="sm" @click="openDirections(selectedPoi.id)" />
           <UButton :label="isFavorite(selectedPoi.id) ? 'Favorited' : 'Favorite'" :icon="isFavorite(selectedPoi.id) ? 'i-lucide-star' : 'i-lucide-star-off'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" />
         </div>
       </UCard>
