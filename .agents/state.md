@@ -6,19 +6,17 @@ _Last reviewed: 2026-08-13_
 
 The Situm backend/web integration roadmap Plans 010–016 has finished its **stacked implementation pass**.
 
-Final cumulative branch:
+The active follow-up is now:
 
-`plan/016-situm-viewer-settings-integration`
+`plans/017-situm-credential-split-runtime-verification.md`
 
-Last implementation HEAD before later documentation-only consistency fixes:
+Active branch:
 
-`1931dbfc53be3d748baa840f784c8cbb9d52dae7`
+`plan/017-situm-credential-split-runtime-verification`
 
-The branch is a direct cumulative descendant of `main` at `170110c1d60c32600e1641a0f89cc53823bba9cc`. Plans 010→011→012→013→014→015→016 were executed as explicit stacked branches: every next plan was based on the completed previous plan HEAD. No PR or merge to `main` was authorized or performed.
+Plan 017 was created directly from the final cumulative Plan 016 branch. Do not restart Plans 010–016, recreate their branches from `main`, or replay completed implementation work.
 
-Do **not** restart Plan 010, recreate Plans 011–016 from `main`, or interpret stale historical integration wording as a request to repeat this roadmap.
-
-## Roadmap result
+## Roadmap result before Plan 017
 
 - Plan 010 — implementation/review complete; web/native/security/evidence boundary frozen.
 - Plan 011 — implementation complete: Buildings/Floors/POIs/Categories reads and map selection context.
@@ -28,34 +26,41 @@ Do **not** restart Plan 010, recreate Plans 011–016 from `main`, or interpret 
 - Plan 015 — implementation complete for Organization + Users reads; Groups + Alarms remain unresolved/absent and require direct REST follow-up evidence/runtime verification.
 - Plan 016 — implementation complete for verified Viewer language, font-size, accessibility-panel, and location-picker commands.
 
+## Plan 017 purpose
+
+Plan 017 owns the cross-cutting configuration/runtime follow-up:
+
+1. split Situm credentials into Viewer/public, Nitro read-only, and Nitro read-write responsibilities;
+2. migrate current Nitro reads away from temporary `NUXT_SITUM_API_KEY` to `NUXT_SITUM_READ_API_KEY`;
+3. keep `NUXT_SITUM_WRITE_API_KEY` private and unused unless a real approved mutation requires it;
+4. audit `.env.example` against actual runtime consumers in both directions;
+5. perform real authenticated runtime smoke for the existing Situm integrations;
+6. revisit Reports/Groups/Alarms through exact official REST evidence rather than assuming missing JS SDK wrappers mean the REST capability is unavailable.
+
+## Credential target
+
+- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer only.
+- `NUXT_SITUM_READ_API_KEY` — private Nitro read operations; intended Situm role: Only Read.
+- `NUXT_SITUM_WRITE_API_KEY` — private Nitro mutations only; intended Situm role: Read and Write.
+- `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier.
+- `NUXT_SITUM_API_KEY` — temporary compatibility variable only; remove after current reads migrate.
+
+Never expose private read/write credentials to browser/public runtime config or logs.
+
 ## Validation truth
 
-Static/local validation passed on implemented plans where applicable:
+Plans 010–016 passed static/local validation where applicable:
 
 - `git diff --check`;
 - `npm run lint`;
 - `npm run typecheck`;
 - `npm run build`.
 
-**Runtime Situm smoke is still pending.** Manual API/Viewer smoke could not be completed in the execution environment because configured local credentials plus an authenticated browser/session were unavailable there. Therefore the roadmap is implementation-complete, not production/runtime-verified.
+**Runtime Situm smoke is still pending** and is now an explicit Plan 017 responsibility. Do not mark runtime smoke complete without exercising the configured Situm environment.
 
-Do not mark runtime smoke complete without actually exercising the configured Situm environment.
+## Evidence-gated follow-up gaps
 
-## Current blockers / follow-up gaps
-
-### 1. Runtime environment smoke
-
-Before treating the integration as runtime-verified, confirm locally without printing secrets:
-
-- private `NUXT_SITUM_API_KEY` is configured;
-- legacy/current Viewer credential is configured if the Viewer still requires it;
-- `NUXT_PUBLIC_SITUM_BUILDING_ID` is configured;
-- app authentication/session works;
-- protected `/api/situm/*` reads work with the configured Situm organization/building.
-
-### 2. Evidence-gated Situm capabilities
-
-The following are intentionally absent rather than faked:
+The following remain intentionally absent rather than faked until exact evidence/runtime verification exists:
 
 - report/analytics data and CSV integration;
 - Groups read integration;
@@ -65,7 +70,7 @@ The following are intentionally absent rather than faked:
 - trajectory/follow semantics;
 - unverified generic Viewer config/settings operations.
 
-Official Situm REST documentation confirms Reports, Groups, and Alarms endpoint families exist. Their absence in the current implementation is therefore a follow-up contract/runtime-verification gap, not proof that Situm lacks those capabilities.
+Official Situm REST documentation confirms Reports, Groups, and Alarms endpoint families exist. Their absence in the current implementation is a follow-up contract/runtime-verification gap, not proof that Situm lacks those capabilities.
 
 ## No-hallucination rule
 
@@ -75,7 +80,7 @@ Before adding a missing capability, verify exact official endpoint/SDK method, a
 
 ## Web/native boundary
 
-The Nuxt product is the web operations/admin/exploration console.
+The Nuxt product remains the web operations/admin/exploration console.
 
 Native-only scope remains outside this roadmap:
 
@@ -86,36 +91,20 @@ Native-only scope remains outside this roadmap:
 
 Web may consume positions produced by devices; it must not pretend the browser performs Situm indoor positioning.
 
-## Credential/security boundary
-
-- Situm REST/domain reads use private Nitro runtime configuration (`NUXT_SITUM_API_KEY`).
-- Protected product `/api/situm/*` routes require the existing Situm Explore session.
-- Server credentials never enter browser/public runtime config.
-- No generic unauthenticated Situm proxy.
-- `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public.
-- Historical `NUXT_PUBLIC_SITUM_API_KEY` remains a legacy Viewer concern only while still required by the current Viewer implementation.
-
 ## Git / branch truth
 
-The user explicitly authorized **stacked execution for Plans 010–016** with these rules:
+The user explicitly uses stacked plan branches for this roadmap:
 
 - one plan = one branch;
-- next plan starts from the completed previous plan HEAD;
+- a dependent follow-up branch starts from the completed cumulative predecessor when explicitly requested;
 - no PR;
 - no merge to `main`;
 - no force-push/history rewrite.
 
-That stacked execution is now complete. Treat `plan/016-situm-viewer-settings-integration` as the cumulative current implementation branch until the user explicitly chooses an integration or follow-up strategy.
+Plan 017 therefore starts from the cumulative Plan 016 branch, not from `main`.
 
 ## Next action
 
-Do not restart Plans 010–016.
+Execute Plan 017 phase-by-phase from the existing branch.
 
-Next work should be one of these only when explicitly requested:
-
-1. runtime smoke/repair on the final stacked branch;
-2. targeted follow-up for unresolved REST capabilities (Reports/Groups/Alarms/etc.);
-3. review/integration strategy for the cumulative branch;
-4. a new separately planned feature.
-
-No PR or merge is implied.
+Do not create a PR or merge. Do not reopen Plans 010–016. If remaining REST capabilities become materially larger than credential/runtime verification, capture them as a separate follow-up plan instead of silently broadening Plan 017.
