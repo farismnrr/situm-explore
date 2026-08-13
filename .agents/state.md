@@ -137,9 +137,13 @@ Phase 2 implementation completed on 2026-08-13. Protected `POST /api/analytics/s
 
 Phase 3 implementation completed on 2026-08-13. Protected summary and CSV export APIs query only the requested report window from ClickHouse, support bounded date/building/geofence filters, use parameterized SQL, and keep ClickHouse server-only. Static validation passed; full build and live query/export/auth smoke remain required at Plan 017 closeout. Phase 4 is next.
 
+## Plan 017 Phase 4 result
+
+Phase 4 implementation completed on 2026-08-13. `/app/analytics` now presents real protected ClickHouse-backed summaries/tables, date/building/geofence filters, explicit building-scoped Situm sync, loading/empty/error/success states, and CSV export. Validation passed: `git diff --check`, lint, typecheck, and build. Phase 5 optional evaluation is next.
+
 ## Next action
 
-Execute Plan 017 Phase 4 using the verified report and ClickHouse contracts above, then continue Plans 017→020 sequentially using the explicit stacked mode above.
+Execute Plan 017 Phase 5 optional evaluation using the verified report and ClickHouse contracts above, then continue Plans 017→020 sequentially using the explicit stacked mode above.
 
 Start by switching to `roadmap/017-020-next-features`, creating `plan/017-situm-analytics-clickhouse` from its final HEAD, and executing Plan 017 phase-by-phase with the configured `worker` subagent.
 

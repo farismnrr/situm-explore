@@ -141,14 +141,20 @@ Raw data, user-position history, broad trajectory analytics, and every possible 
 
 ## Phase 4 — `/app/analytics` real UI
 
-- [ ] replace the Plan 014 disconnected empty state with real loading/empty/error/success states;
-- [ ] add a compact date-range/building filter appropriate to the verified API;
-- [ ] add an explicit `Sync from Situm` action scoped to this page/feature (not a fake global sync);
-- [ ] show real visitors, positioning-time, and geofence-stay summaries using Nuxt UI and current design tokens;
-- [ ] add simple charts/tables only when the verified data supports them; do not synthesize trends;
-- [ ] add CSV export for the currently filtered ClickHouse-backed dataset;
-- [ ] preserve responsive/accessibility behavior and avoid reintroducing prototype-only visualizations;
-- [ ] where the current dashboard already has matching analytics placeholders, replace them only when the exact metric semantics match the new real query; otherwise leave/remove the unresolved metric rather than relabeling data.
+- [x] replace the Plan 014 disconnected empty state with real loading/empty/error/success states;
+- [x] add a compact date-range/building filter appropriate to the verified API;
+- [x] add an explicit `Sync from Situm` action scoped to this page/feature (not a fake global sync);
+- [x] show real visitors, positioning-time, and geofence-stay summaries using Nuxt UI and current design tokens;
+- [x] add simple charts/tables only when the verified data supports them; do not synthesize trends;
+- [x] add CSV export for the currently filtered ClickHouse-backed dataset;
+- [x] preserve responsive/accessibility behavior and avoid reintroducing prototype-only visualizations;
+- [x] where the current dashboard already has matching analytics placeholders, replace them only when the exact metric semantics match the new real query; otherwise leave/remove the unresolved metric rather than relabeling data.
+
+### Phase 4 implementation record (2026-08-13)
+
+- Replaced the disconnected analytics state with real loading, empty, error, success, filter, sync, summary, table, and CSV-export UI using the current Nuxt UI/design baseline.
+- The page remains truthful for all-buildings read filters while requiring a concrete building selection for the explicit Situm sync action because the verified core report contracts require building scope.
+- Validation passed: `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`.
 
 ## Phase 5 — Optional report enrichment
 
