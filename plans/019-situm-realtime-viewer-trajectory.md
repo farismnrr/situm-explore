@@ -43,13 +43,23 @@ Plan 019 must use those typed Viewer capabilities when the installed version/run
 
 ## Phase 0 — Viewer/runtime evidence freeze
 
-- [ ] verify installed `@situm/sdk-js` signatures and runtime compatibility for `loadRealtimePositions` / `cleanRealtimePositions`;
-- [ ] verify exact building filter, refresh-rate, customization callback, lifecycle, and failure semantics from official docs/source;
-- [ ] verify `loadTrajectory` / `cleanTrajectory` inputs, date constraints, user/building filtering, empty/error behavior, and browser credential requirements;
-- [ ] confirm the configured Viewer credential can exercise the retained Viewer operations without changing the two-key architecture;
-- [ ] inspect current `/api/situm/realtime` timestamps/fields and decide which factual list metadata can be shown without invented stale/offline classification;
-- [ ] runtime-smoke the methods in isolation before redesigning the page;
-- [ ] if trajectory cannot be verified with the current account/SDK, keep trajectory explicitly unresolved while still completing the realtime overlay core.
+- [x] verify installed `@situm/sdk-js` signatures and runtime compatibility for `loadRealtimePositions` / `cleanRealtimePositions`;
+- [x] verify exact building filter, refresh-rate, customization callback, lifecycle, and failure semantics from official docs/source;
+- [x] verify `loadTrajectory` / `cleanTrajectory` inputs and SDK dispatch semantics from official source; account/hydrated-Viewer trajectory behavior remains unresolved;
+- [x] confirm the two-key Viewer credential boundary remains unchanged; hydrated credential exercise is deferred to the browser smoke phase;
+- [x] inspect current `/api/situm/realtime` timestamps/fields and decide which factual list metadata can be shown without invented stale/offline classification;
+- [x] runtime-smoke method availability and isolated cleanup failure behavior without secrets or raw payloads;
+- [x] trajectory is explicitly unresolved for implementation until a configured-account/hydrated-Viewer smoke verifies date/user/empty/error behavior; realtime overlay evidence is sufficient to continue its core.
+
+### Phase 0 evidence — 2026-08-13
+
+- Installed package is `@situm/sdk-js` `0.25.0`; typings and runtime expose the target Viewer methods.
+- Official source: `situmtech/situm-sdk-js` repository, current `src/viewer/index.ts` and example `7-viewer-realtime-trajectories.html`.
+- `loadRealtimePositions({ filter: { buildingIds?: number[] }, refreshRateMs?: number, customizeFeatures?: fn })` supports building IDs only, defaults to 10,000 ms, fetches immediately, clears/replaces a prior interval, maps API GeoJSON into Viewer external features, and lets the callback return device ID plus optional tooltip/icon or `undefined` to suppress rendering. Fetch failures are caught/logged; the interval remains active. `cleanRealtimePositions()` clears the interval and sends an empty external-feature set.
+- `loadTrajectory({ fromDate: Date, toDate: Date, buildingId: number, userId?: UUID })` calls the reports trajectory API and sends the returned positions to the Viewer with `PLAY`; the SDK catches/logs request failures. The source documents no date-range bound or special empty-array behavior. `cleanTrajectory()` sends empty trajectory data with paused status and catches/logs dispatch failures.
+- The browser Viewer is created with `NUXT_PUBLIC_SITUM_API_KEY`; `NUXT_SITUM_API_KEY` remains Nitro-only. No credential values, cookies, or raw upstream payloads were persisted.
+- Current realtime DTO is limited to `id`, ISO `time`, `buildingId`, `floorId`, `accuracy`, `lat`, `lng`, and optional `deviceId`. UI may show factual source timestamp/last-seen text only; no stale/offline classification is supported by this evidence.
+- Isolated Node smoke confirmed SDK construction/method availability and that cleanup methods reject when invoked without a valid Viewer transport. A hydrated browser Viewer/account smoke was not run in Phase 0; trajectory therefore remains unresolved and conditional.
 
 ## Phase 1 — Typed `SitumViewer` command surface
 
