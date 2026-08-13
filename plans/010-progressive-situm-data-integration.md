@@ -1,8 +1,10 @@
 # Plan 010 — Web Capability Pruning & Situm Integration Contract
 
-Status: **in-progress-planning**
+Status: **planned-ready**
 Branch: `plan/010-progressive-situm-data-integration`
 Depends on: accepted cumulative UI integrated into `main`
+
+The branch/file slug is retained for continuity from the earlier Plan 010 draft; the title and scope in this file are the current authority.
 
 ## Goal
 
@@ -241,7 +243,7 @@ Rules:
 - Plan 013 — Realtime positions/device context and realtime Viewer overlay.
 - Plan 014 — Reports/Analytics and real CSV/report output.
 - Plan 015 — Organization/Users/Groups/Alarms read-only.
-- Plan 016 — only remaining verified web-safe Viewer/config/settings actions not already owned above.
+- Plan 016 — only remaining verified web-safe Viewer/config/settings actions not already owned above; use `plans/016-situm-viewer-settings-integration.md`.
 
 If a retained capability has no exact owner, Plan 010 is not complete.
 
