@@ -11,12 +11,13 @@ Keep this file short. Current authority lives in `.agents/state.md`.
 3. `.agents/protocols/chat-lifecycle.md`
 4. `.agents/protocols/git-workflow.md`
 5. `.agents/memory/decisions.md`
-6. `ARCHITECTURE.md`
-7. `plans/README.md`
-8. `design/data-source-matrix.md` when Situm scope matters
-9. the relevant plan
+6. `.agents/memory/roadmap-021-025.md` while Plans 021–025 are active
+7. `ARCHITECTURE.md`
+8. `plans/README.md`
+9. `design/data-source-matrix.md` when Situm scope matters
+10. the relevant plan
 
-Historical plans/sessions/branches are evidence only. During the 021–025 transition, current `.agents/state.md` plus the active plan override stale pre-refactor wording.
+Historical plans/sessions/branches are evidence only. For Plans 021–025, `.agents/state.md` plus `.agents/memory/roadmap-021-025.md` supersede stale pre-refactor wording about permanent single-user/global-Situm configuration. `ARCHITECTURE.md` still describes parts of the pre-refactor runtime until the roadmap migration updates it.
 
 ## Current roadmap
 
