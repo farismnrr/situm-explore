@@ -80,4 +80,4 @@ Never expose raw Viewer access or a generic invoke surface.
 
 ## Next action
 
-Plan 020 Phase 1 is complete on `plan/020-situm-static-directions-v2`. Plan 019A runtime truth is accepted; the Viewer-visible POI mismatch is not proven app-owned, constrained route failures remain runtime limitations, and unresolved route details/events/tags remain absent. Route request/replacement/cancellation feedback is now conservative and evidence-backed. Phase 2 is next for `/app/paths` copy alignment. Do not replay the resolved foundation or use the stale pre-019A branch.
+Plan 020 Phases 1–3 are complete on `plan/020-situm-static-directions-v2`. Plan 019A runtime truth is accepted; the Viewer-visible POI mismatch is not proven app-owned, constrained route failures remain runtime limitations, and unresolved route details/events/tags remain absent. Route request/replacement/cancellation feedback is conservative and evidence-backed; `/app/paths` now describes metadata only and directs route requests to Map > Route. Phase 4 production regression smoke is next. Do not replay the resolved foundation or use the stale pre-019A branch.

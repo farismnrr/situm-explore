@@ -55,19 +55,27 @@ The route controls now distinguish the initial request, replacement, and cancell
 
 ## Phase 2 — Paths/discoverability alignment
 
-- [ ] keep `/app/paths` as path/cartography metadata unless a computed-route relationship is verified;
-- [ ] remove stale copy saying static directions are unavailable;
+- [x] keep `/app/paths` as path/cartography metadata unless a computed-route relationship is verified;
+- [x] remove stale copy saying static directions are unavailable;
 - [ ] optionally link Paths/POI surfaces into the map Route tab where useful;
-- [ ] do not conflate path resources with computed route results.
+- [x] do not conflate path resources with computed route results.
+
+### Phase 2 evidence
+
+`/app/paths` now describes its verified path/cartography metadata scope and points users to the Map Route tab for route requests. It explicitly keeps computed route results, details, and steps absent. No cross-link was added because the existing app navigation already exposes both surfaces and no deeper relationship is verified.
 
 ## Phase 3 — Conditional verified enrichment
 
 Optional; must not block completion.
 
-- [ ] re-evaluate events/details/tags only if new evidence proves a concrete contract;
-- [ ] implement only exact verified enrichment;
-- [ ] otherwise leave route details absent;
-- [ ] do not chase third-party console warnings unless they are proven app-owned and materially harmful.
+- [x] re-evaluate events/details/tags only if new evidence proves a concrete contract;
+- [x] implement only exact verified enrichment;
+- [x] otherwise leave route details absent;
+- [x] do not chase third-party console warnings unless they are proven app-owned and materially harmful.
+
+### Phase 3 evidence
+
+No new exact contract evidence was produced for route events, details, tags, geometry, distance, duration, or step-by-step output. Those fields remain absent. Situm image/glyph warnings remain third-party observations without proven app ownership or material product harm.
 
 ## Phase 4 — Final regression smoke
 
