@@ -1,6 +1,6 @@
 # Plan 018 — Situm Groups & Alarms Read Integration
 
-Status: **queued**
+Status: **complete**
 Branch: `plan/018-situm-groups-alarms-read`
 Base: final HEAD of Plan 017
 Depends on: Plan 017 complete in the explicit stacked 017→020 execution
@@ -120,18 +120,27 @@ Target surfaces:
 
 ## Phase 5 — Validation and closeout
 
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] authenticated live Groups read smoke;
-- [ ] authenticated live Alarms read smoke including a detail path if implemented;
-- [ ] truthful empty/filter/error behavior verified where applicable;
-- [ ] unauthorized app-session behavior verified;
-- [ ] no private Situm credential in responses/logs/client bundles;
-- [ ] update this plan, `.agents/state.md`, evidence/decisions/session truth;
-- [ ] commit and push the completed branch;
-- [ ] do not create a PR or merge.
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] authenticated live Groups read smoke;
+- [x] authenticated live Alarms read smoke including a detail path if implemented;
+- [x] truthful empty/filter/error behavior verified where applicable;
+- [x] unauthorized app-session behavior verified;
+- [x] no private Situm credential in responses/logs/client bundles;
+- [x] update this plan, `.agents/state.md`, evidence/decisions/session truth;
+- [x] commit and push the completed branch;
+- [x] do not create a PR or merge.
+
+### Phase 5 validation record (2026-08-13)
+
+- Static validation passed: diff check, lint, typecheck, and production build.
+- Unauthenticated Groups and Alarms list/detail requests returned HTTP 401; invalid normal-login smoke returned HTTP 401 without exposing response content.
+- Built asset scanning found no private Situm credential/config secret names in public assets; no secret-bearing response or log content was printed.
+- Authenticated smoke used the explicitly authorized transient login credentials through `POST /api/auth/login`; no credentials, cookies, hashes, keys, or raw payloads were printed or persisted. Groups and configured-building Alarms list requests returned HTTP 200; `has_parent=true` and `active=true` empty cases returned HTTP 200; invalid filters returned HTTP 400; nonexistent alarm detail returned HTTP 404; unauthenticated access returned HTTP 401. A runtime DTO correction accepts the verified upstream UUID/string Group identifiers and nullable `is_staff` value. Groups membership remains unresolved.
+
+Plan 018 core is complete. Groups membership remains unresolved and intentionally absent.
 
 ## Non-goals
 

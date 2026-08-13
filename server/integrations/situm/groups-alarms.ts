@@ -26,10 +26,10 @@ export async function getSitumGroups(hasParent?: boolean): Promise<SitumGroupSum
   if (!Array.isArray(rows)) throw createError({ statusCode: 502, statusMessage: 'Situm returned an invalid groups response.' })
   return rows.map((row) => {
     const value = row as Record<string, unknown>
-    const id = integer(value.id, 'group id')
-    const organizationId = integer(value.organization_id, 'group organization id')
-    const parentGroupId = value.parent_group_id == null ? null : integer(value.parent_group_id, 'group parent id')
-    return { id, uuid: requiredString(value.uuid, 'group uuid'), name: requiredString(value.name, 'group name'), organizationId, parentGroupId, iconColour: typeof value.icon_colour === 'string' ? value.icon_colour : null, isStaff: requiredBoolean(value.is_staff, 'group staff flag') }
+    const id = requiredString(value.id, 'group id')
+    const organizationId = requiredString(value.organization_id, 'group organization id')
+    const parentGroupId = value.parent_group_id == null ? null : requiredString(value.parent_group_id, 'group parent id')
+    return { id, uuid: requiredString(value.uuid, 'group uuid'), name: requiredString(value.name, 'group name'), organizationId, parentGroupId, iconColour: typeof value.icon_colour === 'string' ? value.icon_colour : null, isStaff: value.is_staff === null ? null : requiredBoolean(value.is_staff, 'group staff flag') }
   })
 }
 

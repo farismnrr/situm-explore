@@ -169,4 +169,10 @@ Phase 3 Alarms surface completed on 2026-08-13. `/app/alarms` now provides real 
 
 ## Plan 018 Phase 4 result
 
-Phase 4 dashboard/home review completed on 2026-08-13. Stale dashboard wording was replaced with a truthful unresolved-metrics notice; alarm/user/group totals remain absent because their scopes and denominators do not exactly match. No synthetic activity or metric relabeling was added. Phase 5 validation/closeout is next.
+Phase 4 dashboard/home review completed on 2026-08-13. Stale dashboard wording was replaced with a truthful unresolved-metrics notice; alarm/user/group totals remain absent because their scopes and denominators do not exactly match. No synthetic activity or metric relabeling was added.
+
+## Plan 018 Phase 5 validation result
+
+Authenticated smoke completed through the real login endpoint using transient user-authorized credentials. Groups and configured-building Alarms list requests returned HTTP 200; verified empty/filter cases returned HTTP 200; invalid filters returned HTTP 400; nonexistent alarm detail returned HTTP 404; unauthenticated access returned HTTP 401. Runtime normalization was corrected for verified upstream UUID/string Group identifiers and nullable `is_staff`. Static validation and built-asset secret scans passed; no credentials, hashes, cookies, keys, or raw payloads were persisted. Plan 018 core is complete. Groups membership remains unresolved and absent.
+
+Plan 018 is complete at the current branch HEAD. Continue with Plan 019 from this exact pushed HEAD; no PR or merge was created.

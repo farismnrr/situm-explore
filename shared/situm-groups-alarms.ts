@@ -1,11 +1,11 @@
 export interface SitumGroupSummary {
-  id: number
+  id: string
   uuid: string
   name: string
-  organizationId: number
-  parentGroupId: number | null
+  organizationId: string
+  parentGroupId: string | null
   iconColour: string | null
-  isStaff: boolean
+  isStaff: boolean | null
 }
 
 export interface SitumAlarmStatusChange {
