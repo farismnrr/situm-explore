@@ -31,15 +31,22 @@ Historical plans/sessions are evidence only and must not override current state/
 
 ## Current roadmap truth
 
-The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are integrated into `main`.
+The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are integrated. PRs #10 and #11 also integrated the user's final manual UI/mobile refinement pass into `main`.
 
-PR #8 integrated the cumulative Plans 010–016A lineage. `main` is now canonical and there is no active implementation plan.
+The next roadmap is prepared on `roadmap/017-020-next-features` and the user explicitly authorized stacked execution:
 
-Do not restart Plans 010–016A or recreate them from historical plan branches. The earlier Plan 017 credential-split draft/name was superseded by Plan 016A and must not be executed as a separate step.
+```text
+Plan 017 — Situm Analytics & Reports with local ClickHouse
+-> Plan 018 — Groups & Alarms read-only
+-> Plan 019 — Realtime Viewer overlay & conditional trajectory
+-> Plan 020 — Static directions
+```
 
-Historical plan branches are disposable after integration; plan files and Git history preserve the record.
+Plan 017 is next active/ready. Plans 018–020 are queued.
 
-Read `.agents/state.md` for exact completed/skipped/unresolved status and the final two-key Situm credential contract.
+The abandoned `chore/ui-refine-login-map-feedback` branch is superseded by the UI work already integrated into `main` and must not be used as a base.
+
+Read `.agents/state.md` for the exact branch chain, worker-only phase execution requirement, current completed/unresolved truth, and the final two-key Situm credential contract.
 
 ## No-hallucination external integration rule
 
@@ -64,6 +71,8 @@ Situm uses exactly two credential boundaries unless a future concrete requiremen
 
 Protected server Situm routes require the application session. Native indoor positioning/bluedot and movement-aware handset navigation remain outside the Nuxt web roadmap.
 
+Plan 017 adds ClickHouse only as a server-side analytics store using the user's existing local ClickHouse instance. PostgreSQL/Drizzle remains the relational application store. Do not provision a second ClickHouse server or expose ClickHouse credentials to the browser.
+
 ## Git workflow
 
 - one plan = one dedicated plan branch;
@@ -73,9 +82,11 @@ Protected server Situm routes require the application session. Native indoor pos
 - never merge without explicit user authorization;
 - PR creation/review is user-gated;
 - dependent plans normally start after integration into updated `main`;
-- explicit stacked execution is allowed only when current durable state records that exception.
+- **exception currently active:** the user explicitly authorized stacked Plans 017→020; each next branch starts from the previous plan's final validated/pushed HEAD;
+- do not create a PR or merge during the 017→020 run;
+- implementation for each phase must be delegated specifically to the configured `worker` subagent; if that worker profile cannot be spawned, stop rather than substituting another agent/model.
 
-There is currently no active plan branch. New substantive work starts from updated `main` on a newly scoped branch.
+Start Plan 017 from the final HEAD of `roadmap/017-020-next-features`.
 
 ## Mandatory closeout
 
@@ -83,4 +94,4 @@ Before finishing a conversation, follow `.agents/protocols/persistence.md`.
 
 Update current state/session evidence and revise durable memory/knowledge/decisions only when something durable changed.
 
-Never persist credentials, API keys, JWTs, passwords, or unnecessary sensitive payloads.
+Never persist credentials, API keys, JWTs, passwords, ClickHouse credentials, or unnecessary sensitive payloads.
