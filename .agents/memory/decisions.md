@@ -35,7 +35,7 @@ Status: active.
 - Browser Viewer behavior uses `NUXT_PUBLIC_SITUM_API_KEY` only while the current Viewer implementation requires a browser-visible credential; this public key is not the backend REST credential.
 - Private Nitro read operations use `NUXT_SITUM_READ_API_KEY`, intended for a Situm **Only Read** key.
 - Private Nitro mutations use `NUXT_SITUM_WRITE_API_KEY`, intended for a Situm **Read and Write** key, and must remain unused unless a real approved mutation requires it.
-- `NUXT_SITUM_API_KEY` is only a temporary compatibility variable for the pre-split Nitro implementation and must be removed after Plan 017 migrates all current reads.
+- `NUXT_SITUM_API_KEY` is only a temporary compatibility variable for the pre-split Nitro implementation and must be removed after Plan 016A migrates all current reads.
 - Every protected product `/api/situm/*` route requires the existing Situm Explore session.
 - Never expose private read/write credentials to browser code, logs, docs, or error payloads, and never create a generic unauthenticated Situm proxy.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public because it is an identifier, not a secret.
@@ -58,18 +58,21 @@ Status: active.
 - This stack intentionally did **not** require intermediate integration into `main`.
 - No PR and no merge to `main` were authorized for the stack.
 - One plan still owns one branch; no force-push/history rewrite is implied.
-- The stacked sequence has completed through `plan/016-situm-viewer-settings-integration`, which is the cumulative current implementation branch.
+- The stacked sequence has completed through `plan/016-situm-viewer-settings-integration`, which is the cumulative current implementation lineage.
 - Do not restart Plan 010 or recreate Plans 011–016 from `main`.
 
 Status: active/completed-sequence.
 
-## 2026-08-13 — Plan 017 credential split/runtime verification
+## 2026-08-13 — Plan 016A credential split/runtime verification
 
-- Plan 017 starts from the cumulative Plan 016 branch, not from `main`.
+- The credential/runtime follow-up is **Plan 016A**, not Plan 017, because it is a small hardening/closeout step for the Plans 010–016 stack rather than a new substantive feature domain.
+- Active branch: `plan/016a-situm-credential-split-runtime-verification`.
+- It continues the cumulative Plan 016 lineage and preserves the preparation commits briefly created under the superseded Plan 017 draft.
 - It owns migration from the temporary generic private Situm key to separate private read-only and read-write credentials plus runtime smoke verification.
 - `.env.example` and runtime consumers must match exactly after the migration; documented-but-unused and used-but-undocumented configuration is treated as a gap.
 - Runtime smoke must be real; static lint/typecheck/build cannot substitute for configured Situm API/Viewer/session verification.
-- Reports, Groups, and Alarms should be re-evaluated through exact official REST evidence even when the installed JS SDK lacks wrappers; materially larger feature implementation should become a separate follow-up plan instead of silently expanding Plan 017.
+- Reports, Groups, and Alarms are evidence-capture only in Plan 016A; substantive implementation belongs in Plan 017 or later if justified.
+- The old `plan/017-situm-credential-split-runtime-verification` name/branch is superseded and must not be executed as a separate roadmap step.
 
 Status: active.
 
