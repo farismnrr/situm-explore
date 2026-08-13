@@ -63,11 +63,11 @@ Plan 019 must use those typed Viewer capabilities when the installed version/run
 
 ## Phase 1 — Typed `SitumViewer` command surface
 
-- [ ] expose the smallest typed component methods needed to start/clean realtime positions;
+- [x] expose the smallest typed component methods needed to start/clean realtime positions;
 - [ ] expose trajectory load/clean only if Phase 0 verifies it;
-- [ ] do not expose a generic `invoke`, raw Viewer object, or arbitrary command escape hatch;
-- [ ] make command readiness/error behavior explicit so callers cannot silently treat a failed Viewer action as success;
-- [ ] ensure cleanup runs on unmount/page-mode change so overlays do not leak between routes/sessions.
+- [x] do not expose a generic `invoke`, raw Viewer object, or arbitrary command escape hatch;
+- [x] make command readiness/error behavior explicit so callers cannot silently treat a failed Viewer action as success;
+- [x] ensure cleanup runs on unmount/page-mode change so overlays do not leak between routes/sessions.
 
 ## Phase 2 — Realtime page Viewer composition
 

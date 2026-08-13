@@ -33,7 +33,29 @@ function showUserSettings(visible: boolean) { return runViewerCommand(() => view
 function updateFontSize(size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl') { return runViewerCommand(() => viewer!.updateFontSize({ size })) }
 function openLocationPicker() { return runViewerCommand(() => viewer!.openLocationPicker()) }
 
-defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker })
+function requirePositiveInteger(value: number, name: string) {
+  if (!Number.isInteger(value) || value <= 0) throw new Error(`${name} must be a positive integer.`)
+  return value
+}
+
+function loadRealtimePositions(buildingId?: number, refreshRateMs?: number) {
+  const resolvedBuildingId = requirePositiveInteger(
+    buildingId ?? Number(config.public.situmBuildingId),
+    'buildingId',
+  )
+  if (refreshRateMs !== undefined) requirePositiveInteger(refreshRateMs, 'refreshRateMs')
+
+  return runViewerCommand(() => viewer!.loadRealtimePositions({
+    filter: { buildingIds: [resolvedBuildingId] },
+    ...(refreshRateMs === undefined ? {} : { refreshRateMs }),
+  }))
+}
+
+function cleanRealtimePositions() {
+  return runViewerCommand(() => viewer!.cleanRealtimePositions())
+}
+
+defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker, loadRealtimePositions, cleanRealtimePositions })
 
 onMounted(() => {
   if (!config.public.situmApiKey || !config.public.situmBuildingId) {
@@ -59,6 +81,10 @@ onMounted(() => {
     message.value = error instanceof Error ? 'The map viewer could not be initialized.' : 'The map viewer encountered an error.'
     emit('status', state.value, message.value)
   }
+})
+
+onBeforeUnmount(() => {
+  if (viewer) void viewer.cleanRealtimePositions().catch(() => undefined)
 })
 </script>
 

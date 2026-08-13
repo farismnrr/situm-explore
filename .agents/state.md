@@ -177,6 +177,10 @@ Authenticated smoke completed through the real login endpoint using transient us
 
 Plan 018 is complete at the current branch HEAD. Continue with Plan 019 from this exact pushed HEAD; no PR or merge was created.
 
+## Plan 019 Phase 1 result
+
+Phase 1 adds typed `SitumViewer` realtime load/clean commands using the verified building filter and optional refresh rate. Existing readiness guards make unavailable Viewer commands reject explicitly, and realtime cleanup runs during unmount. Trajectory remains absent because hydrated account/date/user runtime semantics are unresolved. Phase 2 is next.
+
 ## Plan 019 Phase 0 result
 
 Phase 0 evidence freeze completed on 2026-08-13. Installed `@situm/sdk-js` 0.25.0 and official current source verify the realtime Viewer contract: building-ID filter, 10-second default refresh, immediate fetch plus interval replacement, device/tooltip/icon customization, caught/logged fetch failures, and cleanup. Current Nitro realtime DTO fields are `id`, ISO `time`, `buildingId`, `floorId`, `accuracy`, `lat`, `lng`, and optional `deviceId`; only factual timestamp/last-seen context is supported. The two-key credential boundary remains unchanged. Isolated method smoke passed for availability and exercised cleanup failure behavior without secrets. Hydrated Viewer/account smoke was not safely available; trajectory date/user/empty/error runtime semantics remain explicitly unresolved and trajectory must stay conditional/absent. No application code or UI was changed. Phase 1 may proceed for realtime core only.
