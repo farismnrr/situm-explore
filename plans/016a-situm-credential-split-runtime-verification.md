@@ -112,9 +112,11 @@ Static validation is not a substitute for runtime verification.
 
 Re-check the unresolved REST capabilities discovered during Plans 014–015:
 
-- [ ] Reports / Analytics / CSV;
-- [ ] Groups read;
-- [ ] Alarms read.
+- [x] Reports / Analytics / CSV (paths/purpose evidenced; parameter/response/pagination/permission/error contracts remain UNRESOLVED);
+- [x] Groups read (UNRESOLVED — no public REST endpoint found);
+- [x] Alarms read (POST/create path and resource existence confirmed; GET/list read contract remains UNRESOLVED).
+
+See `.agents/sessions/016a-phase4-rest-evidence.md` for full findings.
 
 For Plan 016A, the goal is only to determine whether exact official REST contracts are sufficiently evidenced for a later implementation plan.
 
