@@ -3,6 +3,7 @@ import type { SitumCartographyPoi, SitumCartographyResponse } from '#shared/situ
 
 const activeTab = ref<'explore' | 'route' | 'layers'>('explore')
 const sidebarCollapsed = ref(false)
+const isDesktopViewport = useDesktopViewport()
 const viewerState = ref<'loading' | 'ready' | 'error'>('loading')
 const poiSearch = ref('')
 const showFavorites = ref(false)
@@ -100,7 +101,16 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map', fullWidth: tru
 </script>
 
 <template>
-  <div class="map-workspace -m-4 flex min-h-[calc(100vh-4rem)] flex-col overflow-hidden border border-default bg-default sm:-m-6 lg:-m-8 lg:min-h-[calc(100vh-4rem)] lg:flex-row">
+  <div v-if="!isDesktopViewport" class="map-desktop-required -m-4 flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center gap-4 border border-default bg-default p-8 text-center sm:-m-6 lg:-m-8">
+    <UIcon name="i-lucide-monitor" class="size-9 text-muted" aria-hidden="true" />
+    <div>
+      <p class="text-sm font-semibold text-highlighted">Desktop required</p>
+      <p class="mt-1.5 max-w-xs text-xs leading-5 text-muted">The Map Viewer needs more screen space than a mobile device can offer. Please open this page on a desktop or a tablet in landscape mode.</p>
+    </div>
+    <UButton to="/app" label="Back to home" color="neutral" variant="outline" size="sm" />
+  </div>
+
+  <div v-else class="map-workspace -m-4 flex min-h-[calc(100vh-4rem)] flex-col overflow-hidden border border-default bg-default sm:-m-6 lg:-m-8 lg:min-h-[calc(100vh-4rem)] lg:flex-row">
     <aside v-show="!sidebarCollapsed" class="flex w-full shrink-0 flex-col border-b border-default bg-default lg:w-80 lg:border-b-0 lg:border-r">
       <div class="border-b border-default p-4">
         <div class="mb-3 flex items-start justify-between gap-3">

@@ -11,14 +11,14 @@ const displayName = computed(() => {
 const initials = computed(() => displayName.value.split(' ').map(part => part.charAt(0)).slice(0, 2).join('').toUpperCase())
 
 const searchDestinations = [
-  { label: 'Home', detail: 'Workspace', to: '/app', icon: '⌂' },
-  { label: 'Dashboard', detail: 'Workspace', to: '/app/dashboard', icon: '▦' },
-  { label: 'Map Viewer', detail: 'Workspace', to: '/app/map', icon: '⌖' },
-  { label: 'Buildings & floors', detail: 'Cartography', to: '/app/buildings', icon: '▤' },
-  { label: 'Points of interest', detail: 'Cartography', to: '/app/pois', icon: '◇' },
-  { label: 'Realtime', detail: 'Operations', to: '/app/realtime', icon: '●' },
-  { label: 'Analytics & reports', detail: 'Operations', to: '/app/analytics', icon: '▥' },
-  { label: 'Settings', detail: 'Organization', to: '/app/settings', icon: '⚙' }
+  { label: 'Home', detail: 'Workspace', to: '/app', icon: 'i-lucide-house' },
+  { label: 'Dashboard', detail: 'Workspace', to: '/app/dashboard', icon: 'i-lucide-layout-dashboard' },
+  { label: 'Map Viewer', detail: 'Workspace', to: '/app/map', icon: 'i-lucide-map' },
+  { label: 'Buildings & floors', detail: 'Cartography', to: '/app/buildings', icon: 'i-lucide-building-2' },
+  { label: 'Points of interest', detail: 'Cartography', to: '/app/pois', icon: 'i-lucide-map-pin' },
+  { label: 'Realtime', detail: 'Operations', to: '/app/realtime', icon: 'i-lucide-radio' },
+  { label: 'Analytics & reports', detail: 'Operations', to: '/app/analytics', icon: 'i-lucide-bar-chart-3' },
+  { label: 'Settings', detail: 'Organization', to: '/app/settings', icon: 'i-lucide-settings' }
 ]
 
 const searchResults = computed(() => {
@@ -99,9 +99,8 @@ async function logout() {
         <div class="flex items-center gap-2 rounded-lg px-2 py-2">
           <span class="grid size-7 shrink-0 place-items-center rounded-full bg-elevated text-[11px] font-semibold text-highlighted">{{ initials }}</span>
           <span class="user-meta min-w-0 flex-1"><strong class="block truncate text-[11px] text-highlighted">{{ displayName }}</strong><span class="block truncate text-[10px] text-muted">{{ user?.email }}</span></span>
-          <span class="text-muted" aria-hidden="true">⋯</span>
+          <UButton icon="i-lucide-log-out" aria-label="Sign out" color="neutral" variant="ghost" size="sm" @click="logout" />
         </div>
-        <UButton block label="Sign out" color="neutral" variant="ghost" size="sm" class="mt-0.5 justify-start px-2.5 text-xs" @click="logout" />
       </div>
     </aside>
 
@@ -125,7 +124,7 @@ async function logout() {
       <UInput v-model="searchQuery" autofocus icon="i-lucide-search" placeholder="Search buildings, POIs, users, reports…" aria-label="Search workspace" class="w-full" />
       <div class="mt-3 max-h-80 overflow-y-auto">
         <NuxtLink v-for="result in searchResults" :key="`${result.to}-${result.label}`" :to="result.to" class="flex items-center gap-3 rounded-lg px-3 py-2.5 transition hover:bg-elevated" @click="closeSearch">
-          <span class="grid size-8 shrink-0 place-items-center rounded-md bg-elevated text-sm text-highlighted" aria-hidden="true">{{ result.icon }}</span>
+          <span class="grid size-8 shrink-0 place-items-center rounded-md bg-elevated text-highlighted" aria-hidden="true"><UIcon :name="result.icon" class="size-4" /></span>
           <span class="min-w-0"><strong class="block truncate text-sm text-highlighted">{{ result.label }}</strong><span class="block truncate text-xs text-muted">{{ result.detail }}</span></span>
         </NuxtLink>
         <p v-if="searchResults.length === 0" class="px-3 py-6 text-center text-sm text-muted">No local results found.</p>

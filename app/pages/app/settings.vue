@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const isDesktopViewport = useDesktopViewport()
 const viewer = ref<{ setLanguage: (language: string) => Promise<void>, showUserSettings: (visible: boolean) => Promise<void>, updateFontSize: (size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl') => Promise<void>, openLocationPicker: () => Promise<void> } | null>(null)
 const viewerState = ref<'loading' | 'ready' | 'error'>('loading')
 const panelOpen = ref(false)
@@ -39,7 +40,17 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
       <template #actions><ProductStatusBadge label="Verified Viewer commands" tone="success" /></template>
     </ProductPageHeader>
     <UAlert v-if="viewerState === 'error'" color="error" variant="subtle" title="Map viewer unavailable" :description="viewerErrorMessage || 'These commands need a working viewer connection and will have no effect until it loads.'" />
-    <div class="settings-stage relative">
+
+    <div v-if="!isDesktopViewport" class="desktop-required flex flex-col items-center justify-center gap-4 rounded-[var(--explore-radius-lg)] border border-default p-8 text-center">
+      <UIcon name="i-lucide-monitor" class="size-9 text-muted" aria-hidden="true" />
+      <div>
+        <p class="text-sm font-semibold text-highlighted">Desktop required</p>
+        <p class="mt-1.5 max-w-xs text-xs leading-5 text-muted">The Viewer settings panel needs more screen space than a mobile device can offer. Please open this page on a desktop or a tablet in landscape mode.</p>
+      </div>
+      <UButton to="/app" label="Back to home" color="neutral" variant="outline" size="sm" />
+    </div>
+
+    <div v-else class="settings-stage relative">
       <SitumViewer ref="viewer" class="settings-viewer" @status="handleViewerStatus" />
 
       <UCard v-if="panelOpen" class="settings-panel absolute bottom-28 left-6 z-10 w-72 shadow-lg" :ui="{ body: 'space-y-4' }">
