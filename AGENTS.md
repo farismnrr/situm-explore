@@ -28,15 +28,15 @@ Plan 017  [complete]
 -> Plan 020  [complete]
 ```
 
-Completed review branch:
+Canonical branch:
 
-`plan/020-situm-static-directions-v2`
+`main`
 
-It started from exact final Plan 019A HEAD:
+The completed cumulative Plans 017–020 stack was integrated by PR #12 at:
 
-`e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
+`5163af2a71c92441b01bccb81faac44933a91d1c`
 
-The older `plan/020-situm-static-directions` branch is stale pre-019A history and is superseded as an execution branch. Do not use it as current authority.
+All non-main plan/roadmap branches are historical or superseded and are not current authority.
 
 ## External integration rule
 

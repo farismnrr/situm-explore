@@ -90,7 +90,7 @@ Status: complete.
 
 The user explicitly changed the stacked roadmap after the first Plan 020 Phase 0 attempt exposed a sequencing problem.
 
-The resulting branch chain is complete:
+The resulting branch chain is complete and integrated into `main` by PR #12:
 
 ```text
 roadmap/017-020-next-features
@@ -114,6 +114,8 @@ Do not delete the stale pre-019A Plan 020 branch unless the user explicitly asks
 
 Status: complete roadmap decision; current authority is the completed lineage above.
 
+PR #12 merged the cumulative `plan/020-situm-static-directions-v2` branch into `main` at `5163af2a71c92441b01bccb81faac44933a91d1c`. `main` is now the canonical execution baseline; all non-main roadmap/plan branches are historical or superseded and may be removed without replaying their commits.
+
 ## 2026-08-13 — Static directions architecture boundary
 
 For Plan 019A and Plan 020:
@@ -131,9 +133,9 @@ For Plan 019A and Plan 020:
 
 Status: active.
 
-## 2026-08-13 — Worker-only stacked execution
+## 2026-08-13 — Completed worker-only stacked execution
 
-For the current stacked feature lineage:
+For the completed stacked feature lineage:
 
 - implementation and implementation fixes for each phase are delegated specifically to the configured `worker` subagent;
 - parent agent owns orchestration, review, plan/state/session persistence, commits, pushes, and phase/plan transitions;
@@ -142,7 +144,7 @@ For the current stacked feature lineage:
 - no PR and no merge during the stacked run;
 - each successor plan starts from the preceding plan's exact final validated/pushed HEAD.
 
-Status: active execution authorization.
+Status: complete historical execution authorization.
 
 ## 2026-08-12 — Git workflow default
 

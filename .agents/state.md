@@ -22,9 +22,9 @@ Non-blocking observations retained for Plan 020 review: some Viewer-visible POIs
 - plan: `plans/020-situm-static-directions.md`
 - branch: `plan/020-situm-static-directions-v2`
 - base: exact final Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
-- status: **complete; awaiting PR/merge decision**
+- status: **complete; integrated into main**
 
-`plan/020-situm-static-directions-v2` was created directly from the exact final Plan 019A HEAD to preserve non-destructive history.
+`plan/020-situm-static-directions-v2` was created directly from the exact final Plan 019A HEAD and integrated into `main` by PR #12.
 
 The earlier remote `plan/020-situm-static-directions` branch at stale pre-019A lineage (`c902e53`) is superseded as an execution branch. Do not merge, cherry-pick, reset, force-push, or use it as current authority. Historical evidence from it may be consulted only where still accurate.
 
@@ -39,11 +39,11 @@ roadmap/017-020-next-features
 -> plan/020-situm-static-directions-v2            [complete]
 ```
 
-## Execution rules
+## Integration state
 
-- Plan 020 phases are complete;
-- the branch is awaiting the user's separately gated PR/merge decision;
-- no PR or merge has been created;
+- PR #12 is merged into `main` at `5163af2a71c92441b01bccb81faac44933a91d1c`;
+- `main` is the canonical execution baseline;
+- there is no active Plan 017–020 execution branch;
 - runtime acceptance uses production build + preview, not Nuxt dev mode;
 - wait for actual Situm Viewer/cartography readiness before Viewer commands.
 
@@ -78,4 +78,4 @@ Never expose raw Viewer access or a generic invoke surface.
 
 ## Next action
 
-Plan 020 is complete on `plan/020-situm-static-directions-v2` at final pushed HEAD. Production preview smoke passed for the updated Paths copy and Map Route request/replacement/cancellation controls; accepted Plan 019A manual evidence covers visual forward/reverse rendering, cleanup, and mobile boundary. The Viewer-visible POI mismatch is not proven app-owned, constrained route failures remain runtime limitations, and unresolved route details/events/tags remain absent. The branch is ready for the user's separately gated review/merge decision; no PR or merge was created. Do not replay the resolved foundation or use the stale pre-019A branch.
+Plans 017–020 are complete and integrated into `main` by PR #12. Production preview smoke passed for the updated Paths copy and Map Route request/replacement/cancellation controls; accepted Plan 019A manual evidence covers visual forward/reverse rendering, cleanup, and mobile boundary. The Viewer-visible POI mismatch is not proven app-owned, constrained route failures remain runtime limitations, and unresolved route details/events/tags remain absent. Do not replay the resolved foundation or revive deleted historical branches.

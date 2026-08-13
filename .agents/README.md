@@ -77,26 +77,26 @@ Never store credentials, API keys, JWTs, passwords, ClickHouse credentials, or s
 
 ## Current scope
 
-Plans 017, 018, and 019 in the current stacked feature lineage are complete. The user explicitly inserted Plan 019A before Plan 020.
+Plans 017, 018, 019, 019A, and 020 in the completed stacked feature lineage are integrated into `main`. The feature branches are historical and are being removed after the successful PR #12 merge.
 
 Current chain:
 
 ```text
-Plan 017 — Analytics & Reports with existing local ClickHouse   [complete]
--> Plan 018 — Groups & Alarms read-only                        [complete]
--> Plan 019 — Realtime Viewer overlay                          [complete]
--> Plan 019A — Static Directions Foundation & Runtime Proof    [ACTIVE]
--> Plan 020 — Static Directions Product Completion             [queued]
+Plan 017 — Analytics & Reports with existing local ClickHouse   [complete/integrated]
+-> Plan 018 — Groups & Alarms read-only                        [complete/integrated]
+-> Plan 019 — Realtime Viewer overlay                          [complete/integrated]
+-> Plan 019A — Static Directions Foundation & Runtime Proof    [complete/integrated]
+-> Plan 020 — Static Directions Product Completion             [complete/integrated]
 ```
 
-Active branch:
+Canonical branch:
 
-`plan/019a-situm-static-directions-foundation`
+`main`
 
-Plan 019A starts from final Plan 019 HEAD `513f65e820635e05a22a54270f3bf21f5925e6c8`.
+PR #12 integrated the completed cumulative branch `plan/020-situm-static-directions-v2` into `main` at merge commit `5163af2a71c92441b01bccb81faac44933a91d1c`.
 
-The pre-019A `plan/020-situm-static-directions` branch is superseded as an execution base. Keep it only as historical evidence; do not merge/cherry-pick it into 019A. After 019A completes, Plan 020 starts from the exact final Plan 019A HEAD.
+The pre-019A `plan/020-situm-static-directions` branch and all intermediate plan/roadmap branches are historical/superseded and must not be revived or replayed.
 
-Implementation/testing for each implementation phase remains delegated specifically to the configured `worker` subagent. The parent owns review, state/plan/session persistence, commits, pushes, and phase transitions. No PR or merge during this stacked run.
+There is no active Plan 017–020 execution branch. The canonical execution baseline is `main`.
 
 Read `.agents/state.md` for the exact current truth, evidence boundaries, branch chain, and next action.

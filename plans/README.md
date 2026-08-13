@@ -28,7 +28,7 @@ Historical plans/sessions/branches are evidence only. Current state/contracts ov
 
 ## Explicit stacked mode
 
-The user authorized uninterrupted stacked execution for the feature lineage below. That stacked run is complete; the final branch remains user-gated for PR/merge.
+The user authorized uninterrupted stacked execution for the feature lineage below. That stacked run is complete and integrated into `main` by PR #12.
 
 Completed chain:
 
@@ -60,7 +60,7 @@ Do not delete the stale Plan 020 branch unless the user explicitly asks.
 
 Plan 019A deliberately implements the smallest verified surface before runtime proof. This is not a relaxation of the evidence gate: installed SDK signatures, numeric POI endpoint identifiers, and Viewer ownership are already verified; unverified route result/details/events/tags remain absent.
 
-`plans/020-situm-static-directions.md` completed the evidence-backed product polish, regression smoke, and closeout for that verified surface. No successor plan is currently active.
+`plans/020-situm-static-directions.md` completed the evidence-backed product polish, regression smoke, and closeout for that verified surface. PR #12 integrated Plans 017–020 into `main`; no successor plan is active.
 
 ## Historical worker-only execution rule
 
