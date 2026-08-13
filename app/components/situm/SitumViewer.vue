@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SitumSDK, { ViewerEventType } from '@situm/sdk-js'
+import type { RouteType } from '@situm/sdk-js'
 
 const emit = defineEmits<{
   status: [state: 'loading' | 'ready' | 'error', message?: string]
@@ -55,7 +56,22 @@ function cleanRealtimePositions() {
   return runViewerCommand(() => viewer!.cleanRealtimePositions())
 }
 
-defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker, loadRealtimePositions, cleanRealtimePositions })
+function startDirections(navigationFrom: number, navigationTo: number, routeType?: RouteType) {
+  const from = requirePositiveInteger(navigationFrom, 'navigationFrom')
+  const to = requirePositiveInteger(navigationTo, 'navigationTo')
+
+  return runViewerCommand(() => viewer!.startDirections({
+    navigationFrom: from,
+    navigationTo: to,
+    ...(routeType === undefined ? {} : { routeType }),
+  }))
+}
+
+function cancelDirections() {
+  return runViewerCommand(() => viewer!.cancelDirections())
+}
+
+defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker, loadRealtimePositions, cleanRealtimePositions, startDirections, cancelDirections })
 
 onMounted(() => {
   if (!config.public.situmApiKey || !config.public.situmBuildingId) {
@@ -85,6 +101,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (viewer) void viewer.cleanRealtimePositions().catch(() => undefined)
+  if (viewer) void viewer.cancelDirections().catch(() => undefined)
 })
 </script>
 

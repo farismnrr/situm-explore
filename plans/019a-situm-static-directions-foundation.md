@@ -91,15 +91,15 @@ If any of the above is contradicted by current checked-out source/runtime, updat
 
 Delegate implementation to `worker`.
 
-- [ ] add the smallest typed `SitumViewer` command for static directions using verified numeric POI IDs;
-- [ ] validate positive integer From/To IDs before invoking Viewer;
-- [ ] add typed `cancelDirections()` command;
-- [ ] expose only a verified route-type option if needed by the current route UI;
-- [ ] preserve existing Viewer readiness guard;
-- [ ] cancel active directions on component unmount when safe/appropriate;
+- [x] add the smallest typed `SitumViewer` command for static directions using verified numeric POI IDs;
+- [x] validate positive integer From/To IDs before invoking Viewer;
+- [x] add typed `cancelDirections()` command;
+- [x] expose only a verified route-type option if needed by the current route UI;
+- [x] preserve existing Viewer readiness guard;
+- [x] cancel active directions on component unmount when safe/appropriate;
 - [ ] do not expose raw Viewer access, generic invoke, `startNavigation`, user-location, route-result payloads, or unsupported events;
-- [ ] run `git diff --check`, lint, typecheck, and build;
-- [ ] review, persist, commit, and push Phase 1.
+- [x] run `git diff --check`, lint, typecheck, and build;
+- [x] review, persist, commit, and push Phase 1.
 
 ## Phase 2 — Connect the existing Route tab to real POI IDs
 

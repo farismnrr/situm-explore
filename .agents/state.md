@@ -139,6 +139,8 @@ Plan 019A additionally requires hydrated Playwright smoke for a real route start
 
 Plan 019A Phase 0 reconfirmation completed on 2026-08-13 from exact Plan 019 HEAD `513f65e820635e05a22a54270f3bf21f5925e6c8`. Installed SDK declarations/source, numeric POI endpoint IDs, and the scaffold-only Route tab/current `SitumViewer` gap remain as previously verified; no contract change was found. Phase 1 is next.
 
+Plan 019A Phase 1 completed on 2026-08-13. `SitumViewer` now exposes only typed numeric-ID `startDirections` and `cancelDirections` commands, validates positive integer endpoints, preserves readiness guards, and cancels directions during unmount. No raw Viewer, generic invoke, navigation, location, event, or synthetic route-detail surface was added. Diff check, lint, typecheck, and build passed. Phase 2 is next.
+
 Execute `plans/019a-situm-static-directions-foundation.md` Phase 0 from the current Plan 019A branch.
 
 Do not resume the stale pre-019A Plan 020 branch. After Plan 019A is fully validated/committed/pushed, create the new Plan 020 execution branch from the exact final Plan 019A HEAD and continue product completion.
