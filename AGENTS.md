@@ -18,8 +18,8 @@ For plan execution or repository changes also read:
 5. `.agents/memory/decisions.md` when roadmap/product boundaries matter
 6. `ARCHITECTURE.md`
 7. `plans/README.md`
-8. `design/data-source-matrix.md` for Plans 010–016
-9. active plan
+8. `design/data-source-matrix.md` when Situm/product capability scope matters
+9. the active/follow-up plan, if one exists
 
 For UI/UX/presentation work also read:
 
@@ -29,23 +29,17 @@ For UI/UX/presentation work also read:
 
 Historical plans/sessions are evidence only and must not override current state/contracts.
 
-## Current roadmap boundary
+## Current roadmap truth
 
-The UI roadmap through Plan 009B is historical, manually accepted, and integrated.
+The UI roadmap through Plan 009B is historical and integrated.
 
-Plan 010 is the current bridge into backend/Situm work. It may prune previously accepted UI when a control is native-only, unsupported, fake, misleading, or has no credible product owner.
+Plans 010–016 have completed a user-authorized **stacked implementation pass**. The cumulative current implementation branch is:
 
-For Plans 010–016, every Situm-domain capability must end as one of:
+`plan/016-situm-viewer-settings-integration`
 
-```text
-WEB / SITUM
-WEB / PRODUCT
-NATIVE-ONLY
-REMOVE
-UNRESOLVED
-```
+Do not restart Plan 010 or recreate Plans 011–016 from `main`.
 
-A prototype control is not proof that Situm supports that behavior on web.
+No PR or merge was authorized/performed for this stacked sequence. Read `.agents/state.md` for the exact completed/skipped/unresolved status and runtime-smoke blocker.
 
 ## No-hallucination external integration rule
 
@@ -53,43 +47,36 @@ For Situm behavior, model memory is not evidence.
 
 Before implementation, verify the exact current contract from official Situm documentation/source and the installed SDK version where relevant.
 
-Do not invent:
+Do not invent endpoint paths, SDK/Viewer methods, payload/event fields, permissions/auth behavior, web/native availability, browser/server ownership, or fake fallback values.
 
-- endpoint paths;
-- SDK/Viewer method names;
-- payload/event fields;
-- permissions/auth behavior;
-- web-vs-native availability;
-- browser-vs-server ownership;
-- fake fallback values.
-
-If exact evidence is incomplete, mark the capability `UNRESOLVED` and stop that capability instead of guessing.
+If exact evidence is incomplete, keep the capability `UNRESOLVED`/absent instead of guessing.
 
 ## Architecture boundary
 
-Use the current Nuxt 4 structure already present under `app/`, `server/`, and optional `shared/`.
+Use the current Nuxt 4 structure under `app/`, `server/`, and optional `shared/`.
 
-Do not repeat historical directory migrations.
+Prefer KISS. Do not introduce speculative services, repositories, stores, event buses, generic API clients, caches, background workers, or parallel design systems.
 
-Prefer KISS. Do not introduce speculative services, repositories, stores, event buses, generic API clients, caches, workers, or parallel design systems.
+Situm REST/domain calls use private Nitro runtime credentials behind authenticated routes. The historical public Viewer credential is not authority for new REST integrations.
 
-Future Situm REST/domain calls use private Nitro runtime credentials behind authenticated routes. The historical public Viewer POC key is not authority for new REST integrations.
-
-Native indoor positioning/bluedot and movement-aware handset navigation are outside the current Nuxt web roadmap.
+Native indoor positioning/bluedot and movement-aware handset navigation remain outside the Nuxt web roadmap.
 
 ## Git workflow
 
 - one plan = one dedicated plan branch;
-- do not implement directly on `main`;
-- do not use linked worktrees unless explicitly requested;
+- never implement directly on `main`;
+- no linked worktrees unless explicitly requested;
 - complete phases with plan/state updates, validation, commit, and push;
-- do not open a PR or merge without explicit user authorization;
-- dependent plans start only after their dependency is integrated into updated `main`.
+- never open a PR or merge without explicit user authorization;
+- dependent plans normally start after integration into updated `main`;
+- **exception:** when `.agents/state.md` / durable decisions record explicit stacked execution, the next plan must branch from the completed previous plan HEAD instead of `main`.
+
+The explicit Plans 010–016 stacked exception is already complete; do not replay it.
 
 ## Mandatory closeout
 
 Before finishing a conversation, follow `.agents/protocols/persistence.md`.
 
-Update current state/session evidence and only revise durable memory/knowledge/decisions when something durable actually changed.
+Update current state/session evidence and revise durable memory/knowledge/decisions only when something durable changed.
 
 Never persist credentials, API keys, JWTs, passwords, or unnecessary sensitive payloads.
