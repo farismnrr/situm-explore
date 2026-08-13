@@ -60,7 +60,7 @@ Plans 010–016 passed static/local validation where applicable:
 - `npm run typecheck`;
 - `npm run build`.
 
-**Runtime Situm smoke is complete**. The configured Situm environment was exercised and verified for both missing-credential semantics and unauthorized semantics without secret exposure. Code/build blockers preventing the smoke test execution were resolved.
+**Runtime Situm smoke is NOT complete**. The missing-credential and unauthorized semantics were verified without secret exposure, but the success-path tests are blocked because `NUXT_SITUM_READ_API_KEY` is not configured in the local environment. Code/build blockers preventing the smoke test execution were resolved, but success behavior is untested.
 
 ## Evidence-gated follow-up gaps
 
