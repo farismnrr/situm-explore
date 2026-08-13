@@ -4,128 +4,118 @@ _Last reviewed: 2026-08-13_
 
 ## Current focus
 
-The accepted UI baseline is integrated into `main`.
+The Situm backend/web integration roadmap Plans 010–016 has finished its **stacked implementation pass**.
 
-The active roadmap stage is **Plan 012 — Situm Geofences, Paths & Static Routing Integration** on the stacked branch:
+Final cumulative branch:
 
-`plan/012-situm-geofences-paths-routing-integration`
+`plan/016-situm-viewer-settings-integration`
 
-Branch base:
+Last implementation HEAD before later documentation-only consistency fixes:
 
-`main` at `170110c1d60c32600e1641a0f89cc53823bba9cc`
+`1931dbfc53be3d748baa840f784c8cbb9d52dae7`
 
-Plans 010–015 are complete in the stacked sequence: Plan 010 `657fb0f`, Plan 011 `138d5db`, Plan 012 `94c1247`, Plan 013 `3c3c0af`, Plan 014 skipped-unresolved `657cb2b`, and Plan 015 `579108d`. Plan 016 is complete at the final stacked HEAD with direct verified Viewer language/font/accessibility/location-picker actions. Groups, alarms, reports, route-result constraints, realtime stale/trajectory semantics remain unresolved and absent.
+The branch is a direct cumulative descendant of `main` at `170110c1d60c32600e1641a0f89cc53823bba9cc`. Plans 010→011→012→013→014→015→016 were executed as explicit stacked branches: every next plan was based on the completed previous plan HEAD. No PR or merge to `main` was authorized or performed.
 
-## Historical UI state
+Do **not** restart Plan 010, recreate Plans 011–016 from `main`, or interpret stale historical integration wording as a request to repeat this roadmap.
 
-- Plans 001–009B are historical/integrated evidence.
-- Plan 009B closed after manual UI correction and explicit user acceptance.
-- Do not reopen 009B/009C from old visual findings unless the user explicitly requests new UI design work.
-- Prototype/accepted visual fidelity does not override current capability truthfulness.
+## Roadmap result
 
-## Current capability classes
+- Plan 010 — implementation/review complete; web/native/security/evidence boundary frozen.
+- Plan 011 — implementation complete: Buildings/Floors/POIs/Categories reads and map selection context.
+- Plan 012 — implementation complete for verified Geofences/Paths reads; static route-result/product mapping remains unresolved and absent.
+- Plan 013 — implementation complete for current-position monitoring; stale/offline semantics, Viewer realtime overlay, trajectory/follow remain unresolved and absent.
+- Plan 014 — **skipped-unresolved**, not implemented. Official REST report endpoints exist, but exact report filter/schema/permission/runtime mapping still requires follow-up verification and live smoke.
+- Plan 015 — implementation complete for Organization + Users reads; Groups + Alarms remain unresolved/absent and require direct REST follow-up evidence/runtime verification.
+- Plan 016 — implementation complete for verified Viewer language, font-size, accessibility-panel, and location-picker commands.
 
-Every Situm-domain field/control must finish Plan 010 as exactly one of:
+## Validation truth
 
-1. `WEB / SITUM` — retained with exact verified Situm evidence and one later owner;
-2. `WEB / PRODUCT` — app-owned web behavior;
-3. `NATIVE-ONLY` — absent from the web product;
-4. `REMOVE` — unsupported/fake/low-value/misleading and removed;
-5. `UNRESOLVED` — evidence incomplete; must not be implemented or presented as working Situm behavior.
+Static/local validation passed on implemented plans where applicable:
 
-Canonical product matrix:
+- `git diff --check`;
+- `npm run lint`;
+- `npm run typecheck`;
+- `npm run build`.
 
-`design/data-source-matrix.md`
+**Runtime Situm smoke is still pending.** Manual API/Viewer smoke could not be completed in the execution environment because configured local credentials plus an authenticated browser/session were unavailable there. Therefore the roadmap is implementation-complete, not production/runtime-verified.
 
-## No-hallucination execution rule
+Do not mark runtime smoke complete without actually exercising the configured Situm environment.
 
-For Situm behavior, memory/prototype/history is not enough.
+## Current blockers / follow-up gaps
 
-Before implementation, verify exact current official contract plus installed SDK compatibility where relevant:
+### 1. Runtime environment smoke
 
-- endpoint or SDK method;
-- web vs native availability;
-- browser Viewer vs Nitro owner;
-- auth/permission;
-- request inputs;
-- consumed response/event fields;
-- read/write semantics;
-- relevant failure/empty/stale state.
+Before treating the integration as runtime-verified, confirm locally without printing secrets:
 
-If material evidence is missing, classify `UNRESOLVED` and stop that capability. Do not guess or fake a success path.
+- private `NUXT_SITUM_API_KEY` is configured;
+- legacy/current Viewer credential is configured if the Viewer still requires it;
+- `NUXT_PUBLIC_SITUM_BUILDING_ID` is configured;
+- app authentication/session works;
+- protected `/api/situm/*` reads work with the configured Situm organization/building.
 
-Plans 011–016 may implement only capabilities that Plan 010 closes with exact evidence + one owner.
+### 2. Evidence-gated Situm capabilities
 
-## Current prune direction
+The following are intentionally absent rather than faked:
 
-Plan 010 should remove or verify-before-retaining at minimum:
+- report/analytics data and CSV integration;
+- Groups read integration;
+- Alarms read integration;
+- static route-result/details/constraints presentation;
+- realtime stale/offline semantics and Viewer overlay;
+- trajectory/follow semantics;
+- unverified generic Viewer config/settings operations.
 
-- dummy registration;
-- fake global Sync;
-- browser `My location` indoor-position semantics;
-- device-position-dependent live navigation/rerouting;
-- end-user Set User Location control;
-- save-car/navigate-to-car POC controls;
-- unverified remote-person Follow semantics;
-- flight selection;
-- fake route/path outputs without a real source;
-- generic Images inventory;
-- invented style/settings data without exact real backing;
-- organization credential/key detail UI;
-- unsourced Recent Activity/capacity metrics.
+Official Situm REST documentation confirms Reports, Groups, and Alarms endpoint families exist. Their absence in the current implementation is therefore a follow-up contract/runtime-verification gap, not proof that Situm lacks those capabilities.
 
-## Native boundary
+## No-hallucination rule
 
-No native app is being implemented now.
+For Situm behavior: **no evidence, no implementation**.
 
-Future native scope may own device positioning/bluedot, sensor/permission handling, and movement-aware live navigation/rerouting.
+Before adding a missing capability, verify exact official endpoint/SDK method, auth/permission, request parameters, response/event fields, web/native ownership, and relevant failure/empty/stale semantics. If material evidence is missing, keep it unresolved/absent rather than inventing behavior.
 
-Web may monitor positions produced by devices; it must not pretend the browser itself is a Situm positioning engine.
+## Web/native boundary
+
+The Nuxt product is the web operations/admin/exploration console.
+
+Native-only scope remains outside this roadmap:
+
+- handset indoor positioning / blue dot from sensors;
+- Wi-Fi/BLE positioning and permission handling;
+- movement-aware live turn-by-turn navigation/rerouting;
+- other mobile-runtime positioning behavior.
+
+Web may consume positions produced by devices; it must not pretend the browser performs Situm indoor positioning.
 
 ## Credential/security boundary
 
-Current `main` still contains a historical public Viewer POC credential path. It is legacy current behavior, not future REST architecture.
-
-Future retained integrations follow:
-
-- REST/domain Situm calls use private Nitro runtime credentials;
-- every product `/api/situm/*` route requires the existing app session;
-- server REST credentials never enter browser/public runtime config;
-- no generic unauthenticated Situm proxy;
-- browser Viewer auth is a separate exact contract verified in Plan 010;
+- Situm REST/domain reads use private Nitro runtime configuration (`NUXT_SITUM_API_KEY`).
+- Protected product `/api/situm/*` routes require the existing Situm Explore session.
+- Server credentials never enter browser/public runtime config.
+- No generic unauthenticated Situm proxy.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public.
+- Historical `NUXT_PUBLIC_SITUM_API_KEY` remains a legacy Viewer concern only while still required by the current Viewer implementation.
 
-Do not invent the private env name or Viewer token flow before verification.
+## Git / branch truth
 
-## Existing real runtime to protect
+The user explicitly authorized **stacked execution for Plans 010–016** with these rules:
 
-- `/api/auth/login`;
-- `useUserSession()` / logout / auth middleware;
-- `/api/me` and PostgreSQL/Drizzle behavior;
-- `/api/situm/status` configuration semantics until deliberately revised;
-- real `SitumViewer` lifecycle;
-- `MAP_IS_READY`, `APP_ERROR`, missing-config/error behavior.
+- one plan = one branch;
+- next plan starts from the completed previous plan HEAD;
+- no PR;
+- no merge to `main`;
+- no force-push/history rewrite.
 
-## Backend roadmap
-
-- Plan 010 — prune + freeze exact capability/security/evidence contract.
-- Plan 011 — Buildings/Floors/POIs/Categories.
-- Plan 012 — Geofences/Paths/static routing.
-- Plan 013 — Realtime monitoring.
-- Plan 014 — Reports/Analytics.
-- Plan 015 — Organization/Users/Groups/Alarms read-only.
-- Plan 016 — `plans/016-situm-viewer-settings-integration.md`, conditional remaining verified web-safe Viewer/Settings behavior.
-
-Native positioning is outside Plans 010–016.
-
-## Execution rule
-
-- One plan = one branch.
-- Do not implement on `main`.
-- Complete/validate/commit/push each phase.
-- No PR/merge without explicit user authorization.
-- Dependent plans start only after their dependency is integrated into updated `main`.
+That stacked execution is now complete. Treat `plan/016-situm-viewer-settings-integration` as the cumulative current implementation branch until the user explicitly chooses an integration or follow-up strategy.
 
 ## Next action
 
-Roadmap execution is complete on the final Plan 016 stacked branch. Do not merge or open a PR. Manual Situm API/Viewer smoke remains an external follow-up requiring configured credentials and an authenticated session.
+Do not restart Plans 010–016.
+
+Next work should be one of these only when explicitly requested:
+
+1. runtime smoke/repair on the final stacked branch;
+2. targeted follow-up for unresolved REST capabilities (Reports/Groups/Alarms/etc.);
+3. review/integration strategy for the cumulative branch;
+4. a new separately planned feature.
+
+No PR or merge is implied.
