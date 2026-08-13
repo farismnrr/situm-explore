@@ -1,41 +1,59 @@
 <script setup lang="ts">
-import { homeBuilding, homePois } from '~/data/prototype/home'
-import { cartographyBuildings } from '~/data/prototype/cartography'
+import type { SitumCartographyPoi, SitumCartographyResponse } from '#shared/situm-cartography'
 
 const activeTab = ref<'explore' | 'route' | 'layers'>('explore')
 const viewerState = ref<'loading' | 'ready' | 'error'>('loading')
 const poiSearch = ref('')
 const showFavorites = ref(false)
-const favoritePoiIds = ref<string[]>(['reception'])
-const selectedPoiId = ref<string | null>('reception')
-const routeStart = ref('Reception')
-const routeDestination = ref('Meeting Room A')
+const favoritePoiIds = ref<number[]>([])
+const selectedPoiId = ref<number | null>(null)
+const routeStart = ref('')
+const routeDestination = ref('')
 const accessibleRoute = ref(false)
 const layerState = reactive({ realtime: true, geofence: false, trajectory: false })
 const viewerToolStatus = ref('')
+const viewer = ref<{ selectBuilding: (id: number) => Promise<void>, selectFloor: (id: number) => Promise<void>, selectPoi: (id: number) => Promise<void> } | null>(null)
 const { showFeedback } = useExploreFeedback()
-const mapBuildings = computed(() => cartographyBuildings.map(building => ({
-  label: building.name,
-  floors: building.floors.map(floor => floor.name)
-})))
-const syntheticBuildingOptions = mapBuildings.value.map(building => building.label)
-const selectedBuilding = ref<string>(mapBuildings.value[0]!.label)
-const selectedFloor = ref<string>(mapBuildings.value[0]!.floors[0]!)
+const { data: cartography, error: cartographyError, status: cartographyStatus } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
+const buildings = computed(() => cartography.value?.buildings ?? [])
+const floors = computed(() => cartography.value?.floors ?? [])
+const pois = computed(() => cartography.value?.pois ?? [])
+const selectedBuildingId = ref<number | null>(null)
+const selectedFloorId = ref<number | null>(null)
 const viewMode = ref<'explore' | 'realtime' | 'trajectory'>('explore')
 const zoomLevel = ref(1)
 const centerVersion = ref(0)
 
-const activeBuilding = computed(() => mapBuildings.value.find(building => building.label === selectedBuilding.value) ?? mapBuildings.value[0]!)
+const activeBuilding = computed(() => buildings.value.find(building => building.id === selectedBuildingId.value) ?? buildings.value[0] ?? null)
+const activeFloors = computed(() => floors.value.filter(floor => floor.buildingId === activeBuilding.value?.id))
+const selectedBuilding = computed(() => activeBuilding.value?.name ?? 'No building')
+const selectedFloor = computed(() => activeFloors.value.find(floor => floor.id === selectedFloorId.value) ?? activeFloors.value[0] ?? null)
+const buildingOptions = computed(() => buildings.value.map(building => ({ label: building.name, value: building.id })))
 
-function selectBuilding(building: string) {
-  selectedBuilding.value = building
-  selectedFloor.value = activeBuilding.value.floors[0]!
-  showViewerToolStatus(`${building} selected locally. The real viewer remains on the configured building.`)
+watch([buildings, activeFloors], () => {
+  if (selectedBuildingId.value === null && buildings.value[0]) selectedBuildingId.value = buildings.value[0].id
+  if (!activeFloors.value.some(floor => floor.id === selectedFloorId.value)) selectedFloorId.value = activeFloors.value[0]?.id ?? null
+}, { immediate: true })
+
+async function selectBuilding(buildingId: number) {
+  selectedBuildingId.value = buildingId
+  selectedFloorId.value = floors.value.find(floor => floor.buildingId === buildingId)?.id ?? null
+  try {
+    await viewer.value?.selectBuilding(buildingId)
+    showViewerToolStatus(`${buildings.value.find(building => building.id === buildingId)?.name ?? 'Building'} selected.`)
+  } catch (error) {
+    showViewerToolStatus(error instanceof Error ? error.message : 'The building could not be selected in the viewer.')
+  }
 }
 
-function selectFloor(floor: string) {
-  selectedFloor.value = floor
-  showViewerToolStatus(`${floor} selected locally; no viewer floor call was made.`)
+async function selectFloor(floorId: number) {
+  selectedFloorId.value = floorId
+  try {
+    await viewer.value?.selectFloor(floorId)
+    showViewerToolStatus(`${floors.value.find(floor => floor.id === floorId)?.name ?? 'Floor'} selected.`)
+  } catch (error) {
+    showViewerToolStatus(error instanceof Error ? error.message : 'The floor could not be selected in the viewer.')
+  }
 }
 
 function selectViewMode(mode: 'explore' | 'realtime' | 'trajectory') {
@@ -53,18 +71,24 @@ function centerMap() {
   showViewerToolStatus(`Map center reset locally (view ${centerVersion.value}).`)
 }
 
-const routeOptions = computed(() => homePois.map(poi => poi.name))
+const routeOptions = computed(() => pois.value.map(poi => poi.name))
 
-const filteredPois = computed(() => homePois.filter((poi) => {
+const filteredPois = computed(() => pois.value.filter((poi) => {
   const query = poiSearch.value.trim().toLowerCase()
-  const matchesSearch = !query || [poi.name, poi.category, poi.floor].some(value => value.toLowerCase().includes(query))
+  const matchesSearch = !query || [poi.name, poi.categoryName, poi.info].some(value => value.toLowerCase().includes(query))
   return matchesSearch && (!showFavorites.value || favoritePoiIds.value.includes(poi.id))
 }))
 
-const selectedPoi = computed(() => homePois.find(poi => poi.id === selectedPoiId.value) ?? null)
+const selectedPoi = computed(() => pois.value.find(poi => poi.id === selectedPoiId.value) ?? null)
 
-function selectPoi(id: string) {
-  selectedPoiId.value = id
+async function selectPoi(poi: SitumCartographyPoi) {
+  selectedPoiId.value = poi.id
+  try {
+    await viewer.value?.selectPoi(poi.id)
+    showViewerToolStatus(`${poi.name} selected.`)
+  } catch (error) {
+    showViewerToolStatus(error instanceof Error ? error.message : 'The POI could not be selected in the viewer.')
+  }
 }
 
 function openDirections(poiName: string) {
@@ -73,13 +97,13 @@ function openDirections(poiName: string) {
   showFeedback('Destination selected. Static directions will be enabled in Plan 012.')
 }
 
-function toggleFavorite(id: string) {
+function toggleFavorite(id: number) {
   favoritePoiIds.value = favoritePoiIds.value.includes(id)
     ? favoritePoiIds.value.filter(poiId => poiId !== id)
     : [...favoritePoiIds.value, id]
 }
 
-function isFavorite(id: string) {
+function isFavorite(id: number) {
   return favoritePoiIds.value.includes(id)
 }
 
@@ -149,11 +173,13 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
 
       <div class="min-h-0 flex-1 overflow-auto p-4">
         <div v-if="activeTab === 'explore'" role="tabpanel">
+          <UAlert v-if="cartographyError" color="error" variant="subtle" title="Map cartography unavailable" description="No fixture buildings or POIs are shown." />
+          <UAlert v-else-if="cartographyStatus === 'pending'" color="neutral" variant="subtle" title="Loading map data" description="Reading buildings, floors and POIs from Situm." />
           <UInput v-model="poiSearch" icon="i-lucide-search" placeholder="Search POIs or categories…" aria-label="Search POIs or categories" />
           <div class="mt-3 space-y-2">
-            <button v-for="poi in filteredPois" :key="poi.id" type="button" class="flex w-full items-center gap-3 rounded-lg border p-3 text-left transition hover:bg-elevated" :class="selectedPoiId === poi.id ? 'border-primary bg-elevated' : 'border-default'" :aria-pressed="selectedPoiId === poi.id" @click="selectPoi(poi.id)">
+            <button v-for="poi in filteredPois" :key="poi.id" type="button" class="flex w-full items-center gap-3 rounded-lg border p-3 text-left transition hover:bg-elevated" :class="selectedPoiId === poi.id ? 'border-primary bg-elevated' : 'border-default'" :aria-pressed="selectedPoiId === poi.id" @click="selectPoi(poi)">
               <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-elevated text-xs font-semibold text-highlighted" aria-hidden="true">{{ poi.name[0] }}</span>
-              <span class="min-w-0 flex-1"><strong class="block truncate text-xs text-highlighted">{{ poi.name }}</strong><span class="mt-1 block text-[11px] text-muted">{{ poi.category }} · {{ poi.floor }}</span></span>
+              <span class="min-w-0 flex-1"><strong class="block truncate text-xs text-highlighted">{{ poi.name }}</strong><span class="mt-1 block text-[11px] text-muted">{{ poi.categoryName || 'Uncategorized' }} · Floor {{ poi.floorId }}</span></span>
               <UIcon v-if="isFavorite(poi.id)" name="i-lucide-star" class="size-3.5 text-warning" aria-label="Favorite" /><span class="text-muted" aria-hidden="true">›</span>
             </button>
             <p v-if="filteredPois.length === 0" class="py-4 text-center text-xs text-muted">No POIs match this filter.</p>
@@ -184,9 +210,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
     <section class="relative min-h-[34rem] min-w-0 flex-1 bg-elevated sm:min-h-[38rem] lg:min-h-0">
       <div class="absolute left-3 right-3 top-3 z-10 flex flex-wrap items-center justify-between gap-2 sm:left-6 sm:right-6 sm:top-4">
         <div class="flex min-w-0 max-w-full flex-wrap items-center gap-1 rounded-lg border border-default bg-default/95 p-1 shadow-sm backdrop-blur">
-          <USelect :items="syntheticBuildingOptions" :model-value="selectedBuilding" aria-label="Synthetic building" class="w-36 sm:w-44" size="sm" @update:model-value="selectBuilding" />
+          <USelect :model-value="selectedBuildingId ?? undefined" :items="buildingOptions" value-key="value" label-key="label" aria-label="Building" class="w-36 sm:w-44" size="sm" @update:model-value="selectBuilding" />
           <div class="flex max-w-full overflow-x-auto rounded-md bg-elevated p-0.5">
-            <UButton v-for="floor in activeBuilding.floors" :key="floor" :label="floor" :color="selectedFloor === floor ? 'primary' : 'neutral'" :variant="selectedFloor === floor ? 'soft' : 'ghost'" size="xs" @click="selectFloor(floor)" />
+            <UButton v-for="floor in activeFloors" :key="floor.id" :label="floor.name" :color="selectedFloor?.id === floor.id ? 'primary' : 'neutral'" :variant="selectedFloor?.id === floor.id ? 'soft' : 'ghost'" size="xs" @click="selectFloor(floor.id)" />
           </div>
         </div>
         <div class="flex max-w-full overflow-x-auto rounded-lg border border-default bg-default/95 p-1 shadow-sm backdrop-blur">
@@ -194,7 +220,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
         </div>
       </div>
       <div class="h-full min-h-[34rem] p-2 sm:min-h-[38rem] sm:p-3 lg:min-h-0">
-        <SitumViewer class="h-full" @status="handleViewerStatus" />
+        <SitumViewer ref="viewer" class="h-full" @status="handleViewerStatus" />
       </div>
       <div class="absolute bottom-6 right-6 z-10 flex flex-col overflow-hidden rounded-lg border border-default bg-default/95 shadow-sm backdrop-blur">
           <UButton icon="i-lucide-locate-fixed" aria-label="Reset map view locally" color="neutral" variant="ghost" @click="centerMap" />
@@ -203,10 +229,10 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
       </div>
       <UCard v-if="selectedPoi" class="absolute right-6 top-20 z-10 w-60 shadow-lg" :ui="{ body: 'p-3' }">
         <div class="flex items-start justify-between gap-3">
-          <div><p class="font-semibold text-highlighted">{{ selectedPoi.name }}</p><p class="mt-1 text-xs text-muted">{{ selectedPoi.category }} · {{ selectedPoi.floor }} · {{ homeBuilding.name }}</p></div>
+          <div><p class="font-semibold text-highlighted">{{ selectedPoi.name }}</p><p class="mt-1 text-xs text-muted">{{ selectedPoi.categoryName || 'Uncategorized' }} · Floor {{ selectedPoi.floorId }} · {{ selectedBuilding }}</p></div>
           <UButton icon="i-lucide-x" aria-label="Close POI details" color="neutral" variant="ghost" size="xs" @click="selectedPoiId = null" />
         </div>
-        <p class="mt-3 text-xs text-muted">{{ selectedPoi.description }}</p>
+        <p class="mt-3 text-xs text-muted">{{ selectedPoi.info || 'No additional information provided.' }}</p>
         <div class="mt-4 flex flex-wrap gap-2"><UButton label="Directions" color="info" size="sm" @click="openDirections(selectedPoi.name)" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
       </UCard>
     </section>

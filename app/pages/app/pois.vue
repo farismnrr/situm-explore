@@ -1,78 +1,54 @@
 <script setup lang="ts">
-import { cartographyBuildings, cartographyPois, type PrototypePoi } from '~/data/prototype/cartography'
+import type { SitumCartographyPoi, SitumCartographyResponse } from '#shared/situm-cartography'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Points of interest' })
 
 const query = ref('')
-const categoryFilter = ref<'All categories' | PrototypePoi['category']>('All categories')
-const selectedPoi = ref<PrototypePoi | null>(null)
+const categoryFilter = ref('All categories')
+const selectedPoi = ref<SitumCartographyPoi | null>(null)
 const drawerOpen = ref(false)
-const favoriteIds = ref(new Set(cartographyPois.filter(poi => poi.favorite).map(poi => poi.id)))
+const { data, error, status } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
 
-const categoryOptions = ['All categories', 'Services', 'Rooms', 'Workspace', 'Access']
-const buildingNames = new Map(cartographyBuildings.map(building => [building.id, building.name]))
-
+const pois = computed(() => data.value?.pois ?? [])
+const categories = computed(() => ['All categories', ...(data.value?.categories ?? []).map(category => category.name)])
+const buildingNames = computed(() => new Map((data.value?.buildings ?? []).map(building => [building.id, building.name])))
+const floorNames = computed(() => new Map((data.value?.floors ?? []).map(floor => [floor.id, floor.name])))
 const filteredPois = computed(() => {
   const search = query.value.trim().toLowerCase()
-  return cartographyPois.filter((poi) => {
-    const matchesSearch = !search || [poi.name, poi.category, poi.floor, poi.externalId].some(value => value.toLowerCase().includes(search))
-    const matchesCategory = categoryFilter.value === 'All categories' || poi.category === categoryFilter.value
+  return pois.value.filter(poi => {
+    const matchesSearch = !search || [poi.name, poi.categoryName, poi.info, String(poi.id)].some(value => value.toLowerCase().includes(search))
+    const matchesCategory = categoryFilter.value === 'All categories' || poi.categoryName === categoryFilter.value
     return matchesSearch && matchesCategory
   })
 })
 
-function openDetails(poi: PrototypePoi) {
+function openDetails(poi: SitumCartographyPoi) {
   selectedPoi.value = poi
   drawerOpen.value = true
 }
-
-function toggleFavorite(poi: PrototypePoi) {
-  const next = new Set(favoriteIds.value)
-  if (next.has(poi.id)) next.delete(poi.id)
-  else next.add(poi.id)
-  favoriteIds.value = next
-}
-
 </script>
 
 <template>
   <div class="cartography-page">
-    <ProductPageHeader eyebrow="Cartography" title="Points of interest" description="Search destinations, categories and floor placement.">
+    <ProductPageHeader eyebrow="Cartography" title="Points of interest" description="Search real Situm destinations, categories and floor placement.">
       <template #actions><UButton to="/app/map" icon="i-lucide-map">View on map</UButton></template>
     </ProductPageHeader>
 
+    <UAlert v-if="error" class="mb-4" color="error" variant="subtle" title="POIs unavailable" description="The authenticated Situm cartography read could not be loaded. No fixture POIs are shown." />
+    <UAlert v-else-if="status === 'pending'" class="mb-4" color="neutral" variant="subtle" title="Loading POIs" description="Reading POIs and categories from Situm." />
+
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div class="flex flex-col gap-2 sm:flex-row">
-        <UInput v-model="query" icon="i-lucide-search" placeholder="Search POIs…" aria-label="Search POIs" class="w-full sm:w-72" />
-        <USelect v-model="categoryFilter" :items="categoryOptions" aria-label="Filter by category" class="w-full sm:w-44" />
-      </div>
+      <div class="flex flex-col gap-2 sm:flex-row"><UInput v-model="query" icon="i-lucide-search" placeholder="Search POIs…" aria-label="Search POIs" class="w-full sm:w-72" /><USelect v-model="categoryFilter" :items="categories" aria-label="Filter by category" class="w-full sm:w-48" /></div>
       <UBadge color="neutral" variant="soft">{{ filteredPois.length }} POIs</UBadge>
     </div>
 
     <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
-      <div class="hidden overflow-x-auto md:block">
-        <table class="table-density w-full text-left">
-          <thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Name</th><th class="px-4 py-3 font-medium">Category</th><th class="px-4 py-3 font-medium">Building</th><th class="px-4 py-3 font-medium">Floor</th><th class="px-4 py-3 font-medium">External ID</th><th class="w-14 px-4 py-3 text-center">Favorite</th></tr></thead>
-          <tbody class="divide-y divide-default">
-            <tr v-for="poi in filteredPois" :key="poi.id" class="group transition hover:bg-elevated/40">
-              <td><button class="text-left font-semibold text-highlighted hover:text-info" @click="openDetails(poi)">{{ poi.name }}<span class="mt-0.5 block text-[10px] font-normal text-muted">{{ poi.description }}</span></button></td>
-              <td class="text-muted">{{ poi.category }}</td><td class="text-muted">{{ buildingNames.get(poi.buildingId) }}</td><td class="text-muted">{{ poi.floor }}</td><td class="font-mono text-[10px] text-muted">{{ poi.externalId }}</td>
-              <td class="text-center"><UButton :icon="favoriteIds.has(poi.id) ? 'i-lucide-star' : 'i-lucide-star-off'" :color="favoriteIds.has(poi.id) ? 'warning' : 'neutral'" variant="ghost" size="xs" :aria-label="favoriteIds.has(poi.id) ? `Remove ${poi.name} from favorites` : `Add ${poi.name} to favorites`" @click="toggleFavorite(poi)" /></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="divide-y divide-default md:hidden">
-        <div v-for="poi in filteredPois" :key="poi.id" class="flex items-center gap-3 p-4">
-          <button class="grid size-9 shrink-0 place-items-center rounded-lg bg-info/10 text-info" :aria-label="`Open ${poi.name} details`" @click="openDetails(poi)"><UIcon name="i-lucide-map-pin" /></button>
-          <button class="min-w-0 flex-1 text-left" @click="openDetails(poi)"><strong class="block truncate text-sm text-highlighted">{{ poi.name }}</strong><span class="mt-1 block truncate text-xs text-muted">{{ poi.category }} · {{ poi.floor }}</span></button>
-          <UButton :icon="favoriteIds.has(poi.id) ? 'i-lucide-star' : 'i-lucide-star-off'" :color="favoriteIds.has(poi.id) ? 'warning' : 'neutral'" variant="ghost" size="xs" :aria-label="favoriteIds.has(poi.id) ? `Remove ${poi.name} from favorites` : `Add ${poi.name} to favorites`" @click="toggleFavorite(poi)" />
-        </div>
-      </div>
-      <p v-if="filteredPois.length === 0" class="px-5 py-10 text-center text-sm text-muted">No POIs match your filters.</p>
+      <div class="hidden overflow-x-auto md:block"><table class="table-density w-full text-left"><thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Name</th><th class="px-4 py-3 font-medium">Category</th><th class="px-4 py-3 font-medium">Building</th><th class="px-4 py-3 font-medium">Floor</th><th class="px-4 py-3 font-medium">ID</th></tr></thead><tbody class="divide-y divide-default"><tr v-for="poi in filteredPois" :key="poi.id" class="group transition hover:bg-elevated/40"><td><button class="text-left font-semibold text-highlighted hover:text-info" @click="openDetails(poi)">{{ poi.name }}<span v-if="poi.info" class="mt-0.5 block text-[10px] font-normal text-muted">{{ poi.info }}</span></button></td><td class="text-muted">{{ poi.categoryName || 'Uncategorized' }}</td><td class="text-muted">{{ buildingNames.get(poi.buildingId) ?? poi.buildingId }}</td><td class="text-muted">{{ floorNames.get(poi.floorId) ?? poi.floorId }}</td><td class="font-mono text-[10px] text-muted">{{ poi.id }}</td></tr></tbody></table></div>
+      <div class="divide-y divide-default md:hidden"><button v-for="poi in filteredPois" :key="poi.id" class="flex w-full items-center gap-3 p-4 text-left" @click="openDetails(poi)"><span class="grid size-9 shrink-0 place-items-center rounded-lg bg-info/10 text-info"><UIcon name="i-lucide-map-pin" /></span><span class="min-w-0 flex-1"><strong class="block truncate text-sm text-highlighted">{{ poi.name }}</strong><span class="mt-1 block truncate text-xs text-muted">{{ poi.categoryName || 'Uncategorized' }} · {{ floorNames.get(poi.floorId) ?? poi.floorId }}</span></span><UIcon name="i-lucide-chevron-right" class="text-muted" /></button></div>
+      <p v-if="status !== 'pending' && filteredPois.length === 0" class="px-5 py-10 text-center text-sm text-muted">No real POIs match your filters.</p>
     </UCard>
 
-    <CartographyDetailsDrawer v-if="selectedPoi" v-model:open="drawerOpen" title="POI details" :type="selectedPoi.category" :name="selectedPoi.name" :subtitle="selectedPoi.description" map-to="/app/map" :details="[{ label: 'Identifier', value: selectedPoi.id }, { label: 'Building', value: buildingNames.get(selectedPoi.buildingId) ?? 'Unknown building' }, { label: 'Floor', value: selectedPoi.floor }, { label: 'External ID', value: selectedPoi.externalId }, { label: 'Access', value: 'Local fixture' }]" />
+    <CartographyDetailsDrawer v-if="selectedPoi" v-model:open="drawerOpen" title="POI details" :type="selectedPoi.categoryName || 'POI'" :name="selectedPoi.name" :subtitle="selectedPoi.info || 'Situm point of interest'" map-to="/app/map" :details="[{ label: 'Identifier', value: String(selectedPoi.id) }, { label: 'Building', value: buildingNames.get(selectedPoi.buildingId) ?? String(selectedPoi.buildingId) }, { label: 'Floor', value: floorNames.get(selectedPoi.floorId) ?? String(selectedPoi.floorId) }, { label: 'Type', value: selectedPoi.type }]" />
   </div>
 </template>
 

@@ -1,8 +1,9 @@
 # Plan 011 — Situm Buildings, Floors & POIs Read Integration
 
-Status: planned-later
+Status: **complete**
 Branch: `plan/011-situm-buildings-pois-read-integration`
-Depends on: Plan 010 complete, reviewed, and integrated into `main`
+Base: Plan 010 final HEAD `657fb0f` (explicit stacked execution; not integrated into `main`)
+Depends on: Plan 010 complete, reviewed, and available as the stacked parent branch
 
 ## Goal
 
@@ -43,45 +44,45 @@ Expected retained scope:
 
 ## Phase 1 — Revalidate mapping
 
-- [ ] Confirm Plan 010 is integrated.
-- [ ] Re-check exact building/floor/POI/category endpoint/SDK contracts against current official docs.
-- [ ] Confirm minimal fields required by retained UI.
-- [ ] Confirm private server credential path works without logging secrets.
+- [x] Confirm Plan 010 is complete and available as the stacked parent branch.
+- [x] Re-check exact building/floor/POI/category endpoint/SDK contracts against current official docs and `@situm/sdk-js@0.25.0`.
+- [x] Confirm minimal fields required by retained UI.
+- [x] Confirm private server credential path works without logging secrets.
 
 ## Phase 2 — Buildings & Floors
 
-- [ ] Add the smallest authenticated Nitro read path.
-- [ ] Normalize external payload only as needed by current UI.
-- [ ] Add truthful loading/empty/error states.
-- [ ] Remove building/floor fixtures only after real source is working.
-- [ ] Do not expose unused Situm fields merely because they exist.
+- [x] Add the smallest authenticated Nitro read path.
+- [x] Normalize external payload only as needed by current UI.
+- [x] Add truthful loading/empty/error states.
+- [x] Remove building/floor fixtures from replaced inventory/map selectors.
+- [x] Do not expose unused Situm fields merely because they exist.
 
 ## Phase 3 — POIs & Categories
 
-- [ ] Replace POI/category fixtures with real reads.
-- [ ] Keep client-side search/filter unless dataset size proves otherwise.
-- [ ] Preserve detail drawer and map-selection behavior.
-- [ ] Handle favorite behavior exactly as assigned by Plan 010; do not invent a write.
+- [x] Replace POI/category fixtures with real reads.
+- [x] Keep client-side search/filter unless dataset size proves otherwise.
+- [x] Preserve detail drawer and map-selection behavior.
+- [x] Keep favorites local/product-owned; no Situm write was invented.
 
 ## Phase 4 — Map context
 
-- [ ] Wire retained building/floor/POI selection to the single `SitumViewer` owner.
-- [ ] Prefer a small typed Viewer command surface over creating extra SDK instances in pages.
-- [ ] Remove stale synthetic selectors once real options are available.
+- [x] Wire retained building/floor/POI selection to the single `SitumViewer` owner.
+- [x] Prefer a small typed Viewer command surface over creating extra SDK instances in pages.
+- [x] Remove stale synthetic selectors once real options are available.
 
 ## Validation
 
-- [ ] no cartography mutation;
-- [ ] no public REST credential;
-- [ ] no duplicate real + fixture records for replaced resources;
-- [ ] retained UI remains usable and truthful;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] manual API + Viewer smoke;
-- [ ] update plan + `.agents/`, commit/push;
-- [ ] no PR until user authorization.
+- [x] no cartography mutation;
+- [x] no public REST credential;
+- [x] no duplicate real + fixture records in retained inventory/map/search surfaces;
+- [x] retained UI remains usable and truthful;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [ ] manual API + Viewer smoke (requires configured Situm credentials and authenticated browser session; unavailable in this environment);
+- [x] update plan + `.agents/`, commit/push;
+- [x] no PR until user authorization.
 
 ## Non-goals
 

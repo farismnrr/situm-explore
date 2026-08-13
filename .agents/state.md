@@ -6,15 +6,15 @@ _Last reviewed: 2026-08-13_
 
 The accepted UI baseline is integrated into `main`.
 
-The active roadmap stage is **Plan 010 — Web Capability Pruning & Situm Integration Contract** on:
+The active roadmap stage is **Plan 012 — Situm Geofences, Paths & Static Routing Integration** on the stacked branch:
 
-`plan/010-progressive-situm-data-integration`
+`plan/012-situm-geofences-paths-routing-integration`
 
 Branch base:
 
 `main` at `170110c1d60c32600e1641a0f89cc53823bba9cc`
 
-Plan 010 implementation and post-completion review are complete on the dedicated branch. Review tightened the protected status route to report private server configuration separately from legacy Viewer configuration and clarified unresolved Situm endpoint/schema evidence. It is awaiting user review/integration authorization.
+Plan 010 implementation and post-completion review are complete at `657fb0f`. Plan 011 is complete at the stacked child HEAD after authenticated Buildings/Floors/POIs/Categories reads and Viewer selection wiring. The user explicitly authorized stacked execution, so Plan 012 continues from Plan 011 rather than waiting for main integration.
 
 ## Historical UI state
 
@@ -128,4 +128,4 @@ Native positioning is outside Plans 010–016.
 
 ## Next action
 
-User reviews Plan 010 branch and explicitly authorizes integration when satisfied. Do not create Plan 011 or merge/open a PR automatically. Do not replace retained domain data until its assigned later plan.
+Complete Plan 012 from the final Plan 011 HEAD. Preserve unresolved route-result/constraint evidence as unresolved; do not invent static directions payloads. Continue the explicit stacked sequence through Plan 016 without merging or opening a PR.
