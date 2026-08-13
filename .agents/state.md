@@ -2,201 +2,141 @@
 
 _Last reviewed: 2026-08-13_
 
-## Current focus
+## Canonical execution baseline
 
-The UI roadmap through Plan 009B and the Situm backend/web roadmap Plans 010–016A are complete and integrated into `main`.
+The UI roadmap through Plan 009B, Situm roadmap Plans 010–016A, and manual UI refinements through PRs #10/#11 are integrated into `main`.
 
-The user's manual UI refinement pass is also integrated into `main` through PRs #10 and #11. Treat updated `main` (including those refinements) as the product/code baseline. The abandoned `chore/ui-refine-login-map-feedback` branch is superseded and must not be used as a base or source of truth.
+The current cumulative feature lineage is executing as stacked branches. Completed plans in this lineage:
 
-A new substantive roadmap is prepared on `roadmap/017-020-next-features`:
+- Plan 017 — Situm Analytics & Reports with local ClickHouse: **complete**;
+- Plan 018 — Groups & Alarms read-only: **complete**;
+- Plan 019 — Realtime Viewer overlay: **complete**, including hydrated Playwright smoke; trajectory remains explicitly unresolved/omitted.
 
-- Plan 017 — Situm Analytics & Reports with the user's existing local ClickHouse instance;
-- Plan 018 — Situm Groups & Alarms read-only integration;
-- Plan 019 — Situm realtime Viewer overlay + conditional trajectory;
-- Plan 020 — Situm static directions between known points/POIs.
+Final pushed Plan 019 HEAD:
 
-Plan 017 is the next active/ready plan. Plans 018–020 are queued.
+`513f65e820635e05a22a54270f3bf21f5925e6c8`
 
-## Explicit stacked execution authorization — Plans 017–020
+## Active plan — 019A
 
-The user explicitly authorized one uninterrupted stacked execution for Plans 017→018→019→020.
+The user explicitly inserted Plan 019A before Plan 020 to resolve the static-directions sequencing problem.
 
-Branch chain:
+Active plan:
+
+- `plans/019a-situm-static-directions-foundation.md`
+- branch: `plan/019a-situm-static-directions-foundation`
+- base: exact final Plan 019 HEAD above
+- status: **ready**
+
+Plan 019A owns the smallest production-safe static-directions foundation and the real hydrated browser test in the same plan.
+
+Required outcome:
+
+```text
+real Situm POIs with numeric ids
+-> typed SitumViewer start/cancel directions commands
+-> existing /app/map Route tab wired to real POI ids
+-> Viewer-owned real route rendering
+-> Playwright valid-route / replace / cancel / cleanup smoke
+```
+
+This is static web directions only. It is not live navigation.
+
+## Why Plan 019A exists
+
+The first Plan 020 Phase 0 attempt discovered a chicken-and-egg blocker:
+
+- runtime evidence required calling real `startDirections(...)`;
+- the current app had no directions command surface to invoke it;
+- the command surface was originally scheduled for a later Plan 020 implementation phase.
+
+The installed/current evidence is already sufficient for the minimal foundation:
+
+- `@situm/sdk-js@0.25.0` exposes `startDirections(...)` and `cancelDirections()`;
+- current configured cartography exposes at least two real POIs with numeric Situm IDs;
+- numeric POI IDs are the currently evidenced route endpoints;
+- `/app/map` already has a Route UI scaffold but it currently stores display names and does not invoke Viewer directions;
+- `SitumViewer.vue` currently has no directions commands;
+- local Playwright/Chrome exists and was successfully used for hydrated Plan 019 Viewer smoke;
+- installed SDK does not expose a reliable product route-result payload, so no distance/duration/steps/geometry may be invented.
+
+Plan 019A therefore implements only the verified minimal command/UI wiring first, then uses the production UI for the required route runtime proof.
+
+## Updated branch chain
+
+The user's current authorized stacked sequence is now:
 
 ```text
 roadmap/017-020-next-features
--> plan/017-situm-analytics-clickhouse
--> plan/018-situm-groups-alarms-read
--> plan/019-situm-realtime-viewer-trajectory
--> plan/020-situm-static-directions
+-> plan/017-situm-analytics-clickhouse            [complete]
+-> plan/018-situm-groups-alarms-read              [complete]
+-> plan/019-situm-realtime-viewer-trajectory      [complete]
+-> plan/019a-situm-static-directions-foundation   [ACTIVE]
+-> plan/020-situm-static-directions                [queued after 019A]
 ```
 
-Rules for this stack:
+Each successor must start from the exact final validated/pushed HEAD of the preceding plan.
 
-- create Plan 017 from the final HEAD of `roadmap/017-020-next-features`;
-- after each plan is fully validated, persisted, committed, and pushed, create the next plan branch from that plan's final HEAD;
-- do not branch Plans 018–020 from stale `main`;
-- do not merge/cherry-pick merely to simulate the stack;
-- do not create a PR and do not merge during this execution;
-- implementation for every phase is delegated specifically to the configured `worker` subagent; the parent agent owns orchestration, review, plan/state updates, commits, pushes, and phase/plan transitions;
-- if the configured `worker` profile cannot be spawned, stop and report that blocker instead of silently substituting another agent/model;
-- otherwise proceed through all phases/plans without waiting for user confirmation between phases;
-- a material core blocker must be reported truthfully rather than guessed around; optional sub-capabilities explicitly marked conditional in a plan may remain unresolved without blocking completion of the verified core.
+The earlier `plan/020-situm-static-directions` branch created before Plan 019A is **superseded as an execution base**. Do not merge/cherry-pick it into 019A. Its Phase 0 evidence is historical input only where still accurate. After 019A completes, Plan 020 must start from the exact final Plan 019A HEAD.
 
-## Plan 017 ClickHouse decision
+Do not delete the stale Plan 020 branch unless the user explicitly asks.
 
-The user already has a local ClickHouse installation/instance on the laptop and explicitly wants Plan 017 to use it.
+## Plan 019A execution rules
 
-Plan 017 rules:
+- implementation/fixes for each phase are delegated specifically to the configured `worker` subagent;
+- parent agent owns orchestration, review, plan/state/session updates, commits, pushes, and phase transitions;
+- if the configured worker cannot be spawned, stop rather than silently substituting another agent/model;
+- do not create a PR or merge;
+- do not wait for user confirmation between correctly completed phases;
+- use existing local Playwright/Chrome for hydrated browser smoke;
+- read the real local `.env` for runtime configuration without printing/persisting secrets;
+- authenticate through the normal app login flow;
+- no auth bypass/dev-login/test-only public escape hatch.
 
-- reuse the existing local ClickHouse server;
-- do not provision/install another ClickHouse server and do not add Docker/Compose for it;
-- safely discover the actual local connection/config at runtime without printing or persisting secrets;
-- never ask the user to paste credentials into chat;
-- inspect existing databases/tables before creating app-owned objects and never alter/drop unrelated objects;
-- keep ClickHouse access Nitro/server-only;
-- use ClickHouse for Situm analytics/report persistence/querying while PostgreSQL/Drizzle remains the application relational store;
-- no background worker/queue/cron is required for this PoC; analytics ingestion is an explicit product sync operation.
+## Static-directions evidence boundary
 
-## Current Situm implementation baseline
+For Situm behavior: **no evidence, no implementation**.
 
-- Plan 010 — implementation/review complete; web/native/security/evidence boundary frozen.
-- Plan 011 — implementation complete: Buildings/Floors/POIs/Categories reads and map selection context.
-- Plan 012 — implementation complete for verified Geofences/Paths reads; static directions were previously unresolved and now belong to Plan 020 evidence/runtime verification.
-- Plan 013 — implementation complete for current-position monitoring; Viewer realtime overlay/trajectory were previously unresolved and now belong to Plan 019 evidence/runtime verification.
-- Plan 014 — skipped-unresolved historically; official report surface is now sufficiently concrete to justify Plan 017, but exact consumed fields/filters/runtime behavior must still be re-verified before coding.
-- Plan 015 — implementation complete for Organization + Users reads; Groups + Alarms now belong to Plan 018 exact-contract/runtime verification.
-- Plan 016 — implementation complete for verified Viewer language, font-size, accessibility-panel, and location-picker commands.
-- Plan 016A — complete: final Situm credential contract, environment/config cleanup, Nuxt 4 tsconfig cleanup, static/security validation, and live runtime smoke for implemented Situm server reads.
-- PRs #10/#11 — current UI refinement baseline integrated into `main`, including the revised auth/map/settings/home/mobile behavior.
+Plan 019A may implement only currently verified behavior:
+
+- numeric POI-id From/To endpoints;
+- typed `startDirections`;
+- typed `cancelDirections`;
+- verified route-type enum mapping only where needed;
+- Viewer readiness/input validation;
+- Viewer-owned route rendering;
+- conservative Promise/readiness/error feedback.
+
+Keep unresolved/absent unless runtime evidence proves otherwise:
+
+- route completion/result events;
+- route distance/duration/steps/instructions/geometry;
+- included/excluded tag behavior when configured cartography exposes no meaningful tags;
+- live navigation/current-position/rerouting semantics.
+
+Never expose a raw Viewer instance or generic invoke surface.
 
 ## Final Situm credential contract
 
 Exactly two Situm keys remain intentional:
 
-- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only.
-- `NUXT_SITUM_API_KEY` — single private Nitro credential for all server-side Situm operations.
-- `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier.
+- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only;
+- `NUXT_SITUM_API_KEY` — single private Nitro credential for server-side Situm operations.
 
-Do not reintroduce separate private read/write keys unless a future concrete requirement justifies that complexity.
-
-All Nitro Situm operations use the private `NUXT_SITUM_API_KEY`. The private key must never enter browser/public runtime config, client bundles, logs, docs, or error payloads.
-
-## Evidence gate
-
-For Situm behavior: **no evidence, no implementation**.
-
-Before adding a capability, verify the exact current official endpoint/SDK method, installed SDK compatibility where relevant, auth/permission, request parameters, consumed response/event fields, web/native ownership, browser/server ownership, and relevant failure/empty/stale semantics.
-
-Current official evidence indicates:
-
-- Situm Reports exposes multiple JSON/CSV analytics families suitable for Plan 017;
-- Groups/Alarms exist in Situm REST but Plan 018 still must freeze the exact list/detail/filter/relationship contracts actually consumed;
-- Viewer JS exposes realtime/trajectory methods suitable for Plan 019, subject to installed-version/runtime smoke;
-- Viewer JS exposes static directions methods suitable for Plan 020, subject to installed-version/runtime smoke.
-
-If a material contract remains unverified, keep that exact sub-capability unresolved/absent rather than inventing behavior.
-
-## Web/native boundary
-
-The Nuxt product remains the web operations/admin/exploration console.
-
-Native-only scope remains outside this roadmap:
-
-- handset indoor positioning / blue dot from sensors;
-- Wi-Fi/BLE positioning and permission handling;
-- movement-aware live turn-by-turn navigation/rerouting;
-- other mobile-runtime positioning behavior.
-
-Plan 019 may visualize device-produced realtime positions through the Viewer. Plan 020 is static directions only and must not introduce `My location` or live navigation semantics.
+Private credentials, auth/session secrets, ClickHouse credentials, and PostgreSQL credentials must never enter browser/public runtime config, logs, docs, plans, session notes, or error payloads.
 
 ## Validation baseline
 
-Current repository validation commands remain:
+Every implementation phase runs applicable checks:
 
 - `git diff --check`;
 - `npm run lint`;
 - `npm run typecheck`;
 - `npm run build`.
 
-Each new plan adds its own live/runtime smoke requirements and must persist exact tested vs unresolved truth before completion.
-
-## Plan 017 Phase 0 result
-
-Phase 0 evidence and local ClickHouse discovery completed on 2026-08-13. Official current Situm OpenAPI and safe live probes verified the three core report paths, required date/building filters, optional grouping/time-zone behavior, JSON `data`/`meta`/`rows`/`statistics` shape, and CSV responses. The configured account returned HTTP 200 for all three core reports; the tested geofence window was empty. The existing local ClickHouse is healthy and authenticated, version `26.7.1.1315`, with isolated database `situm_explore_analytics`; unrelated `atja_analytics` tables were not changed. `@situm/sdk-js` is declared at `^0.25.0` but absent from the installed tree, so direct Nitro REST is the verified report path. No secrets or raw payloads were persisted.
-
-## Plan 017 Phase 1 result
-
-Phase 1 implementation completed on 2026-08-13. The server-only ClickHouse boundary uses the official `@clickhouse/client`, private `CLICKHOUSE_*` runtime inputs, authenticated `/api/health`, and isolated `situm_explore_analytics` tables for the three verified report families plus sync identities. Schema initialization is limited to the app-owned namespace; no unrelated ClickHouse objects were changed. Validation passed: `git diff --check`, lint, typecheck, and build. Phase 2 is next.
-
-## Plan 017 Phase 2 result
-
-Phase 2 implementation completed on 2026-08-13. Protected `POST /api/analytics/sync` now fetches the three verified Situm Reports families through direct Nitro REST, validates supported date/building inputs, normalizes only required fields, writes to isolated ClickHouse tables, records sync identity, and synchronously replaces the exact source window on re-sync. Static validation passed; live sync and idempotency smoke remain required at Plan 017 closeout. Phase 3 is next.
-
-## Plan 017 Phase 3 result
-
-Phase 3 implementation completed on 2026-08-13. Protected summary and CSV export APIs query only the requested report window from ClickHouse, support bounded date/building/geofence filters, use parameterized SQL, and keep ClickHouse server-only. Static validation passed; full build and live query/export/auth smoke remain required at Plan 017 closeout. Phase 4 is next.
-
-## Plan 017 Phase 4 result
-
-Phase 4 implementation completed on 2026-08-13. `/app/analytics` now presents real protected ClickHouse-backed summaries/tables, date/building/geofence filters, explicit building-scoped Situm sync, loading/empty/error/success states, and CSV export. Validation passed: `git diff --check`, lint, typecheck, and build. Phase 5 optional evaluation is next.
-
-## Plan 017 Phase 6 validation result
-
-Phase 6 runtime smoke completed on 2026-08-13 through the real login endpoint. For the tested window/building, Visitors sync returned 13 rows, Positioning Time returned 7 rows, and Geofencing Stay Time returned HTTP 200 empty; exact repeats returned the same rows and ClickHouse counts remained 13 and 7. Authenticated summary returned HTTP 200 real data; CSV returned HTTP 200 with `text/csv` and content-disposition filenames; unauthenticated summary returned HTTP 401. Invalid Situm timezone returned HTTP 502, and a separate process with a reversible `CLICKHOUSE_URL` override returned authenticated summary HTTP 503. The geofence retry was HTTP 200 empty. The numeric Positioning Time timestamp contract fix is applied, with non-destructive preservation/migration of any prior app-owned table. No secrets, hashes, or cookies were persisted. Final static validation passed; optional Map Viewer usage and heatmap remain unresolved. Plan 017 is complete.
+Plan 019A additionally requires hydrated Playwright smoke for a real route start, replacement where the two-POI dataset permits, cancel/clear, input validation, navigate-away/back cleanup, mobile non-mount, and browser-visible secret regression.
 
 ## Next action
 
-Plan 017 Phase 5 optional evaluation completed on 2026-08-13. Map Viewer usage and heatmap remain explicitly unresolved: official evidence confirms only endpoint families/purpose, not the exact consumed schemas, filters, runtime payloads, or truthful visualization semantics. No optional implementation was added. Plan 017 Phase 6 and closeout are complete; next is Plan 018 from Plan 017's exact pushed HEAD.
+Execute `plans/019a-situm-static-directions-foundation.md` Phase 0 from the current Plan 019A branch.
 
-Do not create a PR or merge during the run. After Plan 020 is fully complete, stop with a concise final summary and leave the final cumulative Plan 020 branch pushed for user review/integration.
-
-## Plan 018 Phase 0 result
-
-Phase 0 exact-contract and live evidence completed on 2026-08-13. Official OpenAPI verifies Groups list-only reads with `has_parent` and no documented detail/membership/pagination contract. Alarms list/detail reads, filters, stable fields, enums, authenticated errors, empty arrays, and detail 404 semantics were verified. Safe live probes returned one group, zero alarms for the configured building (including active-only), and 404 for a nonexistent alarm detail. Group membership presentation remains unresolved; no implementation was performed. Phase 1 is next.
-
-## Plan 018 Phase 1 result
-
-Phase 1 server reads completed on 2026-08-13. Protected Groups and Alarms list/detail endpoints now use the verified direct Nitro REST contracts, strict DTO normalization, supported filters, truthful empty/error/404 behavior, and no mutations or speculative relationships. Phase 2 is next.
-
-## Plan 018 Phase 2 result
-
-Phase 2 Groups surface completed on 2026-08-13. `/app/groups` now provides real protected Groups data, verified parent filtering, local search, responsive loading/error/empty/success states, and organization navigation. Memberships and speculative counts/roles remain absent. Phase 3 is next.
-
-## Plan 018 Phase 3 result
-
-Phase 3 Alarms surface completed on 2026-08-13. `/app/alarms` now provides real protected list/detail reads, required building selection, verified active/type filters, truthful states, responsive presentation, and read-only detail context without mutation controls. Phase 4 is next.
-
-## Plan 018 Phase 4 result
-
-Phase 4 dashboard/home review completed on 2026-08-13. Stale dashboard wording was replaced with a truthful unresolved-metrics notice; alarm/user/group totals remain absent because their scopes and denominators do not exactly match. No synthetic activity or metric relabeling was added.
-
-## Plan 018 Phase 5 validation result
-
-Authenticated smoke completed through the real login endpoint using transient user-authorized credentials. Groups and configured-building Alarms list requests returned HTTP 200; verified empty/filter cases returned HTTP 200; invalid filters returned HTTP 400; nonexistent alarm detail returned HTTP 404; unauthenticated access returned HTTP 401. Runtime normalization was corrected for verified upstream UUID/string Group identifiers and nullable `is_staff`. Static validation and built-asset secret scans passed; no credentials, hashes, cookies, keys, or raw payloads were persisted. Plan 018 core is complete. Groups membership remains unresolved and absent.
-
-Plan 018 is complete at the current branch HEAD. Continue with Plan 019 from this exact pushed HEAD; no PR or merge was created.
-
-## Plan 019 Phase 1 result
-
-Phase 1 adds typed `SitumViewer` realtime load/clean commands using the verified building filter and optional refresh rate. Existing readiness guards make unavailable Viewer commands reject explicitly, and realtime cleanup runs during unmount. Trajectory remains absent because hydrated account/date/user runtime semantics are unresolved. Phase 2 is next.
-
-## Plan 019 Phase 0 result
-
-Phase 0 evidence freeze completed on 2026-08-13. Installed `@situm/sdk-js` 0.25.0 and official current source verify the realtime Viewer contract: building-ID filter, 10-second default refresh, immediate fetch plus interval replacement, device/tooltip/icon customization, caught/logged fetch failures, and cleanup. Current Nitro realtime DTO fields are `id`, ISO `time`, `buildingId`, `floorId`, `accuracy`, `lat`, `lng`, and optional `deviceId`; only factual timestamp/last-seen context is supported. The two-key credential boundary remains unchanged. Isolated method smoke passed for availability and exercised cleanup failure behavior without secrets. Hydrated Viewer/account smoke was not safely available; trajectory date/user/empty/error runtime semantics remain explicitly unresolved and trajectory must stay conditional/absent. No application code or UI was changed. Phase 1 may proceed for realtime core only.
-
-## Plan 019 Phase 2 result
-
-`/app/realtime` now uses the real desktop-only `SitumViewer`, selected-building cartography context, and typed `loadRealtimePositions` with the verified 10-second refresh. Nitro `/api/situm/realtime` remains the list/count/source-timestamp context. Viewer readiness, overlay, cartography, and server-list loading/error/empty states are independent; controls remain outside the canvas; cleanup runs on disable, desktop/mobile transition, building change, and unmount. No custom projection/markers or fake status were added. Static validation passed: `git diff --check`, lint, typecheck, and build. Hydrated Viewer/runtime and navigation leakage smoke remain for Phase 5.
-
-## Plan 019 Phase 3 result
-
-`/app/realtime` people/devices panel now scopes records to the selected cartography building, supports local search over verified identifiers and truthful building/floor context, and shows verified ID, building/floor, accuracy, coordinates, and source timestamp/last-seen text only. Loading, server error, no-data, and no-match states remain explicit and accessible. No names, ownership, online/offline, battery, motion, or occupancy claims were added; Viewer overlay behavior is unchanged. Phase 4 is next and trajectory remains conditional/unresolved.
-
-## Plan 019 Phase 4 result
-
-Phase 4 trajectory evaluation completed on 2026-08-13. Phase 0 verified SDK signatures/source only; hydrated Viewer/account date, user, empty-result, date-range, and error semantics remain unresolved. Trajectory playback is explicitly omitted, with no trajectory UI, guessed bounds, route/navigation semantics, synthetic path, or fake feedback added. The verified realtime overlay core is preserved. Phase 5 validation/closeout is next.
-
-## Plan 019 Phase 5 result
-
-Plan 019 realtime core closeout completed on 2026-08-13. Static validation passed (`git diff --check`, lint, typecheck, build). Transient real-login smoke returned HTTP 200 for authenticated `/api/situm/realtime` with the expected positions response shape and HTTP 401 unauthenticated. Hydrated Playwright smoke confirmed the desktop Viewer mounted as one iframe and reached ready, overlay toggling performed cleanup/restart, refresh worked, navigate-away/back returned one ready Viewer, and mobile did not mount the desktop Viewer. Only one configured cartography building was available, so a distinct building-change transition was not exercisable; the implementation still cleans on building changes. No private Situm credential names or values appeared in browser-visible document/resources or persisted output. Trajectory remains unresolved/omitted. Plan 019 is fully reconciled; parent orchestration owns commit/push and transition to Plan 020.
+Do not resume the stale pre-019A Plan 020 branch. After Plan 019A is fully validated/committed/pushed, create the new Plan 020 execution branch from the exact final Plan 019A HEAD and continue product completion.
