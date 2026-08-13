@@ -14,7 +14,7 @@ Branch base:
 
 `main` at `170110c1d60c32600e1641a0f89cc53823bba9cc`
 
-Plan 010 implementation and post-completion review are complete at `657fb0f`. Plan 011 is complete at the stacked child HEAD after authenticated Buildings/Floors/POIs/Categories reads and Viewer selection wiring. The user explicitly authorized stacked execution, so Plan 012 continues from Plan 011 rather than waiting for main integration.
+Plan 010 implementation and post-completion review are complete at `657fb0f`. Plan 011 is complete at `138d5db` after authenticated Buildings/Floors/POIs/Categories reads and Viewer selection wiring. Plan 012 is complete at the current stacked child HEAD with authenticated geofence/path reads; route result/constraint semantics remain unresolved and are intentionally absent.
 
 ## Historical UI state
 
@@ -128,4 +128,4 @@ Native positioning is outside Plans 010–016.
 
 ## Next action
 
-Complete Plan 012 from the final Plan 011 HEAD. Preserve unresolved route-result/constraint evidence as unresolved; do not invent static directions payloads. Continue the explicit stacked sequence through Plan 016 without merging or opening a PR.
+Continue with Plan 013 from the final Plan 012 HEAD. Preserve unresolved realtime stale/trajectory semantics; do not invent them. Continue the explicit stacked sequence through Plan 016 without merging or opening a PR.

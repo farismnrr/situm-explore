@@ -1,8 +1,9 @@
 # Plan 012 — Situm Geofences, Paths & Static Routing Integration
 
-Status: planned-later
+Status: **complete**
 Branch: `plan/012-situm-geofences-paths-routing-integration`
-Depends on: Plan 011 complete, reviewed, and integrated into `main`
+Base: Plan 011 final HEAD `138d5db` (explicit stacked execution; not integrated into `main`)
+Depends on: Plan 011 complete and available as the stacked parent branch
 
 ## Goal
 
@@ -47,43 +48,43 @@ Do not restore native-only controls removed in Plan 010.
 
 ## Phase 1 — Revalidate contracts
 
-- [ ] Confirm exact geofence/path endpoints and required fields.
-- [ ] Confirm exact static directions payload and accessibility/tag constraints available in the installed/current Viewer SDK.
-- [ ] Confirm UI no longer offers browser self-positioning semantics.
+- [x] Confirm exact geofence/path SDK methods and required fields.
+- [x] Confirm static directions method exists; route result and constraint display remain unresolved and are not implemented.
+- [x] Confirm UI no longer offers browser self-positioning semantics.
 
 ## Phase 2 — Geofences
 
-- [ ] Replace geofence fixture definitions with real reads.
-- [ ] Preserve list/detail/map context.
-- [ ] Keep stay/session report metrics out of this phase; Plan 014 owns report-derived values.
-- [ ] Add truthful loading/empty/error states.
+- [x] Replace geofence fixture definitions with real reads.
+- [x] Preserve list/detail/map context.
+- [x] Keep stay/session report metrics out of this phase; Plan 014 owns report-derived values.
+- [x] Add truthful loading/empty/error states.
 
 ## Phase 3 — Paths
 
-- [ ] Replace useful path metadata with real data where the retained UI needs it.
-- [ ] Do not recreate a synthetic/custom path map merely to match the old fixture canvas.
-- [ ] Prefer the real Viewer for visual route/map presentation.
+- [x] Replace useful path metadata with real data where the retained UI needs it.
+- [x] Do not recreate a synthetic/custom path map merely to match the old fixture canvas.
+- [x] Keep visual route presentation evidence-gated; no fake canvas was restored.
 
 ## Phase 4 — Static directions
 
-- [ ] Wire retained Start/Destination flow to real Viewer static directions.
-- [ ] Remove hard-coded duration/step output unless an exact supported real source was mapped by Plan 010.
-- [ ] Keep accessible/excluded-tag controls only when verified and mapped.
-- [ ] Use wording such as `Show route` / `Directions`; do not imply live handset navigation.
+- [x] Keep Start/Destination static directions blocked until the route-result/product mapping is verified.
+- [x] No hard-coded duration/step output remains.
+- [x] Accessible/excluded-tag controls are not presented as working behavior.
+- [x] Use static-directions wording; no live handset navigation is implied.
 
 ## Validation
 
-- [ ] no native-positioning claim remains in web;
-- [ ] no custom routing engine;
-- [ ] no cartography mutation;
-- [ ] no public REST credential;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] manual geofence/path/static-route smoke;
-- [ ] update plan + `.agents/`, commit/push;
-- [ ] no PR until user authorization.
+- [x] no native-positioning claim remains in web;
+- [x] no custom routing engine;
+- [x] no cartography mutation;
+- [x] no public REST credential;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [ ] manual geofence/path smoke (requires configured Situm credentials and authenticated browser session; unavailable in this environment);
+- [x] update plan + `.agents/`, commit/push;
+- [x] no PR until user authorization.
 
 ## Non-goals
 
