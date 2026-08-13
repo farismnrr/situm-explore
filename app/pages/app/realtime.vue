@@ -20,7 +20,34 @@ const { data: cartography, error: cartographyError, status: cartographyStatus } 
 const { data, error, status, refresh } = await useFetch<SitumRealtimeResponse>('/api/situm/realtime')
 const positions = computed(() => data.value?.positions ?? [])
 const buildings = computed(() => cartography.value?.buildings ?? [])
+const searchQuery = ref('')
 const selectedBuilding = computed(() => buildings.value.find(building => building.id === selectedBuildingId.value) ?? buildings.value[0] ?? null)
+const filteredPositions = computed(() => {
+  const query = searchQuery.value.trim().toLocaleLowerCase()
+  return positions.value.filter((position) => {
+    if (selectedBuilding.value && position.buildingId !== selectedBuilding.value.id) return false
+    if (!query) return true
+    const floor = cartography.value?.floors.find(item => item.id === position.floorId)
+    return [
+      position.id,
+      position.deviceId,
+      String(position.buildingId),
+      selectedBuilding.value?.name,
+      String(position.floorId),
+      floor?.name,
+    ].filter(Boolean).some(value => String(value).toLocaleLowerCase().includes(query))
+  })
+})
+
+function formatSourceTime(value: string) {
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'medium' }).format(date)
+}
+
+function floorLabel(floorId: number) {
+  const floor = cartography.value?.floors.find(item => item.id === floorId)
+  return floor ? `${floor.name} (ID ${floorId})` : `ID ${floorId}`
+}
 
 watch(buildings, (value) => {
   if (selectedBuildingId.value === null && value[0]) selectedBuildingId.value = value[0].id
@@ -121,8 +148,21 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
       </UCard>
 
       <UCard :ui="{ body: 'p-0' }">
-        <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3"><h2 class="text-sm font-semibold text-highlighted">People & devices</h2><span class="text-xs text-muted">{{ positions.length }} records</span></div>
-        <div class="p-4"><UAlert v-if="error" color="error" variant="subtle" title="Positions unavailable" description="The authenticated Situm position read failed." /><UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading positions" description="Reading current positions from Situm." /><div v-else-if="positions.length === 0" class="text-sm text-muted">No current positions.</div><div v-else class="space-y-2"><div v-for="position in positions" :key="position.id" class="rounded-lg border border-default p-3"><div class="flex items-center justify-between"><strong class="text-sm text-highlighted">{{ position.deviceId || position.id }}</strong><span class="text-xs text-muted">Floor {{ position.floorId }}</span></div><p class="mt-1 text-xs text-muted">Building {{ position.buildingId }} · accuracy {{ position.accuracy }}m · {{ position.time }}</p></div></div></div>
+        <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3"><h2 class="text-sm font-semibold text-highlighted">People & devices</h2><span class="text-xs text-muted">{{ filteredPositions.length }} of {{ positions.length }} records</span></div>
+        <div class="space-y-4 p-4">
+          <UInput v-model="searchQuery" icon="i-lucide-search" placeholder="Search IDs or building/floor context" aria-label="Search realtime positions" />
+          <UAlert v-if="error" color="error" variant="subtle" title="Positions unavailable" description="The authenticated Situm position read failed." />
+          <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading positions" description="Reading current positions from Situm." />
+          <UAlert v-else-if="positions.length === 0" color="neutral" variant="subtle" title="No current positions" description="Situm returned no current position records." />
+          <UAlert v-else-if="filteredPositions.length === 0" color="neutral" variant="subtle" title="No matching positions" description="Try another identifier or clear the search and building context." />
+          <div v-else class="space-y-2">
+            <div v-for="position in filteredPositions" :key="position.id" class="rounded-lg border border-default p-3">
+              <div class="flex items-center justify-between gap-3"><strong class="text-sm text-highlighted">{{ position.deviceId ? `Device ID ${position.deviceId}` : `Position ID ${position.id}` }}</strong><span class="text-right text-xs text-muted">{{ floorLabel(position.floorId) }}</span></div>
+              <p class="mt-1 text-xs text-muted">Building {{ selectedBuilding?.name || `ID ${position.buildingId}` }} (ID {{ position.buildingId }}) · accuracy {{ position.accuracy }}m</p>
+              <p class="mt-1 text-xs text-muted">Location {{ position.lat }}, {{ position.lng }} · last seen {{ formatSourceTime(position.time) }}</p>
+            </div>
+          </div>
+        </div>
       </UCard>
     </div>
     <UAlert v-if="cartographyError" color="error" variant="subtle" title="Building context unavailable" description="The Viewer overlay cannot be scoped until Situm buildings load." />

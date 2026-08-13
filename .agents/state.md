@@ -188,3 +188,7 @@ Phase 0 evidence freeze completed on 2026-08-13. Installed `@situm/sdk-js` 0.25.
 ## Plan 019 Phase 2 result
 
 `/app/realtime` now uses the real desktop-only `SitumViewer`, selected-building cartography context, and typed `loadRealtimePositions` with the verified 10-second refresh. Nitro `/api/situm/realtime` remains the list/count/source-timestamp context. Viewer readiness, overlay, cartography, and server-list loading/error/empty states are independent; controls remain outside the canvas; cleanup runs on disable, desktop/mobile transition, building change, and unmount. No custom projection/markers or fake status were added. Static validation passed: `git diff --check`, lint, typecheck, and build. Hydrated Viewer/runtime and navigation leakage smoke remain for Phase 5.
+
+## Plan 019 Phase 3 result
+
+`/app/realtime` people/devices panel now scopes records to the selected cartography building, supports local search over verified identifiers and truthful building/floor context, and shows verified ID, building/floor, accuracy, coordinates, and source timestamp/last-seen text only. Loading, server error, no-data, and no-match states remain explicit and accessible. No names, ownership, online/offline, battery, motion, or occupancy claims were added; Viewer overlay behavior is unchanged. Phase 4 is next and trajectory remains conditional/unresolved.

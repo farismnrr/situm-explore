@@ -88,11 +88,13 @@ Static validation passed: `git diff --check`, `npm run lint`, `npm run typecheck
 
 ## Phase 3 — People/devices operations panel
 
-- [ ] refine the existing position list with verified identifiers, building/floor, accuracy, and source timestamp fields only;
-- [ ] add building/search filtering using existing cartography context where truthful;
-- [ ] show factual last-update/last-seen text from source timestamps;
-- [ ] avoid invented person names, device ownership, online/offline badges, battery, motion state, or occupancy status;
-- [ ] preserve accessibility and useful empty/error states.
+- [x] refine the existing position list with verified identifiers, building/floor, accuracy, coordinates, and source timestamp fields only;
+- [x] add selected-building and local identifier/building/floor search filtering using existing cartography context where truthful;
+- [x] show factual last-seen text from source timestamps;
+- [x] avoid invented person names, device ownership, online/offline badges, battery, motion state, or occupancy status;
+- [x] preserve accessibility and useful empty/error states.
+
+Phase 3 implementation is complete. The panel scopes records to the selected cartography building, supports local search across verified identifiers and building/floor context, and presents only verified DTO fields plus factual cartography names and source timestamps. Filtered-empty, no-data, loading, and error states remain explicit and accessible. Viewer overlay behavior is unchanged. Phase 4 is next; trajectory remains conditional on unresolved hydrated runtime evidence.
 
 ## Phase 4 — Trajectory playback (conditional)
 
