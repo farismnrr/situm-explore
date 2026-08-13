@@ -80,11 +80,11 @@ If any of the above is contradicted by current checked-out source/runtime, updat
 
 ## Phase 0 — Reconfirm minimal contract and current code gap
 
-- [ ] confirm current branch is based on exact final Plan 019 HEAD;
-- [ ] re-open installed SDK declarations/source for `startDirections`, `cancelDirections`, and route type input;
-- [ ] verify the current cartography DTO still exposes numeric POI IDs required by the route builder;
-- [ ] verify current `/app/map` Route tab remains scaffold-only and `SitumViewer` still lacks directions commands;
-- [ ] record any material contract change as `UNRESOLVED` before implementation;
+- [x] confirm current branch is based on exact final Plan 019 HEAD;
+- [x] re-open installed SDK declarations/source for `startDirections`, `cancelDirections`, and route type input;
+- [x] verify the current cartography DTO still exposes numeric POI IDs required by the route builder;
+- [x] verify current `/app/map` Route tab remains scaffold-only and `SitumViewer` still lacks directions commands;
+- [x] record any material contract change as `UNRESOLVED` before implementation;
 - [ ] do not require a full route runtime smoke before Phase 1—the purpose of Phase 1 is to create the smallest verified surface that makes that smoke possible.
 
 ## Phase 1 — Minimal typed Viewer directions surface
