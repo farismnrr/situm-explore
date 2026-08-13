@@ -4,23 +4,23 @@ _Last reviewed: 2026-08-13_
 
 ## Integrated baseline
 
-Plans 017–020 are complete and integrated into `main` by PR #12. Current canonical baseline before this roadmap is `main`.
+Plans 017–020 are complete and integrated into `main` by PR #12.
+
+The Plans 021–025 backend-refactor roadmap and reconciled current documentation are integrated into `main` by PR #13.
 
 ## Active roadmap
 
-Planning branch:
-
-`roadmap/021-025-backend-refactor`
-
 ```text
-Plan 021 — Identity & Auth Foundation                       [ready after roadmap integration]
+Plan 021 — Identity & Auth Foundation                       [ready / next]
 Plan 022 — Private Workspaces & Situm Configuration         [queued]
 Plan 023 — Observability, Correlation & Safe Error Boundary [queued]
 Plan 024 — Workspace-scoped Situm Backend Migration         [queued]
 Plan 025 — Workspace UX & Full Regression                   [queued]
 ```
 
-No stacked implementation authorization exists for Plans 021–025. Normal workflow requires this roadmap planning branch to be reviewed/integrated into `main` before Plan 021 starts from updated `main`.
+No stacked implementation authorization exists for Plans 021–025. Normal sequential workflow applies: Plan 021 starts from updated `main`, and each dependent plan starts only after its predecessor is accepted/integrated.
+
+The former planning branch `roadmap/021-025-backend-refactor` is historical after PR #13 and is not an implementation base.
 
 ## Mandatory roadmap reads
 
@@ -35,7 +35,7 @@ While Plans 021–025 are active, read current authority in this order after the
 7. the active plan;
 8. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
 
-These current documents are reconciled for Plans 021–025. Historical plans/sessions remain evidence only and do not override them.
+Historical plans/sessions/branches are evidence only and do not override current authority.
 
 ## Locked product direction
 
@@ -59,23 +59,20 @@ See `plans/021-025-prerequisites.md` for the detailed matrix.
 
 Important current items:
 
-1. **Workflow gate:** roadmap planning must land in `main` before Plan 021 under normal workflow, unless the user explicitly authorizes stacking.
+1. **Roadmap integration gate:** satisfied by PR #13.
 2. **Plan 021:** requires working PostgreSQL migration access and `NUXT_SESSION_PASSWORD`; Google OAuth credentials are not required for acceptance.
-3. **Plan 022:** requires a server-only workspace encryption master key; local value may be generated into `.env` only without printing/committing it.
+3. **Plan 022:** requires a server-only workspace encryption master key.
 4. **Viewer auth gate:** if browser auth for a write-capable workspace cannot be proven safe from current Situm/SDK evidence, stop that exact path and ask the user.
 5. **Plan 023:** observability endpoint/auth/network prerequisites depend on what local `docker ps` and runtime configuration discover; do not provision duplicates.
 6. **Plan 024:** legacy ClickHouse rows have no workspace owner and must not be assigned arbitrarily; global Situm building/account context must also be migrated.
 7. **Plan 025:** full real permission smoke ideally needs both Situm `Only Read` and `Read & Write` test configurations.
 
+Environment/config prerequisite handling is intentionally deferred until the user moves to that step.
+
 ## Documentation state
 
-Current authority/docs have been reconciled for this roadmap:
-
-- `AGENTS.md` / `.agents/README.md` route current context;
-- `.agents/memory/decisions.md` no longer treats the previous global Situm env model as the final target;
-- `ARCHITECTURE.md`, `DESIGN.md`, `design/IMPLEMENTATION.md`, and `design/data-source-matrix.md` describe the approved transition directly;
-- completed plans and old sessions remain historical evidence and are intentionally not rewritten.
+Current authority/docs have been reconciled for this roadmap. Completed plans and old sessions remain historical evidence and are intentionally not rewritten.
 
 ## Next action
 
-Review/integrate the planning-only branch `roadmap/021-025-backend-refactor` into `main`. After that, create `plan/021-auth-identity-foundation` from updated `main` and execute Plan 021 only.
+When the user authorizes implementation, create `plan/021-auth-identity-foundation` from updated `main` and execute Plan 021 only. Do not start environment/config work before that separate user step.
