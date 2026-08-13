@@ -1,8 +1,10 @@
 # Plan 023 — Observability, Correlation & Safe Error Boundary
 
-Status: **queued after Plan 022 integration**
+Status: queued after Plan 022 integration.
 
-Branch: `plan/023-observability-error-boundary`
+Branch: plan/023-observability-error-boundary
+
+Depends on: Plan 022 accepted and integrated into updated main.
 
 ## Goal
 
@@ -10,47 +12,54 @@ Make browser -> Nitro -> database/Situm failures traceable end-to-end while keep
 
 ## Mandatory Phase 0 discovery
 
-Before adding any observability dependency or container:
+Before adding observability dependencies or containers:
+- inspect docker ps locally;
+- inspect relevant runtime/repository configuration;
+- identify the already-running logging/metrics/tracing stack;
+- identify supported ingestion/propagation protocols and collector endpoints;
+- reuse existing infrastructure;
+- do not provision duplicates by assumption.
 
-- inspect `docker ps` locally;
-- inspect relevant container/runtime/repository configuration;
-- identify the user's already-running logging/metrics/tracing stack;
-- reuse the existing stack and supported protocols;
-- do not provision duplicate observability services by assumption.
+Persist discovered evidence without secret values.
 
-Persist exact discovered evidence in the session/plan closeout.
+If the stack is unavailable/inaccessible or requires endpoint/auth/network config that cannot be inferred safely, stop acceptance and report the exact operator prerequisite.
 
-## Correlation/tracing
+## Frontend correlation header
 
-Standardize request correlation from frontend to Nitro and downstream work. If the existing stack supports W3C Trace Context/OpenTelemetry, propagate that standard correctly. A small request/reference id may coexist for support lookup.
+Frontend app HTTP requests must carry explicit correlation/trace context. Prefer W3C traceparent when the discovered stack supports it. A small x-request-id/reference id may coexist for support lookup.
 
-Do not put sensitive values into trace headers, baggage, structured logs, or spans.
+Do not invent a parallel tracing protocol when the stack already supports a standard. Do not put user emails, credentials, tokens, workspace secrets, or sensitive payloads in headers/baggage.
 
 ## Server telemetry
 
 Instrument meaningful boundaries only:
-
 - incoming Nitro requests;
 - authenticated user/workspace resolution;
 - PostgreSQL/ClickHouse operations where useful;
 - outbound Situm operations;
 - normalized upstream failures.
 
-Use structured logging and redaction. Avoid logging raw request/response bodies by default.
+Use structured logging/redaction. Prefer stable internal user/workspace IDs over email addresses. Avoid raw request/response bodies by default.
 
 ## Safe client error contract
 
-Normalize expected error classes such as validation, unauthenticated, forbidden, not found, conflict, upstream failure, and internal failure.
+Normalize expected validation, unauthenticated, forbidden, not-found, conflict, upstream, and internal failures.
 
-Client responses expose safe product semantics plus a correlation/reference id when useful. Stack traces, database details, SDK internals, raw upstream bodies, and critical diagnostics remain server-side in observability.
+Client responses expose safe semantics plus a correlation/reference id when useful. Stack traces, DB details, SDK internals, raw upstream bodies, secrets, and critical diagnostics remain server-side.
+
+Browser console output must not become an alternate leakage path for internal server exceptions.
 
 ## Acceptance
 
-- a browser request can be followed through Nitro and at least one downstream boundary in the existing observability stack;
-- correlation context remains stable through the request path;
-- expected 4xx and unexpected 5xx are distinguishable;
-- client errors are sanitized;
-- server observability retains actionable context;
-- no duplicate observability stack is introduced.
+- browser request traceable through Nitro and at least one downstream boundary in existing observability;
+- frontend correlation headers received/propagated correctly;
+- stable correlation context;
+- expected 4xx vs unexpected 5xx distinguishable;
+- client errors sanitized;
+- server telemetry actionable;
+- no duplicate observability stack;
+- critical/internal details absent from client JSON/toasts/browser console.
 
-Run baseline diff/lint/typecheck/build plus production-preview failure-path smoke.
+Run baseline checks plus production-preview failure-path smoke.
+
+See plans/021-025-prerequisites.md.

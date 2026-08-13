@@ -1,41 +1,53 @@
 # Plan 025 — Workspace UX & Full Regression
 
-Status: **queued after Plan 024 integration**
+Status: queued after Plan 024 integration.
 
-Branch: `plan/025-workspace-ux-regression`
+Branch: plan/025-workspace-ux-regression
+
+Depends on: Plan 024 accepted and integrated into updated main.
 
 ## Goal
 
-Finish the product-facing workspace flow and validate the completed backend refactor end-to-end.
+Finish product-facing workspace flow and validate the completed backend refactor end-to-end.
 
 ## Workspace UX
 
-- create, rename, delete, and switch private workspaces;
-- add or replace workspace Situm configuration;
-- explain that supported Situm key types are Only Read or Read & Write;
-- show validation/configuration status without showing the stored value again;
-- keep the selected workspace consistent across authenticated product surfaces;
+- create, rename, delete, switch private workspaces;
+- add/replace workspace Situm configuration;
+- explain supported product key types: Situm Only Read or Read & Write;
+- show validation/detected-capability status without showing the stored credential again;
+- selected workspace stays consistent across authenticated surfaces while requests carry explicit workspace context;
+- deleting the selected workspace moves to another owned workspace or a truthful no-workspace onboarding state;
 - no invite/member UI.
 
 ## Access-aware UX
 
-- Read-only workspace: reading stays available and edit actions show clear read-only guidance.
-- Write-capable workspace: retain the already verified editing scenarios.
-- If the backend rejects an action, show safe product feedback rather than raw upstream/internal text.
-- Unsupported/intermediate Situm permission levels show configuration guidance instead of full-write UI.
+- Read-only workspace: reads stay available; attempted mutations produce clear read-only/forbidden feedback and never fake success.
+- Write-capable workspace: retain only already verified editing scenarios.
+- Backend enforcement remains authoritative even when frontend guards exist.
+- Upstream rejection becomes safe product feedback, never raw Situm/internal text.
+- Unsupported/intermediate Situm permissions show configuration guidance instead of full-write UI.
 
 ## Correlation/support UX
 
-Apply the request correlation/error behavior from Plans 023–024. Unexpected failures may show a support/reference id while detailed diagnostics remain server-side.
+Apply Plans 023–024 correlation/error behavior. Unexpected failures may show a support/reference id while details remain server-side. Do not dump raw server errors into toast text or browser console.
 
 ## Full regression
 
-Use `npm run build` then `npm run preview`.
+Use npm run build then npm run preview.
 
-Cover register/login/session, multiple workspace switching, read-only behavior, write-capable retained behavior, map/cartography, POIs, geofences, paths, realtime, analytics, groups/alarms, static directions, mobile Viewer boundary, failure correlation, and navigate-away/back cleanup.
+Cover register/login/session, multiple users, workspace switching, cross-user denial, duplicate external Situm account configuration, read-only behavior, write-capable retained behavior, map/cartography, POIs, geofences, paths, realtime, analytics, groups/alarms, organization/users, static directions, mobile Viewer boundary, failure correlation, and navigate-away/back cleanup.
 
-Google OAuth runtime acceptance remains manual/user-owned unless scope is explicitly expanded.
+Use both Only Read and Read & Write workspaces if available. Missing external test credentials stay manual/unresolved rather than fabricated.
 
-## Closeout
+Google OAuth runtime acceptance remains user-owned unless scope expands.
 
-Reconcile `.agents/state.md`, durable decisions, architecture/data-source docs, and `.env.example` to the final DB-backed identity/workspace model. Remove stale authority describing global Situm configuration as the active architecture.
+## Final configuration/documentation state
+
+Reconcile state, durable decisions/addenda, README, architecture/data-source/design docs, and .env.example to final DB-backed identity/workspace model.
+
+Final runtime must not require global Situm API-key or process-global building-selection env values. Keep only genuine deployment-level server configuration such as session, database, workspace-credential encryption, ClickHouse, OAuth, and discovered observability settings.
+
+Remove stale authority describing global Situm config or env-defined app users as active architecture.
+
+See plans/021-025-prerequisites.md.
