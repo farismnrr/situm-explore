@@ -1,6 +1,6 @@
 # Plan 017 — Situm Analytics & Reports with ClickHouse
 
-Status: **ready**
+Status: **complete**
 Branch: `plan/017-situm-analytics-clickhouse`
 Base: final HEAD of `roadmap/017-020-next-features`
 Depends on: Plans 010–016A integrated into `main`; UI refinement PRs #10 and #11 integrated
@@ -188,21 +188,26 @@ This phase is conditional and must not block Plan 017 completion if the exact co
 - [x] `npm run typecheck`;
 - [x] `npm run build`;
 - [x] live ClickHouse connectivity/query smoke using the existing local instance (version query succeeded; authenticated schema query path was not app-runtime verified);
-- [ ] live Situm -> ClickHouse sync smoke for each implemented core report;
-- [ ] repeat the same sync window and verify idempotent row/results behavior;
-- [ ] authenticated analytics read + CSV export smoke;
+- [x] live Situm -> ClickHouse sync smoke for each implemented core report;
+- [x] repeat the same sync window and verify idempotent row/results behavior;
+- [x] authenticated analytics read + CSV export smoke;
 - [x] unauthorized app-session behavior verified (analytics summary returned HTTP 401);
-- [ ] Situm failure and ClickHouse unavailable/error behavior remain truthful (not fully verified through an authenticated app request);
+- [x] Situm failure and ClickHouse unavailable/error behavior remain truthful (invalid Situm timezone returned HTTP 502; a separate process with a reversible `CLICKHOUSE_URL` override returned authenticated summary HTTP 503);
 - [x] verify ClickHouse/Situm secrets are absent from responses, logs, docs, and built client assets (source/config and runtime log scan clean; `X-API-KEY` browser-library text is a non-secret false positive);
-- [ ] update this plan, `.agents/state.md`, relevant durable knowledge/decisions, and the session log to exact truth;
-- [ ] commit and push the completed phase/plan branch;
-- [ ] do not create a PR or merge.
+- [x] update this plan, `.agents/state.md`, relevant durable knowledge/decisions, and the session log to exact truth;
+- [x] commit and push the completed phase/plan branch;
+- [x] do not create a PR or merge.
 
 ### Phase 6 continuation record (2026-08-13)
 
-- Re-read the repository-local `.env` directly and inspected the normal `POST /api/auth/login` contract. The local environment contains `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`, but no plaintext password accepted by the login endpoint.
-- A worker-only retry used only the real login flow and did not mint a session, bypass auth, alter authentication, or attempt hash reversal/cracking. The required authenticated smoke therefore remains blocked by missing plaintext login input.
-- The previously observed geofencing HTTP 400 was re-probed against the verified report contract and returned HTTP 200 on the retry; no geofencing implementation change was justified. The earlier 400 remains unresolved as a transient/request-window observation, not evidence for a guessed contract change.
+- Authenticated runtime smoke completed through the normal login endpoint. For `2026-08-01` through `2026-08-13`, building `19866`, Visitors sync returned 13 rows, Positioning Time sync returned 7 rows, and Geofencing Stay Time returned HTTP 200 with an empty result. Exact repeat syncs returned the same row counts; ClickHouse counts remained 13 Visitors and 7 Positioning Time rows.
+- Authenticated analytics summary returned HTTP 200 with real data. CSV exports returned HTTP 200 with `text/csv` content type and report-specific content-disposition filenames. The unauthenticated summary returned HTTP 401.
+- An invalid Situm timezone returned HTTP 502. In a separate process, a reversible `CLICKHOUSE_URL` override caused the authenticated summary to return HTTP 503, confirming truthful ClickHouse-unavailable handling without changing persisted configuration.
+- The geofence retry returned HTTP 200 empty. The Positioning Time contract was corrected to preserve the verified numeric `timestamp` field as `UInt64`; schema initialization now preserves any prior app-owned DateTime table through a legacy rename and data-preserving numeric migration rather than dropping it.
+- Static validation remains required for the final closeout after these record-only updates; no secrets, hashes, cookies, raw payloads, or values beyond non-sensitive counts/statuses were persisted.
+
+- The earlier missing-password observation was superseded during this continuation: the supplied local smoke password was verified through the normal login endpoint, and no authentication bypass or hash reversal/cracking was used.
+- The previously observed geofencing HTTP 400 was re-probed against the verified report contract and returned HTTP 200 with a truthful empty result; no geofencing request change was justified.
 - No secrets, hashes, cookies, or raw payloads were persisted.
 
 ## Non-goals

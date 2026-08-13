@@ -48,7 +48,7 @@ export async function syncSitumReport(input: SyncInput) {
   const normalized = rows.map(row => input.report === 'visitors'
     ? { source_window_id: syncKey, date: string(row.date, 'date'), visitors: number(row.visitors, 'visitors') }
     : input.report === 'positioning_time'
-      ? { source_window_id: syncKey, timestamp: string(row.timestamp, 'timestamp'), total: number(row.total, 'total'), avg: number(row.avg, 'avg'), std: number(row.std, 'std') }
+      ? { source_window_id: syncKey, timestamp: number(row.timestamp, 'timestamp'), total: number(row.total, 'total'), avg: number(row.avg, 'avg'), std: number(row.std, 'std') }
       : { source_window_id: syncKey, timestamp: string(row.timestamp, 'timestamp'), device_id: string(row.device_id, 'device_id'), user_id: typeof row.user_id === 'string' ? row.user_id : '', building_id: number(row.building_id, 'building_id'), floor_id: number(row.floor_id, 'floor_id'), matched_fence_id: string(row.matched_fence_id, 'matched_fence_id'), seconds_in_fence: number(row.seconds_in_fence, 'seconds_in_fence'), stay_time: string(row.stay_time, 'stay_time'), sessions_count: number(row.sessions_count, 'sessions_count') })
   try {
     // ReplacingMergeTree is eventually consistent. Delete the exact validated

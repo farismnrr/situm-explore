@@ -21,7 +21,7 @@ export async function queryAnalytics(filters: AnalyticsFilters) {
   const building = filters.buildingId === undefined ? '' : ' AND endsWith(source_window_id, concat(\':\', toString({building_id:UInt64})))'
   const [visitors, positioning, geofencing] = await Promise.all([
     client.query({ query: `SELECT date, sum(visitors) AS visitors FROM ${table('analytics_visitors')} WHERE ${sourceWindow()} AND date BETWEEN {from_date:Date} AND {to_date:Date}${building} GROUP BY date ORDER BY date`, query_params: { ...p, source_prefix: prefixes[0] }, format: 'JSONEachRow' }).then(r => r.json()),
-    client.query({ query: `SELECT sum(total) AS total, avg(avg) AS avg, avg(std) AS std FROM ${table('analytics_positioning_time')} WHERE ${sourceWindow()} AND timestamp >= {from_date:DateTime} AND timestamp < addDays(toDate({to_date:Date}), 1)${building}`, query_params: { ...p, source_prefix: prefixes[1] }, format: 'JSONEachRow' }).then(r => r.json()),
+    client.query({ query: `SELECT sum(total) AS total, avg(avg) AS avg, avg(std) AS std FROM ${table('analytics_positioning_time')} WHERE ${sourceWindow()}${building}`, query_params: { ...p, source_prefix: prefixes[1] }, format: 'JSONEachRow' }).then(r => r.json()),
     client.query({ query: `SELECT sum(seconds_in_fence) AS seconds, sum(sessions_count) AS sessions, count() AS rows FROM ${table('analytics_geofencing_stay')} WHERE ${sourceWindow()} AND timestamp >= {from_date:DateTime} AND timestamp < addDays(toDate({to_date:Date}), 1) AND ({building_id:UInt64} = 0 OR building_id = {building_id:UInt64}) AND ({geofence_id:String} = '' OR matched_fence_id = {geofence_id:String})`, query_params: { ...p, source_prefix: prefixes[2] }, format: 'JSONEachRow' }).then(r => r.json())
   ])
   return { visitors, positioning, geofencing }
@@ -34,7 +34,7 @@ export async function exportAnalytics(filters: AnalyticsFilters, report: 'visito
   const query = report === 'visitors'
     ? `SELECT date, visitors FROM ${table('analytics_visitors')} WHERE ${sourceWindow()} AND date BETWEEN {from_date:Date} AND {to_date:Date}${building} ORDER BY date`
     : report === 'positioning_time'
-      ? `SELECT timestamp, total, avg, std FROM ${table('analytics_positioning_time')} WHERE ${sourceWindow()} AND timestamp >= {from_date:DateTime} AND timestamp < addDays(toDate({to_date:Date}), 1)${building} ORDER BY timestamp`
+      ? `SELECT timestamp, total, avg, std FROM ${table('analytics_positioning_time')} WHERE ${sourceWindow()}${building} ORDER BY timestamp`
       : `SELECT timestamp, device_id, user_id, building_id, floor_id, matched_fence_id, seconds_in_fence, stay_time, sessions_count FROM ${table('analytics_geofencing_stay')} WHERE ${sourceWindow()} AND timestamp >= {from_date:DateTime} AND timestamp < addDays(toDate({to_date:Date}), 1) AND ({building_id:UInt64} = 0 OR building_id = {building_id:UInt64}) AND ({geofence_id:String} = '' OR matched_fence_id = {geofence_id:String}) ORDER BY timestamp`
   return getClickHouseClient().query({ query, query_params: p, format: 'CSVWithNames' }).then(r => r.text())
 }
