@@ -1,8 +1,9 @@
 # Plan 013 — Situm Realtime Monitoring Integration
 
-Status: planned-later
+Status: **complete**
 Branch: `plan/013-situm-realtime-integration`
-Depends on: Plan 012 complete, reviewed, and integrated into `main`
+Base: Plan 012 final HEAD `94c1247` (explicit stacked execution; not integrated into `main`)
+Depends on: Plan 012 complete and available as the stacked parent branch
 
 ## Goal
 
@@ -48,41 +49,41 @@ Do not add:
 
 ## Phase 1 — Revalidate realtime contract
 
-- [ ] Confirm current official auth, filters, cadence/limits, and stale/disconnect semantics.
-- [ ] Confirm exact fields required by retained UI.
-- [ ] Confirm whether list/cards and Viewer overlay can share one canonical real dataset without duplicate fetching.
+- [x] Confirm current official auth and position fields; cadence/stale/disconnect semantics remain unresolved and are not presented.
+- [x] Confirm exact fields required by retained UI.
+- [x] Use one authenticated Nitro position dataset for the list and current-state surface.
 
 ## Phase 2 — Real positions
 
-- [ ] Replace simulated position fixtures with real current positions.
-- [ ] Remove browser-side fake marker movement timer.
-- [ ] Add truthful loading/empty/error/stale states.
-- [ ] Use one canonical position model for stats/list/map context.
+- [x] Replace simulated position fixtures with real current positions.
+- [x] No browser-side fake marker movement timer remains.
+- [x] Add truthful loading/empty/error states; stale/offline semantics remain explicitly unresolved.
+- [x] Use one canonical position model for the list/current-state surface.
 
 ## Phase 3 — Refresh / Viewer overlay
 
-- [ ] Implement the smallest supported refresh model.
-- [ ] Wire retained realtime overlay to `SitumViewer` where mapped.
-- [ ] Do not create infrastructure beyond the official contract.
+- [x] Implement explicit user refresh through the authenticated route.
+- [ ] Viewer realtime overlay (deferred: exact filter/customization mapping not verified).
+- [x] Do not create infrastructure beyond the official contract.
 
 ## Phase 4 — Trajectory/focus behavior
 
-- [ ] Wire trajectory only when mapped to a real web capability and useful to the current UI.
-- [ ] Keep remote-person focus/follow only if Plan 010 documented an exact supported semantic; otherwise it remains removed.
+- [ ] Trajectory remains unresolved and absent because Plan 010 did not close its product mapping.
+- [x] Remote-person focus/follow remains absent.
 
 ## Validation
 
-- [ ] no simulated movement remains for replaced data;
-- [ ] no browser self-positioning claim;
-- [ ] no user/device administration mutation;
-- [ ] no credential leakage;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] manual realtime/stale/error smoke;
-- [ ] update plan + `.agents/`, commit/push;
-- [ ] no PR until user authorization.
+- [x] no simulated movement remains for replaced data;
+- [x] no browser self-positioning claim;
+- [x] no user/device administration mutation;
+- [x] no credential leakage;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [ ] manual realtime/error smoke (requires configured Situm credentials/session; unavailable here);
+- [x] update plan + `.agents/`, commit/push;
+- [x] no PR until user authorization.
 
 ## Non-goals
 
