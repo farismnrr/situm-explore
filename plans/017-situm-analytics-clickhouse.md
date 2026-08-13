@@ -126,12 +126,18 @@ Raw data, user-position history, broad trajectory analytics, and every possible 
 
 ## Phase 3 — ClickHouse analytics query API
 
-- [ ] add protected app-owned analytics read endpoints backed by ClickHouse, not direct browser-to-ClickHouse access;
-- [ ] support a bounded date range and relevant building/geofence filters based on the verified stored dimensions;
-- [ ] expose truthful summaries for visitors, positioning time, and geofence stay time;
-- [ ] add CSV export from the implemented ClickHouse dataset with explicit content type/filename and session protection;
-- [ ] validate/parameterize all user-controlled query inputs; do not concatenate unsafe SQL;
-- [ ] keep response DTOs small and purpose-built for the UI.
+- [x] add protected app-owned analytics read endpoints backed by ClickHouse, not direct browser-to-ClickHouse access;
+- [x] support a bounded date range and relevant building/geofence filters based on the verified stored dimensions;
+- [x] expose truthful summaries for visitors, positioning time, and geofence stay time;
+- [x] add CSV export from the implemented ClickHouse dataset with explicit content type/filename and session protection;
+- [x] validate/parameterize all user-controlled query inputs; do not concatenate unsafe SQL;
+- [x] keep response DTOs small and purpose-built for the UI.
+
+### Phase 3 implementation record (2026-08-13)
+
+- Added protected `/api/analytics/summary` and `/api/analytics/export` endpoints with bounded date ranges, building/geofence filters, ClickHouse-backed summaries, and CSV-with-header responses.
+- Query SQL uses validated fixed table names and ClickHouse query parameters for all user-controlled values. Reads/exports are constrained to the requested report window to avoid overlapping sync-window double counting.
+- Validation passed: `git diff --check`, `npm run lint`, and `npm run typecheck`. Full build follows the phase persistence checkpoint.
 
 ## Phase 4 — `/app/analytics` real UI
 

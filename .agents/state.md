@@ -133,9 +133,13 @@ Phase 1 implementation completed on 2026-08-13. The server-only ClickHouse bound
 
 Phase 2 implementation completed on 2026-08-13. Protected `POST /api/analytics/sync` now fetches the three verified Situm Reports families through direct Nitro REST, validates supported date/building inputs, normalizes only required fields, writes to isolated ClickHouse tables, records sync identity, and synchronously replaces the exact source window on re-sync. Static validation passed; live sync and idempotency smoke remain required at Plan 017 closeout. Phase 3 is next.
 
+## Plan 017 Phase 3 result
+
+Phase 3 implementation completed on 2026-08-13. Protected summary and CSV export APIs query only the requested report window from ClickHouse, support bounded date/building/geofence filters, use parameterized SQL, and keep ClickHouse server-only. Static validation passed; full build and live query/export/auth smoke remain required at Plan 017 closeout. Phase 4 is next.
+
 ## Next action
 
-Execute Plan 017 Phase 3 using the verified report and ClickHouse contracts above, then continue Plans 017→020 sequentially using the explicit stacked mode above.
+Execute Plan 017 Phase 4 using the verified report and ClickHouse contracts above, then continue Plans 017→020 sequentially using the explicit stacked mode above.
 
 Start by switching to `roadmap/017-020-next-features`, creating `plan/017-situm-analytics-clickhouse` from its final HEAD, and executing Plan 017 phase-by-phase with the configured `worker` subagent.
 
