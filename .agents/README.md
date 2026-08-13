@@ -9,7 +9,7 @@ Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in t
 | Path | Purpose |
 | --- | --- |
 | `identity.md` | Mission, behavior, and stable agent principles. |
-| `state.md` | Current focus, blockers, canonical branch, and next action. |
+| `state.md` | Current focus, blockers, canonical/working branch, and next action. |
 | `protocols/chat-lifecycle.md` | Conversation workflow. |
 | `protocols/persistence.md` | What must be persisted after a conversation. |
 | `protocols/git-workflow.md` | Plan branch, validation, commit/push, stacked-branch exception, and PR gates. |
@@ -69,20 +69,31 @@ Before a completed implementation-phase commit:
 1. update active plan/checklist;
 2. update `.agents/state.md`;
 3. update durable decisions/knowledge only when changed;
-4. append the current session note;
+4. append/update the current session note;
 5. run required validation;
 6. commit and push the plan branch.
 
-Never store credentials, API keys, JWTs, passwords, or sensitive payloads.
+Never store credentials, API keys, JWTs, passwords, ClickHouse credentials, or sensitive payloads.
 
 ## Current scope
 
-The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are historical and integrated into `main`.
+The UI roadmap through Plan 009B and Situm Plans 010–016A are historical/integrated. PRs #10 and #11 also integrated the user's final UI/mobile refinement pass into `main`.
 
-PR #8 integrated the cumulative Plans 010–016A lineage. `main` is now the only canonical branch and there is no active implementation plan.
+The current roadmap authority is `roadmap/017-020-next-features` with explicit stacked execution authorization:
 
-Do not restart or recreate Plans 010–016A from historical plan branches. The old Plan 017 credential-split draft was superseded by Plan 016A and is not an active roadmap step.
+```text
+Plan 017 — Analytics & Reports with existing local ClickHouse
+-> Plan 018 — Groups & Alarms read-only
+-> Plan 019 — Realtime Viewer overlay & conditional trajectory
+-> Plan 020 — Static directions
+```
 
-Historical plan branches may be deleted after integration because their commits are contained in `main`; plan files and Git history remain the historical record.
+Plan 017 is next active/ready. Plans 018–020 are queued.
 
-Future substantive work should start from updated `main` on a newly scoped plan branch only when explicitly needed. Read `.agents/state.md` for exact current truth and unresolved capability gaps.
+Each implementation plan gets its own branch and, for this explicitly authorized stack, each next plan starts from the previous plan's final validated/pushed HEAD. Do not create a PR or merge during the run.
+
+Implementation/testing for each phase must be delegated specifically to the configured `worker` subagent. If that worker profile cannot be spawned, stop rather than silently substituting another agent/model.
+
+The old credential-split Plan 017 was superseded by Plan 016A and must not be confused with the new analytics Plan 017. The abandoned `chore/ui-refine-login-map-feedback` branch is also superseded by the UI work already integrated into `main` and must not be used as a base.
+
+Read `.agents/state.md` for the exact branch chain, ClickHouse boundary, completed/unresolved capability truth, and next action.
