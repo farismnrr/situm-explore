@@ -49,13 +49,15 @@ Rules:
 
 ## Phase 0 — Config inventory and gap check
 
-- [ ] inventory every environment variable in `.env.example`;
-- [ ] inventory every environment variable actually consumed by Nuxt/Drizzle/server/client code;
-- [ ] classify documented-but-unused and used-but-undocumented variables;
-- [ ] confirm `DB_SCHEMA` is not part of the current runtime contract;
-- [ ] confirm the Drizzle schema remains fixed to `situm_explore`;
-- [ ] decide whether `NUXT_PUBLIC_APP_URL` has a real current consumer; remove or explicitly classify it if not;
-- [ ] record any config contradiction before changing runtime behavior.
+- [x] inventory every environment variable in `.env.example`;
+- [x] inventory every environment variable actually consumed by Nuxt/Drizzle/server/client code;
+- [x] classify documented-but-unused and used-but-undocumented variables;
+- [x] confirm `DB_SCHEMA` is not part of the current runtime contract;
+- [x] confirm the Drizzle schema remains fixed to `situm_explore`;
+- [x] decide whether `NUXT_PUBLIC_APP_URL` has a real current consumer; remove or explicitly classify it if not;
+- [x] record any config contradiction before changing runtime behavior.
+
+See `.agents/sessions/016a-phase0-config-inventory.md` for full findings.
 
 ## Phase 1 — Runtime credential split
 
