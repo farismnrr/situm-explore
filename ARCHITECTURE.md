@@ -261,20 +261,25 @@ Do not:
 
 ## Situm credential boundary
 
-Current baseline still has a historical public Viewer POC credential path.
+Plan 016A implemented the final credential split. Situm credentials are separated by responsibility:
 
-That is legacy current behavior, not the future REST architecture.
+- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only; minimum Viewer permission that works for the POC; public by design because Nuxt exposes `NUXT_PUBLIC_*` to the browser.
+- `NUXT_SITUM_READ_API_KEY` — private Nitro credential for Situm read operations; intended role: Only Read.
+- `NUXT_SITUM_WRITE_API_KEY` — private Nitro credential reserved for explicitly approved Situm mutations; intended role: Read and Write; stays unused until a real mutation is implemented.
+- `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier, not a secret.
 
-For Plans 010–016:
+The temporary `NUXT_SITUM_API_KEY` compatibility variable has been fully removed; no current Nitro read depends on it.
 
-- REST/domain Situm calls use private Nitro runtime credentials;
+Rules:
+
+- REST/domain Situm calls use private Nitro runtime credentials (read or write, never the Viewer key);
 - every product Situm API route requires app session auth;
 - server credentials never enter public runtime config;
 - browser Viewer authentication is verified separately against the installed/current SDK;
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public;
+- never use the write key for reads when the read key is sufficient;
+- do not add a mutation merely because the write key exists;
 - do not invent credential names, token flows, or permissions without exact verified evidence.
-
-Plan 010 freezes the final credential/runtimeConfig contract before Plan 011 starts.
 
 ## Web/native boundary
 

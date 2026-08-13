@@ -35,12 +35,13 @@ Status: active.
 - Browser Viewer behavior uses `NUXT_PUBLIC_SITUM_API_KEY` only while the current Viewer implementation requires a browser-visible credential; this public key is not the backend REST credential.
 - Private Nitro read operations use `NUXT_SITUM_READ_API_KEY`, intended for a Situm **Only Read** key.
 - Private Nitro mutations use `NUXT_SITUM_WRITE_API_KEY`, intended for a Situm **Read and Write** key, and must remain unused unless a real approved mutation requires it.
-- `NUXT_SITUM_API_KEY` is only a temporary compatibility variable for the pre-split Nitro implementation and must be removed after Plan 016A migrates all current reads.
+- `NUXT_SITUM_API_KEY` was the temporary compatibility variable for the pre-split Nitro implementation; Plan 016A Phase 1 removed it entirely from code and `.env.example` after migrating every current Nitro read to `NUXT_SITUM_READ_API_KEY`.
 - Every protected product `/api/situm/*` route requires the existing Situm Explore session.
 - Never expose private read/write credentials to browser code, logs, docs, or error payloads, and never create a generic unauthenticated Situm proxy.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public because it is an identifier, not a secret.
+- `NUXT_PUBLIC_APP_URL` had no real runtime consumer; Plan 016A Phase 2 removed it from `nuxt.config.ts` and `.env.example` rather than keeping it as documented-but-unused.
 
-Status: active.
+Status: active — credential split implemented (Plan 016A Phase 1 complete); Phase 2 documentation now reflects implemented state.
 
 ## 2026-08-13 — Evidence-backed Situm integration
 

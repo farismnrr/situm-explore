@@ -71,12 +71,12 @@ See `.agents/sessions/016a-phase0-config-inventory.md` for full findings.
 
 ## Phase 2 — Documentation and durable context
 
-- [ ] update `.env.example` to the final implemented contract;
-- [ ] update README setup/runtime configuration;
-- [ ] update `ARCHITECTURE.md` credential/security boundary if required;
-- [ ] update `.agents/state.md` and durable decisions;
-- [ ] remove stale references that imply one generic private Situm key is still the target architecture;
-- [ ] ensure Plan 017 remains unassigned/reserved for future substantive scope.
+- [x] update `.env.example` to the final implemented contract;
+- [x] update README setup/runtime configuration;
+- [x] update `ARCHITECTURE.md` credential/security boundary if required;
+- [x] update `.agents/state.md` and durable decisions;
+- [x] remove stale references that imply one generic private Situm key is still the target architecture;
+- [x] ensure Plan 017 remains unassigned/reserved for future substantive scope.
 
 ## Phase 3 — Existing Situm runtime smoke
 

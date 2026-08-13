@@ -39,15 +39,17 @@ Plan 016A owns only the post-stack hardening/verification work:
 
 Plan 016A does **not** implement the full Reports/Groups/Alarms feature set. Substantive follow-up feature work should start at Plan 017 or later.
 
-## Credential target
+## Credential target — implemented (Phase 1 complete)
 
 - `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer only.
 - `NUXT_SITUM_READ_API_KEY` — private Nitro read operations; intended Situm role: Only Read.
 - `NUXT_SITUM_WRITE_API_KEY` — private Nitro mutations only; intended Situm role: Read and Write.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier.
-- `NUXT_SITUM_API_KEY` — temporary compatibility variable only; remove after current reads migrate.
+- `NUXT_SITUM_API_KEY` — removed; no current code or `.env.example` entry references it.
 
-Never expose private read/write credentials to browser/public runtime config, logs, docs, or error payloads.
+All current Nitro read paths now use `NUXT_SITUM_READ_API_KEY`. `/api/situm/status` reports `readConfigured`, `writeConfigured`, and `viewerConfigured` separately without exposing values. Never expose private read/write credentials to browser/public runtime config, logs, docs, or error payloads.
+
+`NUXT_PUBLIC_APP_URL` had no real consumer (Phase 0 finding) and has been removed from `nuxt.config.ts` runtimeConfig.public and `.env.example` rather than kept as documented-but-unused.
 
 ## Validation truth
 

@@ -15,11 +15,12 @@ Required configuration for the **current baseline**:
 - `NUXT_SESSION_PASSWORD`: at least 32 characters; used by `nuxt-auth-utils` for sealed sessions.
 - `AUTH_EMAIL` and `AUTH_PASSWORD_HASH`: configured-owner login credential.
 - `DATABASE_URL`: shared PostgreSQL instance; the application-owned schema is `situm_explore`.
-- `NUXT_PUBLIC_SITUM_API_KEY`: **legacy current Map Viewer POC credential only**. Current `SitumViewer` still requires it; do not reuse this public value for new REST/domain backend integrations.
-- `NUXT_SITUM_API_KEY`: private Nitro credential reserved for authenticated Situm REST/domain reads and the protected Situm configuration status. It must never enter browser runtime config or client bundles.
+- `NUXT_PUBLIC_SITUM_API_KEY`: browser-visible Map Viewer credential only. Current `SitumViewer` still requires it; use the minimum Situm role that supports Viewer behavior and never reuse it as a server REST credential.
+- `NUXT_SITUM_READ_API_KEY`: private Nitro credential for Situm READ operations (Buildings/Floors/POIs, Geofences/Paths, Realtime reads, Organization/Users, and other verified GET/read flows). Recommended Situm role: Only Read. Must never enter browser runtime config or client bundles.
+- `NUXT_SITUM_WRITE_API_KEY`: private Nitro credential reserved for Situm WRITE/mutation operations. Recommended Situm role: Read and Write. Leave blank until a real mutation is explicitly approved and implemented. Must never enter browser runtime config or client bundles.
 - `NUXT_PUBLIC_SITUM_BUILDING_ID`: building loaded by the current Map Viewer. This is an identifier, not a secret.
 
-Plan 010 freezes the product contract so future Situm REST/domain reads use `NUXT_SITUM_API_KEY` through private Nitro runtime credentials behind authenticated `/api/situm/*` routes. Browser Viewer authentication remains a separate legacy boundary until a later plan verifies and migrates it safely.
+Plan 016A splits Situm credentials by responsibility: REST/domain reads use `NUXT_SITUM_READ_API_KEY`, any approved mutation uses `NUXT_SITUM_WRITE_API_KEY`, and the browser Map Viewer keeps its own separate `NUXT_PUBLIC_SITUM_API_KEY`. The temporary `NUXT_SITUM_API_KEY` compatibility variable has been fully removed. `/api/situm/status` reports `readConfigured`, `writeConfigured`, and `viewerConfigured` separately without exposing values.
 
 ### Discover the Situm building ID during the current legacy setup
 
