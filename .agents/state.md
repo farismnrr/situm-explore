@@ -17,18 +17,18 @@ Manual Plan 019A acceptance proved real map/cartography load, forward and revers
 
 Non-blocking observations retained for Plan 020 review: some Viewer-visible POIs were absent from the product POI list; constrained `ONLY_NOT_ACCESSIBLE_FLOOR_CHANGES` requests could fail to estimate; Situm/Mapbox emitted internal image/glyph warnings. Treat these as evidence, not automatic app bugs.
 
-## Active plan — 020
+## Completed plan — 020
 
 - plan: `plans/020-situm-static-directions.md`
 - branch: `plan/020-situm-static-directions-v2`
 - base: exact final Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
-- status: **ready / active**
+- status: **complete; awaiting PR/merge decision**
 
 `plan/020-situm-static-directions-v2` was created directly from the exact final Plan 019A HEAD to preserve non-destructive history.
 
 The earlier remote `plan/020-situm-static-directions` branch at stale pre-019A lineage (`c902e53`) is superseded as an execution branch. Do not merge, cherry-pick, reset, force-push, or use it as current authority. Historical evidence from it may be consulted only where still accurate.
 
-Current chain:
+Completed chain:
 
 ```text
 roadmap/017-020-next-features
@@ -36,16 +36,14 @@ roadmap/017-020-next-features
 -> plan/018-situm-groups-alarms-read              [complete]
 -> plan/019-situm-realtime-viewer-trajectory      [complete]
 -> plan/019a-situm-static-directions-foundation   [complete]
--> plan/020-situm-static-directions-v2            [ACTIVE]
+-> plan/020-situm-static-directions-v2            [complete]
 ```
 
 ## Execution rules
 
-- execute Plan 020 phases sequentially;
-- implementation/fixes go specifically to the configured `worker` subagent;
-- parent owns orchestration, review, state/plan/session updates, commits, pushes, and transitions;
-- if the configured worker cannot spawn, stop rather than substituting another agent/model;
-- no PR and no merge;
+- Plan 020 phases are complete;
+- the branch is awaiting the user's separately gated PR/merge decision;
+- no PR or merge has been created;
 - runtime acceptance uses production build + preview, not Nuxt dev mode;
 - wait for actual Situm Viewer/cartography readiness before Viewer commands.
 

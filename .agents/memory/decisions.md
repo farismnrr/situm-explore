@@ -86,19 +86,19 @@ Status: active architecture decision; Plan 017 implementation complete.
 
 Status: complete.
 
-## 2026-08-13 — Insert Plan 019A before Plan 020
+## 2026-08-13 — Completed Plan 019A and Plan 020 lineage
 
 The user explicitly changed the stacked roadmap after the first Plan 020 Phase 0 attempt exposed a sequencing problem.
 
-Current branch chain is:
+The resulting branch chain is complete:
 
 ```text
 roadmap/017-020-next-features
 -> plan/017-situm-analytics-clickhouse            [complete]
 -> plan/018-situm-groups-alarms-read              [complete]
 -> plan/019-situm-realtime-viewer-trajectory      [complete]
--> plan/019a-situm-static-directions-foundation   [ACTIVE]
--> plan/020-situm-static-directions                [queued after 019A]
+-> plan/019a-situm-static-directions-foundation   [complete]
+-> plan/020-situm-static-directions-v2            [complete]
 ```
 
 Plan 019A exists because a real `startDirections(...)` runtime proof could not be performed through the product before the product exposed the minimal verified command surface.
@@ -108,11 +108,11 @@ Plan 019A therefore owns both:
 1. the smallest production-safe directions wiring whose contracts are already verified; and
 2. the hydrated Playwright runtime proof against the real configured Viewer/account.
 
-The earlier `plan/020-situm-static-directions` branch created before 019A is superseded as an execution base. It may be consulted only as historical evidence where still accurate. Do not merge/cherry-pick it into 019A. After 019A completes, Plan 020 must start from the exact final validated/pushed Plan 019A HEAD.
+The earlier `plan/020-situm-static-directions` branch created before 019A is superseded as an execution base and is historical evidence only where still accurate. It is not current authority and must not be merged/cherry-picked into the completed lineage.
 
 Do not delete the stale pre-019A Plan 020 branch unless the user explicitly asks.
 
-Status: active current roadmap decision.
+Status: complete roadmap decision; current authority is the completed lineage above.
 
 ## 2026-08-13 — Static directions architecture boundary
 

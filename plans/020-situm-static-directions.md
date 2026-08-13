@@ -1,6 +1,6 @@
 # Plan 020 — Situm Static Directions Product Completion
 
-Status: **ready / active**
+Status: **complete; awaiting PR/merge decision**
 Branch: `plan/020-situm-static-directions-v2`
 Base: exact final pushed Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
 Depends on: Plan 019A complete
@@ -110,4 +110,4 @@ Final diff, lint, typecheck, and production build validation passed. The public 
 
 ## Branch note
 
-The earlier remote `plan/020-situm-static-directions` branch is stale pre-019A history and is superseded as an execution branch. The active branch is `plan/020-situm-static-directions-v2`, created directly from exact final Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`. Do not merge/cherry-pick the stale branch or rewrite shared history.
+The earlier remote `plan/020-situm-static-directions` branch is stale pre-019A history and is superseded as an execution branch. The completed review branch is `plan/020-situm-static-directions-v2`, created directly from exact final Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`. Do not merge/cherry-pick the stale branch or rewrite shared history.

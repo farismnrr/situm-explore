@@ -14,7 +14,7 @@ Keep this file short. Current authority lives in `.agents/state.md`.
 6. `ARCHITECTURE.md`
 7. `plans/README.md`
 8. `design/data-source-matrix.md` when Situm capability scope matters
-9. the active plan
+9. the relevant plan
 
 Historical plans/sessions/branches are evidence only.
 
@@ -25,14 +25,14 @@ Plan 017  [complete]
 -> Plan 018  [complete]
 -> Plan 019  [complete]
 -> Plan 019A [complete]
--> Plan 020  [ACTIVE]
+-> Plan 020  [complete]
 ```
 
-Active branch:
+Completed review branch:
 
 `plan/020-situm-static-directions-v2`
 
-It starts from exact final Plan 019A HEAD:
+It started from exact final Plan 019A HEAD:
 
 `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
 

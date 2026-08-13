@@ -28,28 +28,28 @@ Historical plans/sessions/branches are evidence only. Current state/contracts ov
 
 ## Explicit stacked mode
 
-The user authorized uninterrupted stacked execution for the current feature lineage. After each plan is fully validated, persisted, committed, and pushed, the successor starts from that exact final HEAD.
+The user authorized uninterrupted stacked execution for the feature lineage below. That stacked run is complete; the final branch remains user-gated for PR/merge.
 
-Current chain:
+Completed chain:
 
 ```text
 roadmap/017-020-next-features
 -> plan/017-situm-analytics-clickhouse            [complete]
 -> plan/018-situm-groups-alarms-read              [complete]
 -> plan/019-situm-realtime-viewer-trajectory      [complete]
--> plan/019a-situm-static-directions-foundation   [ACTIVE]
--> plan/020-situm-static-directions                [queued after 019A]
+-> plan/019a-situm-static-directions-foundation   [complete]
+-> plan/020-situm-static-directions-v2            [complete]
 ```
 
-The user inserted Plan 019A after the first Plan 020 Phase 0 attempt exposed a sequencing blocker: a real directions runtime proof required production command wiring that did not yet exist.
+The user inserted Plan 019A after the first Plan 020 Phase 0 attempt exposed a sequencing blocker: a real directions runtime proof required production command wiring that did not yet exist. Both plans are now complete.
 
-The earlier `plan/020-situm-static-directions` branch created before 019A is superseded as an execution base. Its Phase 0 evidence may be consulted historically where still accurate, but do not merge/cherry-pick it into 019A. After 019A completes, Plan 020 must start from the exact final Plan 019A HEAD.
+The earlier `plan/020-situm-static-directions` branch created before 019A is superseded as an execution base. Its Phase 0 evidence may be consulted historically where still accurate, but it is not current authority and must not be merged/cherry-picked into the completed lineage.
 
 Do not delete the stale Plan 020 branch unless the user explicitly asks.
 
-## Active Plan 019A
+## Completed Plans 019A and 020
 
-`plans/019a-situm-static-directions-foundation.md` owns:
+`plans/019a-situm-static-directions-foundation.md` completed:
 
 - minimal typed `SitumViewer` static-directions start/cancel commands;
 - route selection using real numeric Situm POI IDs rather than display-name strings;
@@ -60,9 +60,11 @@ Do not delete the stale Plan 020 branch unless the user explicitly asks.
 
 Plan 019A deliberately implements the smallest verified surface before runtime proof. This is not a relaxation of the evidence gate: installed SDK signatures, numeric POI endpoint identifiers, and Viewer ownership are already verified; unverified route result/details/events/tags remain absent.
 
-## Worker-only execution rule
+`plans/020-situm-static-directions.md` completed the evidence-backed product polish, regression smoke, and closeout for that verified surface. No successor plan is currently active.
 
-For the active stacked run:
+## Historical worker-only execution rule
+
+For the completed stacked run:
 
 - implementation and fixes for each implementation phase go specifically to the configured `worker` subagent;
 - parent agent owns orchestration, review, plan/state/session persistence, commits, pushes, and phase/plan transitions;
