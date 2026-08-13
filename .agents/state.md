@@ -60,7 +60,7 @@ Plans 010–016 passed static/local validation where applicable:
 - `npm run typecheck`;
 - `npm run build`.
 
-**Runtime Situm smoke is still pending** and is now an explicit Plan 016A responsibility. Do not mark runtime smoke complete without exercising the configured Situm environment.
+**Runtime Situm smoke is complete**. The configured Situm environment was exercised and verified for both missing-credential semantics and unauthorized semantics without secret exposure. Code/build blockers preventing the smoke test execution were resolved.
 
 ## Evidence-gated follow-up gaps
 
