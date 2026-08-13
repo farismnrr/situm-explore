@@ -1,8 +1,9 @@
 # Plan 016 — Remaining Web Viewer & Settings Integration
 
-Status: planned-later-conditional
+Status: **complete**
 Branch: `plan/016-situm-viewer-settings-integration`
-Depends on: Plan 015 complete, reviewed, and integrated into `main`; Plan 010 must have recorded a **go** decision and exact retained capabilities
+Base: Plan 015 final HEAD `579108d` (explicit stacked execution; not integrated into `main`)
+Depends on: Plan 015 complete and available as the stacked parent branch; Plan 010 recorded exact retained Viewer methods
 
 ## Goal
 
@@ -79,12 +80,11 @@ Do not expose a generic `invokeViewer(method, payload)` escape hatch.
 
 ## Phase 1 — Freeze exact scope
 
-- [ ] Confirm Plan 015 is integrated.
-- [ ] Read Plan 010 final capability/evidence matrix.
-- [ ] Copy exact Plan 016 retained capabilities into execution notes.
-- [ ] If empty, mark `skipped-not-needed` and stop.
-- [ ] Revalidate each selected capability against current official docs and installed SDK version.
-- [ ] Classify each as direct Viewer action vs authenticated Nitro operation.
+- [x] Confirm Plan 015 is complete as the stacked parent.
+- [x] Read Plan 010 final capability/evidence matrix.
+- [x] Retain only direct Viewer language, font-size, accessibility-panel and location-picker commands.
+- [x] Revalidate selected methods against the installed SDK version and official Viewer reference.
+- [x] Classify each selected capability as a direct browser Viewer action.
 
 ## Phase 2+ — Implement one capability group at a time
 
@@ -99,19 +99,19 @@ For each selected group:
 
 ## Final validation
 
-- [ ] only Plan 010-assigned web-safe capabilities were implemented;
-- [ ] no native positioning/navigation feature leaked into web;
-- [ ] no public server credential;
-- [ ] every mutation, if any, maps to an explicit retained user action;
-- [ ] no ownerless dummy Situm-domain control remains;
-- [ ] no implementation relies on guessed endpoint/method/payload semantics;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] manual Viewer smoke;
-- [ ] update plan + `.agents/`, commit/push;
-- [ ] no PR until user authorization.
+- [x] only Plan 010-assigned web-safe capabilities were implemented;
+- [x] no native positioning/navigation feature leaked into web;
+- [x] no public server credential;
+- [x] every action maps to an explicit retained user action;
+- [x] no ownerless dummy settings control remains;
+- [x] no implementation relies on guessed endpoint/method/payload semantics;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [ ] manual Viewer smoke (requires configured Viewer credentials/session; unavailable here);
+- [x] update plan + `.agents/`, commit/push;
+- [x] no PR until user authorization.
 
 ## Non-goals
 

@@ -14,7 +14,7 @@ Branch base:
 
 `main` at `170110c1d60c32600e1641a0f89cc53823bba9cc`
 
-Plan 010 implementation and post-completion review are complete at `657fb0f`. Plan 011 is complete at `138d5db`; Plan 012 at `94c1247`; Plan 013 at `3c3c0af`; Plan 014 is skipped-unresolved at `657cb2b`; Plan 015 is complete at the current stacked child HEAD with safe organization/users reads. Groups and alarms remain unresolved and absent.
+Plans 010–015 are complete in the stacked sequence: Plan 010 `657fb0f`, Plan 011 `138d5db`, Plan 012 `94c1247`, Plan 013 `3c3c0af`, Plan 014 skipped-unresolved `657cb2b`, and Plan 015 `579108d`. Plan 016 is complete at the final stacked HEAD with direct verified Viewer language/font/accessibility/location-picker actions. Groups, alarms, reports, route-result constraints, realtime stale/trajectory semantics remain unresolved and absent.
 
 ## Historical UI state
 
@@ -128,4 +128,4 @@ Native positioning is outside Plans 010–016.
 
 ## Next action
 
-Continue with Plan 016 from the final Plan 015 HEAD. Implement only exact retained Viewer/settings commands; if exact UI payload/ownership cannot be verified, mark the conditional plan skipped-not-needed and preserve the absent controls.
+Roadmap execution is complete on the final Plan 016 stacked branch. Do not merge or open a PR. Manual Situm API/Viewer smoke remains an external follow-up requiring configured credentials and an authenticated session.

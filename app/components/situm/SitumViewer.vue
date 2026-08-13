@@ -28,7 +28,12 @@ function selectPoi(id: number) {
   return runViewerCommand(() => viewer!.selectPoiById(id))
 }
 
-defineExpose({ selectBuilding, selectFloor, selectPoi })
+function setLanguage(language: string) { return runViewerCommand(() => viewer!.setLanguage(language)) }
+function showUserSettings(visible: boolean) { return runViewerCommand(() => viewer!.showUserSettings(visible)) }
+function updateFontSize(size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl') { return runViewerCommand(() => viewer!.updateFontSize({ size })) }
+function openLocationPicker() { return runViewerCommand(() => viewer!.openLocationPicker()) }
+
+defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker })
 
 onMounted(() => {
   if (!config.public.situmApiKey || !config.public.situmBuildingId) {
