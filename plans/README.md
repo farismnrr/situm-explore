@@ -4,151 +4,99 @@ Plans are executable implementation checklists for Codex.
 
 ## Mandatory execution workflow
 
-Before executing any plan in this directory, read:
+Before executing or continuing plan work, read:
 
-1. root `AGENTS.md`;
+1. `AGENTS.md`;
 2. `.agents/README.md`;
 3. `.agents/state.md`;
 4. `.agents/memory/decisions.md` when roadmap/product boundaries matter;
 5. `.agents/protocols/git-workflow.md`;
-6. root `ARCHITECTURE.md`;
-7. `design/data-source-matrix.md` for Plans 010–016;
-8. active plan;
-9. `DESIGN.md` / `design/IMPLEMENTATION.md` when presentation changes.
+6. `ARCHITECTURE.md`;
+7. `design/data-source-matrix.md` when Situm/product capability scope matters;
+8. the active/follow-up plan;
+9. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
 
-Every plan uses its own branch in the normal repository working directory. Do not implement directly on `main` and do not create a linked worktree unless the user explicitly asks.
+Historical plans are evidence only. Current state/contracts override stale plan wording.
 
-## Sequential dependency rule
+## Branch rule
 
-If Plan N+1 depends on Plan N, Plan N must be complete, reviewed, and integrated into `main` before Plan N+1 starts from updated `main`.
+- one plan = one dedicated plan branch;
+- never implement directly on `main`;
+- reuse an existing valid plan branch instead of recreating/resetting it;
+- no force-push/destructive history rewrite as normal workflow;
+- no PR/merge unless explicitly authorized.
 
-```text
-finish plan branch
--> validate + push
--> user reviews
--> user explicitly authorizes integration
--> dependency lands in main
--> sync main
--> create next plan branch
-```
+## Dependency modes
 
-Do not silently stack plans, cherry-pick around dependencies, or branch from stale `main`.
+### Normal mode
 
-## Current vs historical authority
+A dependent plan starts from updated `main` only after its dependency has been reviewed and integrated.
 
-Plans marked complete/closed are implementation history, not current instructions.
+### Explicit stacked mode
 
-Do not resurrect:
+Stacking is allowed only when the user explicitly authorizes it and current `.agents/state.md`/durable context records that decision.
 
-- deleted paths/routes;
-- old environment-variable contracts;
-- superseded UI behavior;
-- old credential assumptions;
-- old architecture migrations.
-
-For Plans 010–016, current authority is:
-
-1. user's latest explicit instruction;
-2. `.agents/state.md` + durable decisions;
-3. `ARCHITECTURE.md`;
-4. `design/data-source-matrix.md`;
-5. active plan;
-6. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation;
-7. current source/runtime behavior;
-8. historical plans only as evidence.
-
-Plans 004–009 intentionally allowed dummy UI. That does **not** authorize permanent fake Situm-domain behavior after Plan 010.
-
-## Plan 010–016 capability rule
-
-Starting in Plan 010, every Situm-domain UI field/control must end in exactly one disposition:
+In stacked mode:
 
 ```text
-WEB / SITUM      -> exact verified real owner
-WEB / PRODUCT    -> app-owned behavior
-NATIVE-ONLY      -> absent from web
-REMOVE           -> unsupported/fake/low-value, absent from product
-UNRESOLVED       -> not implementable until evidence exists
+complete Plan N
+-> validate + update plan/.agents
+-> commit + push Plan N
+-> take Plan N final HEAD
+-> create/continue Plan N+1 from that HEAD
 ```
 
-Do not preserve fake behavior solely for prototype fidelity.
+Do not branch a stacked dependent plan from stale `main` and do not merge/cherry-pick merely to simulate the stack.
 
-Plan 010 may prune the accepted UI where capability truthfulness requires it. Plans 011–016 must not restore pruned UI unless the user explicitly changes scope.
+## Current roadmap state
 
-## External evidence gate — no evidence, no implementation
+Plans 010–016 already completed their explicit stacked implementation pass. The cumulative current branch is:
 
-For Situm behavior, model memory, prototype labels, old fixtures, and historical plans are **not sufficient evidence**.
+`plan/016-situm-viewer-settings-integration`
 
-Before coding a retained Situm capability, verify the exact current contract from official Situm documentation/source and the installed SDK version where relevant.
+Do **not** replay Plans 010–016.
 
-Required evidence:
+Current outcome is intentionally mixed:
 
-- exact REST endpoint or Viewer/SDK method;
-- web vs native availability;
-- browser Viewer vs authenticated Nitro ownership;
-- authentication/permission requirement;
-- request parameters actually used;
-- response/event fields actually consumed;
-- read vs write semantics;
-- error/empty/stale behavior relevant to the UI.
+- implemented where exact evidence existed;
+- skipped/unresolved where exact contract/runtime evidence was insufficient;
+- no fake fallback behavior;
+- no native positioning scope added to web;
+- no PR/merge performed.
 
-If any material part is uncertain:
+Read `.agents/state.md` for exact completed/skipped/unresolved items and pending runtime smoke.
 
-1. mark the item `UNRESOLVED` in Plan 010/capability matrix;
-2. do not invent a likely method/field;
-3. do not implement a fake success fallback;
-4. do not broaden the architecture to compensate;
-5. resolve evidence first or remove the capability if it is not worth the POC.
+## Capability evidence gate
 
-Later Plans 011–016 may implement only capabilities that left Plan 010 with exact evidence and one owner.
+For Situm behavior: **no evidence, no implementation**.
 
-## Situm credential rule
+Official endpoint/SDK existence alone is not enough when the UI requires specific filters, fields, permissions, or error semantics. Verify the exact contract actually consumed.
 
-- New REST/domain integrations must not use a public broad-permission Situm credential.
-- Server data paths use private Nitro runtime configuration and session-protected product API routes.
-- Browser Viewer auth is a separate boundary frozen by Plan 010 after exact verification.
-- Never create a generic unauthenticated Situm proxy.
-- Historical `NUXT_PUBLIC_SITUM_API_KEY` references describe the legacy Viewer POC baseline only.
+If material evidence is missing, keep the feature unresolved/absent rather than inventing it.
 
-## Architecture discipline
+Do not treat lack of an `@situm/sdk-js` wrapper as proof the Situm REST API lacks a capability; server-side Nitro integrations may use exact official REST endpoints when verified and appropriate.
 
-Follow Nuxt 4 app/server/shared ownership in `ARCHITECTURE.md`.
+## Architecture/security
 
-Do not introduce speculative:
+Follow `ARCHITECTURE.md` and keep implementation small:
 
-- services/repositories;
-- global stores/event buses;
-- generic API clients;
-- caches/background workers;
-- DB persistence for external Situm data;
-- generic Viewer command dispatchers.
-
-Use the smallest real owner required by current behavior.
-
-## Documentation discipline
-
-When a phase changes any of these, update the relevant current authority in the same phase:
-
-- route/screen availability;
-- capability classification;
-- environment-variable/runtimeConfig contract;
-- browser/server/native boundary;
-- external endpoint/method mapping;
-- architecture/runtime behavior.
-
-Do not knowingly leave current docs contradicting implementation.
+- private Situm server credentials stay in Nitro runtime config;
+- protected product `/api/situm/*` routes require the app session;
+- no generic unauthenticated Situm proxy;
+- no speculative services/repositories/stores/caches/workers;
+- browser Viewer behavior stays owned by the single Viewer integration;
+- native handset positioning/navigation stays outside the Nuxt web roadmap.
 
 ## Phase completion
 
-After each completed implementation phase:
+A phase is only complete when applicable checks are truthfully recorded:
 
-1. update plan checklist/status;
-2. update `.agents/state.md`;
-3. update durable decisions only if they changed;
-4. update current session note;
-5. run required validation;
-6. commit completed phase;
-7. push plan branch;
-8. stop short of PR/integration unless explicitly authorized.
+1. plan checklist/status updated;
+2. `.agents` persistence updated;
+3. required validation run;
+4. phase committed and pushed;
+5. unresolved/manual-smoke items remain visibly unchecked or explicitly marked pending.
+
+Do not call a roadmap production/runtime-verified while required live API/Viewer smoke is still unavailable.
 
 CI and a standalone unit-test runner remain deferred unless a later requirement changes that decision.
