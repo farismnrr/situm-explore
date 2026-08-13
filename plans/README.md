@@ -11,15 +11,14 @@ Before executing or continuing Plans 021–025, read:
 3. `.agents/state.md`;
 4. `.agents/memory/decisions.md`;
 5. `.agents/memory/roadmap-021-025.md`;
-6. `plans/021-025-prerequisites.md`;
-7. `design/ROADMAP-021-025-OVERRIDES.md`;
-8. `.agents/protocols/git-workflow.md`;
-9. `ARCHITECTURE.md`;
-10. `design/data-source-matrix.md` when Situm scope matters;
-11. active plan;
-12. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
+6. `.agents/protocols/git-workflow.md`;
+7. `ARCHITECTURE.md`;
+8. `plans/021-025-prerequisites.md`;
+9. `design/data-source-matrix.md` when Situm/product scope matters;
+10. active plan;
+11. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
 
-Historical plans/sessions/branches are evidence only. Current state/roadmap transition authority overrides stale wording.
+Historical plans/sessions/branches are evidence only. Current state, durable decisions, architecture, and the active plan are current authority.
 
 ## Git workflow
 
@@ -50,9 +49,11 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Transition direction
 
-Current baseline code still contains env-defined app auth, global Situm credentials/building context, and unscoped analytics history. Plans 021–024 replace those incrementally; Plan 025 performs final UI/regression/documentation reconciliation.
+Current baseline code still contains env-defined app auth, process-global Situm account/Viewer/building context, and analytics history created before workspace ownership existed.
 
-Do not remove a working old path before its replacement is implemented/accepted, and do not let legacy documentation cancel the approved migration.
+Plans 021–024 replace those incrementally. Plan 025 performs final UX/regression plus post-migration documentation reconciliation.
+
+Do not remove a working old path before its replacement is implemented and accepted.
 
 ## Capability evidence gate
 
