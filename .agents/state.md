@@ -14,7 +14,7 @@ Branch base:
 
 `main` at `170110c1d60c32600e1641a0f89cc53823bba9cc`
 
-Plan 010 planning/governance preflight has been refreshed so current architecture/design/planning docs agree on the web/native/security boundary. Implementation has not started yet.
+Plan 010 implementation is complete on the dedicated branch. It pruned web-invalid/fake UI, protected the Situm status route, froze the private Nitro credential name, and recorded the evidence/ownership ledger. It is awaiting user review/integration authorization.
 
 ## Historical UI state
 
@@ -128,6 +128,4 @@ Native positioning is outside Plans 010–016.
 
 ## Next action
 
-Plan 010 is ready for execution when requested.
-
-Start with Phase 0 source inventory/consistency confirmation, then Phase 1 pruning. Do not replace retained domain fixtures with real Situm data until their assigned Plans 011+.
+User reviews Plan 010 branch and explicitly authorizes integration when satisfied. Do not create Plan 011 or merge/open a PR automatically. Do not replace retained domain data until its assigned later plan.

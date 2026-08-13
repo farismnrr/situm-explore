@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { homeActivity, homeBuilding, homeExplore, homeMetrics } from '~/data/prototype/home'
+import { homeBuilding, homeExplore } from '~/data/prototype/home'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Home' })
 
@@ -23,10 +23,6 @@ const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/
       </div>
     </UCard>
 
-    <div class="stat-grid mb-4">
-      <ProductStatCard v-for="metric in homeMetrics" :key="metric.label" :label="metric.label" :value="metric.value" :note="metric.note" :positive="metric.positive" />
-    </div>
-
     <div class="content-grid mb-4">
       <UCard :ui="{ body: 'p-0' }" class="overflow-hidden">
         <div class="panel-head flex items-start justify-between gap-3 p-4 pb-3">
@@ -39,14 +35,7 @@ const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/
         <div class="flex items-center justify-between border-t border-default px-4 py-3 text-xs text-muted"><span>Viewer status</span><ProductStatusBadge :label="homeBuilding.status" tone="success" dot /></div>
       </UCard>
 
-      <UCard :ui="{ body: 'p-0' }">
-        <div class="panel-head"><h2 class="font-semibold text-highlighted">Recent activity</h2><span class="text-xs text-muted">Today</span></div>
-        <div class="panel-body activity-list">
-          <div v-for="activity in homeActivity" :key="activity.title" class="activity-row">
-            <span class="activity-dot" :class="`tone-${activity.tone}`" /><div class="min-w-0 flex-1"><strong class="block text-xs font-medium text-highlighted">{{ activity.title }}</strong><span class="mt-0.5 block text-[10px] text-muted">{{ activity.detail }}</span></div><time class="text-[10px] text-muted">{{ activity.time }}</time>
-          </div>
-        </div>
-      </UCard>
+      <UCard><div class="flex h-full items-center"><UAlert color="neutral" variant="subtle" title="Activity feed is not connected" description="The product will add report-backed activity only when a later integration provides an exact source." /></div></UCard>
     </div>
 
     <UCard :ui="{ body: 'p-0' }">

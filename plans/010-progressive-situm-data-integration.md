@@ -184,34 +184,34 @@ Keep `SitumViewer.vue` as the single real Viewer instance/lifecycle owner. Expos
 
 Before implementation edits:
 
-- [ ] record current `main` SHA used as branch base;
-- [ ] confirm current docs do not describe obsolete pre-Nuxt4 migration paths as active work;
-- [ ] confirm `.agents/state.md`, durable decisions, architecture, design contracts, data matrix, Plans 010–016, README, and `.env.example` agree on the current roadmap/credential boundary;
-- [ ] inventory every public/authenticated route, sidebar entry, major metric, Map action, and Settings control from current source;
-- [ ] record contradictions as plan blockers and fix docs before code;
-- [ ] do not use historical plan text to fill a missing current contract.
+- [x] record current `main` SHA used as branch base;
+- [x] confirm current docs do not describe obsolete pre-Nuxt4 migration paths as active work;
+- [x] confirm `.agents/state.md`, durable decisions, architecture, design contracts, data matrix, Plans 010–016, README, and `.env.example` agree on the current roadmap/credential boundary;
+- [x] inventory every public/authenticated route, sidebar entry, major metric, Map action, and Settings control from current source;
+- [x] record contradictions as plan blockers and fix docs before code;
+- [x] do not use historical plan text to fill a missing current contract.
 
 Phase 0 is complete only when there is one unambiguous current authority chain.
 
 ## Phase 1 — Prune web-invalid UI
 
-- [ ] remove confirmed native-only controls from web;
-- [ ] remove fake flows/actions with no real product owner;
-- [ ] remove unsupported/low-value Situm-domain panels/metrics;
-- [ ] preserve visual composition where practical, but truthfulness outranks fidelity;
-- [ ] do not replace surviving fixtures with real Situm data yet;
-- [ ] do not add native implementation;
-- [ ] for any disputed control, verify evidence first rather than guessing.
+- [x] remove confirmed native-only controls from web;
+- [x] remove fake flows/actions with no real product owner;
+- [x] remove unsupported/low-value Situm-domain panels/metrics;
+- [x] preserve visual composition where practical, but truthfulness outranks fidelity;
+- [x] do not replace surviving fixtures with real Situm data yet;
+- [x] do not add native implementation;
+- [x] for any disputed control, verify evidence first rather than guessing.
 
 ## Phase 2 — Freeze credential boundary
 
-- [ ] verify current official Situm REST auth contract;
-- [ ] verify current official JS Viewer auth contract against installed `@situm/sdk-js` version;
-- [ ] define private Nitro credential/runtimeConfig naming;
-- [ ] define safe browser Viewer auth path;
-- [ ] document legacy `NUXT_PUBLIC_SITUM_API_KEY` retirement/compatibility path;
-- [ ] confirm Plans 011–016 never require browser exposure of server REST credential;
-- [ ] update README / `.env.example` / runtime docs in the same phase if naming changes.
+- [x] verify current official Situm REST auth contract;
+- [x] verify current official JS Viewer auth contract against installed `@situm/sdk-js` version;
+- [x] define private Nitro credential/runtimeConfig naming;
+- [x] define safe browser Viewer auth path;
+- [x] document legacy `NUXT_PUBLIC_SITUM_API_KEY` retirement/compatibility path;
+- [x] confirm Plans 011–016 never require browser exposure of server REST credential;
+- [x] update README / `.env.example` / runtime docs in the same phase if naming changes.
 
 ## Phase 3 — Exact capability evidence ledger
 
@@ -247,28 +247,55 @@ Rules:
 
 If a retained capability has no exact owner, Plan 010 is not complete.
 
+## Execution evidence ledger — 2026-08-13
+
+Sources used:
+
+- Official REST API: https://developers.situm.com/pages/rest/openapi/
+- Official JavaScript SDK guide/API reference: https://developers.situm.com/sdk_documentation/sdk-js/index.html
+- Official JavaScript SDK quickstart: https://situm.com/docs/websdk-javascript-sdk-quickstart-guide/
+- Installed package: `@situm/sdk-js@0.25.0`, declarations at `node_modules/@situm/sdk-js/dist/situm-sdk.d.ts` and compiled endpoint paths at `node_modules/@situm/sdk-js/dist/cjs/situm-sdk.js`.
+
+| Capability | Classification | Exact evidence | Access/auth | Consumed contract | Owner |
+| --- | --- | --- | --- | --- | --- |
+| Viewer lifecycle | WEB / SITUM | `sdk.viewer.create({ domElement, buildingId, profile?, apiKey? })`; `viewer.on(ViewerEventType.MAP_IS_READY/APP_ERROR/READY_FOR_AUTH)` | Existing browser Viewer; legacy public API-key path remains temporary | readiness and error events | Plan 010 / 016 |
+| Buildings/floors/POIs/categories | WEB / SITUM | SDK `cartography.getBuildings`, `getBuildingById`, `getFloors`, `getPois`, `getPoiCategories`; REST `/api/v1/buildings`, `/api/v1/floors`, `/api/v1/pois`, `/api/v1/poi_categories` | Future authenticated Nitro route with private `NUXT_SITUM_API_KEY`; reads only | IDs, names, building/floor relationships, POI/category metadata required by current UI | Plan 011 |
+| Viewer building/floor/POI selection | WEB / SITUM | `selectBuilding`, `selectFloor`, `selectPoiById`, `selectPoiByExternalId`; selection events | Browser Viewer command surface | selection identifiers/events | Plan 016, with Plan 011 context |
+| Geofences | WEB / SITUM | SDK `cartography.getGeofences/getGeofenceById`; REST `/api/v1/geofences/search`, `/api/v1/geofences/{id}` | Future authenticated Nitro read | paginated geofence metadata and polygon fields needed by retained UI | Plan 012 |
+| Paths/static directions | WEB / SITUM | SDK `getPaths`; Viewer `startDirections`, `startDirectionsByExternalId`, `directionsSetOptions`, `cancelDirections`; `RouteType` enum | paths through authenticated Nitro; static directions through browser Viewer; no handset positioning | known-point identifiers, route type, included/excluded tags; route result mapping must be revalidated before implementation | Plan 012 |
+| Realtime/device context | WEB / SITUM | SDK `realtime.getPositions({ buildingIds?, userIds?, deviceIds?, indoor?, maxSecThreshold? })`; Viewer `loadRealtimePositions` | Future authenticated Nitro read; Viewer overlay only through owned Viewer | GeoJSON time/yaw/local coordinates/floor/building/accuracy and `devicesInfo` | Plan 013 |
+| Trajectory | WEB / SITUM | SDK `reports.getTrajectory({ fromDate, toDate, buildingId, userId? })`; Viewer trajectory loading declarations | authenticated Nitro report read; Viewer rendering only after exact UI mapping | timestamp/session/floor/user/device/lat/lng | Plan 013/014 |
+| Reports beyond trajectory and CSV | UNRESOLVED | Official REST docs list visitors, positioning time, heatmap, geofence reports, user positions, map viewer and `.csv` formats; SDK 0.25.0 does not declare these methods | Future authenticated Nitro only | exact filters, response schemas, permissions and UI mapping remain unverified | Plan 014; absent as working UI |
+| Organization/users | WEB / SITUM | SDK `getCurrentOrganization`, `user.getUsers/getUserById`; REST current organization/users operations | Future authenticated Nitro read | safe organization and directory fields only; no credentials/mutations | Plan 015 |
+| Groups/alarms | UNRESOLVED | Official REST index lists both domains, but installed SDK exposes no group/alarm methods and exact read schemas were not verified | Future authenticated Nitro only if reverified | no UI fixture rows are presented as current data | Plan 015 |
+| Location picker/camera/language/search/accessibility/favorites | WEB / SITUM | Viewer `openLocationPicker`, `setCamera`, `setLanguage`, `setSearchFilter`, `setFavoritePois`, `showUserSettings`, `updateFontSize`; `LOCATION_PICKER_DRAGGED` and map events | Browser Viewer; exact command wiring remains later work | method declarations and event fields are verified; product-safe options revalidated in implementation owner | Plan 016 |
+| Browser self-positioning/live navigation | NATIVE-ONLY | SDK `setUserLocation/startNavigation` accept supplied positions and expose native navigation events; they do not create browser indoor positioning | Future native roadmap | absent from web UI | Future native roadmap |
+| Save-car, flight selection, generic images inventory | REMOVE | SDK exposes related methods/upload, but no accepted POC product owner/value | not implemented | removed from web UI | none |
+
+The report, groups, alarms and Viewer-settings rows are not presented as working data/actions in the Plan 010 UI after pruning. No endpoint, payload, permission or browser/server behavior was inferred from fixture names.
+
 ## Phase 5 — Dead fixture/type cleanup
 
-- [ ] remove fixtures/types used only by UI removed in Phase 1;
-- [ ] keep fixtures required by Plans 011–016 until their real owner replaces them;
-- [ ] do not introduce fixture API routes or persistence;
-- [ ] confirm no deleted capability survives through global search/navigation/quick links.
+- [x] remove fixtures/types used only by UI removed in Phase 1;
+- [x] keep fixtures required by Plans 011–016 until their real owner replaces them;
+- [x] do not introduce fixture API routes or persistence;
+- [x] confirm no deleted capability survives through global search/navigation/quick links.
 
 ## Phase 6 — Validation and closeout
 
-- [ ] no web UI claims browser indoor positioning;
-- [ ] no retained Situm-domain control is permanently fake/ownerless;
-- [ ] no visible retained capability is `UNRESOLVED`;
-- [ ] every retained Situm capability has exact evidence + one later owner;
-- [ ] no fake Register/Sync/unsourced business metric remains unless explicitly reclassified with a real product source;
-- [ ] future plans use the frozen credential boundary;
-- [ ] native-only features are documented but absent from web;
-- [ ] all current authority docs agree;
-- [ ] `git diff --check`;
-- [ ] `npm run lint` for code-changing pruning;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] update `.agents/state.md`, durable decisions, and current session;
+- [x] no web UI claims browser indoor positioning;
+- [x] no retained Situm-domain control is permanently fake/ownerless;
+- [x] no visible retained capability is `UNRESOLVED`;
+- [x] every retained Situm capability has exact evidence + one later owner;
+- [x] no fake Register/Sync/unsourced business metric remains unless explicitly reclassified with a real product source;
+- [x] future plans use the frozen credential boundary;
+- [x] native-only features are documented but absent from web;
+- [x] all current authority docs agree;
+- [x] `git diff --check`;
+- [x] `npm run lint` for code-changing pruning;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] update `.agents/state.md`, durable decisions, and current session;
 - [ ] commit/push branch;
 - [ ] no PR/merge until user authorization.
 

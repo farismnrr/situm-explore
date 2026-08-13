@@ -11,17 +11,9 @@ const selectedPoiId = ref<string | null>('reception')
 const routeStart = ref('Reception')
 const routeDestination = ref('Meeting Room A')
 const accessibleRoute = ref(false)
-const routeCalculated = ref(false)
-const layerState = reactive({ realtime: true, geofence: false, trajectory: false, follow: false })
-const locationPickerActive = ref(false)
-const viewerSettingsOpen = ref(false)
-const accessibleNavigation = ref(false)
-const largeInterfaceText = ref(false)
-const highContrastCues = ref(false)
+const layerState = reactive({ realtime: true, geofence: false, trajectory: false })
 const viewerToolStatus = ref('')
 const { showFeedback } = useExploreFeedback()
-const mapSearchFilter = ref(false)
-const savedCar = ref(false)
 const mapBuildings = computed(() => cartographyBuildings.map(building => ({
   label: building.name,
   floors: building.floors.map(floor => floor.name)
@@ -61,10 +53,7 @@ function centerMap() {
   showViewerToolStatus(`Map center reset locally (view ${centerVersion.value}).`)
 }
 
-const routeOptions = computed(() => ['My location', ...homePois.map(poi => poi.name)])
-const routeSteps = computed(() => accessibleRoute.value
-  ? ['Walk straight past reception for 28 m', 'Take the lift at the workspace corridor', `${routeDestination.value} is on your left`]
-  : ['Walk straight past reception for 28 m', 'Turn right at the workspace corridor', `${routeDestination.value} is on your left`])
+const routeOptions = computed(() => homePois.map(poi => poi.name))
 
 const filteredPois = computed(() => homePois.filter((poi) => {
   const query = poiSearch.value.trim().toLowerCase()
@@ -81,8 +70,7 @@ function selectPoi(id: string) {
 function openDirections(poiName: string) {
   routeDestination.value = poiName
   activeTab.value = 'route'
-  routeCalculated.value = false
-  showFeedback('Destination added to route planner.')
+  showFeedback('Destination selected. Static directions will be enabled in Plan 012.')
 }
 
 function toggleFavorite(id: string) {
@@ -93,15 +81,6 @@ function toggleFavorite(id: string) {
 
 function isFavorite(id: string) {
   return favoritePoiIds.value.includes(id)
-}
-
-function calculateRoute() {
-  routeCalculated.value = true
-  showFeedback('Route preview calculated.')
-}
-
-function startLocalNavigation() {
-  showFeedback('Route preview opened.')
 }
 
 function showViewerToolStatus(message: string) {
@@ -187,42 +166,16 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
           <UFormField label="Start"><USelect v-model="routeStart" :items="routeOptions" class="w-full" /></UFormField>
           <UFormField label="Destination"><USelect v-model="routeDestination" :items="routeOptions" class="w-full" /></UFormField>
           <UCheckbox v-model="accessibleRoute" label="Prefer accessible floor changes" />
-          <UButton label="Calculate route" block @click="calculateRoute" />
-
-          <UCard v-if="routeCalculated" :ui="{ body: 'p-3' }">
-            <div class="flex items-center justify-between gap-3">
-              <strong class="text-xs text-highlighted">4 min · 86 m</strong>
-              <UBadge color="info" variant="soft">{{ accessibleRoute ? 'Accessible' : 'Shortest' }}</UBadge>
-            </div>
-            <p class="mt-2 text-[11px] text-muted">{{ routeStart }} → {{ routeDestination }}</p>
-            <div class="mt-3 space-y-2">
-              <div v-for="(step, index) in routeSteps" :key="step" class="grid grid-cols-[18px_1fr] gap-2 text-[11px] text-muted">
-                <span class="grid size-[18px] place-items-center rounded-full bg-elevated text-[10px] font-semibold text-highlighted">{{ index + 1 }}</span>
-                <span>{{ step }}</span>
-              </div>
-            </div>
-            <UButton class="mt-3 w-full" label="Open route" color="neutral" variant="soft" size="sm" @click="startLocalNavigation" />
-          </UCard>
+          <UAlert color="neutral" variant="subtle" title="Static directions are planned" description="The viewer supports verified static directions; Plan 012 will connect this selection to the single Viewer instance." />
         </div>
 
         <div v-else role="tabpanel" class="space-y-1">
           <p class="mb-3 text-xs text-muted">Viewer overlays and tools</p>
-          <div v-for="item in [{ key: 'realtime', label: 'Realtime positions', hint: 'Live people/device overlay' }, { key: 'geofence', label: 'Geofences', hint: 'Spatial zones and boundaries' }, { key: 'trajectory', label: 'Trajectory', hint: 'Playback a recent route' }, { key: 'follow', label: 'Follow user', hint: 'Keep selected user centered' }]" :key="item.key" class="flex items-center justify-between gap-3 border-b border-default py-3 last:border-0">
+          <div v-for="item in [{ key: 'realtime', label: 'Realtime positions', hint: 'Live people/device overlay' }, { key: 'geofence', label: 'Geofences', hint: 'Spatial zones and boundaries' }, { key: 'trajectory', label: 'Trajectory', hint: 'Playback a recent route' }]" :key="item.key" class="flex items-center justify-between gap-3 border-b border-default py-3 last:border-0">
             <span><strong class="block text-xs text-highlighted">{{ item.label }}</strong><span class="mt-1 block text-[11px] text-muted">{{ item.hint }}</span></span>
             <USwitch :model-value="layerState[item.key as keyof typeof layerState]" :aria-label="item.label" @update:model-value="toggleLayer(item.key as keyof typeof layerState)" />
           </div>
-          <UButton :label="locationPickerActive ? 'Clear location' : 'Pick location'" block color="neutral" variant="soft" size="sm" class="mt-3" @click="locationPickerActive = !locationPickerActive; showViewerToolStatus(locationPickerActive ? 'Location marker enabled.' : 'Location marker cleared.')" />
-          <UButton label="Viewer accessibility settings" block color="neutral" variant="soft" size="sm" class="mt-2" @click="viewerSettingsOpen = true" />
-          <div class="my-3 border-t border-default" />
-          <p class="mb-2 text-[11px] text-muted">More viewer tools</p>
-          <div class="grid grid-cols-2 gap-2">
-            <UButton label="Save car" color="neutral" variant="soft" size="sm" @click="savedCar = true; showViewerToolStatus('Car position saved locally.')" />
-            <UButton label="Navigate to car" color="neutral" variant="soft" size="sm" :disabled="!savedCar" @click="showViewerToolStatus('Dummy navigation to the saved car started locally.')" />
-            <UButton label="Select flight" color="neutral" variant="soft" size="sm" @click="showViewerToolStatus('Flight selection opened locally.')" />
-            <UButton :label="mapSearchFilter ? 'Clear filter' : 'Search filter'" color="neutral" variant="soft" size="sm" @click="mapSearchFilter = !mapSearchFilter; showViewerToolStatus(mapSearchFilter ? 'Local search filter applied.' : 'Local search filter cleared.')" />
-            <UButton :label="largeInterfaceText ? 'Font size −' : 'Font size + '" color="neutral" variant="soft" size="sm" @click="largeInterfaceText = !largeInterfaceText; showViewerToolStatus('Viewer font size preference changed locally.')" />
-            <UButton label="Set user location" color="neutral" variant="soft" size="sm" @click="showViewerToolStatus('User location updated locally.')" />
-          </div>
+          <UAlert class="mt-3" color="neutral" variant="subtle" title="Additional Viewer commands are planned" description="Plan 016 owns verified location-picker, search, camera and accessibility commands. No local success state is shown here." />
           <p v-if="viewerToolStatus" class="map-feedback" role="status">{{ viewerToolStatus }}</p>
         </div>
       </div>
@@ -244,7 +197,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
         <SitumViewer class="h-full" @status="handleViewerStatus" />
       </div>
       <div class="absolute bottom-6 right-6 z-10 flex flex-col overflow-hidden rounded-lg border border-default bg-default/95 shadow-sm backdrop-blur">
-        <UButton icon="i-lucide-locate-fixed" aria-label="Center map locally" color="neutral" variant="ghost" @click="centerMap" />
+          <UButton icon="i-lucide-locate-fixed" aria-label="Reset map view locally" color="neutral" variant="ghost" @click="centerMap" />
         <UButton label="+" aria-label="Zoom in locally" color="neutral" variant="ghost" :disabled="zoomLevel === 4" @click="adjustZoom(1)" />
         <UButton label="−" aria-label="Zoom out locally" color="neutral" variant="ghost" :disabled="zoomLevel === 0" @click="adjustZoom(-1)" />
       </div>
@@ -256,18 +209,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
         <p class="mt-3 text-xs text-muted">{{ selectedPoi.description }}</p>
         <div class="mt-4 flex flex-wrap gap-2"><UButton label="Directions" color="info" size="sm" @click="openDirections(selectedPoi.name)" /><UButton :label="isFavorite(selectedPoi.id) ? '★ Favorited' : '☆ Favorite'" color="neutral" variant="soft" size="sm" @click="toggleFavorite(selectedPoi.id)" /></div>
       </UCard>
-      <button v-if="locationPickerActive" type="button" class="map-location-marker" aria-label="Selected map location" @click="locationPickerActive = false; showViewerToolStatus('Location marker cleared.')" />
     </section>
-    <UModal v-model:open="viewerSettingsOpen" title="Viewer accessibility settings" :ui="{ content: 'w-full sm:max-w-[520px]' }">
-      <template #body>
-        <div class="space-y-3">
-          <UCheckbox v-model="accessibleNavigation" label="Accessible navigation" description="Prefer lifts and accessible floor changes in local previews." />
-          <UCheckbox v-model="largeInterfaceText" label="Large interface text" description="Increase viewer text size locally." />
-          <UCheckbox v-model="highContrastCues" label="High contrast cues" description="Increase local control distinction." />
-        </div>
-      </template>
-      <template #footer><UButton label="Done" class="ml-auto" @click="viewerSettingsOpen = false; showViewerToolStatus('Viewer preferences saved locally.')" /></template>
-    </UModal>
   </div>
 </template>
 
@@ -276,7 +218,6 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map' })
 .map-workspace > aside { width: 320px; }
 .map-workspace > section { min-height: calc(100vh - 6.5rem); }
 .map-feedback { margin-top: 0.75rem; border-radius: 0.625rem; background: var(--explore-foreground); color: #fff; padding: 0.625rem 0.75rem; font-size: 0.6875rem; line-height: 1.4; }
-.map-location-marker { position: absolute; left: 52%; top: 48%; z-index: 12; width: 2rem; height: 2rem; border: 2px solid #fff; border-radius: 999px; background: #ef4444; box-shadow: 0 7px 22px rgb(239 68 68 / 22%); }
 .map-workspace [role='tablist'] button { min-height: 2rem; font-size: 0.6875rem; }
 .map-workspace .map-poi-row { min-height: 3.125rem; }
 @media (max-width: 1100px) {

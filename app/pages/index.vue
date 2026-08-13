@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { loggedIn } = useUserSession()
 
-const continuePath = computed(() => loggedIn.value ? '/app' : '/register')
+const continuePath = computed(() => loggedIn.value ? '/app' : '/login')
 </script>
 
 <template>
@@ -42,8 +42,8 @@ const continuePath = computed(() => loggedIn.value ? '/app' : '/register')
 
     <section id="operations" class="landing-section landing-operations"><div class="landing-container landing-two-column"><div class="landing-section-head"><UBadge variant="soft" color="neutral">Operations</UBadge><h2>Map-first by design.</h2><p>The map carries the spatial task. Everything else supports it: POI discovery, route planning, realtime position overlays, geofence context and trajectory playback.</p><UButton class="mt-5" :to="continuePath">Open map prototype</UButton></div><UCard class="landing-mini-card"><div class="mini-map"><div class="mini-floor" /><i class="mini-pin a" /><i class="mini-pin b" /><i class="mini-pin c" /></div></UCard></div></section>
 
-    <section id="analytics" class="landing-section"><div class="landing-container"><div class="landing-section-head"><UBadge variant="soft" color="neutral">Analytics</UBadge><h2>Operational answers, not vanity charts.</h2><p>Reports are grouped around concrete questions: who visited, where people stayed, how long positioning was active, where activity concentrates, and how the map viewer is used.</p></div><div class="landing-stats"><ProductStatCard v-for="stat in [{ label: 'Visitors today', value: '128', note: '↑ 8.4% vs yesterday' }, { label: 'Active positions', value: '24', note: 'across 2 floors' }, { label: 'Avg. stay time', value: '18m', note: 'main workspace geofence' }]" :key="stat.label" :label="stat.label" :value="stat.value" :note="stat.note" /></div></div></section>
-    <section class="landing-container landing-cta"><div><h2>Ready to click through it?</h2><p>Use the public entry points to explore the workspace.</p></div><UButton to="/register" color="neutral" variant="solid">Launch interactive prototype <span aria-hidden="true">→</span></UButton></section>
+    <section id="analytics" class="landing-section"><div class="landing-container"><div class="landing-section-head"><UBadge variant="soft" color="neutral">Analytics</UBadge><h2>Operational answers, not vanity charts.</h2><p>Reports are planned around visitors, positioning, geofencing, heatmaps and map viewer usage. Real report sources will be connected in Plan 014.</p></div></div></section>
+    <section class="landing-container landing-cta"><div><h2>Ready to click through it?</h2><p>Use the configured account to explore the workspace.</p></div><UButton to="/login" color="neutral" variant="solid">Sign in to explore <span aria-hidden="true">→</span></UButton></section>
     <footer id="about" class="landing-footer"><div class="landing-container"><span>Situm Explore · Interactive reference prototype</span><span>Dummy data · No API calls</span></div></footer>
   </main>
 </template>

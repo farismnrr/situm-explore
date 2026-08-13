@@ -11,6 +11,15 @@ This file contains **currently active durable decisions**. Historical/superseded
 
 Status: active.
 
+## 2026-08-13 — Plan 010 evidence and credential freeze
+
+- Plan 010 verified `@situm/sdk-js@0.25.0` Viewer/domain declarations against official Situm documentation before changing capability UI.
+- Future Nitro Situm REST/domain reads use private runtime variable `NUXT_SITUM_API_KEY`; the historical `NUXT_PUBLIC_SITUM_API_KEY` remains only for the legacy current Viewer until a later safe migration.
+- `/api/situm/*` product routes require the existing Situm Explore session; `/api/situm/status` now enforces that boundary and reports configuration only, never Viewer readiness.
+- Reports beyond trajectory, Groups, Alarms, and unimplemented Viewer settings commands remain evidence-gated and are not presented as working data/actions.
+
+Status: active.
+
 ## 2026-08-12 — Full-stack web foundation
 
 - Build web first; native/mobile implementation is deferred.
