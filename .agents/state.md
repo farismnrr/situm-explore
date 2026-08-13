@@ -125,9 +125,13 @@ Each new plan adds its own live/runtime smoke requirements and must persist exac
 
 Phase 0 evidence and local ClickHouse discovery completed on 2026-08-13. Official current Situm OpenAPI and safe live probes verified the three core report paths, required date/building filters, optional grouping/time-zone behavior, JSON `data`/`meta`/`rows`/`statistics` shape, and CSV responses. The configured account returned HTTP 200 for all three core reports; the tested geofence window was empty. The existing local ClickHouse is healthy and authenticated, version `26.7.1.1315`, with isolated database `situm_explore_analytics`; unrelated `atja_analytics` tables were not changed. `@situm/sdk-js` is declared at `^0.25.0` but absent from the installed tree, so direct Nitro REST is the verified report path. No secrets or raw payloads were persisted.
 
+## Plan 017 Phase 1 result
+
+Phase 1 implementation completed on 2026-08-13. The server-only ClickHouse boundary uses the official `@clickhouse/client`, private `CLICKHOUSE_*` runtime inputs, authenticated `/api/health`, and isolated `situm_explore_analytics` tables for the three verified report families plus sync identities. Schema initialization is limited to the app-owned namespace; no unrelated ClickHouse objects were changed. Validation passed: `git diff --check`, lint, typecheck, and build. Phase 2 is next.
+
 ## Next action
 
-Execute Plan 017 Phase 1 using the verified report and ClickHouse contracts above, then continue Plans 017→020 sequentially using the explicit stacked mode above.
+Execute Plan 017 Phase 2 using the verified report and ClickHouse contracts above, then continue Plans 017→020 sequentially using the explicit stacked mode above.
 
 Start by switching to `roadmap/017-020-next-features`, creating `plan/017-situm-analytics-clickhouse` from its final HEAD, and executing Plan 017 phase-by-phase with the configured `worker` subagent.
 

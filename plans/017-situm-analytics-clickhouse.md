@@ -92,13 +92,20 @@ Raw data, user-position history, broad trajectory analytics, and every possible 
 
 ## Phase 1 — ClickHouse integration boundary
 
-- [ ] add the smallest server-only ClickHouse client module under the existing Nuxt/Nitro architecture;
-- [ ] add/document only the runtime variables actually required by the discovered local connection; never commit real values;
-- [ ] implement a health/readiness check that distinguishes ClickHouse availability from Situm availability without exposing connection details/secrets;
-- [ ] create only app-owned database/tables needed for the verified report fields;
-- [ ] choose a simple ClickHouse engine/order key appropriate to the verified data and document why;
-- [ ] make repeated ingestion of the same report/window idempotent so explicit re-sync does not silently duplicate analytics rows;
-- [ ] do not add a generic repository/ORM abstraction or migration framework unless the concrete implementation truly requires it.
+- [x] add the smallest server-only ClickHouse client module under the existing Nuxt/Nitro architecture;
+- [x] add/document only the runtime variables actually required by the discovered local connection; never commit real values;
+- [x] implement a health/readiness check that distinguishes ClickHouse availability from Situm availability without exposing connection details/secrets;
+- [x] create only app-owned database/tables needed for the verified report fields;
+- [x] choose a simple ClickHouse engine/order key appropriate to the verified data and document why;
+- [x] make repeated ingestion of the same report/window idempotent so explicit re-sync does not silently duplicate analytics rows;
+- [x] do not add a generic repository/ORM abstraction or migration framework unless the concrete implementation truly requires it.
+
+### Phase 1 implementation record (2026-08-13)
+
+- Added the official `@clickhouse/client` HTTP client behind Nitro-only integration code and private `CLICKHOUSE_*` runtime config.
+- Added authenticated `/api/health`, which reports ClickHouse availability separately from Situm configuration and initializes only the isolated app-owned schema; it returns no connection details.
+- Added isolated `situm_explore_analytics` tables for the three verified report families and sync-run identity. `ReplacingMergeTree` plus report-window/row-dimension keys provide deterministic replacement foundations for explicit re-sync.
+- Validation passed: `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`.
 
 ## Phase 2 — Situm report ingestion
 
