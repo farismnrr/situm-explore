@@ -158,3 +158,7 @@ Phase 0 exact-contract and live evidence completed on 2026-08-13. Official OpenA
 ## Plan 018 Phase 1 result
 
 Phase 1 server reads completed on 2026-08-13. Protected Groups and Alarms list/detail endpoints now use the verified direct Nitro REST contracts, strict DTO normalization, supported filters, truthful empty/error/404 behavior, and no mutations or speculative relationships. Phase 2 is next.
+
+## Plan 018 Phase 2 result
+
+Phase 2 Groups surface completed on 2026-08-13. `/app/groups` now provides real protected Groups data, verified parent filtering, local search, responsive loading/error/empty/success states, and organization navigation. Memberships and speculative counts/roles remain absent. Phase 3 is next.

@@ -79,12 +79,17 @@ Target surfaces:
 
 ## Phase 2 — Groups product surface
 
-- [ ] add `/app/groups` as a compact read-only Groups page using current page/header/table/card conventions;
-- [ ] show only verified safe fields (for example name/identifier and verified counts/relationships when actually available);
-- [ ] add search/filtering locally or server-side only when supported by the verified contract/data volume;
-- [ ] integrate group membership/filtering into `/app/users` only when the exact relationship is available;
-- [ ] do not invent counts, descriptions, roles, memberships, or status values;
-- [ ] add navigation entry in the most appropriate existing organization/admin section without creating a new navigation hierarchy.
+- [x] add `/app/groups` as a compact read-only Groups page using current page/header/table/card conventions;
+- [x] show only verified safe fields (for example name/identifier and verified counts/relationships when actually available);
+- [x] add search/filtering locally or server-side only when supported by the verified contract/data volume;
+- [x] integrate group membership/filtering into `/app/users` only when the exact relationship is available;
+- [x] do not invent counts, descriptions, roles, memberships, or status values;
+- [x] add navigation entry in the most appropriate existing organization/admin section without creating a new navigation hierarchy.
+
+### Phase 2 implementation record (2026-08-13)
+
+- Added `/app/groups` with protected real Groups reads, loading/error/empty/success states, local identifier/name search, verified parent filter, responsive table/cards, and current organization navigation.
+- No membership, counts, roles, descriptions, or mutation controls are shown because those contracts remain unresolved.
 
 ## Phase 3 — Alarms product surface
 
