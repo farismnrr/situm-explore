@@ -2,80 +2,43 @@
 
 _Last reviewed: 2026-08-13_
 
-## Completed lineage
+## Integrated baseline
 
-- Plan 017 — complete.
-- Plan 018 — complete.
-- Plan 019 — complete; trajectory remains unresolved/omitted.
-- Plan 019A — complete; manual production-preview acceptance passed.
+Plans 017–020 are complete and integrated into `main` by PR #12. The new roadmap starts from current `main`.
 
-Final pushed Plan 019A HEAD:
+## Active roadmap
 
-`e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
+Planning branch:
 
-Manual Plan 019A acceptance proved real map/cartography load, forward and reverse static-route rendering, cancel cleanup, navigate-away/back cleanup, and the mobile desktop-Viewer boundary.
-
-Non-blocking observations retained for Plan 020 review: some Viewer-visible POIs were absent from the product POI list; constrained `ONLY_NOT_ACCESSIBLE_FLOOR_CHANGES` requests could fail to estimate; Situm/Mapbox emitted internal image/glyph warnings. Treat these as evidence, not automatic app bugs.
-
-## Completed plan — 020
-
-- plan: `plans/020-situm-static-directions.md`
-- source branch: `plan/020-situm-static-directions-v2` (deleted after integration)
-- base: exact final Plan 019A HEAD `e0c1cbfdfcaadc1e5abec5e89ece869315f6ac71`
-- status: **complete; integrated into main**
-
-`plan/020-situm-static-directions-v2` was created directly from the exact final Plan 019A HEAD and integrated into `main` by PR #12.
-
-The earlier `plan/020-situm-static-directions` branch at stale pre-019A lineage (`c902e53`) was superseded and deleted after integration. Do not revive, merge, cherry-pick, reset, or force-push it. Historical evidence from it remains in repository plans/sessions where still accurate.
-
-Completed chain:
+`roadmap/021-025-backend-refactor`
 
 ```text
-roadmap/017-020-next-features
--> plan/017-situm-analytics-clickhouse            [complete]
--> plan/018-situm-groups-alarms-read              [complete]
--> plan/019-situm-realtime-viewer-trajectory      [complete]
--> plan/019a-situm-static-directions-foundation   [complete]
--> plan/020-situm-static-directions-v2            [complete]
+Plan 021 — Identity & Auth Foundation                       [ready / next]
+Plan 022 — Private Workspaces & Situm Configuration         [queued]
+Plan 023 — Observability, Correlation & Safe Error Boundary [queued]
+Plan 024 — Workspace-scoped Situm Backend Migration         [queued]
+Plan 025 — Workspace UX & Full Regression                   [queued]
 ```
 
-## Integration state
+No stacked implementation authorization exists for Plans 021–025. Use the normal one-plan/one-branch transition workflow unless the user explicitly changes it.
 
-- PR #12 is merged into `main` at `5163af2a71c92441b01bccb81faac44933a91d1c`;
-- `main` is the canonical execution baseline;
-- there is no active Plan 017–020 execution branch;
-- runtime acceptance uses production build + preview, not Nuxt dev mode;
-- wait for actual Situm Viewer/cartography readiness before Viewer commands.
+## Locked direction
 
-## Static-directions evidence boundary
+- real application users replace the current single-user runtime model;
+- one user may own many private workspaces;
+- workspaces are single-owner and have no member/invite model in this roadmap;
+- different users may independently point workspaces at the same external Situm account;
+- Google OAuth is prepared but its real runtime acceptance is deferred to the user;
+- Situm configuration becomes workspace-managed instead of global runtime configuration;
+- product access modes are `VIEW_ONLY` and `VIEW_WRITE`, with upstream permission remaining authoritative;
+- existing observability infrastructure must be discovered and reused;
+- browser-to-server requests gain correlation/trace context;
+- internal failure details remain server-side while client errors stay sanitized.
 
-Already proven by Plan 019A:
+## Transition note
 
-- numeric POI-id From/To selection;
-- typed `startDirections` and `cancelDirections`;
-- Viewer-owned route rendering;
-- forward/reverse route rendering;
-- cancel cleanup;
-- navigate-away/back cleanup;
-- mobile non-mount boundary.
-
-Keep absent unless exact evidence proves otherwise:
-
-- route completion/result payloads;
-- distance/duration/steps/instructions/geometry/ETA;
-- reliable route lifecycle events;
-- tag semantics;
-- live navigation/current-position/rerouting behavior.
-
-Never expose raw Viewer access or a generic invoke surface.
-
-## Validation baseline
-
-- `git diff --check`;
-- `npm run lint`;
-- `npm run typecheck`;
-- `npm run build`.
+Current `main` still reflects the pre-refactor runtime model. Plans 021–024 own the migration. Do not remove the old path before its replacement is working and accepted.
 
 ## Next action
 
-Plans 017–020 are complete and integrated into `main` by PR #12. Production preview smoke passed for the updated Paths copy and Map Route request/replacement/cancellation controls; accepted Plan 019A manual evidence covers visual forward/reverse rendering, cleanup, and mobile boundary. The Viewer-visible POI mismatch is not proven app-owned, constrained route failures remain runtime limitations, and unresolved route details/events/tags remain absent. Do not replay the resolved foundation or revive deleted historical branches.
+Execute Plan 021 only from `plan/021-auth-identity-foundation`, based on this roadmap state. Plans 022–025 remain queued until the normal transition gate is satisfied or the user explicitly authorizes another execution mode.
