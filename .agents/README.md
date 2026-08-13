@@ -2,101 +2,47 @@
 
 `.agents/` is the persistent context layer for Situm Explore.
 
-Root `AGENTS.md` is intentionally a router. Architecture/design truth lives in root contracts; `.agents/` stores current state, durable decisions, operating protocols, verified knowledge, lessons, and concise history.
+Root `AGENTS.md` is the router. `.agents/state.md` owns current focus/blockers; durable decisions own current project decisions; sessions/plans are chronological evidence and may become stale.
 
-## Directory map
+## Mandatory implementation reads
 
-| Path | Purpose |
-| --- | --- |
-| `identity.md` | Mission, behavior, and stable agent principles. |
-| `state.md` | Current focus, blockers, canonical/working branch, and next action. |
-| `protocols/chat-lifecycle.md` | Conversation workflow. |
-| `protocols/persistence.md` | What must be persisted after a conversation. |
-| `protocols/git-workflow.md` | Plan branch, validation, commit/push, stacked-branch exception, and PR gates. |
-| `memory/` | Durable user/project decisions and preferences. |
-| `knowledge/` | Reusable verified domain knowledge. |
-| `reflections/` | Reusable lessons about process/agent behavior. |
-| `sessions/` | Chronological evidence; may become stale. |
-
-## Mandatory read order for implementation
-
-1. `AGENTS.md`.
-2. `.agents/identity.md`.
-3. `.agents/state.md`.
-4. `.agents/protocols/chat-lifecycle.md`.
-5. `.agents/protocols/git-workflow.md`.
-6. `.agents/memory/decisions.md` when roadmap/product boundaries matter.
-7. `ARCHITECTURE.md`.
-8. `plans/README.md`.
-9. `design/data-source-matrix.md` when Situm/product capability scope matters.
-10. active/follow-up plan.
-11. `DESIGN.md` and `design/IMPLEMENTATION.md` for UI/presentation changes.
-
-Historical plans/session notes are evidence, not current authority.
+1. `AGENTS.md`;
+2. `.agents/identity.md`;
+3. `.agents/state.md`;
+4. relevant protocols;
+5. `.agents/memory/decisions.md`;
+6. while Plans 021–025 are active: `.agents/memory/roadmap-021-025.md`, `plans/021-025-prerequisites.md`, and `design/ROADMAP-021-025-OVERRIDES.md`;
+7. `ARCHITECTURE.md`;
+8. `plans/README.md`;
+9. `design/data-source-matrix.md` when Situm scope matters;
+10. active plan;
+11. presentation contracts for UI work.
 
 ## Truth hierarchy
 
 When guidance conflicts, prefer:
 
 1. user's latest explicit instruction;
-2. current `.agents/state.md` and durable decisions;
-3. current root architecture/design contracts;
-4. active plan + current capability/data matrix;
-5. current source/runtime behavior;
-6. historical plans/session notes;
-7. agent inference.
+2. current `.agents/state.md` and active durable roadmap decisions/addenda;
+3. roadmap transition override while the roadmap is active;
+4. current root architecture/design contracts where not explicitly superseded;
+5. active plan + capability matrix;
+6. current source/runtime behavior;
+7. historical plans/session notes;
+8. agent inference.
 
-Never silently promote inference above current explicit instructions.
-
-## Evidence rule
-
-For external Situm behavior, memory is not implementation evidence.
-
-Before implementation, verify the exact current contract using official Situm documentation/source and the installed SDK version where relevant.
-
-Do not invent endpoint paths, SDK methods, payload fields, permissions, browser/server ownership, native/web ownership, or fake fallback values.
-
-If a required capability is not verified, keep it `UNRESOLVED`/absent rather than guessing.
-
-## Persistence model
-
-Session notes answer **what happened?** and may become stale.
-
-Durable files answer **what is still true?** They must be revised when newer decisions supersede older wording.
-
-Before a completed implementation-phase commit:
-
-1. update active plan/checklist;
-2. update `.agents/state.md`;
-3. update durable decisions/knowledge only when changed;
-4. append/update current session evidence;
-5. run required validation;
-6. commit and push the plan branch.
-
-Never store credentials, API keys, JWTs, passwords, ClickHouse credentials, or sensitive payloads.
+Historical files do not regain authority merely because they contain more detail.
 
 ## Current scope
 
-Plans 017, 018, 019, 019A, and 020 in the completed stacked feature lineage are integrated into `main`. The former feature branches are historical and have been removed after the successful PR #12 merge.
+Plans 017–020 are complete/integrated into `main` by PR #12.
 
-Current chain:
+Plans 021–025 are the active backend-refactor roadmap on planning branch `roadmap/021-025-backend-refactor`. Normal workflow requires planning integration before Plan 021 starts; no stacked implementation authorization currently exists.
 
-```text
-Plan 017 — Analytics & Reports with existing local ClickHouse   [complete/integrated]
--> Plan 018 — Groups & Alarms read-only                        [complete/integrated]
--> Plan 019 — Realtime Viewer overlay                          [complete/integrated]
--> Plan 019A — Static Directions Foundation & Runtime Proof    [complete/integrated]
--> Plan 020 — Static Directions Product Completion             [complete/integrated]
-```
+The roadmap replaces the pre-refactor env-defined user/global-Situm runtime with DB-backed users, private workspaces, encrypted workspace credentials, observability/correlation, workspace-scoped Situm/analytics behavior, and final permission-aware UX.
 
-Canonical branch:
+## Evidence / persistence rules
 
-`main`
+For external Situm behavior, verify exact official/current contracts and installed SDK compatibility. Missing material evidence stays unresolved.
 
-PR #12 integrated the completed cumulative branch `plan/020-situm-static-directions-v2` into `main` at merge commit `5163af2a71c92441b01bccb81faac44933a91d1c`.
-
-The pre-019A `plan/020-situm-static-directions` branch and all intermediate plan/roadmap branches are historical/superseded and must not be revived or replayed.
-
-There is no active Plan 017–020 execution branch. The canonical execution baseline is `main`.
-
-Read `.agents/state.md` for the exact current truth, evidence boundaries, branch chain, and next action.
+Before each implementation-phase commit, update plan/state/session evidence, required durable decisions, run validation, review diff, commit, and push. Never persist credentials, API keys, JWTs, passwords, session cookies, encryption-key values, or sensitive payloads.

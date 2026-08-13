@@ -2,8 +2,14 @@
 
 ## Active
 
-- Ship a time-boxed Situm Explore web POC on the existing Nuxt full-stack foundation. `(source: user-stated)`
-- Execute Plans 004–009 sequentially to produce the complete approved UI/UX from the single canonical HTML reference, while keeping missing product domains dummy/local. `(source: user-stated)`
-- Preserve and reuse the existing real authentication, PostgreSQL `/api/me`, and Situm Viewer lifecycle while rebuilding the product UI. `(source: user-stated)`
-- After the UI is complete and manually accepted, execute later dedicated Situm/backend integration plans sequentially to replace only the dummy data/capabilities still needed for the POC. `(source: user-stated)`
-- Keep implementation architecture simple, Nuxt-native, maintainable, and fast to iterate. `(source: user-stated)`
+- Complete the Plans 021–025 backend refactor without regressing the accepted Situm Explore web product. `(source: user-stated)`
+- Replace the env-defined single-user login with working database-backed email/password registration/login while preparing Google OAuth for later manual user acceptance. `(source: user-stated)`
+- Let each application user own many private single-owner workspaces; no invite/member model in this roadmap. `(source: user-stated)`
+- Move Situm API-key configuration out of global env values into encrypted server-side workspace configuration. `(source: user-stated)`
+- Support `VIEW_ONLY` and `VIEW_WRITE` product modes with truthful permission handling and safe forbidden UX. `(source: user-stated)`
+- Reuse the user's existing observability stack after local discovery, add end-to-end correlation/tracing, and keep critical/internal diagnostics out of client responses. `(source: user-stated)`
+- Keep architecture Nuxt-native, secure, KISS-oriented, and evidence-backed for Situm behavior. `(source: user-stated)`
+
+## Historical
+
+Earlier UI-first and Plans 017–020 integration goals are complete. Preserve their evidence but do not treat them as current execution objectives.
