@@ -16,27 +16,27 @@ Plan 021 — Identity & Auth Foundation
 -> Plan 025 — Workspace UX & Full Regression
 ```
 
-Read `AGENTS.md`, `.agents/state.md`, `plans/021-025-backend-refactor-roadmap.md`, and `plans/021-025-prerequisites.md` before executing roadmap work.
+Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, `plans/021-025-backend-refactor-roadmap.md`, and `plans/021-025-prerequisites.md` before executing roadmap work.
 
 Under the normal Git protocol, the planning branch must be reviewed/integrated into `main` before Plan 021 starts. No stacked implementation authorization currently exists.
 
 ## Current runtime vs target
 
-The current integrated runtime still contains the previous POC's env-defined app login and global Situm account/Viewer context. Those are migration inputs, not the final target.
+The current integrated runtime still contains the previous PoC's env-defined app login and global Situm account/Viewer/building context. Those are migration inputs, not the final target.
 
 Plans 021–025 move the product to:
 
 - database-backed users with real email/password registration and login;
 - Google OAuth plumbing prepared for later manual acceptance;
 - many private single-owner workspaces per user;
-- encrypted server-side Situm configuration per workspace;
+- protected server-side Situm configuration per workspace;
 - `VIEW_ONLY` / `VIEW_WRITE` product modes with upstream permission authoritative;
 - workspace-scoped Situm, Viewer/building, and ClickHouse analytics context;
 - reuse of the user's existing observability stack;
 - end-to-end request correlation/tracing;
 - sanitized client errors while detailed diagnostics remain server-side.
 
-Legacy architecture/design statements that conflict with the approved transition are interpreted through `design/ROADMAP-021-025-OVERRIDES.md`. Plan 025 owns final post-refactor documentation reconciliation.
+Current architecture/design documents are already reconciled for this roadmap. Historical plans/sessions remain evidence only and should not be read as current execution authority.
 
 ## Setup
 
