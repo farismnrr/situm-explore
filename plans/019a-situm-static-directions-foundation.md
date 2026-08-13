@@ -1,0 +1,198 @@
+# Plan 019A — Situm Static Directions Foundation & Runtime Proof
+
+Status: **ready**
+Branch: `plan/019a-situm-static-directions-foundation`
+Base: final pushed HEAD of Plan 019 (`513f65e820635e05a22a54270f3bf21f5925e6c8`)
+Depends on: Plan 019 complete
+Successor: Plan 020 static-directions product completion
+
+## Why this plan exists
+
+The first Plan 020 Phase 0 attempt exposed a sequencing problem: the runtime proof required a real `startDirections(...)` call, but the application had no typed directions command surface until the later implementation phase. The user explicitly chose to insert Plan 019A so the smallest evidence-backed static-directions capability can be wired first and tested in the same plan.
+
+Plan 019A resolves that chicken-and-egg problem without weakening the evidence gate.
+
+It implements only contracts already verified from the installed Situm SDK/source and real cartography data, then performs hydrated Playwright smoke against the real configured Viewer/account before Plan 020 expands or polishes the feature.
+
+## Goal
+
+Provide the minimum production-safe static-directions foundation needed to prove real routes between known Situm POIs in the existing single Viewer instance.
+
+```text
+real Situm POIs (numeric ids)
+-> compact route selection on /app/map
+-> typed SitumViewer start/cancel directions commands
+-> Viewer-owned route calculation/rendering
+-> hydrated Playwright runtime smoke
+```
+
+Plan 019A is not live navigation and does not own synthetic route details.
+
+## Required reading
+
+- `AGENTS.md`
+- `.agents/README.md`
+- `.agents/state.md`
+- `.agents/memory/decisions.md`
+- `.agents/protocols/git-workflow.md`
+- `ARCHITECTURE.md`
+- `plans/README.md`
+- `design/data-source-matrix.md`
+- `plans/019-situm-realtime-viewer-trajectory.md`
+- current `app/components/situm/SitumViewer.vue`
+- current `app/pages/app/map.vue`
+- current shared/cartography contracts
+- installed `@situm/sdk-js@0.25.0` declarations/source/runtime
+- current official Situm Viewer directions documentation/source
+- historical evidence from the abandoned first `plan/020-situm-static-directions` Phase 0 attempt, if useful
+- this plan
+
+## Frozen evidence entering Plan 019A
+
+Already verified before implementation:
+
+- installed `@situm/sdk-js` is `0.25.0`;
+- `startDirections(...)` exists and returns `Promise<void>`;
+- `cancelDirections()` exists and returns `Promise<void>`;
+- `directionsSetOptions(...)` exists, but tag options are not required for this plan;
+- exact route-type enum values are `CHOOSE_SHORTEST`, `ONLY_ACCESSIBLE`, and `ONLY_NOT_ACCESSIBLE_FLOOR_CHANGES`;
+- current configured building exposes at least two real POIs with numeric Situm IDs;
+- those numeric POI IDs are the only currently evidenced product route endpoint identifiers;
+- installed SDK exposes no reliable directions-complete/result payload for product distance/duration/steps/geometry;
+- the app already has a Route tab scaffold, but it currently stores POI names and does not invoke Viewer directions;
+- `SitumViewer.vue` currently exposes no directions commands;
+- Playwright/Chrome is available locally and hydrated Viewer smoke was already used successfully for Plan 019.
+
+If any of the above is contradicted by current checked-out source/runtime, update the plan to exact truth before proceeding.
+
+## Fixed boundaries
+
+- Static directions only between known real Situm POIs in the configured/current building context.
+- Endpoint values passed to Viewer must be numeric POI IDs, not display names.
+- Viewer owns route calculation and rendering.
+- No `startNavigation`, current browser location, handset positioning, turn-by-turn navigation, rerouting, follow-user behavior, or save-car flow.
+- No raw Viewer instance exposure and no generic `invoke` escape hatch.
+- No fake route result, ETA, distance, duration, steps, instructions, or polyline.
+- Do not introduce route persistence/history.
+- Keep controls outside the Viewer canvas and preserve the current collision-free map layout.
+- Use the real local `.env` for runtime smoke without printing or persisting secrets.
+- Any implementation/fix phase is delegated specifically to the configured `worker` subagent under the existing stacked-run rule.
+
+## Phase 0 — Reconfirm minimal contract and current code gap
+
+- [ ] confirm current branch is based on exact final Plan 019 HEAD;
+- [ ] re-open installed SDK declarations/source for `startDirections`, `cancelDirections`, and route type input;
+- [ ] verify the current cartography DTO still exposes numeric POI IDs required by the route builder;
+- [ ] verify current `/app/map` Route tab remains scaffold-only and `SitumViewer` still lacks directions commands;
+- [ ] record any material contract change as `UNRESOLVED` before implementation;
+- [ ] do not require a full route runtime smoke before Phase 1—the purpose of Phase 1 is to create the smallest verified surface that makes that smoke possible.
+
+## Phase 1 — Minimal typed Viewer directions surface
+
+Delegate implementation to `worker`.
+
+- [ ] add the smallest typed `SitumViewer` command for static directions using verified numeric POI IDs;
+- [ ] validate positive integer From/To IDs before invoking Viewer;
+- [ ] add typed `cancelDirections()` command;
+- [ ] expose only a verified route-type option if needed by the current route UI;
+- [ ] preserve existing Viewer readiness guard;
+- [ ] cancel active directions on component unmount when safe/appropriate;
+- [ ] do not expose raw Viewer access, generic invoke, `startNavigation`, user-location, route-result payloads, or unsupported events;
+- [ ] run `git diff --check`, lint, typecheck, and build;
+- [ ] review, persist, commit, and push Phase 1.
+
+## Phase 2 — Connect the existing Route tab to real POI IDs
+
+Delegate implementation to `worker`.
+
+- [ ] change route selection state from POI display-name strings to numeric POI IDs while keeping names as UI labels;
+- [ ] populate From/To from real current Situm cartography only;
+- [ ] keep selections scoped to truthful current-building context;
+- [ ] prevent empty and same-endpoint requests before Viewer invocation;
+- [ ] wire Start Route to the typed Viewer command only when Viewer is ready;
+- [ ] wire Clear/Cancel to `cancelDirections()`;
+- [ ] wire the existing POI detail `Directions` action to set the destination POI ID, not only its name;
+- [ ] if accessibility selection is retained, map it only to a verified route-type value and label it conservatively;
+- [ ] remove stale copy claiming static directions are merely planned;
+- [ ] show only truthful request/cancel/error feedback available from the command Promise/readiness behavior;
+- [ ] do not invent calculated/active/completed semantics that the installed SDK does not expose;
+- [ ] preserve responsive/accessibility behavior and keep controls outside the canvas;
+- [ ] run `git diff --check`, lint, typecheck, and build;
+- [ ] review, persist, commit, and push Phase 2.
+
+## Phase 3 — Hydrated Playwright static-route proof
+
+This runtime proof is required in Plan 019A, not deferred to Plan 020.
+
+Use the existing local Playwright/Chrome tooling and the normal real application login flow.
+
+- [ ] read the local `.env` without printing/persisting secrets;
+- [ ] authenticate through the real `/api/auth/login` flow;
+- [ ] open `/app/map` at desktop width and wait for the real Viewer ready state;
+- [ ] verify at least two real route-selectable POIs are present;
+- [ ] start a real route from POI A to POI B through the production Route UI;
+- [ ] verify the Viewer visibly accepts/renders the route without relying on synthetic app geometry/details;
+- [ ] replace the route with another valid From/To arrangement where the available POI set permits it;
+- [ ] cancel/clear the route and verify Viewer cleanup;
+- [ ] verify same-endpoint/empty selections are blocked by app validation before Viewer invocation;
+- [ ] exercise at least one safe invalid/no-route/error path if the configured account/cartography permits it without guessing or destructive changes;
+- [ ] navigate away and back, then verify no stale route state/duplicate Viewer instance is left;
+- [ ] verify mobile-width boundary still does not mount the desktop Viewer route feature;
+- [ ] verify no private Nitro credential or secret-bearing data is browser-visible/persisted;
+- [ ] if runtime behavior contradicts the assumed command contract, stop and report the exact blocker instead of papering over it.
+
+## Phase 4 — Runtime-driven correction only
+
+This phase exists only if Phase 3 finds a real defect or contract mismatch.
+
+- [ ] delegate any required code correction to the same `worker` when practical;
+- [ ] keep fixes narrowly scoped to the verified static-directions foundation;
+- [ ] do not add synthetic route summaries/events to make tests easier;
+- [ ] rerun the exact failing Playwright scenario after each correction;
+- [ ] rerun static validation after code changes;
+- [ ] persist exact evidence and commit/push the corrected phase.
+
+If Phase 3 passes without code changes, mark this phase not-needed/complete with a short evidence note.
+
+## Phase 5 — Closeout and handoff to Plan 020
+
+- [ ] `git diff --check`;
+- [ ] `npm run lint`;
+- [ ] `npm run typecheck`;
+- [ ] `npm run build`;
+- [ ] hydrated real-route start proof passed;
+- [ ] replacement behavior passed where the available two-POI dataset permits it;
+- [ ] cancel/clear cleanup passed;
+- [ ] input validation passed;
+- [ ] navigation away/back cleanup passed;
+- [ ] mobile non-mount boundary remains intact;
+- [ ] no private Situm/server/session secret appears in browser responses/bundles/logs/docs;
+- [ ] update this plan, `.agents/state.md`, relevant knowledge/session evidence, and durable decisions only where truth changed;
+- [ ] commit and push completed Plan 019A;
+- [ ] do not create a PR or merge.
+
+On successful Plan 019A closeout, Plan 020 must start from the exact final pushed Plan 019A HEAD. The earlier `plan/020-situm-static-directions` branch created before this inserted plan is superseded as an execution branch and must not be used as the new base. Preserve its Phase 0 evidence only as historical evidence where still accurate.
+
+## Plan 020 after 019A
+
+Plan 020 becomes product completion/polish, not the first runtime proof. It may own only evidence-backed follow-up such as:
+
+- refined route feedback consistent with actual runtime behavior;
+- route replacement/cancel UX polish;
+- Paths-page alignment/discoverability;
+- any additional route options whose exact runtime semantics become verified;
+- final broader regression smoke.
+
+Do not automatically promote unresolved directions events/details/tags into Plan 020.
+
+## Non-goals
+
+- live navigation;
+- browser indoor positioning;
+- movement-aware rerouting;
+- current-location routing;
+- trajectory/follow behavior;
+- route persistence/history;
+- custom route/pathfinding engine;
+- synthetic route details;
+- direct server-side route calculation unless a separately verified future requirement explicitly chooses that architecture.
