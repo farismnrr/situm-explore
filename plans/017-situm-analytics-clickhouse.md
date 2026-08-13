@@ -71,15 +71,24 @@ Raw data, user-position history, broad trajectory analytics, and every possible 
 
 ## Phase 0 — Evidence + local ClickHouse discovery
 
-- [ ] inspect the latest official Situm OpenAPI and verify the exact endpoint, auth, query parameters, date/time-zone semantics, response/meta/statistics shape, CSV behavior, and relevant empty/error behavior for each core report;
-- [ ] inspect the installed `@situm/sdk-js` version/source only where useful; lack of a wrapper does not block verified direct Nitro REST;
-- [ ] run safe live probes against the configured Situm account to capture only the fields needed by the product; do not persist sensitive/raw payloads in docs;
-- [ ] detect and connect to the user's existing local ClickHouse instance without provisioning a new server;
-- [ ] record non-secret ClickHouse version/connectivity facts and determine the smallest server-only runtime config needed by the app;
-- [ ] inspect existing ClickHouse databases/tables before creating anything and choose an isolated app-owned namespace;
-- [ ] verify the official current Node.js client/API before adding a dependency;
-- [ ] record exact consumed report fields and ClickHouse column types before schema implementation;
-- [ ] if a core report contract or ClickHouse connectivity is genuinely unavailable, stop and report the exact blocker rather than guessing.
+- [x] inspect the latest official Situm OpenAPI and verify the exact endpoint, auth, query parameters, date/time-zone semantics, response/meta/statistics shape, CSV behavior, and relevant empty/error behavior for each core report;
+- [x] inspect the installed `@situm/sdk-js` version/source only where useful; lack of a wrapper does not block verified direct Nitro REST;
+- [x] run safe live probes against the configured Situm account to capture only the fields needed by the product; do not persist sensitive/raw payloads in docs;
+- [x] detect and connect to the user's existing local ClickHouse instance without provisioning a new server;
+- [x] record non-secret ClickHouse version/connectivity facts and determine the smallest server-only runtime config needed by the app;
+- [x] inspect existing ClickHouse databases/tables before creating anything and choose an isolated app-owned namespace;
+- [x] verify the official current Node.js client/API before adding a dependency;
+- [x] record exact consumed report fields and ClickHouse column types before schema implementation;
+- [x] if a core report contract or ClickHouse connectivity is genuinely unavailable, stop and report the exact blocker rather than guessing.
+
+### Phase 0 evidence record (2026-08-13)
+
+- Official Situm OpenAPI: `GET /api/v1/reports/visitors.{format}`, `positioning_time.{format}`, and `geofencing_stay_time.{format}`; API key auth uses `X-API-KEY`, and read-only permission covers GET endpoints. Core filters verified: `building_id` (visitors/positioning), `building_ids` (geofencing), required `from_date`/`to_date`, optional grouping and `time_zone`; CSV is selected with `.csv`. JSON responses expose `data`, `meta`, `rows`, and `statistics`; report metadata describes returned fields and statistics expose elapsed/rows-read/bytes-read. Non-UTC timezone output is local time without an offset.
+- Live account probes for a configured building and bounded UTC window returned HTTP 200 for JSON and CSV on all three core reports. Observed JSON fields: visitors `date`, `visitors`; positioning time `timestamp`, `total`, `avg`, `std`; geofence stay `timestamp`, `device_id`, `user_id`, `building_id`, `floor_id`, `matched_fence_id`, `seconds_in_fence`, `stay_time`, `sessions_count`. The tested geofence window returned zero rows (truthful empty result). No raw payloads or credentials were persisted.
+- `@situm/sdk-js` is declared at `^0.25.0` but is not installed in the current local dependency tree; no Reports wrapper was relied on. Direct authenticated Nitro REST remains the verified access path.
+- Existing local ClickHouse is reachable through the configured private HTTP endpoint; `/ping` succeeded, authenticated SQL succeeded, and version is `26.7.1.1315`. Existing databases include `atja_analytics` and the isolated `situm_explore_analytics`; unrelated ATJA tables were inspected only and not modified. Minimal server-only runtime inputs are URL, user, password, and database.
+- Official current ClickHouse Node.js client/API was reviewed; Phase 1 may add `@clickhouse/client` and use its HTTP client/query/insert API. No dependency or schema was added in Phase 0.
+- Provisional schema mapping for Phase 1: visitors (`date` Date/DateTime-compatible, `visitors` UInt64); positioning (`timestamp` Date/DateTime-compatible, `total`/`avg`/`std` Float64); geofence stay (`timestamp` DateTime-compatible, identifiers String/UUID-compatible, building/floor UInt64, `seconds_in_fence` Float64, `stay_time` String, `sessions_count` UInt64). Exact ClickHouse nullability/order key remains a Phase 1 implementation decision based on ingestion normalization.
 
 ## Phase 1 — ClickHouse integration boundary
 
