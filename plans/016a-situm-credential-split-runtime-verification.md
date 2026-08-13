@@ -61,13 +61,13 @@ See `.agents/sessions/016a-phase0-config-inventory.md` for full findings.
 
 ## Phase 1 — Runtime credential split
 
-- [ ] add private runtime config for `NUXT_SITUM_READ_API_KEY`;
-- [ ] add private runtime config for `NUXT_SITUM_WRITE_API_KEY`;
-- [ ] keep `NUXT_PUBLIC_SITUM_API_KEY` Viewer-only;
-- [ ] migrate all current Situm Nitro read clients/routes to the read key;
-- [ ] keep write-key plumbing minimal and unused unless an approved mutation genuinely requires it;
-- [ ] remove `NUXT_SITUM_API_KEY` compatibility plumbing after all reads migrate;
-- [ ] update `/api/situm/status` semantics so Viewer/read/write configuration is reported separately without exposing values.
+- [x] add private runtime config for `NUXT_SITUM_READ_API_KEY`;
+- [x] add private runtime config for `NUXT_SITUM_WRITE_API_KEY`;
+- [x] keep `NUXT_PUBLIC_SITUM_API_KEY` Viewer-only;
+- [x] migrate all current Situm Nitro read clients/routes to the read key;
+- [x] keep write-key plumbing minimal and unused unless an approved mutation genuinely requires it;
+- [x] remove `NUXT_SITUM_API_KEY` compatibility plumbing after all reads migrate;
+- [x] update `/api/situm/status` semantics so Viewer/read/write configuration is reported separately without exposing values.
 
 ## Phase 2 — Documentation and durable context
 
