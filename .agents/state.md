@@ -4,11 +4,11 @@ _Last reviewed: 2026-08-13_
 
 ## Current focus
 
-The Situm backend/web integration roadmap Plans 010–016 plus the small Plan 016A hardening follow-up are complete on the cumulative branch:
+The UI roadmap through Plan 009B and the Situm backend/web roadmap Plans 010–016A are complete and integrated into `main`.
 
-`plan/016a-situm-credential-split-runtime-verification`
+PR #8 merged the cumulative Plans 010–016A lineage. `main` is the canonical branch. There is no active implementation plan or required plan branch.
 
-Plan 016A continued the cumulative Plan 016 lineage and absorbed the credential/runtime preparation that was briefly drafted under a superseded Plan 017 name. Do not restart Plans 010–016, recreate their branches from `main`, or execute the old Plan 017 credential-split draft as a separate roadmap step.
+Do not restart Plans 010–016A, recreate their historical branches, or execute the superseded Plan 017 credential-split draft as a separate roadmap step.
 
 ## Completed roadmap result
 
@@ -87,17 +87,14 @@ Web may consume positions produced by devices; it must not pretend the browser p
 
 ## Git / integration truth
 
-Plans 010–016 and 016A were executed as a cumulative stacked lineage without intermediate PRs/merges to `main`.
+Plans 010–016 and 016A were executed as one cumulative stacked lineage and integrated into `main` through PR #8.
 
-Plan 016A is now closed and the cumulative branch is ready for user-gated review/integration. Opening a PR is now an appropriate next step if the user chooses to integrate this lineage into `main`.
+Historical plan branches no longer own current authority. They may be deleted after integration because their work is contained in `main`; the plan files and Git commit history remain the historical record.
 
-The old `plan/017-situm-credential-split-runtime-verification` branch/name is superseded and must not be treated as a separate active plan.
+The old `plan/017-situm-credential-split-runtime-verification` branch/name is superseded and disposable.
 
 ## Next action
 
-No further Plan 016A implementation work is required.
+No further Plan 016A work is required.
 
-Next action is one of:
-
-1. open/review a PR from `plan/016a-situm-credential-split-runtime-verification` into `main`;
-2. after integration, start a genuinely new Plan 017+ only for substantive follow-up scope.
+Keep `main` as the only canonical branch. Future substantive work should start from updated `main` on a newly scoped branch only when needed.
