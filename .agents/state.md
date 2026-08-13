@@ -141,10 +141,14 @@ Phase 3 implementation completed on 2026-08-13. Protected summary and CSV export
 
 Phase 4 implementation completed on 2026-08-13. `/app/analytics` now presents real protected ClickHouse-backed summaries/tables, date/building/geofence filters, explicit building-scoped Situm sync, loading/empty/error/success states, and CSV export. Validation passed: `git diff --check`, lint, typecheck, and build. Phase 5 optional evaluation is next.
 
+## Plan 017 Phase 6 validation result
+
+Phase 6 validation was attempted on 2026-08-13. Static validation passed (`git diff --check`, lint, typecheck, build). The existing local ClickHouse accepted an authenticated version query, and direct authenticated Situm probes returned HTTP 200 for visitors and positioning-time; the geofencing probe returned HTTP 400 for the tested account/window. The protected analytics summary returned HTTP 401 without a session. Authenticated app sync, repeat-window idempotency, summary/CSV reads, and app-mediated Situm/ClickHouse failure semantics could not be completed because the local `.env` contains only `AUTH_PASSWORD_HASH` and no usable application password. No credentials or raw payloads were printed or persisted. Plan 017 remains incomplete; optional Map Viewer usage and heatmap remain unresolved.
+
 ## Next action
 
 Plan 017 Phase 5 optional evaluation completed on 2026-08-13. Map Viewer usage and heatmap remain explicitly unresolved: official evidence confirms only endpoint families/purpose, not the exact consumed schemas, filters, runtime payloads, or truthful visualization semantics. No optional implementation was added. Continue with Plan 017 Phase 6 validation and closeout.
 
-Start by switching to `roadmap/017-020-next-features`, creating `plan/017-situm-analytics-clickhouse` from its final HEAD, and executing Plan 017 phase-by-phase with the configured `worker` subagent.
+Provide a safe authenticated application session/password for the remaining runtime smoke, then complete Plan 017 Phase 6 validation and closeout. Do not mark Plan 017 complete or start Plan 018 until the required authenticated core checks pass.
 
 Do not create a PR or merge during the run. After Plan 020 is fully complete, stop with a concise final summary and leave the final cumulative Plan 020 branch pushed for user review/integration.

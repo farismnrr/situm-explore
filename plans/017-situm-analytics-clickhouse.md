@@ -183,17 +183,17 @@ This phase is conditional and must not block Plan 017 completion if the exact co
 
 ## Phase 6 — Validation and closeout
 
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] live ClickHouse connectivity/query smoke using the existing local instance;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] live ClickHouse connectivity/query smoke using the existing local instance (version query succeeded; authenticated schema query path was not app-runtime verified);
 - [ ] live Situm -> ClickHouse sync smoke for each implemented core report;
 - [ ] repeat the same sync window and verify idempotent row/results behavior;
 - [ ] authenticated analytics read + CSV export smoke;
-- [ ] unauthorized app-session behavior verified;
-- [ ] Situm failure and ClickHouse unavailable/error behavior remain truthful;
-- [ ] verify ClickHouse/Situm secrets are absent from responses, logs, docs, and built client assets;
+- [x] unauthorized app-session behavior verified (analytics summary returned HTTP 401);
+- [ ] Situm failure and ClickHouse unavailable/error behavior remain truthful (not fully verified through an authenticated app request);
+- [x] verify ClickHouse/Situm secrets are absent from responses, logs, docs, and built client assets (source/config and runtime log scan clean; `X-API-KEY` browser-library text is a non-secret false positive);
 - [ ] update this plan, `.agents/state.md`, relevant durable knowledge/decisions, and the session log to exact truth;
 - [ ] commit and push the completed phase/plan branch;
 - [ ] do not create a PR or merge.
