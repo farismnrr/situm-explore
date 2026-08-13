@@ -93,13 +93,18 @@ Target surfaces:
 
 ## Phase 3 — Alarms product surface
 
-- [ ] replace `/app/alarms` unresolved empty state with real loading/empty/error/success states;
-- [ ] render a useful read-only alarms list/table with verified type/state/time and related subject context;
-- [ ] add bounded filters for only officially supported/locally truthful dimensions;
-- [ ] add a detail drawer/card only if the verified detail contract contains product-useful fields beyond the list;
-- [ ] visually distinguish states using current design tokens without implying mutation controls;
-- [ ] never show confirm/close/delete/edit actions;
-- [ ] preserve exact timestamp/time-zone semantics from the source.
+- [x] replace `/app/alarms` unresolved empty state with real loading/empty/error/success states;
+- [x] render a useful read-only alarms list/table with verified type/state/time and related subject context;
+- [x] add bounded filters for only officially supported/locally truthful dimensions;
+- [x] add a detail drawer/card only if the verified detail contract contains product-useful fields beyond the list;
+- [x] visually distinguish states using current design tokens without implying mutation controls;
+- [x] never show confirm/close/delete/edit actions;
+- [x] preserve exact timestamp/time-zone semantics from the source.
+
+### Phase 3 implementation record (2026-08-13)
+
+- Replaced `/app/alarms` with real protected list/detail UI, required building filter, verified active/type filters, truthful loading/empty/error/success states, responsive table/cards, and read-only detail drawer.
+- Displayed only verified type/state/activity/timestamp/building/floor/location/status-change fields. No confirm, close, delete, edit, or other mutation controls were added.
 
 ## Phase 4 — Existing dashboard/home integration
 

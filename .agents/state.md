@@ -162,3 +162,7 @@ Phase 1 server reads completed on 2026-08-13. Protected Groups and Alarms list/d
 ## Plan 018 Phase 2 result
 
 Phase 2 Groups surface completed on 2026-08-13. `/app/groups` now provides real protected Groups data, verified parent filtering, local search, responsive loading/error/empty/success states, and organization navigation. Memberships and speculative counts/roles remain absent. Phase 3 is next.
+
+## Plan 018 Phase 3 result
+
+Phase 3 Alarms surface completed on 2026-08-13. `/app/alarms` now provides real protected list/detail reads, required building selection, verified active/type filters, truthful states, responsive presentation, and read-only detail context without mutation controls. Phase 4 is next.
