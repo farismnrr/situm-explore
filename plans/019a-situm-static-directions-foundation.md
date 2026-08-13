@@ -126,24 +126,28 @@ This runtime proof is required in Plan 019A, not deferred to Plan 020.
 
 Use the existing local Playwright/Chrome tooling and the normal real application login flow.
 
-- [ ] read the local `.env` without printing/persisting secrets;
-- [ ] authenticate through the real `/api/auth/login` flow;
-- [ ] open `/app/map` at desktop width and wait for the real Viewer ready state;
-- [ ] verify at least two real route-selectable POIs are present;
+- [x] read the local `.env` without printing/persisting secrets;
+- [x] authenticate through the real `/api/auth/login` flow;
+- [x] open `/app/map` at desktop width and wait for the real Viewer ready state;
+- [x] verify at least two real route-selectable POIs are present;
 - [x] start a real route from POI A to POI B through the production Route UI;
 - [ ] verify the Viewer visibly accepts/renders the route without relying on synthetic app geometry/details — blocked: the embedded Viewer remains on its loading spinner after the exact numeric request;
 - [x] replace the route with another valid From/To arrangement where the available POI set permits it (request/readiness behavior verified; route rendering remains blocked);
 - [x] cancel/clear the route and verify Viewer cleanup (command/readiness behavior verified; rendered route was not available);
 - [x] verify same-endpoint/empty selections are blocked by app validation before Viewer invocation;
 - [ ] exercise at least one safe invalid/no-route/error path if the configured account/cartography permits it without guessing or destructive changes;
-- [ ] navigate away and back, then verify no stale route state/duplicate Viewer instance is left;
-- [ ] verify mobile-width boundary still does not mount the desktop Viewer route feature;
-- [ ] verify no private Nitro credential or secret-bearing data is browser-visible/persisted;
+- [x] navigate away and back, then verify no stale route state/duplicate Viewer instance is left;
+- [x] verify mobile-width boundary still does not mount the desktop Viewer route feature;
+- [x] verify no private Nitro credential or secret-bearing data is browser-visible/persisted;
 - [x] if runtime behavior contradicts the assumed command contract, stop and report the exact blocker instead of papering over it.
 
 ### Phase 3 blocker — 2026-08-13
 
 The authenticated production Route UI loaded the configured building's two real POIs and invoked the installed SDK's exact numeric `startDirections({ navigationFrom, navigationTo })` contract. The SDK Promise resolved and the app reported only the truthful request-sent state. The embedded Situm Viewer then remained on its own loading spinner instead of visibly rendering a route, including after the valid reverse request. This was reproduced against the production preview after a 30-second initial Viewer wait and a further 30-second post-request wait, so dev-mode startup timing is ruled out. No exposed Viewer event/result/detail payload identified a more specific cause. The worker independently verified the SDK payload, configured POIs, and connected path graph and found no application defect. This is a configured Situm Viewer/account/endpoint runtime blocker. No fake route state, geometry, summary, or error was added. Plan 019A cannot close its core runtime-proof requirement until the configured Viewer computes/renders a route or provides a diagnosable verified failure.
+
+### Phase 3 authenticated production rerun — 2026-08-13
+
+The normal `/api/auth/login` flow succeeded with the configured local smoke account. Production preview reached application `Ready`, the initial app loading overlay was gone, the embedded cartography visibly rendered the real floor plan and POI labels, and the two real POIs were selectable. The exact numeric forward and reverse route requests each resolved to the truthful `Directions request sent to the map viewer.` state. After 30 seconds per request, neither route visibly rendered and the embedded Viewer remained route-less; no supported Viewer error/result payload was exposed. The embedded Viewer loaded its directions assets and routes WASM, while network logs contained aborted vector-tile/font requests and no HTTP error response identifying a route failure. Clear returned `Directions cleared.`; same-endpoint validation returned `Choose different start and destination POIs.`; navigate-away/back returned one ready Viewer with no stale route feedback; mobile width showed `Desktop required` with zero iframes; browser-visible text contained no private credential names. This confirms the blocker after genuine cartography readiness and is not an initial-map-spinner timing issue. No code defect was identified and no implementation change was made.
 
 ## Phase 4 — Runtime-driven correction only
 

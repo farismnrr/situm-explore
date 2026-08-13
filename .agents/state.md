@@ -25,7 +25,7 @@ Active plan:
 - `plans/019a-situm-static-directions-foundation.md`
 - branch: `plan/019a-situm-static-directions-foundation`
 - base: exact final Plan 019 HEAD above
-- status: **ready**
+- status: **blocked at Phase 3 — configured Viewer route runtime**
 
 Plan 019A owns the smallest production-safe static-directions foundation and the real hydrated browser test in the same plan.
 
@@ -137,13 +137,13 @@ Plan 019A additionally requires hydrated Playwright smoke for a real route start
 
 ## Next action
 
-Plan 019A Phase 0 reconfirmation completed on 2026-08-13 from exact Plan 019 HEAD `513f65e820635e05a22a54270f3bf21f5925e6c8`. Installed SDK declarations/source, numeric POI endpoint IDs, and the scaffold-only Route tab/current `SitumViewer` gap remain as previously verified; no contract change was found. Phase 1 is next.
+Plan 019A Phase 0 reconfirmation completed on 2026-08-13 from exact Plan 019 HEAD `513f65e820635e05a22a54270f3bf21f5925e6c8`. Installed SDK declarations/source, numeric POI endpoint IDs, and the scaffold-only Route tab/current `SitumViewer` gap remained as previously verified; no contract change was found.
 
 Plan 019A Phase 1 completed on 2026-08-13. `SitumViewer` now exposes only typed numeric-ID `startDirections` and `cancelDirections` commands, validates positive integer endpoints, preserves readiness guards, and cancels directions during unmount. No raw Viewer, generic invoke, navigation, location, event, or synthetic route-detail surface was added. Diff check, lint, typecheck, and build passed. Phase 2 is next.
 
-Plan 019A Phase 2 implementation completed and Phase 3 runtime proof is blocked on 2026-08-13. The Route tab now uses real current-building POIs with numeric IDs, validates empty/same endpoints, invokes typed Viewer start/cancel, and exposes only truthful request/clear feedback. Authenticated Playwright smoke loaded the real Viewer and POIs and sent the exact verified numeric route request, but the embedded Situm Viewer stayed on its loading spinner instead of visibly rendering the route, including for the reverse request. The worker independently verified SDK 0.25.0 payloads and the configured connected path graph and found no app defect or diagnostic Viewer result/event. No fake route state/details were added. Plan 019A is blocked at Phase 3; do not transition to Plan 020.
+Plan 019A Phase 2 implementation completed. The Route tab uses real current-building POIs with numeric IDs, validates empty/same endpoints, invokes typed Viewer start/cancel, and exposes only truthful request/clear feedback.
 
-Production-preview rerun after a 30-second initial Viewer wait and a further 30-second route wait reproduced the same embedded Viewer loading spinner. Dev-mode startup timing is ruled out; Plan 019A remains blocked at Phase 3.
+Authenticated production-preview rerun after normal login, application Viewer readiness, visible cartography readiness, and two 30-second route observation windows reproduced the same no-route result for forward and reverse routes. Directions assets and routes WASM loaded; no supported Viewer diagnostic/result was exposed. Clear, same-endpoint validation, navigate-away/back cleanup, mobile non-mount, and browser secret checks passed. Dev-mode timing and initial-map loading are ruled out; Plan 019A remains blocked at Phase 3.
 
 Plan 019A is blocked at Phase 3 by the configured embedded Viewer route runtime described above. Do not start Plan 020 or add synthetic route behavior; resume only when a verified configured Viewer route render/diagnostic becomes available.
 
