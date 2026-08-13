@@ -33,13 +33,15 @@ Historical plans/sessions are evidence only and must not override current state/
 
 The UI roadmap through Plan 009B is historical and integrated.
 
-Plans 010–016 have completed a user-authorized **stacked implementation pass**. The cumulative current implementation branch is:
+Plans 010–016 completed a user-authorized **stacked implementation pass**. Do not restart them or recreate them from `main`.
 
-`plan/016-situm-viewer-settings-integration`
+The active follow-up is **Plan 016A — Situm Credential Split & Runtime Verification** on:
 
-Do not restart Plan 010 or recreate Plans 011–016 from `main`.
+`plan/016a-situm-credential-split-runtime-verification`
 
-No PR or merge was authorized/performed for this stacked sequence. Read `.agents/state.md` for the exact completed/skipped/unresolved status and runtime-smoke blocker.
+The earlier Plan 017 credential-split draft/name is superseded and must not be executed as a separate step. Plan 017 is reserved for future substantive feature scope.
+
+No PR or merge is authorized. Read `.agents/state.md` for exact completed/skipped/unresolved status and runtime-smoke requirements.
 
 ## No-hallucination external integration rule
 
@@ -57,9 +59,7 @@ Use the current Nuxt 4 structure under `app/`, `server/`, and optional `shared/`
 
 Prefer KISS. Do not introduce speculative services, repositories, stores, event buses, generic API clients, caches, background workers, or parallel design systems.
 
-Situm REST/domain calls use private Nitro runtime credentials behind authenticated routes. The historical public Viewer credential is not authority for new REST integrations.
-
-Native indoor positioning/bluedot and movement-aware handset navigation remain outside the Nuxt web roadmap.
+Situm REST/domain calls use private Nitro runtime credentials behind authenticated routes. The browser Viewer credential is a separate public boundary. Native indoor positioning/bluedot and movement-aware handset navigation remain outside the Nuxt web roadmap.
 
 ## Git workflow
 
@@ -71,7 +71,7 @@ Native indoor positioning/bluedot and movement-aware handset navigation remain o
 - dependent plans normally start after integration into updated `main`;
 - **exception:** when `.agents/state.md` / durable decisions record explicit stacked execution, the next plan must branch from the completed previous plan HEAD instead of `main`.
 
-The explicit Plans 010–016 stacked exception is already complete; do not replay it.
+Plan 016A is an explicitly authorized post-stack follow-up continuing the cumulative Plan 016 lineage.
 
 ## Mandatory closeout
 
