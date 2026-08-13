@@ -1,6 +1,6 @@
 # Plan 016A — Situm Credential Split & Runtime Verification
 
-Status: **planned-ready**
+Status: **complete**
 Branch: `plan/016a-situm-credential-split-runtime-verification`
 Base: final cumulative Plan 016 lineage, preserving the credential-split preparation commits previously created under the superseded Plan 017 draft
 Depends on: Plans 010–016 stacked implementation pass complete
@@ -130,18 +130,18 @@ Rules:
 
 ## Phase 5 — Validation and closeout
 
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] no browser bundle contains `NUXT_SITUM_READ_API_KEY` or `NUXT_SITUM_WRITE_API_KEY`;
-- [ ] no current Nitro read depends on removed `NUXT_SITUM_API_KEY`;
-- [ ] no read path uses the write key unnecessarily;
-- [ ] `.env.example` matches actual implemented consumers;
-- [ ] current authority docs agree;
-- [ ] update plan + `.agents` persistence;
-- [ ] commit and push completed phases;
-- [ ] no PR and no merge unless explicitly authorized by the user.
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [x] no browser bundle contains `NUXT_SITUM_READ_API_KEY` or `NUXT_SITUM_WRITE_API_KEY`;
+- [x] no current Nitro read depends on removed `NUXT_SITUM_API_KEY`;
+- [x] no read path uses the write key unnecessarily;
+- [x] `.env.example` matches actual implemented consumers;
+- [x] current authority docs agree;
+- [x] update plan + `.agents` persistence;
+- [x] commit and push completed phases;
+- [x] no PR and no merge unless explicitly authorized by the user.
 
 ## Stop conditions
 
