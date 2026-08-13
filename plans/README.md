@@ -13,7 +13,7 @@ Before executing or continuing plan work, read:
 5. `.agents/protocols/git-workflow.md`;
 6. `ARCHITECTURE.md`;
 7. `design/data-source-matrix.md` when Situm/product capability scope matters;
-8. the active/follow-up plan;
+8. the active/follow-up plan, if one exists;
 9. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
 
 Historical plans are evidence only. Current state/contracts override stale plan wording.
@@ -24,7 +24,8 @@ Historical plans are evidence only. Current state/contracts override stale plan 
 - never implement directly on `main`;
 - reuse an existing valid plan branch instead of recreating/resetting it;
 - no force-push/destructive history rewrite as normal workflow;
-- no PR/merge unless explicitly authorized.
+- PR creation/review is user-gated;
+- merge remains explicitly user-gated.
 
 ## Dependency modes
 
@@ -50,29 +51,24 @@ Do not branch a stacked dependent plan from stale `main` and do not merge/cherry
 
 ## Current roadmap state
 
-Plans 010–016 already completed their explicit stacked implementation pass.
+Plans 010–016 completed their explicit stacked implementation pass. Plan 016A then completed the credential/config/runtime hardening closeout on the same cumulative lineage.
 
-The active closeout/hardening follow-up is:
-
-`plans/016a-situm-credential-split-runtime-verification.md`
-
-Branch:
+Cumulative review branch:
 
 `plan/016a-situm-credential-split-runtime-verification`
 
-Plan 016A continues the cumulative Plan 016 lineage. It owns only credential split, environment-contract cleanup, runtime verification of already implemented Situm paths, and evidence capture for unresolved REST domains.
+Plan 016A is **complete**. Do not replay Plans 010–016 or Plan 016A. Do not execute the old `plans/017-situm-credential-split-runtime-verification.md` draft; that naming was superseded. Plan 017 remains available only for genuinely new substantive feature scope after the current lineage is reviewed/integrated.
 
-Do **not** replay Plans 010–016. Do **not** execute the old `plans/017-situm-credential-split-runtime-verification.md` draft; that naming was superseded by Plan 016A. Plan 017 remains available for future substantive feature scope.
-
-Current outcome before 016A is intentionally mixed:
+Current outcome:
 
 - implemented where exact evidence existed;
-- skipped/unresolved where exact contract/runtime evidence was insufficient;
+- runtime-smoked for the implemented Situm server read paths using configured credentials;
+- skipped/unresolved where exact implementation contracts remain insufficient;
 - no fake fallback behavior;
 - no native positioning scope added to web;
-- no PR/merge performed.
+- cumulative branch ready for user-gated PR review/integration.
 
-Read `.agents/state.md` for exact completed/skipped/unresolved items and pending runtime smoke.
+Read `.agents/state.md` for the exact completed/skipped/unresolved items and next integration action.
 
 ## Capability evidence gate
 
@@ -86,13 +82,19 @@ Do not treat lack of an `@situm/sdk-js` wrapper as proof the Situm REST API lack
 
 ## Architecture/security
 
-Follow `ARCHITECTURE.md` and keep implementation small:
+Follow `ARCHITECTURE.md` and keep implementation small.
 
-- browser Viewer credential is separate from private Nitro credentials;
-- current/future Nitro reads use the private read-only credential;
-- write credential remains private and unused unless an approved mutation requires it;
+The final Situm credential model intentionally uses exactly two keys:
+
+- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer only;
+- `NUXT_SITUM_API_KEY` — single private Nitro credential for all server-side Situm operations.
+
+Additional rules:
+
+- do not introduce separate private read/write keys without a concrete future requirement;
 - protected product `/api/situm/*` routes require the app session;
 - no generic unauthenticated Situm proxy;
+- private credentials never enter browser/public runtime config, logs, docs, or error payloads;
 - no speculative services/repositories/stores/caches/workers;
 - browser Viewer behavior stays owned by the single Viewer integration;
 - native handset positioning/navigation stays outside the Nuxt web roadmap.
@@ -107,6 +109,6 @@ A phase is only complete when applicable checks are truthfully recorded:
 4. phase committed and pushed;
 5. unresolved/manual-smoke items remain visibly unchecked or explicitly marked pending.
 
-Do not call a roadmap production/runtime-verified while required live API/Viewer smoke is still unavailable.
+Plan 016A satisfies its closeout requirements, including live runtime smoke for implemented Situm server read paths.
 
 CI and a standalone unit-test runner remain deferred unless a later requirement changes that decision.
