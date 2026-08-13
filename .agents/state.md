@@ -196,3 +196,7 @@ Phase 0 evidence freeze completed on 2026-08-13. Installed `@situm/sdk-js` 0.25.
 ## Plan 019 Phase 4 result
 
 Phase 4 trajectory evaluation completed on 2026-08-13. Phase 0 verified SDK signatures/source only; hydrated Viewer/account date, user, empty-result, date-range, and error semantics remain unresolved. Trajectory playback is explicitly omitted, with no trajectory UI, guessed bounds, route/navigation semantics, synthetic path, or fake feedback added. The verified realtime overlay core is preserved. Phase 5 validation/closeout is next.
+
+## Plan 019 Phase 5 result
+
+Plan 019 realtime core closeout completed on 2026-08-13. Static validation passed (`git diff --check`, lint, typecheck, build). Transient real-login smoke returned HTTP 200 for authenticated `/api/situm/realtime` with the expected positions response shape and HTTP 401 unauthenticated; the built public asset scan found no private Situm credential references. No browser runtime was installed, so hydrated desktop Viewer start/filter/refresh/cleanup and navigate-away/back leakage smoke remain unexecuted. Mobile Viewer non-mount remains enforced by the implementation. Trajectory remains unresolved/omitted. Plan 019 is complete for the verified realtime core; parent orchestration owns commit/push and transition to Plan 020.
