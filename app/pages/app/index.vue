@@ -1,10 +1,24 @@
 <script setup lang="ts">
+import type { SitumCartographyResponse } from '#shared/situm-cartography'
 import { homeBuilding, homeExplore } from '~/data/prototype/home'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Home' })
 
 const { user } = useUserSession()
 const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/)[0] || 'there')
+
+const { data: cartography } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
+const previewBuildingId = computed(() => cartography.value?.buildings[0]?.id)
+const previewFloors = computed(() => (cartography.value?.floors ?? [])
+  .filter(floor => floor.buildingId === previewBuildingId.value)
+  .sort((a, b) => a.level - b.level))
+const selectedPreviewFloorId = ref<number | null>(null)
+
+watch(previewFloors, (floors) => {
+  if (!floors.some(floor => floor.id === selectedPreviewFloorId.value)) selectedPreviewFloorId.value = floors[0]?.id ?? null
+}, { immediate: true })
+
+const previewFloorMapUrl = computed(() => previewFloors.value.find(floor => floor.id === selectedPreviewFloorId.value)?.mapUrl || '')
 </script>
 
 <template>
@@ -29,10 +43,36 @@ const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/
           <div><h2 class="font-semibold text-highlighted">{{ homeBuilding.name }}</h2><p class="mt-1 text-xs text-muted">{{ homeBuilding.organization }} · {{ homeBuilding.floor }}</p></div>
           <UButton to="/app/map" size="sm" color="neutral" variant="outline">Open viewer</UButton>
         </div>
-        <div class="building-preview" aria-label="Local preview of the main building floor">
-          <div class="building-floor" /><i class="preview-pin pin-a" /><i class="preview-pin pin-b" /><i class="preview-pin pin-c" />
+        <div class="building-preview" aria-label="Static top-down preview of the main building floor plan">
+          <div v-if="previewFloors.length > 1" class="floor-switch" role="group" aria-label="Preview floor">
+            <button v-for="floor in previewFloors" :key="floor.id" type="button" class="floor-switch-btn" :class="{ 'is-active': floor.id === selectedPreviewFloorId }" @click="selectedPreviewFloorId = floor.id">{{ floor.name }}</button>
+          </div>
+          <img v-if="previewFloorMapUrl" :src="previewFloorMapUrl" alt="" class="building-plan" draggable="false">
+          <svg v-else class="building-plan" viewBox="0 0 400 246" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect x="0" y="0" width="400" height="246" fill="var(--explore-surface-subtle)" />
+            <g stroke="var(--explore-border-strong)" stroke-width="1">
+              <line x1="0" y1="30" x2="400" y2="30" /><line x1="0" y1="70" x2="400" y2="70" /><line x1="0" y1="110" x2="400" y2="110" /><line x1="0" y1="150" x2="400" y2="150" /><line x1="0" y1="190" x2="400" y2="190" />
+              <line x1="40" y1="0" x2="40" y2="246" /><line x1="100" y1="0" x2="100" y2="246" /><line x1="160" y1="0" x2="160" y2="246" /><line x1="220" y1="0" x2="220" y2="246" /><line x1="280" y1="0" x2="280" y2="246" /><line x1="340" y1="0" x2="340" y2="246" />
+            </g>
+            <rect x="26" y="24" width="348" height="198" rx="14" fill="#ffffff" stroke="var(--explore-border-strong)" stroke-width="2" />
+            <g stroke="var(--explore-border)" stroke-width="1.5" fill="none">
+              <rect x="46" y="44" width="110" height="72" rx="6" />
+              <rect x="46" y="128" width="110" height="74" rx="6" />
+              <rect x="168" y="44" width="90" height="158" rx="6" />
+              <rect x="270" y="44" width="84" height="72" rx="6" />
+              <rect x="270" y="128" width="84" height="74" rx="6" />
+            </g>
+            <g stroke="var(--explore-border)" stroke-width="1" stroke-dasharray="4 3">
+              <line x1="160" y1="24" x2="160" y2="222" /><line x1="264" y1="24" x2="264" y2="222" />
+            </g>
+            <g>
+              <circle cx="112" cy="80" r="6" fill="#2563eb" /><circle cx="112" cy="80" r="11" fill="#2563eb" fill-opacity="0.15" />
+              <circle cx="212" cy="150" r="6" fill="#168754" /><circle cx="212" cy="150" r="11" fill="#168754" fill-opacity="0.15" />
+              <circle cx="312" cy="90" r="6" fill="#7c3aed" /><circle cx="312" cy="90" r="11" fill="#7c3aed" fill-opacity="0.15" />
+            </g>
+          </svg>
+          <span class="preview-tag">Layout preview · not interactive</span>
         </div>
-        <div class="flex items-center justify-between border-t border-default px-4 py-3 text-xs text-muted"><span>Viewer status</span><ProductStatusBadge :label="homeBuilding.status" tone="success" dot /></div>
       </UCard>
 
       <UCard><div class="flex h-full items-center"><UAlert color="neutral" variant="subtle" title="Activity feed is not connected" description="The product will add report-backed activity only when a later integration provides an exact source." /></div></UCard>
@@ -54,11 +94,12 @@ const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/
 .welcome-card { background: linear-gradient(135deg, var(--ui-bg) 0%, var(--ui-bg-elevated) 100%); }
 .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
 .content-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr); gap: 0.875rem; }
-.building-preview { position: relative; height: 15.3125rem; overflow: hidden; background: repeating-linear-gradient(0deg, #fafbfc 0 1.625rem, #f0f2f4 1.6875rem), repeating-linear-gradient(90deg, transparent 0 1.625rem, #f0f2f4 1.6875rem); }
-.building-floor { position: absolute; inset: 15% 12%; border: 2px solid #d3d8de; border-radius: 1rem; background: white; transform: rotate(-3deg); }
-.building-floor::before { content: ''; position: absolute; inset: 18% 12%; border: 1px solid #dde1e6; border-radius: 0.6rem; }
-.preview-pin { position: absolute; width: 0.75rem; height: 0.75rem; border-radius: 999px; background: #2563eb; box-shadow: 0 0 0 0.25rem rgb(37 99 235 / 12%); }
-.pin-a { left: 36%; top: 34%; }.pin-b { left: 62%; top: 58%; background: #168754; box-shadow: 0 0 0 0.25rem rgb(22 135 84 / 12%); }.pin-c { left: 70%; top: 30%; background: #7c3aed; box-shadow: 0 0 0 0.25rem rgb(124 58 237 / 12%); }
+.building-preview { position: relative; height: 15.3125rem; overflow: hidden; user-select: none; background: var(--explore-surface-subtle); }
+.building-plan { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.preview-tag { position: absolute; left: 0.75rem; bottom: 0.75rem; border-radius: 999px; background: var(--explore-surface); border: 1px solid var(--explore-border); padding: 0.1875rem 0.5625rem; font-size: 0.625rem; color: var(--explore-foreground-subtle); box-shadow: var(--explore-shadow-xs); }
+.floor-switch { position: absolute; right: 0.75rem; top: 0.75rem; z-index: 1; display: flex; gap: 0.1875rem; border-radius: 0.5rem; background: var(--explore-surface); border: 1px solid var(--explore-border); padding: 0.1875rem; box-shadow: var(--explore-shadow-xs); }
+.floor-switch-btn { border-radius: 0.375rem; padding: 0.1875rem 0.5rem; font-size: 0.6875rem; font-weight: 600; color: var(--explore-foreground-subtle); }
+.floor-switch-btn.is-active { background: var(--explore-foreground); color: #fff; }
 .quick-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.625rem; }
 .activity-list { display: grid; }
 .activity-row { display: grid; grid-template-columns: 0.5rem 1fr auto; gap: 0.5625rem; align-items: start; padding: 0.6875rem 0; border-bottom: 1px solid var(--explore-border); }

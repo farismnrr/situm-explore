@@ -62,10 +62,10 @@ onBeforeUnmount(() => desktopMedia?.removeEventListener('change', updateDesktopS
 const navigationHidden = computed(() => !isDesktop.value && !mobileOpen.value)
 
 const navigation = [
-  { group: 'Workspace', items: [{ label: 'Home', to: '/app', icon: '⌂' }, { label: 'Dashboard', to: '/app/dashboard', icon: '▦' }, { label: 'Map', to: '/app/map', icon: '⌖' }] },
-  { group: 'Cartography', items: [{ label: 'Buildings & floors', to: '/app/buildings', icon: '▤' }, { label: 'Points of interest', to: '/app/pois', icon: '◇' }, { label: 'Geofences', to: '/app/geofences', icon: '◎' }, { label: 'Paths & routing', to: '/app/paths', icon: '↗' }] },
-  { group: 'Operations', items: [{ label: 'Realtime', to: '/app/realtime', icon: '●' }, { label: 'Analytics & reports', to: '/app/analytics', icon: '▥' }, { label: 'Alarms', to: '/app/alarms', icon: '!' }] },
-  { group: 'Organization', items: [{ label: 'Users & groups', to: '/app/users', icon: '♙' }, { label: 'Organization', to: '/app/organization', icon: '◫' }, { label: 'Settings', to: '/app/settings', icon: '⚙' }] }
+  { group: 'Workspace', items: [{ label: 'Home', to: '/app', icon: 'i-lucide-house' }, { label: 'Dashboard', to: '/app/dashboard', icon: 'i-lucide-layout-dashboard' }, { label: 'Map', to: '/app/map', icon: 'i-lucide-map' }] },
+  { group: 'Cartography', items: [{ label: 'Buildings & floors', to: '/app/buildings', icon: 'i-lucide-building-2' }, { label: 'Points of interest', to: '/app/pois', icon: 'i-lucide-map-pin' }, { label: 'Geofences', to: '/app/geofences', icon: 'i-lucide-scan' }, { label: 'Paths & routing', to: '/app/paths', icon: 'i-lucide-route' }] },
+  { group: 'Operations', items: [{ label: 'Realtime', to: '/app/realtime', icon: 'i-lucide-radio' }, { label: 'Analytics & reports', to: '/app/analytics', icon: 'i-lucide-bar-chart-3' }, { label: 'Alarms', to: '/app/alarms', icon: 'i-lucide-triangle-alert' }] },
+  { group: 'Organization', items: [{ label: 'Users & groups', to: '/app/users', icon: 'i-lucide-users' }, { label: 'Organization', to: '/app/organization', icon: 'i-lucide-building' }, { label: 'Settings', to: '/app/settings', icon: 'i-lucide-settings' }] }
 ]
 
 async function logout() {
@@ -90,7 +90,7 @@ async function logout() {
         <div v-for="section in navigation" :key="section.group" class="mb-5">
           <p class="px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">{{ section.group }}</p>
           <NuxtLink v-for="item in section.items" :key="item.to" :to="item.to" class="group mb-0.5 flex min-h-9 items-center gap-2 rounded-lg px-2.5 text-xs text-muted transition hover:bg-elevated hover:text-highlighted" active-class="bg-elevated font-medium text-highlighted" @click="mobileOpen = false">
-            <span class="grid size-[18px] place-items-center text-sm text-muted group-[.text-highlighted]:text-highlighted" aria-hidden="true">{{ item.icon }}</span>
+            <UIcon :name="item.icon" class="size-[18px] shrink-0 text-muted group-[.text-highlighted]:text-highlighted" aria-hidden="true" />
             <span>{{ item.label }}</span>
           </NuxtLink>
         </div>
@@ -116,7 +116,7 @@ async function logout() {
           <ProductStatusBadge label="POC configured" tone="success" dot class="hidden sm:inline-flex" />
         </div>
       </header>
-      <main id="main-content" tabindex="-1" class="app-content mx-auto min-h-[calc(100vh-4rem)] w-full max-w-[1480px] px-4 py-6 outline-none sm:px-6 lg:px-7 lg:py-[30px]"><slot /></main>
+      <main id="main-content" tabindex="-1" class="app-content mx-auto min-h-[calc(100vh-4rem)] w-full px-4 py-6 outline-none sm:px-6 lg:px-7 lg:py-[30px]" :class="$route.meta.fullWidth ? 'max-w-none' : 'max-w-[1480px]'"><slot /></main>
     </div>
     </div>
 

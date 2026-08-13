@@ -25,6 +25,8 @@ export default defineEventHandler(async (event): Promise<SitumCartographyRespons
       buildingId: floor.buildingId,
       level: floor.level,
       name: floor.name ?? `Level ${floor.level}`,
+      // @situm/sdk-js@0.25.0 types declare `maps.map_url`, but the runtime response is camelCase `maps.mapUrl`.
+      mapUrl: (floor.maps as unknown as { mapUrl: string }).mapUrl,
     })),
     categories: categories.map(category => ({
       id: category.id,
