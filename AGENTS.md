@@ -31,17 +31,13 @@ Historical plans/sessions are evidence only and must not override current state/
 
 ## Current roadmap truth
 
-The UI roadmap through Plan 009B is historical and integrated.
+The UI roadmap through Plan 009B and the Situm roadmap Plans 010–016A are integrated into `main`.
 
-Plans 010–016 completed a user-authorized **stacked implementation pass**. Plan 016A then completed the small credential/config/runtime hardening closeout on the cumulative branch:
+PR #8 integrated the cumulative Plans 010–016A lineage. `main` is now canonical and there is no active implementation plan.
 
-`plan/016a-situm-credential-split-runtime-verification`
+Do not restart Plans 010–016A or recreate them from historical plan branches. The earlier Plan 017 credential-split draft/name was superseded by Plan 016A and must not be executed as a separate step.
 
-Do not restart Plans 010–016 or Plan 016A, and do not recreate them from `main`.
-
-The earlier Plan 017 credential-split draft/name is superseded and must not be executed as a separate step. Plan 017 is reserved for future substantive feature scope.
-
-Plan 016A is complete and the cumulative branch is ready for user-gated PR review/integration. A PR may be opened when the user requests/reviews it; merge remains explicitly user-gated.
+Historical plan branches are disposable after integration; plan files and Git history preserve the record.
 
 Read `.agents/state.md` for exact completed/skipped/unresolved status and the final two-key Situm credential contract.
 
@@ -77,9 +73,9 @@ Protected server Situm routes require the application session. Native indoor pos
 - never merge without explicit user authorization;
 - PR creation/review is user-gated;
 - dependent plans normally start after integration into updated `main`;
-- **exception:** when `.agents/state.md` / durable decisions record explicit stacked execution, the next plan must branch from the completed previous plan HEAD instead of `main`.
+- explicit stacked execution is allowed only when current durable state records that exception.
 
-Plans 010–016 plus 016A form one completed cumulative lineage awaiting review/integration.
+There is currently no active plan branch. New substantive work starts from updated `main` on a newly scoped branch.
 
 ## Mandatory closeout
 
