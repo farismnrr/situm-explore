@@ -98,13 +98,14 @@ Phase 3 implementation is complete. The panel scopes records to the selected car
 
 ## Phase 4 — Trajectory playback (conditional)
 
-- [ ] if Phase 0 verified trajectory, add a compact trajectory control panel for building + user + bounded date range;
-- [ ] invoke `loadTrajectory` only with verified inputs and show Viewer-owned trajectory visualization;
-- [ ] provide explicit Clear/Stop using `cleanTrajectory`;
-- [ ] enforce reasonable date-range bounds to avoid accidental expensive queries;
-- [ ] show truthful no-data/error feedback without drawing a synthetic path;
-- [ ] do not present trajectory as live navigation or user-follow behavior;
-- [ ] if runtime evidence fails, mark this phase unresolved/omitted and close the realtime-overlay core truthfully.
+- [x] evaluated the conditional trajectory gate against the Phase 0 evidence;
+- [x] left trajectory playback unresolved/omitted because hydrated Viewer/account date, user, empty, and error semantics were not runtime-verified;
+- [x] preserved the verified realtime overlay core; no trajectory UI, guessed date bounds, route/navigation semantics, synthetic path, or fake feedback was added;
+- [ ] trajectory implementation remains deferred until a safe configured-account/hydrated-Viewer smoke verifies the missing runtime behavior.
+
+### Phase 4 evaluation — 2026-08-13
+
+Phase 0 verified the installed SDK signatures/source for `loadTrajectory` and `cleanTrajectory`, but did not verify their hydrated Viewer/account behavior. In particular, the consumed date/user contract, date-range limits, empty-result behavior, and user-visible error semantics remain unresolved. Phase 4 is therefore explicitly omitted; the realtime overlay core remains the only implemented scope. No application files were changed.
 
 ## Phase 5 — Validation and closeout
 

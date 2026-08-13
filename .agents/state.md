@@ -192,3 +192,7 @@ Phase 0 evidence freeze completed on 2026-08-13. Installed `@situm/sdk-js` 0.25.
 ## Plan 019 Phase 3 result
 
 `/app/realtime` people/devices panel now scopes records to the selected cartography building, supports local search over verified identifiers and truthful building/floor context, and shows verified ID, building/floor, accuracy, coordinates, and source timestamp/last-seen text only. Loading, server error, no-data, and no-match states remain explicit and accessible. No names, ownership, online/offline, battery, motion, or occupancy claims were added; Viewer overlay behavior is unchanged. Phase 4 is next and trajectory remains conditional/unresolved.
+
+## Plan 019 Phase 4 result
+
+Phase 4 trajectory evaluation completed on 2026-08-13. Phase 0 verified SDK signatures/source only; hydrated Viewer/account date, user, empty-result, date-range, and error semantics remain unresolved. Trajectory playback is explicitly omitted, with no trajectory UI, guessed bounds, route/navigation semantics, synthetic path, or fake feedback added. The verified realtime overlay core is preserved. Phase 5 validation/closeout is next.
