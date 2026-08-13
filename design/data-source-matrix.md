@@ -1,16 +1,16 @@
 # UI / Situm Capability & Data Source Matrix
 
-This is the current product/capability authority for the transition from the accepted UI baseline into real Situm integration.
+This is the current product/capability authority for Situm Explore.
 
-Historical Plans 004–009 intentionally used prototype fixtures. Starting in Plan 010, a Situm-domain UI element may no longer remain permanently fake merely for visual fidelity: it must map to a verified real web capability, be product-owned, be native-only and absent from web, or be removed.
+Historical Plans 004–009 used prototype fixtures. Plans 010–016A established the real web/native/security boundary and implemented the first verified Situm read/Viewer capabilities. Plans 017–020 continue only the evidence-backed gaps listed below.
 
 ## Important: this matrix is not an endpoint spec
 
-The classification below answers **what belongs in the product and which plan owns it**.
+The classification below answers **what belongs in the product and which current plan owns it**.
 
-It does not authorize an implementation from memory.
+It does not authorize implementation from memory.
 
-Before a row becomes an implemented `WEB / SITUM` capability, Plan 010 Phase 3 must record exact evidence for:
+Before a Situm row becomes or expands a `WEB / SITUM` capability, the active plan must record exact evidence for:
 
 - official endpoint or Viewer/SDK method;
 - official documentation/source reference;
@@ -23,131 +23,139 @@ Before a row becomes an implemented `WEB / SITUM` capability, Plan 010 Phase 3 m
 - read/write semantics;
 - relevant error/empty/stale semantics.
 
-Until those are verified, a retained Situm row is a **product direction**, not permission to guess implementation details.
+Until those are verified, a retained Situm row is product direction, not permission to guess implementation details.
 
 ## Classification rules
 
 - **WEB / PRODUCT** — owned by Situm Explore itself; no Situm backing required.
 - **WEB / SITUM** — retained web UI with exact verified Situm REST/Viewer backing.
-- **TRANSITION** — retained product capability still using fixture/local state until its assigned later plan replaces it.
+- **IMPLEMENTED** — current real capability already integrated.
+- **FOLLOW-UP** — retained capability assigned to Plans 017–020 and still evidence-gated for its new behavior.
 - **NATIVE-ONLY** — requires device positioning/sensors/mobile runtime; absent from the web product.
 - **REMOVE** — fake, unsupported, redundant, misleading, or low-value for this POC.
 - **UNRESOLVED** — exact capability evidence is incomplete; may not be implemented or presented as real until resolved.
 
 ## Surface matrix
 
-| Surface / capability | Classification | Target source / owner | Decision |
+| Surface / capability | Classification | Current source / owner | Decision |
 | --- | --- | --- | --- |
 | Landing | WEB / PRODUCT | Static Nuxt | KEEP |
-| Login/session/logout | WEB / PRODUCT | Existing `/api/auth/login`, `nuxt-auth-utils` | KEEP REAL |
-| Dummy registration | REMOVE | No real account-creation owner in current POC | REMOVE in Plan 010 |
+| Login/session/logout | WEB / PRODUCT | Existing auth/session routes | KEEP REAL |
 | App route protection | WEB / PRODUCT | Existing auth middleware + server session guards | KEEP REAL |
-| PostgreSQL/app status | WEB / PRODUCT | Existing `/api/me` | KEEP REAL |
-| Global fake `Sync` | REMOVE | No single real sync operation | REMOVE in Plan 010 |
-| Map Viewer lifecycle | WEB / SITUM | Existing `SitumViewer` lifecycle | KEEP REAL; preserve verified lifecycle only |
-| Buildings / Floors | WEB / SITUM, TRANSITION | Plan 011, authenticated Nitro reads + Viewer selection context | KEEP; exact evidence required before Plan 011 coding |
-| POIs / Categories | WEB / SITUM, TRANSITION | Plan 011 | KEEP; exact evidence required |
-| POI favorite/search UI | WEB / SITUM when verified | Plan 011 or 016 | KEEP only with exact evidence |
-| Geofence definitions | WEB / SITUM, TRANSITION | Plan 012 | KEEP; exact evidence required |
-| Geofence stay/session metrics | WEB / SITUM, TRANSITION | Plan 014 reports | KEEP only from real report evidence |
-| Path metadata | WEB / SITUM, TRANSITION | Plan 012 | KEEP; exact evidence required |
-| Static directions between known points/POIs | WEB / SITUM, TRANSITION | Plan 012 / Viewer | KEEP only with exact routing evidence |
-| `My location` as browser indoor position | NATIVE-ONLY | Future native SDK roadmap | REMOVE from web |
+| PostgreSQL/app status | WEB / PRODUCT | Existing app/server integration | KEEP REAL |
+| Global fake `Sync` | REMOVE | No single real sync operation | REMOVED; Plan 017 may add feature-scoped analytics sync only |
+| Map Viewer lifecycle | WEB / SITUM, IMPLEMENTED | `SitumViewer` | KEEP REAL; single Viewer owner |
+| Buildings / Floors | WEB / SITUM, IMPLEMENTED | Plan 011 Nitro reads + Viewer selection | KEEP REAL |
+| POIs / Categories | WEB / SITUM, IMPLEMENTED | Plan 011 | KEEP REAL |
+| POI search/selection | WEB / SITUM, IMPLEMENTED where currently verified | Cartography + Viewer | KEEP verified behavior only |
+| Geofence definitions | WEB / SITUM, IMPLEMENTED | Plan 012 | KEEP REAL |
+| Geofence stay metrics | WEB / SITUM, FOLLOW-UP | Plan 017 Situm Reports -> ClickHouse | IMPLEMENT only exact verified report fields |
+| Geofence session metrics | WEB / SITUM, FOLLOW-UP / optional | Plan 017 only if exact product need/contract is retained | KEEP only if verified/practical |
+| Path metadata | WEB / SITUM, IMPLEMENTED | Plan 012 | KEEP REAL |
+| Static directions between known points/POIs | WEB / SITUM, FOLLOW-UP | Plan 020 Viewer static directions | IMPLEMENT static directions only after exact runtime verification |
+| Route type/accessibility options | WEB / SITUM, FOLLOW-UP | Plan 020 Viewer | KEEP exact verified options |
+| Route included/excluded tags | WEB / SITUM, FOLLOW-UP / conditional | Plan 020 Viewer | KEEP only if account/cartography + exact contract make them meaningful |
+| Browser `My location` as indoor position | NATIVE-ONLY | Future native SDK roadmap | DO NOT BUILD IN WEB |
 | Live blue-dot / sensor positioning | NATIVE-ONLY | Future native SDK roadmap | DO NOT BUILD IN WEB |
-| Dynamic walking turn-by-turn / reroute from handset position | NATIVE-ONLY | Future native SDK roadmap | REMOVE from web |
-| End-user `Set user location` developer control | REMOVE | Integration/developer concern, not user-facing source | REMOVE |
-| Save car / navigate to car | REMOVE for current web POC | No current product owner after boundary review | REMOVE |
-| Remote-person `Follow user` | UNRESOLVED / default REMOVE | Plan 010 exact semantics verification | REMOVE unless exact evidence + useful product semantic exists |
-| Select flight | REMOVE | Not part of product domain | REMOVE |
-| Location picker | WEB / SITUM when exact method verified | Plan 016 if retained | KEEP only with exact evidence |
-| Viewer building/floor/camera controls | WEB / SITUM when exact methods verified | Plan 011/016 | KEEP only verified controls |
-| Realtime positions monitoring | WEB / SITUM, TRANSITION | Plan 013 | KEEP; exact API/Viewer evidence required |
-| Browser simulated marker movement | REMOVE | Replaced by real realtime data | REMOVE in Plan 013 |
-| Trajectory | UNRESOLVED / candidate WEB / SITUM | Plan 013/016 | KEEP only if exact evidence matches product intent |
-| Analytics: visitors | WEB / SITUM, TRANSITION | Plan 014 | KEEP; exact report evidence required |
-| Analytics: positioning time | WEB / SITUM, TRANSITION | Plan 014 | KEEP; exact report evidence required |
-| Analytics: heatmap | WEB / SITUM, TRANSITION | Plan 014 | KEEP only if exact real contract/data volume is practical |
-| Analytics: geofence stay/session | WEB / SITUM, TRANSITION | Plan 014 | KEEP; exact report evidence required |
-| Analytics: user positions | WEB / SITUM, TRANSITION | Plan 014 | KEEP; exact report evidence required |
-| Analytics: Map Viewer usage | WEB / SITUM, TRANSITION | Plan 014 | KEEP; exact report evidence required |
-| CSV export | WEB / SITUM when verified | Plan 014 real report output/data | KEEP only from real report/data; remove fixture-only export |
-| Alarms read-only | WEB / SITUM, TRANSITION | Plan 015 | KEEP; exact read evidence required |
-| Mobile-side alarm trigger/sensor behavior | NATIVE-ONLY / OUT OF SCOPE | Future native roadmap | DO NOT ADD TO WEB |
-| Users / Groups read-only | WEB / SITUM, TRANSITION | Plan 015 | KEEP; exact read evidence required |
-| Organization safe summary | WEB / SITUM, TRANSITION | Plan 015 | KEEP only safe real fields |
-| Organization credential/key card | REMOVE | Implementation/security detail | REMOVE |
-| Viewer language/accessibility/search controls | WEB / SITUM when verified | Plan 016 | KEEP only exact verified controls |
-| Follow-user-by-default setting | UNRESOLVED / default REMOVE | Plan 010 | REMOVE unless exact useful web semantic is verified |
-| Static route constraints/tags | WEB / SITUM when verified | Plan 012/016 | KEEP only exact verified options |
-| Map configuration/profile | WEB / SITUM when verified | Plan 016 | KEEP only real options with exact evidence |
-| Invented Map Style gallery | UNRESOLVED / default REMOVE | Plan 016 conditional | REMOVE unless a useful exact read/use contract is verified |
-| Generic Images inventory tab | REMOVE | No current product-worthy generic inventory owner | REMOVE |
-| Home Buildings/POIs/Realtime/Alarm counters | WEB / SITUM, TRANSITION | Derive from Plans 011/013/015 | KEEP only from exact real upstream data |
+| Dynamic walking turn-by-turn / reroute from handset position | NATIVE-ONLY | Future native roadmap | DO NOT BUILD IN WEB |
+| End-user `Set user location` developer control | REMOVE | Integration/developer concern | DO NOT EXPOSE |
+| Save car / navigate to car | REMOVE for current web POC | No current product owner | DO NOT BUILD |
+| Remote-person `Follow user` | UNRESOLVED / default REMOVE | No current product need | DO NOT ADD unless future exact scope changes |
+| Select flight | REMOVE | Not part of product domain | DO NOT BUILD |
+| Location picker | WEB / SITUM, IMPLEMENTED | Plan 016 Viewer | KEEP REAL |
+| Viewer building/floor/camera controls | WEB / SITUM, IMPLEMENTED where verified | Plans 011/016 | KEEP verified controls only |
+| Realtime positions server monitoring | WEB / SITUM, IMPLEMENTED | Plan 013 Nitro read | KEEP REAL |
+| Realtime positions Viewer overlay | WEB / SITUM, FOLLOW-UP | Plan 019 `loadRealtimePositions` if installed/runtime verified | IMPLEMENT through Viewer, not custom projected markers |
+| Browser simulated marker movement | REMOVE | Replaced by real realtime data | DO NOT REINTRODUCE |
+| Trajectory playback | WEB / SITUM, FOLLOW-UP / conditional | Plan 019 `loadTrajectory` if installed/runtime verified | KEEP only verified Viewer behavior |
+| Invented stale/offline status | REMOVE unless exact source semantic exists | Plan 019 | Prefer factual source timestamp/last-seen text |
+| Analytics: visitors | WEB / SITUM, FOLLOW-UP | Plan 017 Reports -> ClickHouse | CORE PLAN 017 |
+| Analytics: positioning time | WEB / SITUM, FOLLOW-UP | Plan 017 Reports -> ClickHouse | CORE PLAN 017 |
+| Analytics: geofence stay | WEB / SITUM, FOLLOW-UP | Plan 017 Reports -> ClickHouse | CORE PLAN 017 |
+| Analytics: Map Viewer usage | WEB / SITUM, FOLLOW-UP / conditional | Plan 017 | KEEP only if exact semantics fit current dashboard/product |
+| Analytics: heatmap | WEB / SITUM, FOLLOW-UP / conditional | Plan 017 | KEEP only if exact data volume/coordinates support truthful visualization |
+| Analytics: raw data | UNRESOLVED / non-goal for current Plan 017 | Future | Do not ingest just because endpoint exists |
+| Analytics: user-position history | UNRESOLVED / non-goal for current Plan 017 | Future | Keep out unless later concrete scope |
+| CSV export | WEB / PRODUCT over verified data | Plan 017 ClickHouse-backed export | KEEP for implemented analytics dataset |
+| Alarms read-only | WEB / SITUM, FOLLOW-UP | Plan 018 | IMPLEMENT exact verified list/detail/filter fields only |
+| Alarm mutations/confirmation/closure | REMOVE from current roadmap | Not authorized | DO NOT BUILD |
+| Mobile-side alarm trigger/sensor behavior | NATIVE-ONLY | Future native roadmap | DO NOT BUILD IN WEB |
+| Users read-only | WEB / SITUM, IMPLEMENTED | Plan 015 | KEEP REAL |
+| Groups read-only | WEB / SITUM, FOLLOW-UP | Plan 018 | IMPLEMENT exact verified list/relationship fields only |
+| Organization safe summary | WEB / SITUM, IMPLEMENTED | Plan 015 | KEEP REAL |
+| Organization credential/key card | REMOVE | Security detail | DO NOT BUILD |
+| Viewer language/accessibility/search controls | WEB / SITUM, IMPLEMENTED where verified | Plan 016 | KEEP verified controls only |
+| Generic unverified Viewer config | UNRESOLVED / default REMOVE | No current owner | DO NOT GUESS |
+| Invented Map Style gallery | REMOVE unless exact product-worthy contract is later verified | Future | DO NOT BUILD now |
+| Generic Images inventory tab | REMOVE | No current product owner | DO NOT BUILD |
+| Home Buildings/POIs/Realtime counters | WEB / SITUM, IMPLEMENTED where derived from real upstream reads | Existing implementation | KEEP only exact real counts |
+| Home alarm counter | WEB / SITUM, FOLLOW-UP / conditional | Plan 018 | Replace only if exact alarm-count semantics match the UI |
 | Home Recent Activity synthetic feed | REMOVE unless natural real source exists | No new event backend solely for UI | DEFAULT REMOVE |
-| Dashboard Visitors/Avg stay/Viewer sessions | WEB / SITUM, TRANSITION | Plan 014 | KEEP only from exact report evidence |
-| Dashboard Active devices | WEB / SITUM, TRANSITION | Plan 013 | KEEP only from exact realtime/device evidence |
-| Dashboard occupancy people count | WEB / SITUM when derivable | Plan 013 | KEEP only if exact real data supports it |
-| Dashboard capacity denominator/progress | UNRESOLVED / default REMOVE | Plan 010 mapping | REMOVE unless exact real capacity source exists |
+| Dashboard Visitors/positioning/usage metrics | WEB / SITUM, FOLLOW-UP | Plan 017 ClickHouse analytics | Replace placeholders only when metric semantics match exactly |
+| Dashboard Active devices/current positions | WEB / SITUM, IMPLEMENTED/FOLLOW-UP | Plan 013 data; Plan 019 presentation | KEEP only exact real semantics |
+| Dashboard occupancy people count | WEB / SITUM when exactly derivable | Existing realtime / future evidence | KEEP only if exact real data supports it |
+| Dashboard capacity denominator/progress | UNRESOLVED / default REMOVE | No verified capacity source | DO NOT INVENT |
 
-## Evidence ledger status
+## Plan 017 ClickHouse ownership
 
-Before Plan 010 closes, every retained `WEB / SITUM` row must be backed by an execution evidence ledger in Plan 010 notes or an updated section of this matrix.
+ClickHouse is an app-owned server-side analytics store, not a new browser integration and not a replacement for PostgreSQL.
 
-A valid evidence row must include:
+```text
+Situm Reports REST
+  -> authenticated Nitro ingestion
+  -> existing local ClickHouse instance
+  -> authenticated app analytics query/export API
+  -> browser analytics UI
+```
+
+Rules:
+
+- reuse the user's existing local ClickHouse instance;
+- do not provision another server or add Docker/Compose for it;
+- inspect the instance before creating isolated app-owned objects;
+- do not modify/drop unrelated databases/tables;
+- ClickHouse credentials remain server-only and never reach browser/public runtime config;
+- no hidden ingestion side effect on GET; use explicit feature-scoped sync for this PoC;
+- no fake historical rows.
+
+## Credential boundary
+
+The current credential model is final unless a concrete future requirement changes it:
+
+- `NUXT_PUBLIC_SITUM_API_KEY` — browser Viewer credential only;
+- `NUXT_SITUM_API_KEY` — private Nitro Situm credential;
+- `NUXT_PUBLIC_SITUM_BUILDING_ID` — public identifier.
+
+Protected product Situm/analytics routes require the existing application session. Never create a generic unauthenticated Situm or ClickHouse proxy.
+
+## Evidence gate for Plans 017–020
+
+A valid evidence row/record should include as applicable:
 
 ```text
 capability
 classification
 exact endpoint OR exact SDK method
 official source reference
-installed SDK compatibility (when applicable)
-access path: Viewer | authenticated Nitro
-read/write
+installed SDK compatibility (when relevant)
+access path: Viewer | authenticated Nitro | app-owned ClickHouse
 auth/permission
-UI fields/events consumed
-later plan owner
+request/filter inputs consumed
+response/event fields consumed
+error/empty/stale semantics
+current plan owner
 ```
 
-No later plan may infer missing values.
-
-If an item remains `UNRESOLVED` at closeout, it must be absent from the working web UI or explicitly blocked/non-functional; it may not masquerade as a working Situm feature.
-
-## Credential boundary
-
-### Legacy current state
-
-The accepted baseline still initializes the browser Viewer with `NUXT_PUBLIC_SITUM_API_KEY`.
-
-That is historical POC implementation, not authorization for future REST/domain integrations.
-
-### Target boundary
-
-- Product REST/domain integrations use private Nitro runtime credentials.
-- Browser code never receives the server REST credential.
-- Every product `/api/situm/*` endpoint requires the existing Situm Explore session.
-- `NUXT_PUBLIC_SITUM_BUILDING_ID` may remain public.
-- Browser Viewer auth uses the smallest safe exact mechanism verified by Plan 010 against current official docs + installed SDK.
-- Never create a generic unauthenticated Situm proxy.
-
-Do not invent the private env name or Viewer token flow before Plan 010 verifies it.
-
-## Fixture replacement rule
-
-Fixtures under `app/data/prototype/` are transitional only.
-
-1. Plan 010 removes fixture data/types used solely by removed UI.
-2. Plans 011–015 remove fixtures only after the corresponding real source works.
-3. Plan 016 removes local dummy Viewer/settings success behavior only for retained verified capabilities.
-4. A failed real request must show truthful failure/empty state; it must not silently fall back to believable fake data.
+If an item remains unresolved, it must stay absent or explicitly unavailable; it may not masquerade as a working Situm feature.
 
 ## Web/native ownership
 
 ```text
 WEB
-  admin / monitoring / analytics / static map exploration / static routing
+  admin / monitoring / analytics / static map exploration / static directions
 
 NATIVE (future separate roadmap)
   device indoor positioning / blue dot / sensor permissions / motion-aware navigation
 ```
 
-No Plan 010–016 implementation may quietly pull native positioning scope into the Nuxt web application.
+Plans 017–020 must not quietly pull native positioning scope into the Nuxt web application.
