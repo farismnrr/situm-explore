@@ -109,13 +109,20 @@ Raw data, user-position history, broad trajectory analytics, and every possible 
 
 ## Phase 2 — Situm report ingestion
 
-- [ ] implement a focused server integration for the three core report families using verified official contracts;
-- [ ] add a protected explicit analytics sync endpoint/action with validated date range/building/filter inputs actually supported by Situm;
-- [ ] normalize only the fields needed by current analytics UI/querying and write them to ClickHouse;
-- [ ] preserve source/report-window identity needed for deterministic re-sync/idempotency;
-- [ ] surface truthful source-empty, no-data, auth, rate/validation, and ClickHouse-write failures;
-- [ ] never make a GET page/API request perform hidden ingestion side effects;
-- [ ] keep raw source payload retention out of scope unless a verified field cannot otherwise be represented safely.
+- [x] implement a focused server integration for the three core report families using verified official contracts;
+- [x] add a protected explicit analytics sync endpoint/action with validated date range/building/filter inputs actually supported by Situm;
+- [x] normalize only the fields needed by current analytics UI/querying and write them to ClickHouse;
+- [x] preserve source/report-window identity needed for deterministic re-sync/idempotency;
+- [x] surface truthful source-empty, no-data, auth, rate/validation, and ClickHouse-write failures;
+- [x] never make a GET page/API request perform hidden ingestion side effects;
+- [x] keep raw source payload retention out of scope unless a verified field cannot otherwise be represented safely.
+
+### Phase 2 implementation record (2026-08-13)
+
+- Added protected `POST /api/analytics/sync` for the three verified report families with date/building validation and optional verified report filters.
+- Added direct authenticated Nitro REST report fetching, minimal field normalization, isolated ClickHouse inserts, and truthful source/auth/rate-limit/write errors.
+- Re-sync deletes the exact validated source window with synchronous ClickHouse mutation settings before replacement insert, preserving deterministic window identity without raw payload retention.
+- Static validation passed: `git diff --check`, `npm run lint`, `npm run typecheck`, and `npm run build`. Live Situm→ClickHouse sync is reserved for Plan 017 closeout validation.
 
 ## Phase 3 — ClickHouse analytics query API
 

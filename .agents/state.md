@@ -129,9 +129,13 @@ Phase 0 evidence and local ClickHouse discovery completed on 2026-08-13. Officia
 
 Phase 1 implementation completed on 2026-08-13. The server-only ClickHouse boundary uses the official `@clickhouse/client`, private `CLICKHOUSE_*` runtime inputs, authenticated `/api/health`, and isolated `situm_explore_analytics` tables for the three verified report families plus sync identities. Schema initialization is limited to the app-owned namespace; no unrelated ClickHouse objects were changed. Validation passed: `git diff --check`, lint, typecheck, and build. Phase 2 is next.
 
+## Plan 017 Phase 2 result
+
+Phase 2 implementation completed on 2026-08-13. Protected `POST /api/analytics/sync` now fetches the three verified Situm Reports families through direct Nitro REST, validates supported date/building inputs, normalizes only required fields, writes to isolated ClickHouse tables, records sync identity, and synchronously replaces the exact source window on re-sync. Static validation passed; live sync and idempotency smoke remain required at Plan 017 closeout. Phase 3 is next.
+
 ## Next action
 
-Execute Plan 017 Phase 2 using the verified report and ClickHouse contracts above, then continue Plans 017→020 sequentially using the explicit stacked mode above.
+Execute Plan 017 Phase 3 using the verified report and ClickHouse contracts above, then continue Plans 017→020 sequentially using the explicit stacked mode above.
 
 Start by switching to `roadmap/017-020-next-features`, creating `plan/017-situm-analytics-clickhouse` from its final HEAD, and executing Plan 017 phase-by-phase with the configured `worker` subagent.
 
