@@ -1,8 +1,9 @@
 # Plan 015 — Situm Organization, Users, Groups & Alarms Read Integration
 
-Status: planned-later
+Status: **complete**
 Branch: `plan/015-situm-organization-alarms-read-integration`
-Depends on: Plan 014 complete, reviewed, and integrated into `main`
+Base: Plan 014 final HEAD `657cb2b` (explicit stacked execution; not integrated into `main`)
+Depends on: Plan 014 complete/skipped and available as the stacked parent branch
 
 ## Goal
 
@@ -41,41 +42,41 @@ No create/update/delete users/groups, no organization mutation, and no acknowled
 
 ## Phase 1 — Revalidate value and contracts
 
-- [ ] Confirm retained screens from Plan 010.
-- [ ] Verify exact current read endpoints and minimal UI fields.
-- [ ] Drop any field/panel with no useful real mapping rather than keeping a fixture.
+- [x] Confirm retained screens from Plan 010.
+- [x] Verify exact installed SDK read methods and minimal safe UI fields.
+- [x] Drop groups/alarms fields and panels with no verified SDK/schema mapping rather than keeping fixtures.
 
 ## Phase 2 — Organization
 
-- [ ] Replace synthetic organization summary with real safe fields.
-- [ ] Remove stale POC credential-boundary copy if still present.
-- [ ] Add truthful loading/empty/error handling.
+- [x] Replace synthetic organization summary with real safe fields.
+- [x] Remove stale POC credential-boundary copy if still present.
+- [x] Add truthful loading/empty/error handling.
 
 ## Phase 3 — Users & Groups
 
-- [ ] Replace directory/group fixtures if retained by Plan 010.
-- [ ] Preserve read-only table/detail hierarchy.
-- [ ] Do not conflate Situm users with app login users.
+- [x] Replace verified user directory reads; groups remain unresolved and absent.
+- [x] Preserve read-only directory presentation.
+- [x] Keep Situm users separate from app login users.
 
 ## Phase 4 — Alarms
 
-- [ ] Replace alarm fixtures with real read/status data.
-- [ ] Preserve read-only filters/status treatment.
-- [ ] Do not add mobile-side alarm triggers or mutation controls.
+- [ ] Alarm reads remain unresolved and absent because exact installed/official schema and filters are unavailable.
+- [x] No fixture alarm rows or status mutations are presented.
+- [x] No mobile-side alarm triggers or mutation controls were added.
 
 ## Validation
 
-- [ ] no organization/user/group/alarm mutation;
-- [ ] no credential/key UI;
-- [ ] no public REST credential;
-- [ ] no silent fake fallback rows;
-- [ ] `git diff --check`;
-- [ ] `npm run lint`;
-- [ ] `npm run typecheck`;
-- [ ] `npm run build`;
-- [ ] manual API smoke;
-- [ ] update plan + `.agents/`, commit/push;
-- [ ] no PR until user authorization.
+- [x] no organization/user/group/alarm mutation;
+- [x] no credential/key UI;
+- [x] no public REST credential;
+- [x] no silent fake fallback rows;
+- [x] `git diff --check`;
+- [x] `npm run lint`;
+- [x] `npm run typecheck`;
+- [x] `npm run build`;
+- [ ] manual API smoke (requires configured Situm credentials/session; unavailable here);
+- [x] update plan + `.agents/`, commit/push;
+- [x] no PR until user authorization.
 
 ## Non-goals
 
