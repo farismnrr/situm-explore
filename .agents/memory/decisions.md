@@ -14,7 +14,7 @@ Status: active.
 ## 2026-08-12 — Full-stack Nuxt architecture
 
 - Build one full-stack Nuxt 4 web application with Nitro server routes; native/mobile is separate scope.
-- Use Nuxt UI for production UI, `nuxt-auth-utils` for configured-owner auth/session, and PostgreSQL/Drizzle only for application-owned data in schema `situm_explore`.
+- Use Nuxt UI for production UI, `nuxt-auth-utils` for configured-owner auth/session, and PostgreSQL/Drizzle only for application-owned relational data in schema `situm_explore`.
 - Use Nuxt-native `app/`, `server/`, and genuinely shared `shared/` boundaries.
 - KISS is the default tie-breaker. Do not add generic repositories/services, DI, global stores, layers, generic API clients, caches, or workers without concrete need.
 
@@ -59,7 +59,7 @@ Status: active.
 - Plans 010–016 were explicitly executed as stacked plan branches, each continuing from the previous completed HEAD.
 - Plan 016A continued the same cumulative lineage as the small credential/config/runtime closeout.
 - PR #8 integrated the complete Plans 010–016A lineage into `main`.
-- `main` is now canonical; there is no active plan branch.
+- `main` became canonical for the next roadmap baseline.
 - Historical plan branches no longer own current authority and may be deleted after integration because their commits are contained in `main`.
 - Do not restart or recreate Plans 010–016A from historical branches.
 - The old `plan/017-situm-credential-split-runtime-verification` branch/name was superseded by Plan 016A and is disposable.
@@ -71,7 +71,7 @@ Status: active/completed-and-integrated.
 - Plan 016A was a small hardening/closeout step for Plans 010–016 rather than a new substantive feature domain.
 - Final scope: enforce the two-key Situm model, reconcile environment/docs/runtime consumers, perform real authenticated runtime smoke, and capture evidence for unresolved Reports/Groups/Alarms without implementing a broad new feature domain.
 - Runtime smoke was completed with configured Situm credentials: implemented read paths returned real success responses where data existed, truthful empty/error behavior was observed where applicable, unauthorized/missing-credential behavior was verified, and no private credential leaked through responses/logs/client bundles.
-- Reports, Groups, and Alarms remain evidence-gated follow-up candidates; substantive implementation belongs in a future plan only if justified.
+- Reports, Groups, and Alarms remained evidence-gated follow-up candidates after 016A.
 - Plan 016A was integrated into `main` through PR #8 and is closed.
 
 Status: complete/integrated.
@@ -79,15 +79,53 @@ Status: complete/integrated.
 ## 2026-08-13 — Post-stack implementation truth
 
 - Plan 011 implemented verified Buildings/Floors/POIs/Categories reads and map selection context.
-- Plan 012 implemented verified Geofence/Path reads; route-result/details/constraints remain unresolved/absent.
-- Plan 013 implemented current-position monitoring; stale/offline semantics, Viewer overlay, trajectory/follow remain unresolved/absent.
-- Plan 014 was skipped-unresolved; report endpoint paths/purpose now have partial evidence, but exact schema/filter/permission/runtime mapping remains insufficient for implementation.
-- Plan 015 implemented Organization + Users reads; Groups + Alarms remain unresolved/absent pending exact REST evidence.
+- Plan 012 implemented verified Geofence/Path reads; route-result/details/constraints remained unresolved/absent until the new Plan 020 evidence pass.
+- Plan 013 implemented current-position monitoring; Viewer realtime overlay/trajectory remained unresolved/absent until the new Plan 019 evidence pass.
+- Plan 014 was skipped-unresolved historically; the official report surface is now concrete enough to justify a new Plan 017, but exact consumed filters/fields/runtime behavior must still be re-verified before implementation.
+- Plan 015 implemented Organization + Users reads; Groups + Alarms now move to Plan 018 exact-contract/runtime verification.
 - Plan 016 implemented verified Viewer language, font size, accessibility panel, and location picker actions.
 - Plan 016A completed the final two-key credential model, configuration cleanup, static/security validation, and live Situm runtime smoke for the implemented server read paths.
-- Full hydrated browser automation of every Viewer interaction was not required for Plan 016A closeout; retained Viewer commands remain bounded by their verified Plan 016 contract.
+- PRs #10 and #11 integrated the user's final manual UI/mobile refinement pass into `main`; that updated `main` is the UI baseline for Plans 017–020.
 
 Status: active current truth.
+
+## 2026-08-13 — Plan 017 local ClickHouse analytics architecture
+
+- Plan 017 uses the user's **existing local ClickHouse instance** for Situm analytics/report persistence and querying.
+- Do not install/provision another ClickHouse server and do not add Docker/Compose for ClickHouse.
+- Safely discover the actual local connection/config during Phase 0 without printing/persisting secrets or asking the user to paste them into chat.
+- Inspect the existing instance before creating app-owned objects; never alter/drop unrelated databases/tables.
+- Keep ClickHouse server-only behind Nitro. Browser code never connects directly to ClickHouse or receives its credentials.
+- PostgreSQL/Drizzle remains the application relational store; ClickHouse is an additional analytics store for Plan 017, not a replacement.
+- Use explicit product sync from Situm Reports into ClickHouse for this PoC; do not introduce a background worker/queue/cron just to keep analytics fresh.
+- Prefer the official current ClickHouse Node.js client when a client dependency is needed, after verifying the current package/API.
+
+Status: active for Plan 017.
+
+## 2026-08-13 — Plans 017–020 stacked feature roadmap
+
+The user explicitly authorized an unattended stacked execution:
+
+```text
+roadmap/017-020-next-features
+-> plan/017-situm-analytics-clickhouse
+-> plan/018-situm-groups-alarms-read
+-> plan/019-situm-realtime-viewer-trajectory
+-> plan/020-situm-static-directions
+```
+
+- Plan 017: real Situm Reports analytics persisted/queried through local ClickHouse.
+- Plan 018: Groups + Alarms read-only integration.
+- Plan 019: realtime Viewer overlay and conditional verified trajectory playback.
+- Plan 020: static Viewer directions only; no live handset navigation.
+- Each next plan branches from the previous plan's final validated/pushed HEAD, not from stale `main`.
+- No PR and no merge during the 017–020 execution.
+- The configured `worker` subagent owns implementation/tests for each phase; the parent owns orchestration, review, state/plan updates, commits, pushes, and phase/plan transitions.
+- If the configured `worker` cannot be spawned, stop instead of substituting another agent/model.
+- Otherwise continue automatically through the stack without waiting for user confirmation between phases.
+- Optional sub-capabilities explicitly marked conditional may remain unresolved when evidence/runtime is insufficient; core behavior must never be faked to force completion.
+
+Status: active execution authorization.
 
 ## 2026-08-12 — Git workflow default
 
@@ -96,6 +134,6 @@ Status: active current truth.
 - Each completed phase updates plan/relevant `.agents`, validates, commits, and pushes.
 - PR creation/integration is user-gated.
 - Normal sequential dependencies start from updated `main` after integration; explicit stacked execution is allowed only when the user authorizes it and current durable state records it.
-- After a plan lineage is integrated, historical plan branches may be deleted; `main` becomes the canonical starting point for future work.
+- After a plan lineage is integrated, historical plan branches may be deleted; the integrated branch becomes the canonical starting point for future work.
 
 Status: active.
