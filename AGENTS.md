@@ -1,73 +1,95 @@
 # AGENTS.md
 
-This repository is a persistent self-improvement agent workspace for Codex.
+This repository is a persistent agent workspace for Situm Explore.
 
 Keep this file short. It is a router, not the knowledge base.
 
-## Source of truth
+## Mandatory read order
 
-Before doing work, read `.agents/README.md` and follow the instructions it links to.
-
-At minimum, every conversation must load:
+At minimum every conversation reads:
 
 1. `.agents/identity.md`
 2. `.agents/state.md`
 3. `.agents/protocols/chat-lifecycle.md`
-4. Any relevant files under `.agents/memory/`, `.agents/knowledge/`, and `.agents/reflections/`
 
-For any plan execution or repository implementation work, also read and follow:
+For plan execution or repository changes also read:
 
-5. `.agents/protocols/git-workflow.md`
+4. `.agents/protocols/git-workflow.md`
+5. `.agents/memory/decisions.md` when roadmap/product boundaries matter
 6. `ARCHITECTURE.md`
 7. `plans/README.md`
+8. `design/data-source-matrix.md` for Plans 010–016
+9. active plan
 
-For any UI, UX, styling, layout, component-composition, or visual-design work, also read:
+For UI/UX/presentation work also read:
 
-8. `DESIGN.md`
-9. The active plan and only the root `design/` implementation documents explicitly linked by `DESIGN.md` or that plan
+10. `DESIGN.md`
+11. `design/IMPLEMENTATION.md`
+12. the canonical HTML only as visual/interaction evidence
 
-The Git workflow protocol is mandatory. Every plan uses its own dedicated branch in the normal repository working directory. Linked Git worktrees are not required. Completed phases must be persisted, validated, committed, and pushed without opening a PR unless the user explicitly asks for one.
+Historical plans/sessions are evidence only and must not override current state/contracts.
 
-## Sequential roadmap rule
+## Current roadmap boundary
 
-Roadmap plans are executed sequentially.
+The UI roadmap through Plan 009B is historical, manually accepted, and integrated.
 
-If the active plan declares a dependency on a previous plan, that dependency must already be complete and integrated into `main` before creating the next plan branch from `origin/main`.
+Plan 010 is the current bridge into backend/Situm work. It may prune previously accepted UI when a control is native-only, unsupported, fake, misleading, or has no credible product owner.
 
-Do not silently:
+For Plans 010–016, every Situm-domain capability must end as one of:
 
-- start a dependent plan from stale `main`;
-- stack a new plan branch on an unmerged dependency;
-- copy files manually from another plan branch.
+```text
+WEB / SITUM
+WEB / PRODUCT
+NATIVE-ONLY
+REMOVE
+UNRESOLVED
+```
 
-If the dependency is complete but still awaiting user authorization for PR/integration, stop at that boundary. Stacked plan branches are allowed only when the user explicitly requests them.
+A prototype control is not proof that Situm supports that behavior on web.
 
-The architecture contract is mandatory for implementation work. Use Nuxt 4 native app/server/shared boundaries, keep pages and API handlers focused, and prefer KISS over speculative abstractions. SOLID and DRY clarify real responsibilities/repetition; they do not justify ceremonial layers.
+## No-hallucination external integration rule
 
-For UI work, the populated canonical HTML is a visual/interaction reference only. Production implementation must use the existing Nuxt/Vue/Nuxt UI stack; do not copy prototype HTML/CSS/JS as application architecture.
+For Situm behavior, model memory is not evidence.
 
-Plans 004–009 are UI-first/dummy-first for product domains that do not already have a working integration. The existing real auth/database/Situm Viewer lifecycle stays real, but new Situm product-domain integrations wait until the UI roadmap is complete and accepted.
+Before implementation, verify the exact current contract from official Situm documentation/source and the installed SDK version where relevant.
 
-## Mandatory chat closeout
+Do not invent:
 
-Before finishing every conversation, run the persistence pass in `.agents/protocols/persistence.md`.
+- endpoint paths;
+- SDK/Viewer method names;
+- payload/event fields;
+- permissions/auth behavior;
+- web-vs-native availability;
+- browser-vs-server ownership;
+- fake fallback values.
 
-Every conversation must leave a concise entry in `.agents/sessions/YYYY-MM-DD.md`. Durable stores should be updated only when the conversation actually changes them.
+If exact evidence is incomplete, mark the capability `UNRESOLVED` and stop that capability instead of guessing.
 
-In particular:
+## Architecture boundary
 
-- update memory when durable user facts, preferences, goals, or decisions change;
-- update knowledge when reusable concepts, references, or frameworks are learned;
-- update reflections when a reusable lesson about agent behavior or process is learned;
-- update `.agents/state.md` when current focus, open loops, or next actions change.
+Use the current Nuxt 4 structure already present under `app/`, `server/`, and optional `shared/`.
 
-Prefer revising existing entries over adding duplicates.
+Do not repeat historical directory migrations.
 
-## Boundaries
+Prefer KISS. Do not introduce speculative services, repositories, stores, event buses, generic API clients, caches, workers, or parallel design systems.
 
-- Do not store passwords, API keys, access tokens, credentials, or unnecessary sensitive information.
-- Mark inference as inference; do not rewrite guesses as user-stated facts.
-- Do not treat session logs or historical plans as permanent truth when newer durable state/contracts contradict them.
-- Keep architecture simple until requirements justify complexity.
-- Do not implement plans directly on `main`.
-- Do not create pull requests for plan branches without explicit user authorization.
+Future Situm REST/domain calls use private Nitro runtime credentials behind authenticated routes. The historical public Viewer POC key is not authority for new REST integrations.
+
+Native indoor positioning/bluedot and movement-aware handset navigation are outside the current Nuxt web roadmap.
+
+## Git workflow
+
+- one plan = one dedicated plan branch;
+- do not implement directly on `main`;
+- do not use linked worktrees unless explicitly requested;
+- complete phases with plan/state updates, validation, commit, and push;
+- do not open a PR or merge without explicit user authorization;
+- dependent plans start only after their dependency is integrated into updated `main`.
+
+## Mandatory closeout
+
+Before finishing a conversation, follow `.agents/protocols/persistence.md`.
+
+Update current state/session evidence and only revise durable memory/knowledge/decisions when something durable actually changed.
+
+Never persist credentials, API keys, JWTs, passwords, or unnecessary sensitive payloads.
