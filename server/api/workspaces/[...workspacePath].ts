@@ -27,6 +27,12 @@ export default defineEventHandler(async (event) => {
     return { ...config, configured: Boolean(config.configured), viewerConfigured: Boolean(config.viewerConfigured) }
   }
 
+  if (getMethod(event) === 'DELETE') {
+    const [config] = await getDb().delete(workspaceSitumConfigs).where(eq(workspaceSitumConfigs.workspaceId, workspaceId)).returning({ id: workspaceSitumConfigs.id })
+    if (!config) throw createError({ statusCode: 404, statusMessage: 'Situm configuration not found.' })
+    return { ok: true }
+  }
+
   if (getMethod(event) !== 'PUT') throw createError({ statusCode: 405, statusMessage: 'Method not allowed.' })
   const parsed = schema.safeParse(await readBody(event))
   if (!parsed.success) throw createError({ statusCode: 400, statusMessage: 'Valid Situm configuration is required.' })

@@ -84,6 +84,16 @@ async function saveConfig() {
   } catch (error: unknown) { errorMessage.value = getSafeErrorMessage(error, 'Situm configuration could not be saved.') } finally { saving.value = false }
 }
 
+async function deleteConfig() {
+  if (!selectedWorkspaceId.value || !config.value || !window.confirm('Delete the stored Situm configuration for this workspace? This cannot be undone.')) return
+  saving.value = true; errorMessage.value = ''; message.value = ''
+  try {
+    await $fetch(`/api/workspaces/${selectedWorkspaceId.value}/situm-config`, { method: 'DELETE' })
+    config.value = null
+    message.value = 'Situm configuration deleted.'
+  } catch (error: unknown) { errorMessage.value = getSafeErrorMessage(error, 'Situm configuration could not be deleted.') } finally { saving.value = false }
+}
+
 async function validateConfig() {
   if (!selectedWorkspaceId.value || !config.value) return
   validating.value = true; errorMessage.value = ''; message.value = ''
@@ -125,7 +135,11 @@ onMounted(refresh)
           <UAlert v-else color="neutral" variant="subtle" title="Not configured" description="Add a primary Situm Read & Write API key and a separate read-only Viewer API key to connect this workspace." />
           <UFormField label="Primary Read & Write API key" hint="Required to add or replace the stored credentials"><UInput v-model="apiKey" type="password" autocomplete="new-password" placeholder="Enter a new key" class="w-full" /></UFormField>
           <UFormField label="Read-only Viewer API key" hint="Required for the browser Viewer; write-only and never returned"><UInput v-model="viewerApiKey" type="password" autocomplete="new-password" placeholder="Enter a read-only key" class="w-full" /></UFormField>
-          <div class="flex flex-wrap gap-2"><UButton label="Save configuration" :loading="saving" :disabled="saving || !apiKey || !viewerApiKey" @click="saveConfig" /><UButton v-if="config" label="Validate configuration" color="neutral" variant="outline" :loading="validating" :disabled="saving || validating" @click="validateConfig" /></div>
+          <div class="flex flex-wrap gap-2">
+            <UButton label="Save configuration" :loading="saving" :disabled="saving || !apiKey || !viewerApiKey" @click="saveConfig" />
+            <UButton v-if="config" label="Validate configuration" color="neutral" variant="outline" :loading="validating" :disabled="saving || validating" @click="validateConfig" />
+            <UButton v-if="config" label="Delete configuration" color="error" variant="soft" :loading="saving" :disabled="saving || validating" @click="deleteConfig" />
+          </div>
         </UCard>
       </div>
       <UCard v-else-if="!loading"><div class="py-8 text-center"><h2 class="font-semibold text-highlighted">No workspace selected</h2><p class="mt-1 text-sm text-muted">Create your first private workspace to configure Situm.</p></div></UCard>
