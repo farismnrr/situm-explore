@@ -2,6 +2,10 @@
 
 _Last reviewed: 2026-08-14_
 
+## Active Plan 026
+
+Plan 026 production containerization is active on `plan/026-production-containerization`, based on latest `origin/main`. Phase 0 and Phase 1 are complete. The workflow targets local Buildx publication to GHCR for `linux/amd64` and `linux/arm64`, pull-only staging Compose, and Makefile-driven operations; no CI/PR/merge is authorized.
+
 ## Integrated baseline
 
 Plans 017–020 are complete and integrated into `main` by PR #12.
