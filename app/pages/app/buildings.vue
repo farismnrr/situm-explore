@@ -54,7 +54,7 @@ function openDetails(building: SitumCartographyBuilding) {
           <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-info/10 text-info"><UIcon name="i-lucide-building-2" /></span><span class="min-w-0 flex-1"><strong class="block truncate text-sm text-highlighted">{{ building.name }}</strong><span class="mt-1 block text-xs text-muted">{{ floorsFor(building.id).length }} floors</span></span><UIcon name="i-lucide-chevron-right" class="text-muted" />
         </button>
       </div>
-      <p v-if="status !== 'pending' && filteredBuildings.length === 0" class="px-5 py-10 text-center text-sm text-muted">No real buildings match your filter.</p>
+      <p v-if="String(status) === 'success' && !error && filteredBuildings.length === 0" class="px-5 py-10 text-center text-sm text-muted">No real buildings match your filter.</p>
     </UCard>
 
     <CartographyDetailsDrawer v-if="selectedBuilding" v-model:open="drawerOpen" title="Building details" type="Building" :name="selectedBuilding.name" :subtitle="selectedBuilding.description || 'Situm building'" :map-to="`/app/map?buildingId=${selectedBuilding.id}`" :details="[{ label: 'Identifier', value: String(selectedBuilding.id) }, { label: 'Floors', value: String(floorsFor(selectedBuilding.id).length) }, { label: 'Latitude', value: String(selectedBuilding.location.lat) }, { label: 'Longitude', value: String(selectedBuilding.location.lng) }]">

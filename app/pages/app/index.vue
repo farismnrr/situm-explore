@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { SitumCartographyResponse } from '#shared/situm-cartography'
-import { homeBuilding, homeExplore } from '~/data/prototype/home'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Home' })
 
@@ -8,9 +7,10 @@ const { user } = useUserSession()
 const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/)[0] || 'there')
 
 const { selectedWorkspaceId } = useWorkspaceContext()
-const { data: cartography, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
+const { data: cartography, error: cartographyError, status: cartographyStatus, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
 watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refreshCartography() }, { immediate: true })
 const previewBuildingId = computed(() => cartography.value?.buildings[0]?.id)
+const previewBuilding = computed(() => cartography.value?.buildings[0] ?? null)
 const previewFloors = computed(() => (cartography.value?.floors ?? [])
   .filter(floor => floor.buildingId === previewBuildingId.value)
   .sort((a, b) => a.level - b.level))
@@ -21,6 +21,13 @@ watch(previewFloors, (floors) => {
 }, { immediate: true })
 
 const previewFloorMapUrl = computed(() => previewFloors.value.find(floor => floor.id === selectedPreviewFloorId.value)?.mapUrl || '')
+const homeExplore = [
+  { icon: 'i-lucide-building-2', title: 'Buildings & floors', detail: 'Browse venue and floor metadata.', to: '/app/buildings' },
+  { icon: 'i-lucide-map-pin', title: 'POIs', detail: 'Search destinations and categories.', to: '/app/pois' },
+  { icon: 'i-lucide-radio', title: 'Realtime', detail: 'Track current positions.', to: '/app/realtime' },
+  { icon: 'i-lucide-route', title: 'Directions', detail: 'Preview routes and accessibility.', to: '/app/paths' },
+  { icon: 'i-lucide-bar-chart-3', title: 'Reports', detail: 'Visitors, heatmaps and stay time.', to: '/app/analytics' }
+]
 </script>
 
 <template>
@@ -30,7 +37,7 @@ const previewFloorMapUrl = computed(() => previewFloors.value.find(floor => floo
         <div>
           <p class="eyebrow">Good afternoon</p>
           <h1 class="mt-1 text-2xl font-semibold tracking-tight text-highlighted">Welcome back, {{ firstName }}.</h1>
-          <p class="mt-2 max-w-xl text-sm leading-6 text-muted">Your indoor workspace is healthy. Pick up from the map, check live positions, or explore cartography.</p>
+          <p class="mt-2 max-w-xl text-sm leading-6 text-muted">{{ String(cartographyStatus) === 'pending' || !selectedWorkspaceId ? 'Loading your indoor workspace…' : cartographyError ? 'Workspace data is temporarily unavailable.' : 'Explore your indoor workspace, check live positions, or browse cartography.' }}</p>
         </div>
         <div class="flex shrink-0 flex-wrap gap-2">
           <UButton to="/app/realtime" color="neutral" variant="outline">View realtime</UButton>
@@ -39,10 +46,14 @@ const previewFloorMapUrl = computed(() => previewFloors.value.find(floor => floo
       </div>
     </UCard>
 
-    <div class="content-grid mb-4">
+    <UAlert v-if="cartographyError" class="mb-4" color="error" variant="subtle" title="Workspace preview unavailable" description="The selected workspace cartography could not be loaded." />
+    <UAlert v-else-if="String(cartographyStatus) === 'pending'" class="mb-4" color="neutral" variant="subtle" title="Loading workspace preview" description="Reading the selected workspace building and floor data." />
+    <UAlert v-else-if="String(cartographyStatus) !== 'pending' && !previewBuilding" class="mb-4" color="neutral" variant="subtle" title="No building data" description="The selected workspace has not returned any buildings to preview." />
+
+    <div v-if="String(cartographyStatus) !== 'pending' && !cartographyError && previewBuilding" class="content-grid mb-4">
       <UCard :ui="{ body: 'p-0' }" class="overflow-hidden">
         <div class="panel-head flex items-start justify-between gap-3 p-4 pb-3">
-          <div><h2 class="font-semibold text-highlighted">{{ homeBuilding.name }}</h2><p class="mt-1 text-xs text-muted">{{ homeBuilding.organization }} · {{ homeBuilding.floor }}</p></div>
+          <div><h2 class="font-semibold text-highlighted">{{ previewBuilding.name }}</h2><p class="mt-1 text-xs text-muted">{{ previewBuilding.description || 'Situm building' }}<span v-if="previewFloors[0]"> · {{ previewFloors[0].name }}</span></p></div>
           <UButton to="/app/map" size="sm" color="neutral" variant="outline">Open viewer</UButton>
         </div>
         <div class="building-preview" aria-label="Static top-down preview of the main building floor plan">
@@ -50,29 +61,7 @@ const previewFloorMapUrl = computed(() => previewFloors.value.find(floor => floo
             <button v-for="floor in previewFloors" :key="floor.id" type="button" class="floor-switch-btn" :class="{ 'is-active': floor.id === selectedPreviewFloorId }" @click="selectedPreviewFloorId = floor.id">{{ floor.name }}</button>
           </div>
           <img v-if="previewFloorMapUrl" :src="previewFloorMapUrl" alt="" class="building-plan" draggable="false">
-          <svg v-else class="building-plan" viewBox="0 0 400 246" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <rect x="0" y="0" width="400" height="246" fill="var(--explore-surface-subtle)" />
-            <g stroke="var(--explore-border-strong)" stroke-width="1">
-              <line x1="0" y1="30" x2="400" y2="30" /><line x1="0" y1="70" x2="400" y2="70" /><line x1="0" y1="110" x2="400" y2="110" /><line x1="0" y1="150" x2="400" y2="150" /><line x1="0" y1="190" x2="400" y2="190" />
-              <line x1="40" y1="0" x2="40" y2="246" /><line x1="100" y1="0" x2="100" y2="246" /><line x1="160" y1="0" x2="160" y2="246" /><line x1="220" y1="0" x2="220" y2="246" /><line x1="280" y1="0" x2="280" y2="246" /><line x1="340" y1="0" x2="340" y2="246" />
-            </g>
-            <rect x="26" y="24" width="348" height="198" rx="14" fill="#ffffff" stroke="var(--explore-border-strong)" stroke-width="2" />
-            <g stroke="var(--explore-border)" stroke-width="1.5" fill="none">
-              <rect x="46" y="44" width="110" height="72" rx="6" />
-              <rect x="46" y="128" width="110" height="74" rx="6" />
-              <rect x="168" y="44" width="90" height="158" rx="6" />
-              <rect x="270" y="44" width="84" height="72" rx="6" />
-              <rect x="270" y="128" width="84" height="74" rx="6" />
-            </g>
-            <g stroke="var(--explore-border)" stroke-width="1" stroke-dasharray="4 3">
-              <line x1="160" y1="24" x2="160" y2="222" /><line x1="264" y1="24" x2="264" y2="222" />
-            </g>
-            <g>
-              <circle cx="112" cy="80" r="6" fill="#2563eb" /><circle cx="112" cy="80" r="11" fill="#2563eb" fill-opacity="0.15" />
-              <circle cx="212" cy="150" r="6" fill="#168754" /><circle cx="212" cy="150" r="11" fill="#168754" fill-opacity="0.15" />
-              <circle cx="312" cy="90" r="6" fill="#7c3aed" /><circle cx="312" cy="90" r="11" fill="#7c3aed" fill-opacity="0.15" />
-            </g>
-          </svg>
+          <div v-else class="flex h-full items-center justify-center text-sm text-muted">No floor map image was returned.</div>
           <span class="preview-tag">Layout preview · not interactive</span>
         </div>
       </UCard>

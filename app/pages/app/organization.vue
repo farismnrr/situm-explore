@@ -13,7 +13,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Organization' })
 
     <UAlert v-if="error" color="error" variant="subtle" title="Organization unavailable" description="The authenticated organization read failed. No fixture summary is shown." />
     <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading organization" description="Reading the safe organization summary from Situm." />
-    <UCard v-else-if="data"><p class="text-sm font-semibold text-highlighted">{{ data.organization.name }}</p><p class="mt-1 text-xs text-muted">Organization ID {{ data.organization.id }}</p><p v-if="data.organization.supportEmail" class="mt-2 text-xs text-muted">Support: {{ data.organization.supportEmail }}</p></UCard>
+    <UCard v-else-if="String(status) === 'success' && data"><p class="text-sm font-semibold text-highlighted">{{ data.organization.name }}</p><p class="mt-1 text-xs text-muted">Organization ID {{ data.organization.id }}</p><p v-if="data.organization.supportEmail" class="mt-2 text-xs text-muted">Support: {{ data.organization.supportEmail }}</p></UCard>
   </div>
 </template>
 

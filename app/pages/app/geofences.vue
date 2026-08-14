@@ -52,7 +52,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Geofences' })
       <div class="divide-y divide-default md:hidden">
         <button v-for="geofence in filteredGeofences" :key="geofence.id" type="button" class="flex w-full items-center gap-3 p-4 text-left transition hover:bg-elevated/40" @click="openDetails(geofence)"><span class="grid size-9 shrink-0 place-items-center rounded-lg bg-info/10 text-info"><UIcon name="i-lucide-map-pin" /></span><span class="min-w-0 flex-1"><strong class="block truncate text-sm text-highlighted">{{ geofence.name }}</strong><span class="mt-1 block text-xs text-muted">Floor {{ geofence.floorId }} · {{ geofence.type }}</span></span><ProductStatusBadge label="Available" tone="success" /><UIcon name="i-lucide-chevron-right" class="text-muted" /></button>
       </div>
-      <p v-if="filteredGeofences.length === 0" class="px-5 py-10 text-center text-sm text-muted">No geofences match your filters.</p>
+      <p v-if="String(status) === 'success' && filteredGeofences.length === 0" class="px-5 py-10 text-center text-sm text-muted">No geofences match your filters.</p>
     </UCard>
 
     <CartographyDetailsDrawer v-if="selectedGeofence" :open="true" title="Geofence details" :type="selectedGeofence.type" :name="selectedGeofence.name" :subtitle="`${buildingName(selectedGeofence.buildingId)} · Floor ${selectedGeofence.floorId}`" map-to="/app/map?overlay=geofences" :details="[{ label: 'Identifier', value: selectedGeofence.id }, { label: 'Type', value: selectedGeofence.type }]" @update:open="closeDetails" />

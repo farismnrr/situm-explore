@@ -47,7 +47,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Groups' })
       <div class="divide-y divide-default md:hidden">
         <div v-for="group in filteredGroups" :key="group.uuid" class="p-4"><strong class="block text-sm text-highlighted">{{ group.name }}</strong><span class="mt-1 block break-all font-mono text-xs text-muted">{{ group.uuid }}</span><span class="mt-2 block text-xs text-muted">ID {{ group.id }} · Parent {{ group.parentGroupId === null ? 'none' : group.parentGroupId }}</span></div>
       </div>
-      <p v-if="status !== 'pending' && !error && filteredGroups.length === 0" class="px-5 py-10 text-center text-sm text-muted">{{ groups.length ? 'No groups match your filters.' : 'No Situm groups returned.' }}</p>
+      <p v-if="String(status) === 'success' && !error && filteredGroups.length === 0" class="px-5 py-10 text-center text-sm text-muted">{{ groups.length ? 'No groups match your filters.' : 'No Situm groups returned.' }}</p>
     </UCard>
   </div>
 </template>

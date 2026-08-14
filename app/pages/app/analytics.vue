@@ -30,7 +30,7 @@ const buildingItems = computed(() => [{ label: 'All buildings', value: '' }, ...
 const query = computed(() => ({ fromDate: fromDate.value, toDate: toDate.value, ...(buildingId.value ? { buildingId: buildingId.value } : {}), ...(geofenceId.value.trim() ? { geofenceId: geofenceId.value.trim() } : {}) }))
 const { data, error, status, refresh } = await useFetch<AnalyticsResponse>(workspaceAnalyticsUrl, { query, immediate: false })
 
-const hasData = computed(() => Boolean(data.value && (data.value.visitors.length || data.value.positioning.length || data.value.geofencing.length)))
+const hasData = computed(() => String(status.value) === 'success' && Boolean(data.value && (data.value.visitors.length || data.value.positioning.length || data.value.geofencing.length)))
 const positioning = computed(() => data.value?.positioning[0] ?? null)
 const geofencing = computed(() => data.value?.geofencing[0] ?? null)
 const positioningMinutes = computed(() => positioning.value ? formatNumber(Number(positioning.value.total) / 60) : '—')
@@ -84,7 +84,7 @@ onMounted(loadAnalytics)
         <UFormField label="From date"><UInput v-model="fromDate" type="date" aria-label="Analytics start date" /></UFormField>
         <UFormField label="To date"><UInput v-model="toDate" type="date" aria-label="Analytics end date" /></UFormField>
         <UFormField label="Building"><USelect v-model="buildingId" :items="buildingItems" aria-label="Filter by building" /></UFormField>
-        <UButton label="Apply filters" icon="i-lucide-filter" color="neutral" variant="outline" :loading="status === 'pending'" @click="loadAnalytics" />
+        <UButton label="Apply filters" icon="i-lucide-filter" color="neutral" variant="outline" :loading="String(status) === 'pending'" @click="loadAnalytics" />
       </div>
       <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <UInput v-model="geofenceId" placeholder="Optional geofence ID" aria-label="Filter by geofence ID" class="w-full sm:w-72" />
@@ -95,8 +95,8 @@ onMounted(loadAnalytics)
     <UAlert v-if="syncMessage" color="success" variant="subtle" :title="syncMessage" />
     <UAlert v-if="syncError" color="error" variant="subtle" title="Sync failed" :description="syncError" />
     <UAlert v-if="error" color="error" variant="subtle" title="Analytics unavailable" description="The protected analytics data could not be read from ClickHouse." />
-    <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading analytics" description="Reading the selected report window from ClickHouse." />
-    <UAlert v-else-if="!hasData" color="neutral" variant="subtle" title="No analytics data" description="No synced report rows exist for this date range and filter. Sync from Situm to load the window." />
+    <UAlert v-else-if="String(status) === 'pending' || String(status) === 'idle'" color="neutral" variant="subtle" title="Loading analytics" description="Reading the selected report window from ClickHouse." />
+    <UAlert v-else-if="String(status) === 'success' && !hasData" color="neutral" variant="subtle" title="No analytics data" description="No synced report rows exist for this date range and filter. Sync from Situm to load the window." />
 
     <template v-if="hasData">
       <div class="grid gap-4 sm:grid-cols-3">

@@ -110,7 +110,7 @@ onMounted(refresh)
 <template>
   <div class="operations-page space-y-6">
     <ProductPageHeader eyebrow="Workspace" title="Workspaces" description="Create private workspaces and manage their server-side Situm configuration.">
-      <template #actions><UBadge color="neutral" variant="soft">{{ workspaces.length }} workspace{{ workspaces.length === 1 ? '' : 's' }}</UBadge></template>
+      <template #actions><UBadge color="neutral" variant="soft">{{ loading ? 'Loading' : `${workspaces.length} workspace${workspaces.length === 1 ? '' : 's'}` }}</UBadge></template>
     </ProductPageHeader>
     <UAlert v-if="errorMessage" color="error" variant="subtle" title="Action could not be completed" :description="errorMessage" />
     <UAlert v-if="message" color="success" variant="subtle" title="Done" :description="message" />

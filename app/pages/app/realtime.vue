@@ -23,7 +23,7 @@ watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) { refreshCartogra
 const positions = computed(() => data.value?.positions ?? [])
 const buildings = computed(() => cartography.value?.buildings ?? [])
 const searchQuery = ref('')
-const selectedBuilding = computed(() => buildings.value.find(building => building.id === selectedBuildingId.value) ?? buildings.value[0] ?? null)
+const selectedBuilding = computed(() => String(cartographyStatus.value) === 'success' ? buildings.value.find(building => building.id === selectedBuildingId.value) ?? buildings.value[0] ?? null : null)
 const selectedBuildingForViewer = computed(() => selectedBuilding.value)
 const filteredPositions = computed(() => {
   const query = searchQuery.value.trim().toLocaleLowerCase()
@@ -128,7 +128,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
 <template>
   <div class="operations-page space-y-6">
     <ProductPageHeader eyebrow="Operations" title="Realtime positions" description="Web monitoring for positions produced by tracked devices; the browser does not perform indoor positioning.">
-      <template #actions><ProductStatusBadge :label="error ? 'Unavailable' : `${positions.length} positions`" :tone="error ? 'error' : 'success'" /><UButton label="Refresh" icon="i-lucide-refresh-cw" color="neutral" variant="outline" :loading="status === 'pending'" @click="refreshPositions" /></template>
+      <template #actions><ProductStatusBadge :label="error ? 'Unavailable' : String(status) === 'success' ? `${positions.length} positions` : 'Loading'" :tone="error ? 'error' : String(status) === 'success' ? 'success' : 'neutral'" /><UButton label="Refresh" icon="i-lucide-refresh-cw" color="neutral" variant="outline" :loading="String(status) === 'pending'" @click="refreshPositions" /></template>
     </ProductPageHeader>
 
     <p v-if="statusMessage" class="sr-only" role="status">{{ statusMessage }}</p>
@@ -146,17 +146,17 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
           <div v-else-if="viewerState === 'error'" class="absolute inset-0 flex items-center justify-center bg-default/80 p-6"><UAlert color="error" variant="subtle" title="Viewer unavailable" description="The Situm map could not be loaded. The server position context remains independent." class="max-w-md" /></div>
           <div v-else-if="overlayState === 'loading'" class="absolute left-4 top-4"><UBadge color="warning" variant="soft">Starting realtime overlay…</UBadge></div>
           <div v-else-if="overlayState === 'error'" class="absolute left-4 right-4 top-4"><UAlert color="error" variant="subtle" title="Realtime overlay unavailable" :description="overlayMessage" /></div>
-          <div v-else-if="overlayEnabled && overlayState === 'active' && positions.length === 0" class="absolute inset-0 flex items-center justify-center pointer-events-none p-6"><UAlert color="neutral" variant="subtle" title="No current positions" description="The Viewer is ready, but the server returned no current position records." class="max-w-md" /></div>
+          <div v-else-if="String(status) === 'success' && overlayEnabled && overlayState === 'active' && positions.length === 0" class="absolute inset-0 flex items-center justify-center pointer-events-none p-6"><UAlert color="neutral" variant="subtle" title="No current positions" description="The Viewer is ready, but the server returned no current position records." class="max-w-md" /></div>
         </div>
       </UCard>
 
       <UCard :ui="{ body: 'p-0' }">
-        <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3"><h2 class="text-sm font-semibold text-highlighted">People & devices</h2><span class="text-xs text-muted">{{ filteredPositions.length }} of {{ positions.length }} records</span></div>
+        <div class="flex items-center justify-between gap-3 border-b border-default px-4 py-3"><h2 class="text-sm font-semibold text-highlighted">People & devices</h2><span class="text-xs text-muted">{{ String(status) === 'success' ? `${filteredPositions.length} of ${positions.length} records` : 'Loading' }}</span></div>
         <div class="space-y-4 p-4">
           <UInput v-model="searchQuery" icon="i-lucide-search" placeholder="Search IDs or building/floor context" aria-label="Search realtime positions" />
           <UAlert v-if="error" color="error" variant="subtle" title="Positions unavailable" description="The authenticated Situm position read failed." />
           <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading positions" description="Reading current positions from Situm." />
-          <UAlert v-else-if="positions.length === 0" color="neutral" variant="subtle" title="No current positions" description="Situm returned no current position records." />
+          <UAlert v-else-if="String(status) === 'success' && positions.length === 0" color="neutral" variant="subtle" title="No current positions" description="Situm returned no current position records." />
           <UAlert v-else-if="filteredPositions.length === 0" color="neutral" variant="subtle" title="No matching positions" description="Try another identifier or clear the search and building context." />
           <div v-else class="space-y-2">
             <div v-for="position in filteredPositions" :key="position.id" class="rounded-lg border border-default p-3">

@@ -2,15 +2,15 @@
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Dashboard' })
 
-const { data: foundation } = await useFetch('/api/me')
+const { data: foundation, status: foundationStatus } = await useFetch('/api/me')
 const { selectedWorkspaceId } = useWorkspaceContext()
-const { data: situm, refresh: refreshSitum } = await useFetch<{ configured?: boolean }>(useWorkspaceEndpoint('/situm/status'), { immediate: false })
+const { data: situm, error: situmError, status: situmStatus, refresh: refreshSitum } = await useFetch<{ configured?: boolean }>(useWorkspaceEndpoint('/situm/status'), { immediate: false })
 watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refreshSitum() }, { immediate: true })
 
-const databaseLabel = computed(() => foundation.value?.status === 'connected' || foundation.value?.status === 'connected-empty' ? 'Connected' : 'Unavailable')
-const databaseColor = computed(() => databaseLabel.value === 'Connected' ? 'success' : 'error')
-const situmLabel = computed(() => situm.value?.configured ? 'Configured' : 'Not configured')
-const situmColor = computed(() => situm.value?.configured ? 'success' : 'warning')
+const databaseLabel = computed(() => foundationStatus.value === 'pending' ? 'Loading' : foundation.value?.status === 'connected' || foundation.value?.status === 'connected-empty' ? 'Connected' : 'Unavailable')
+const databaseColor = computed(() => databaseLabel.value === 'Connected' ? 'success' : databaseLabel.value === 'Loading' ? 'neutral' : 'error')
+const situmLabel = computed(() => situmStatus.value === 'pending' ? 'Loading' : situmError.value ? 'Unavailable' : situm.value?.configured ? 'Configured' : 'Not configured')
+const situmColor = computed(() => situmLabel.value === 'Configured' ? 'success' : situmLabel.value === 'Loading' ? 'neutral' : situmLabel.value === 'Unavailable' ? 'error' : 'warning')
 </script>
 
 <template>
