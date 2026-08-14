@@ -1,0 +1,1 @@
+ALTER TABLE "situm_explore"."users" ADD CONSTRAINT "users_email_normalized_check" CHECK ("situm_explore"."users"."email" = lower("situm_explore"."users"."email"));

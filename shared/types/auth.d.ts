@@ -1,4 +1,4 @@
 declare module '#auth-utils' {
-  interface User { email: string }
+  interface User { id: string; email: string }
 }
 export {}

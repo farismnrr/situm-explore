@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
-  active: 'login'
+  active: 'login' | 'register'
   title: string
   intro: string
   artDescription?: string
