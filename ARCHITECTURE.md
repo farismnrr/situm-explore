@@ -2,7 +2,7 @@
 
 This file is the current architecture contract for Situm Explore.
 
-It describes both the **integrated pre-refactor runtime** and the **approved Plans 021–025 transition**. Historical migrations belong in completed plans/session evidence.
+It describes the current runtime contract and preserves the **historical pre-refactor baseline** plus the completed Plans 021–025 transition. Historical migrations belong in completed plans/session evidence.
 
 ## Core principles
 
@@ -51,16 +51,16 @@ Do not introduce a second backend application, microservice, client-side databas
 
 ## Transition status
 
-Current integrated `main` still contains:
+The historical pre-refactor baseline contained:
 
 - env-defined single-user authentication;
 - process-global Situm server/Viewer configuration;
 - a process-global public building identifier;
 - analytics created before workspace ownership existed.
 
-These are migration inputs, **not the approved final architecture**.
+These were migration inputs, **not the approved final architecture**.
 
-Plans 021–025 replace them incrementally. Do not remove a working legacy path until its replacement is implemented and accepted.
+Plans 021–025 replaced them incrementally. Preserve this section as migration history; the current source and runtime contract are defined above and in the completed plan outcomes.
 
 ## Directory ownership
 

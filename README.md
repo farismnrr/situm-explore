@@ -6,7 +6,7 @@ Situm Explore is a full-stack Nuxt 4 web operations/exploration application usin
 
 Plans 017–020 are complete and integrated into `main` by PR #12.
 
-The active planning roadmap is Plans 021–025 on `roadmap/021-025-backend-refactor`:
+Plans 021–025 are complete and integrated into `main`. Plan 026 is the active production-containerization plan on `plan/026-production-containerization`:
 
 ```text
 Plan 021 — Identity & Auth Foundation
@@ -16,15 +16,21 @@ Plan 021 — Identity & Auth Foundation
 -> Plan 025 — Workspace UX & Full Regression
 ```
 
-Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, `plans/021-025-backend-refactor-roadmap.md`, and `plans/021-025-prerequisites.md` before executing roadmap work.
+Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, and `plans/026-production-containerization.md` before executing current plan work. The Plans 021–025 roadmap and prerequisites are historical context.
 
-Under the normal Git protocol, the planning branch must be reviewed/integrated into `main` before Plan 021 starts. No stacked implementation authorization currently exists.
+## Production container workflow
 
-## Current runtime vs target
+The Makefile is the canonical interface for routine Docker, Buildx, release, and staging operations. Raw Docker/Buildx/Compose commands are diagnosis-only. Local laptop builds and pushes publish GHCR images for `linux/amd64` and `linux/arm64`; no CI is used. The approved filtered local context helper is used for builds, never routine root-dot context.
 
-The current integrated runtime still contains the previous PoC's env-defined app login and global Situm account/Viewer/building context. Those are migration inputs, not the final target.
+Staging Compose is pull-only: it contains neither `build:` nor `context:`. It reuses external PostgreSQL, ClickHouse, and observability services. Runtime secrets are external only; `.env` is never baked into an image. A 64-bit Orange Pi consumes `linux/arm64`.
 
-Plans 021–025 move the product to:
+Staging updates are `pull -> recreate -> health -> smoke`. Immutable SHA tags/digests support rollback. `staging-migrate` is explicit and never runs at startup.
+
+## Historical pre-refactor baseline
+
+The previous PoC used env-defined app login and global Situm account/Viewer/building context. That pre-refactor baseline is retained here as migration history, not as the current runtime architecture.
+
+Plans 021–025 moved the product to:
 
 - database-backed users with real email/password registration and login;
 - Google OAuth plumbing prepared for later manual acceptance;

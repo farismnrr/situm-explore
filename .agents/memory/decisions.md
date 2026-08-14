@@ -59,6 +59,16 @@ Status: active.
 
 Status: active roadmap decision.
 
+## Plan 026 production containerization
+
+- The Makefile is canonical for routine Docker, Buildx, release, and staging operations; raw Docker/Buildx/Compose commands are diagnosis-only.
+- Local laptop builds/pushes publish GHCR multi-platform images for `linux/amd64` and `linux/arm64`; a 64-bit Orange Pi consumes `linux/arm64`; no CI is used.
+- Builds use the approved filtered local context helper; routine root-dot context is prohibited. Compose is pull-only and contains neither `build:` nor `context:`.
+- Runtime secrets are external only and `.env` is never baked into images. PostgreSQL, ClickHouse, and observability remain external/reused.
+- Staging updates run `pull -> recreate -> health -> smoke`; immutable SHA tags/digests provide rollback. `staging-migrate` is explicit and never runs at startup.
+
+Status: active Plan 026 decision.
+
 ## Plans 021–025 Situm credential transition
 
 The previous two-global-env-key model is **pre-refactor runtime only** and is no longer the final target.
@@ -128,9 +138,9 @@ Status: active product boundary.
 
 Status: active.
 
-## Current roadmap transition
+## Completed roadmap transition
 
-Plans 017–020 are complete/integrated historical execution. Plans 021–025 are the active backend-refactor roadmap.
+Plans 017–020 and Plans 021–025 are complete/integrated historical execution. Plan 026 is the active production-containerization plan.
 
 While this roadmap is active, also read:
 

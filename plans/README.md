@@ -4,7 +4,7 @@ Plans are executable implementation checklists for Codex.
 
 ## Mandatory execution workflow
 
-Before executing or continuing Plans 021–025, read:
+Before executing current plans, read:
 
 1. `AGENTS.md`;
 2. `.agents/README.md`;
@@ -33,15 +33,15 @@ Historical plans/sessions/branches are evidence only. Current state, durable dec
 
 Plans 017–020, including Plan 019A, are complete/integrated by PR #12.
 
-## Active backend-refactor roadmap
+## Completed backend-refactor roadmap
 
 ```text
-roadmap/021-025-backend-refactor              [planning; must integrate before Plan 021]
--> Plan 021 — Identity & Auth Foundation       [ready after roadmap integration]
--> Plan 022 — Private Workspaces + Situm       [queued after 021 integration]
--> Plan 023 — Observability + Safe Errors      [queued after 022 integration]
--> Plan 024 — Workspace Situm Backend          [queued after 023 integration]
--> Plan 025 — Workspace UX + Full Regression   [queued after 024 integration]
+roadmap/021-025-backend-refactor              [complete/integrated]
+-> Plan 021 — Identity & Auth Foundation       [complete/integrated]
+-> Plan 022 — Private Workspaces + Situm       [complete/integrated]
+-> Plan 023 — Observability + Safe Errors      [complete/integrated]
+-> Plan 024 — Workspace Situm Backend          [complete/integrated]
+-> Plan 025 — Workspace UX + Full Regression   [complete/integrated; Google OAuth deferred]
 ```
 
 Roadmap overview: `plans/021-025-backend-refactor-roadmap.md`.
@@ -49,9 +49,9 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Transition direction
 
-Current baseline code still contains env-defined app auth, process-global Situm account/Viewer/building context, and analytics history created before workspace ownership existed.
+The historical pre-refactor baseline used env-defined app auth and process-global Situm account/Viewer/building context; it also produced analytics history before workspace ownership existed.
 
-Plans 021–024 replace those incrementally. Plan 025 performs final UX/regression plus post-migration documentation reconciliation.
+Plans 021–024 replaced those incrementally. Plan 025 completed final UX/regression and documentation reconciliation. Plan 026 owns production containerization.
 
 Do not remove a working old path before its replacement is implemented and accepted.
 

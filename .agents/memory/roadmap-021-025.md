@@ -1,6 +1,6 @@
 # Roadmap 021–025 Durable Decisions
 
-Status: **active for Plans 021–025**
+Status: **completed/integrated; retained as durable historical context**
 
 This file records roadmap-specific decisions that remain useful across individual plan branches.
 
@@ -41,10 +41,8 @@ This file records roadmap-specific decisions that remain useful across individua
 
 ## Execution
 
-- Planning branch: `roadmap/021-025-backend-refactor`.
-- Plan 021 is next only after the planning branch is reviewed/integrated into `main` under the normal workflow.
-- Plans 022–025 remain sequential dependencies.
-- No stacked implementation authorization exists unless the user explicitly grants it later.
+- Planning branch: `roadmap/021-025-backend-refactor` (historical).
+- Plans 021–025 are complete and integrated into `main`; their former sequencing and stacked-authorization notes are historical.
 
 ## Authority
 

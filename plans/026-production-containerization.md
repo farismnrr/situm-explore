@@ -29,7 +29,7 @@ Provide a local-only, production-grade Docker release workflow for GHCR with lin
 - [x] Phase 7 — Full local staging runtime acceptance.
 - [x] Phase 8 — Pull/recreate staging update simulation and rollback evidence.
 - [x] Phase 9 — Explicit database migration operation.
-- [ ] Phase 10 — Documentation and durable agent-rule reconciliation.
+- [x] Phase 10 — Documentation and durable agent-rule reconciliation.
 - [ ] Phase 11 — Final clean-room Makefile-only acceptance.
 
 ## Acceptance evidence
