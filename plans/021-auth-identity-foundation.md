@@ -44,7 +44,7 @@ Replace the current single-user environment-based login with database-backed app
 - [x] Phase 3 — implement registration and password login.
 - [x] Phase 4 — migrate session identity and protected API continuity.
 - [x] Phase 5 — prepare conditional Google provider wiring.
-- [ ] Phase 6 — update auth UI and complete acceptance validation.
+- [x] Phase 6 — update auth UI and complete acceptance validation.
 
 1. Audit auth routes, middleware, session typing, login UI, DB schema/migrations, Nuxt config, and installed nuxt-auth-utils behavior.
 2. Verify DATABASE_URL, app-schema migration rights, and NUXT_SESSION_PASSWORD.

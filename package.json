@@ -27,6 +27,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "^1.2.123",
     "@nuxt/eslint": "^1.17.0",
     "@types/pg": "^8.21.0",
     "drizzle-kit": "^0.31.10",
