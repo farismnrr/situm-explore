@@ -38,11 +38,21 @@ const selectedFloorId = ref<number | null>(null)
 const activeBuilding = computed(() => buildings.value.find(building => building.id === selectedBuildingId.value) ?? buildings.value[0] ?? null)
 const activeFloors = computed(() => floors.value.filter(floor => floor.buildingId === activeBuilding.value?.id))
 const selectedBuilding = computed(() => activeBuilding.value?.name ?? 'No building')
+const buildingOptions = computed(() => buildings.value.map(building => ({ label: building.name, value: building.id })))
 
-watch([buildings, activeFloors], () => {
-  if (selectedBuildingId.value === null && buildings.value[0]) selectedBuildingId.value = buildings.value[0].id
+watch(buildings, () => {
+  if (!buildings.value.some(building => building.id === selectedBuildingId.value)) selectedBuildingId.value = buildings.value[0]?.id ?? null
+}, { immediate: true })
+
+watch(activeFloors, () => {
   if (!activeFloors.value.some(floor => floor.id === selectedFloorId.value)) selectedFloorId.value = activeFloors.value[0]?.id ?? null
 }, { immediate: true })
+
+function selectBuilding(id: number) {
+  if (id === selectedBuildingId.value) return
+  selectedBuildingId.value = id
+  selectedPoiId.value = null
+}
 
 watch(activeBuilding, (building, previousBuilding) => {
   if (building?.id === previousBuilding?.id) return
@@ -189,7 +199,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map', fullWidth: tru
         <div class="mb-3 flex items-start justify-between gap-3">
           <div>
             <p class="text-sm font-semibold text-highlighted">Indoor map</p>
-            <p class="mt-1 text-xs text-muted">Main building · live viewer</p>
+            <p class="mt-1 text-xs text-muted">{{ selectedBuilding }} · live viewer</p>
           </div>
           <div class="flex shrink-0 items-center gap-1.5">
             <UBadge :color="viewerStatus.color" variant="soft" class="shrink-0">
@@ -199,6 +209,16 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map', fullWidth: tru
             <UButton icon="i-lucide-panel-left-close" aria-label="Hide sidebar" color="neutral" variant="ghost" size="xs" class="hidden lg:inline-flex" @click="sidebarCollapsed = true" />
           </div>
         </div>
+        <UFormField label="Building" class="mb-3">
+          <USelect
+            :model-value="selectedBuildingId ?? undefined"
+            :items="buildingOptions"
+            :disabled="buildingOptions.length === 0"
+            placeholder="Select a building"
+            class="w-full"
+            @update:model-value="(value: number) => selectBuilding(value)"
+          />
+        </UFormField>
         <div class="grid grid-cols-3 gap-1 rounded-lg bg-elevated p-1" role="tablist" aria-label="Map tools">
           <button
             v-for="(tab, index) in tabItems"
