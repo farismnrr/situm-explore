@@ -36,7 +36,8 @@ function openDetails(building: SitumCartographyBuilding) {
       <span class="text-xs text-muted">{{ filteredBuildings.length }} buildings · {{ floors.length }} floors</span>
     </div>
 
-    <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
+    <div v-if="String(status) !== 'success' && !error" class="space-y-2" aria-label="Loading building rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
+    <UCard v-else :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
       <div class="hidden overflow-x-auto md:block">
         <table class="table-density w-full text-left">
           <thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Building</th><th class="px-4 py-3 font-medium">ID</th><th class="px-4 py-3 font-medium">Floors</th><th class="w-12 px-4 py-3" /></tr></thead>

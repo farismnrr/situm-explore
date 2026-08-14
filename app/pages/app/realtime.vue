@@ -155,7 +155,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
         <div class="space-y-4 p-4">
           <UInput v-model="searchQuery" icon="i-lucide-search" placeholder="Search IDs or building/floor context" aria-label="Search realtime positions" />
           <UAlert v-if="error" color="error" variant="subtle" title="Positions unavailable" description="The authenticated Situm position read failed." />
-          <div v-else-if="String(status) === 'pending'" class="space-y-2" aria-label="Loading positions" aria-busy="true"><USkeleton class="h-4 w-40" /><USkeleton class="h-3 w-72" /></div>
+          <div v-else-if="String(status) === 'idle' || String(status) === 'pending'" class="space-y-2" aria-label="Loading positions" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-16 w-full" /></div>
           <UAlert v-else-if="String(status) === 'success' && positions.length === 0" color="neutral" variant="subtle" title="No current positions" description="Situm returned no current position records." />
           <UAlert v-else-if="filteredPositions.length === 0" color="neutral" variant="subtle" title="No matching positions" description="Try another identifier or clear the search and building context." />
           <div v-else class="space-y-2">
