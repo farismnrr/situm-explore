@@ -4,10 +4,13 @@ import SitumSDK, { ViewerEventType, type RouteType, type Viewer } from '@situm/s
 const props = defineProps<{ workspaceId?: string; buildingId?: number }>()
 const root = ref<HTMLElement | null>(null)
 const viewer = shallowRef<Viewer | null>(null)
+const buildingConfirmed = ref(false)
+const viewerError = ref(false)
 
 const emit = defineEmits<{ status: [state: 'loading' | 'ready' | 'error', message?: string] }>()
 const message = 'Select a configured workspace and building to open the read-only Viewer.'
-const fallbackMessage = 'The read-only Viewer could not be authenticated. Configure a verified read-only Viewer credential in workspace settings.'
+const fallbackTitle = 'Map unavailable'
+const fallbackMessage = 'Situm Viewer could not load the selected building. The interactive map has been hidden to avoid showing incorrect cartography.'
 let initializationToken = 0
 async function run<T>(action: () => Promise<T>) { if (!viewer.value) throw new Error('The Viewer is not ready.'); return action() }
 const selectBuilding = (id: number) => run(() => viewer.value!.selectBuilding(id))
@@ -22,34 +25,59 @@ const cleanRealtimePositions = () => run(() => viewer.value!.cleanRealtimePositi
 const startDirections = (from: number, to: number, routeType?: RouteType) => run(() => viewer.value!.startDirections({ navigationFrom: from, navigationTo: to, routeType } as never))
 const cancelDirections = () => run(() => viewer.value!.cancelDirections())
 defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker, loadRealtimePositions, cleanRealtimePositions, startDirections, cancelDirections })
+const BUILDING_CONFIRM_TIMEOUT_MS = 12000
+let confirmTimer: ReturnType<typeof setTimeout> | null = null
+function clearConfirmTimer() {
+  if (confirmTimer) clearTimeout(confirmTimer)
+  confirmTimer = null
+}
 async function initialize() {
   const token = ++initializationToken
   if (!props.workspaceId || !props.buildingId || !root.value || viewer.value) return
+  viewerError.value = false
   emit('status', 'loading')
   try {
-    const { jwt } = await $fetch<{ jwt: string }>(`/api/workspaces/${encodeURIComponent(props.workspaceId)}/viewer-auth`)
+    const { apiKey } = await $fetch<{ apiKey: string }>(`/api/workspaces/${encodeURIComponent(props.workspaceId)}/viewer-auth`)
     if (token !== initializationToken || props.workspaceId === undefined || props.buildingId === undefined) return
-    const sdk = new SitumSDK({ auth: { jwt }, compact: true })
-    const instance = sdk.viewer.create({ domElement: root.value, buildingId: props.buildingId })
-    let authSent = false
-    const sendAuth = () => {
-      if (authSent) return
-      authSent = true
-      void instance.setAuth(jwt)
-        .then(() => instance.selectBuilding(props.buildingId!))
-        .then(() => emit('status', 'ready'))
-        .catch(() => emit('status', 'error', fallbackMessage))
-    }
-    instance.on(ViewerEventType.MAP_IS_READY, sendAuth)
-    instance.on(ViewerEventType.READY_FOR_AUTH, sendAuth)
-    instance.on(ViewerEventType.APP_ERROR, () => emit('status', 'error', fallbackMessage))
+    const targetBuildingId = props.buildingId
+    const sdk = new SitumSDK({ auth: { apiKey }, compact: true })
+    const instance = sdk.viewer.create({ domElement: root.value, buildingId: targetBuildingId })
+    confirmTimer = setTimeout(() => {
+      confirmTimer = null
+      if (token !== initializationToken || buildingConfirmed.value) return
+      viewerError.value = true
+      emit('status', 'error', fallbackMessage)
+    }, BUILDING_CONFIRM_TIMEOUT_MS)
+    instance.on(ViewerEventType.APP_ERROR, () => {
+      if (token !== initializationToken) return
+      clearConfirmTimer()
+      viewerError.value = true
+      emit('status', 'error', fallbackMessage)
+    })
+    instance.on(ViewerEventType.BUILDING_SELECTED, (payload) => {
+      if (token !== initializationToken) return
+      if (payload?.identifier !== targetBuildingId) return
+      clearConfirmTimer()
+      buildingConfirmed.value = true
+      emit('status', 'ready')
+    })
     viewer.value = instance
-  } catch { emit('status', 'error', props.workspaceId ? fallbackMessage : message) }
+  } catch {
+    viewerError.value = true
+    emit('status', 'error', props.workspaceId ? fallbackMessage : message)
+  }
 }
 function resetViewer() {
   initializationToken++
+  clearConfirmTimer()
+  buildingConfirmed.value = false
+  viewerError.value = false
   viewer.value = null
   if (root.value) root.value.replaceChildren()
+}
+function retry() {
+  resetViewer()
+  void initialize()
 }
 watch(() => [props.workspaceId, props.buildingId], ([workspaceId, buildingId], previous) => {
   if (workspaceId !== previous?.[0] || buildingId !== previous?.[1]) resetViewer()
@@ -61,8 +89,10 @@ onBeforeUnmount(resetViewer)
 <template>
   <UCard :ui="{ root: 'h-full flex flex-col', body: 'h-full flex-1 p-0 sm:p-0' }">
     <div class="relative min-h-[22rem] h-full w-full overflow-hidden rounded-lg bg-muted">
-      <div ref="root" class="absolute inset-0" />
+      <div ref="root" class="absolute inset-0" :class="buildingConfirmed ? '' : 'invisible opacity-0'" />
       <div v-if="!props.workspaceId || !props.buildingId" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="warning" variant="subtle" title="Map Viewer unavailable" :description="message" class="max-w-md" /></div>
+      <div v-else-if="viewerError" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="error" variant="subtle" :title="fallbackTitle" :description="fallbackMessage" :actions="[{ label: 'Retry', color: 'error', variant: 'subtle', onClick: retry }]" class="max-w-md" /></div>
+      <div v-else-if="!buildingConfirmed" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="neutral" variant="subtle" title="Loading map" description="Preparing the read-only Viewer." class="max-w-md" /></div>
     </div>
   </UCard>
 </template>

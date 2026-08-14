@@ -4,7 +4,7 @@ import { getDb } from '../../db/client'
 import { workspaceSitumConfigs, workspaces } from '../../db/schema'
 import { encryptWorkspaceApiKey } from '../../utils/workspace-credentials'
 import { assertWorkspaceId } from '../../utils/workspace-owner'
-import { issueWorkspaceViewerJwt } from '../../utils/viewer-auth'
+import { issueWorkspaceViewerApiKey } from '../../utils/viewer-auth'
 import SitumSDK, { SitumApiPermissionLevel } from '@situm/sdk-js'
 
 const schema = z.object({ apiKey: z.string().min(1).max(4096), viewerApiKey: z.string().min(1).max(4096) }).strict()
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   const parts = (getRouterParam(event, 'workspacePath') || '').split('/').filter(Boolean)
   if (parts.length === 2 && parts[1] === 'viewer-auth') {
     if (getMethod(event) !== 'GET') throw createError({ statusCode: 405, statusMessage: 'Method not allowed.' })
-    return issueWorkspaceViewerJwt(event, parts[0] || '')
+    return issueWorkspaceViewerApiKey(event, parts[0] || '')
   }
   if (parts.length !== 2 || parts[1] !== 'situm-config') throw createError({ statusCode: 404, statusMessage: 'The requested resource was not found.' })
   const workspaceId = assertWorkspaceId(parts[0] || '')
