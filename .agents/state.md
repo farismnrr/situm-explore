@@ -47,9 +47,10 @@ Detailed prerequisites and potential blockers live in `plans/021-025-prerequisit
 
 The user explicitly authorized stacked execution of Plans 021–025 without PRs or merges.
 
-- Active branch: `plan/022-workspaces-situm-credentials`
-- Completed in this branch: Plan 021 Phase 1 audit and Phase 2 identity schema/migration.
 - Completed in this branch: Plan 021 Phases 1–6; identity, registration/login, sessions, conditional Google preparation, UI, and acceptance validation.
 - Completed in Plan 022 branch: Phases 1–5 workspace ownership, CRUD authorization, encrypted Situm config persistence, safe validation, and acceptance.
-- Current phase: Plan 022 closeout review before creating the stacked Plan 023 branch.
+- Active branch: `plan/023-observability-error-boundary`
+- Completed in Plan 023 branch: Phases 1–2 application OTLP lifecycle, request correlation, and nested DB/Situm spans.
+- Completed in Plan 023 branch: Phase 3 safe structured errors and client reference IDs.
+- Current phase: Plan 023 Phase 4 application trace/error-path acceptance.
 - Later branches must be created directly from the exact completed predecessor HEAD.

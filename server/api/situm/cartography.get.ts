@@ -1,15 +1,16 @@
 import type { SitumCartographyResponse } from '#shared/situm-cartography'
 import { getSitumClient } from '../../integrations/situm/client'
+import { withServerSpan } from '../../utils/telemetry'
 
 export default defineEventHandler(async (event): Promise<SitumCartographyResponse> => {
   await requireUserSession(event)
   const situm = getSitumClient()
-  const [buildings, floors, categories, pois] = await Promise.all([
+  const [buildings, floors, categories, pois] = await withServerSpan(event, 'situm.cartography_read', { 'situm.operation': 'cartography_read' }, () => Promise.all([
     situm.cartography.getBuildings({ view: 'compact' }),
     situm.cartography.getFloors(),
     situm.cartography.getPoiCategories(),
     situm.cartography.getPois({ view: 'compact' }),
-  ])
+  ]))
 
   return {
     buildings: buildings.map(building => ({
