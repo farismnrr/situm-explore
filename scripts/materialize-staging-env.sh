@@ -34,9 +34,13 @@ mkdir -p "$(dirname "$target_file")"
   printf 'DATABASE_URL=%s\n' "$database_url"
   printf 'NUXT_DATABASE_URL=%s\n' "$database_url"
   printf 'CLICKHOUSE_URL=http://host.docker.internal:8124\n'
+  printf 'NUXT_CLICKHOUSE_URL=http://host.docker.internal:8124\n'
   printf 'CLICKHOUSE_USER=%s\n' "$clickhouse_user"
+  printf 'NUXT_CLICKHOUSE_USER=%s\n' "$clickhouse_user"
   printf 'CLICKHOUSE_PASSWORD=%s\n' "$clickhouse_password"
+  printf 'NUXT_CLICKHOUSE_PASSWORD=%s\n' "$clickhouse_password"
   printf 'CLICKHOUSE_DB=%s\n' "$clickhouse_db"
+  printf 'NUXT_CLICKHOUSE_DB=%s\n' "$clickhouse_db"
   printf 'NUXT_SESSION_PASSWORD=%s\n' "$session_password"
   printf 'NUXT_WORKSPACE_CREDENTIAL_ENCRYPTION_KEY=%s\n' "$encryption_key"
   printf 'OTEL_SERVICE_NAME=%s\n' "${service_name:-situm-explore}"
