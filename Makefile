@@ -18,7 +18,7 @@ export COMPOSE_FILE STAGING_ENV_FILE STAGING_PORT IMAGE_REPOSITORY STAGING_TAG
 
 .PHONY: help doctor check image-build image-push image-inspect image-security-check \
         staging-pull staging-up staging-update staging-down staging-restart \
-        staging-ps staging-logs staging-smoke release-staging
+        staging-ps staging-logs staging-smoke staging-migrate release-staging
 
 help:
 	@printf '%s\n' \
@@ -41,6 +41,7 @@ help:
 		'  staging-ps             Show staging service status' \
 		'  staging-logs           Follow staging service logs' \
 		'  staging-smoke          Check the staging HTTP health endpoint' \
+		'  staging-migrate       Apply Drizzle migrations using staging.env (operator-invoked)' \
 		'  release-staging        Publish tags, pull, and recreate staging'
 
 doctor:
@@ -103,4 +104,9 @@ staging-logs:
 staging-smoke:
 	@curl --fail --silent --show-error --max-time 10 'http://127.0.0.1:$(STAGING_PORT)/api/health/liveness' >/dev/null
 	@echo 'staging smoke: ok'
+staging-migrate:
+	@test -f '$(STAGING_ENV_FILE)' || { echo 'missing curated staging env file: $(STAGING_ENV_FILE)' >&2; exit 1; }
+	@database_url=$$(awk -F= '/^[[:space:]]*DATABASE_URL[[:space:]]*=/{sub(/^[[:space:]]*DATABASE_URL[[:space:]]*=/, ""); print; exit}' '$(STAGING_ENV_FILE)'); \
+		test -n "$$database_url" || { echo 'staging env is missing DATABASE_URL' >&2; exit 1; }; \
+		DATABASE_URL="$$database_url" npm run db:migrate
 release-staging: image-push staging-update
