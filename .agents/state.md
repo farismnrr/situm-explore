@@ -53,5 +53,6 @@ The user explicitly authorized stacked execution of Plans 021–025 without PRs 
 - Completed in Plan 022 branch: Phases 1–5 workspace ownership, CRUD authorization, encrypted Situm config persistence, safe validation, and acceptance.
 - Active branch: `plan/023-observability-error-boundary`
 - Completed in Plan 023 branch: Phases 1–2 application OTLP lifecycle, request correlation, and nested DB/Situm spans.
-- Current phase: Plan 023 Phase 3 safe errors and client reference IDs.
+- Completed in Plan 023 branch: Phase 3 safe structured errors and client reference IDs.
+- Current phase: Plan 023 Phase 4 application trace/error-path acceptance.
 - Later branches must be created directly from the exact completed predecessor HEAD.
