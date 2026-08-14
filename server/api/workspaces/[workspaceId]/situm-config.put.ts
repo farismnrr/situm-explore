@@ -8,7 +8,7 @@ const schema = z.object({ situmAccountId: z.string().trim().min(1).max(255), api
 
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
-  const workspaceId = getRouterParam(event, 'id') || ''
+  const workspaceId = getRouterParam(event, 'workspaceId') || ''
   const parsed = schema.safeParse(await readBody(event))
   if (!parsed.success) throw createError({ statusCode: 400, statusMessage: 'Valid Situm configuration is required.' })
   const [owned] = await getDb().select({ id: workspaces.id }).from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.ownerId, session.user.id))).limit(1)

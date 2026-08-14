@@ -19,6 +19,12 @@ export async function ensureClickHouseSchema(): Promise<void> {
     `CREATE TABLE IF NOT EXISTS \`${database}\`.analytics_geofencing_stay (source_window_id String, timestamp DateTime64(3), device_id String, user_id String, building_id UInt64, floor_id UInt64, matched_fence_id String, seconds_in_fence Float64, stay_time String, sessions_count UInt64, ingested_at DateTime64(3) DEFAULT now64(3)) ENGINE = ReplacingMergeTree(ingested_at) ORDER BY (source_window_id, timestamp, device_id, matched_fence_id)`,
     `CREATE TABLE IF NOT EXISTS \`${database}\`.analytics_sync_runs (sync_key String, report String, from_date DateTime64(3), to_date DateTime64(3), scope String, status LowCardinality(String), started_at DateTime64(3), completed_at Nullable(DateTime64(3)), updated_at DateTime64(3)) ENGINE = ReplacingMergeTree(updated_at) ORDER BY sync_key`
   ]) await client.command({ query })
+  for (const query of [
+    `CREATE TABLE IF NOT EXISTS \`${database}\`.analytics_workspace_visitors (workspace_id UUID, source_window_id String, date Date, visitors UInt64, ingested_at DateTime64(3) DEFAULT now64(3)) ENGINE = ReplacingMergeTree(ingested_at) ORDER BY (workspace_id, source_window_id, date)`,
+    `CREATE TABLE IF NOT EXISTS \`${database}\`.analytics_workspace_positioning_time (workspace_id UUID, source_window_id String, timestamp UInt64, total Float64, avg Float64, std Float64, ingested_at DateTime64(3) DEFAULT now64(3)) ENGINE = ReplacingMergeTree(ingested_at) ORDER BY (workspace_id, source_window_id, timestamp)`,
+    `CREATE TABLE IF NOT EXISTS \`${database}\`.analytics_workspace_geofencing_stay (workspace_id UUID, source_window_id String, timestamp DateTime64(3), device_id String, user_id String, building_id UInt64, floor_id UInt64, matched_fence_id String, seconds_in_fence Float64, stay_time String, sessions_count UInt64, ingested_at DateTime64(3) DEFAULT now64(3)) ENGINE = ReplacingMergeTree(ingested_at) ORDER BY (workspace_id, source_window_id, timestamp, device_id, matched_fence_id)`,
+    `CREATE TABLE IF NOT EXISTS \`${database}\`.analytics_workspace_sync_runs (workspace_id UUID, sync_key String, report String, from_date DateTime64(3), to_date DateTime64(3), scope String, status LowCardinality(String), started_at DateTime64(3), completed_at Nullable(DateTime64(3)), updated_at DateTime64(3)) ENGINE = ReplacingMergeTree(updated_at) ORDER BY (workspace_id, sync_key)`
+  ]) await client.command({ query })
 }
 
 export function buildAnalyticsSyncKey(report: string, fromDate: string, toDate: string, scope: string): string {
