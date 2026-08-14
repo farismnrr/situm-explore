@@ -10,7 +10,7 @@ PLATFORMS ?= linux/amd64,linux/arm64
 LOCAL_PLATFORM ?= $(shell docker version --format '{{.Server.Os}}/{{.Server.Arch}}' 2>/dev/null || printf 'linux/amd64')
 COMPOSE_FILE ?= deploy/staging.compose.yml
 STAGING_ENV_FILE ?= deploy/staging.env
-STAGING_PORT ?= 3000
+STAGING_PORT ?= 3005
 BUILD_CONTEXT ?= $(shell mktemp -d "$${TMPDIR:-/tmp}/situm-explore-docker.XXXXXX")
 BUILDX_BUILDER ?= situm-explore
 

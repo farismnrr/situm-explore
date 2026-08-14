@@ -2,7 +2,7 @@ services:
   situm-explore:
     image: ${IMAGE_REPOSITORY:-ghcr.io/farismnrr/situm-explore}:${STAGING_TAG:-staging}
     ports:
-      - "${STAGING_PORT:-3000}:3000"
+      - "${STAGING_PORT:-3005}:3000"
     restart: unless-stopped
     init: true
     env_file:
