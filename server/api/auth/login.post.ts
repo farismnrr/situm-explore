@@ -18,6 +18,6 @@ export default defineEventHandler(async (event) => {
 
   if (!record[0] || !passwordMatches) throw createError({ statusCode: 401, statusMessage: 'Invalid credentials.' })
 
-  await setUserSession(event, { user: { email: record[0].email } })
+  await setUserSession(event, { user: { id: record[0].id, email: record[0].email } })
   return { ok: true }
 })
