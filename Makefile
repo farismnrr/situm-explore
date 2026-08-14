@@ -83,7 +83,7 @@ image-security-check:
 define COMPOSE
 	@test -f '$(COMPOSE_FILE)' || { echo 'missing pull-only staging Compose file: $(COMPOSE_FILE)' >&2; exit 1; }
 	@test -f '$(STAGING_ENV_FILE)' || { echo 'missing staging env file: $(STAGING_ENV_FILE)' >&2; exit 1; }
-	docker compose --env-file '$(STAGING_ENV_FILE)' -f '$(COMPOSE_FILE)'
+	docker compose -f '$(COMPOSE_FILE)'
 endef
 
 staging-pull:
@@ -102,7 +102,9 @@ staging-ps:
 staging-logs:
 	$(COMPOSE) logs -f
 staging-smoke:
-	@curl --fail --silent --show-error --max-time 10 'http://127.0.0.1:$(STAGING_PORT)/api/health/liveness' >/dev/null
+	@attempt=0; until curl --fail --silent --show-error --max-time 10 'http://127.0.0.1:$(STAGING_PORT)/api/health/liveness' >/dev/null; do \
+		attempt=$$((attempt + 1)); test $$attempt -lt 10 || exit 1; sleep 1; \
+	done
 	@echo 'staging smoke: ok'
 staging-migrate:
 	@test -f '$(STAGING_ENV_FILE)' || { echo 'missing curated staging env file: $(STAGING_ENV_FILE)' >&2; exit 1; }

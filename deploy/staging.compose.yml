@@ -6,7 +6,8 @@ services:
     restart: unless-stopped
     init: true
     env_file:
-      - staging.env
+      - path: staging.env
+        format: raw
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
