@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { SitumOrganizationResponse } from '#shared/situm-organization'
 
+const { selectedWorkspaceId } = useWorkspaceContext()
 const { data, error, status, refresh } = await useFetch<SitumOrganizationResponse>(useWorkspaceEndpoint('/situm/organization'), { immediate: false })
-onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refresh() })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refresh() }, { immediate: true })
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Organization' })
 </script>
 

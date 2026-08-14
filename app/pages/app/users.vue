@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { SitumUsersResponse } from '#shared/situm-users'
 
+const { selectedWorkspaceId } = useWorkspaceContext()
 const { data, error, status, refresh } = await useFetch<SitumUsersResponse>(useWorkspaceEndpoint('/situm/users'), { immediate: false })
-onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refresh() })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refresh() }, { immediate: true })
 const users = computed(() => data.value?.users ?? [])
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
 </script>

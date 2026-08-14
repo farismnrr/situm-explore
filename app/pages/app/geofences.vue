@@ -2,8 +2,9 @@
 import type { SitumGeofencesResponse, SitumGeofence } from '#shared/situm-geofences'
 
 const selectedGeofenceId = ref<string | null>(null)
+const { selectedWorkspaceId } = useWorkspaceContext()
 const { data, error, status, refresh } = await useFetch<SitumGeofencesResponse>(useWorkspaceEndpoint('/situm/geofences'), { immediate: false })
-onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refresh() })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refresh() }, { immediate: true })
 const geofences = computed(() => data.value?.geofences ?? [])
 
 const filteredGeofences = computed(() => geofences.value)

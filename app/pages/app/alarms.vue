@@ -12,6 +12,7 @@ const type = ref('')
 const selectedAlarm = ref<SitumAlarm | null>(null)
 const detailOpen = ref(false)
 
+const { selectedWorkspaceId } = useWorkspaceContext()
 const { data: cartography, error: buildingsError, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
 const buildings = computed(() => cartography.value?.buildings ?? [])
 const buildingItems = computed(() => buildings.value.map(building => ({ label: `${building.name} · ${building.id}`, value: String(building.id) })))
@@ -21,7 +22,7 @@ const alarmTypes = ['BREACH', 'DANGER', 'DEADMAN', 'EMERGENCY', 'STATIONARY', 'G
 const typeItems = computed(() => [{ label: 'All types', value: '' }, ...alarmTypes.map(value => ({ label: value, value }))])
 const query = computed(() => ({ building_id: buildingId.value, ...(active.value !== 'all' ? { active: active.value } : {}), ...(type.value ? { type: type.value } : {}) }))
 const { data, error, status, refresh } = await useFetch<SitumAlarmsResponse>(useWorkspaceEndpoint('/situm/alarms'), { query, immediate: false })
-onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refreshCartography() })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refreshCartography() }, { immediate: true })
 const alarms = computed(() => data.value?.alarms ?? [])
 
 watch(buildings, (value) => {

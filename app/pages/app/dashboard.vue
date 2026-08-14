@@ -3,8 +3,9 @@
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Dashboard' })
 
 const { data: foundation } = await useFetch('/api/me')
+const { selectedWorkspaceId } = useWorkspaceContext()
 const { data: situm, refresh: refreshSitum } = await useFetch<{ configured?: boolean }>(useWorkspaceEndpoint('/situm/status'), { immediate: false })
-onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refreshSitum() })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refreshSitum() }, { immediate: true })
 
 const databaseLabel = computed(() => foundation.value?.status === 'connected' || foundation.value?.status === 'connected-empty' ? 'Connected' : 'Unavailable')
 const databaseColor = computed(() => databaseLabel.value === 'Connected' ? 'success' : 'error')

@@ -6,8 +6,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Buildings & floors' 
 const query = ref('')
 const selectedBuilding = ref<SitumCartographyBuilding | null>(null)
 const drawerOpen = ref(false)
+const { selectedWorkspaceId } = useWorkspaceContext()
 const { data, error, status, refresh } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
-onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refresh() })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refresh() }, { immediate: true })
 
 const buildings = computed(() => data.value?.buildings ?? [])
 const floors = computed(() => data.value?.floors ?? [])
