@@ -50,6 +50,6 @@ The user explicitly authorized stacked execution of Plans 021–025 without PRs 
 - Active branch: `plan/022-workspaces-situm-credentials`
 - Completed in this branch: Plan 021 Phase 1 audit and Phase 2 identity schema/migration.
 - Completed in this branch: Plan 021 Phases 1–6; identity, registration/login, sessions, conditional Google preparation, UI, and acceptance validation.
-- Completed in Plan 022 branch: Phases 1–3 workspace ownership, CRUD authorization, and encrypted Situm config persistence.
-- Current phase: Plan 022 Phase 4 non-destructive Situm validation and permission metadata.
+- Completed in Plan 022 branch: Phases 1–5 workspace ownership, CRUD authorization, encrypted Situm config persistence, safe validation, and acceptance.
+- Current phase: Plan 022 closeout review before creating the stacked Plan 023 branch.
 - Later branches must be created directly from the exact completed predecessor HEAD.
