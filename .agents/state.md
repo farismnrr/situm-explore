@@ -61,5 +61,5 @@ The user explicitly authorized stacked execution of Plans 021–025 without PRs 
 - Current phase: create Plan 025 from exact Plan 024 HEAD.
 - Active branch: `plan/025-workspace-ux-regression`
 - Completed in Plan 025: Phase 1 workspace context/UI for create, list, switch, rename, delete, Situm config replacement, safe status, and validation feedback. Production build and typecheck pass; dynamic config routing was made explicit through a safe bounded catch-all after runtime route matching was verified.
-- Current phase: Plan 025 Phase 2 full production-preview/browser regression and closeout.
+- Plan 025 complete on `plan/025-workspace-ux-regression`: production-preview regression passed for auth/session/protection, workspace CRUD/ownership, config write-only metadata, sanitized validation failure, retained pages, and cleanup. External Situm reads remain dependent on configured upstream credentials/availability; Google runtime remains user-owned.
 - Later branches must be created directly from the exact completed predecessor HEAD.

@@ -1,6 +1,6 @@
 # Plan 025 — Workspace UX & Full Regression
 
-Status: queued after Plan 024 integration.
+Status: complete after production-preview regression.
 
 Branch: plan/025-workspace-ux-regression
 
@@ -9,7 +9,7 @@ Depends on: Plan 024 accepted and integrated into updated main.
 ## Current stacked execution
 
 - [x] Phase 1 — workspace context composable and authenticated workspace management UI.
-- [ ] Phase 2 — full production-preview/browser regression and final documentation closeout.
+- [x] Phase 2 — full production-preview/browser regression and final documentation closeout.
 
 ## Goal
 
