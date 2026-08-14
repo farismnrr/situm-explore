@@ -1,6 +1,8 @@
 # Plan 024 — Workspace-scoped Situm Backend Migration
 
-Status: queued after Plan 023 integration.
+> Historical implementation evidence. Permission-mode wording below describes the migration state at that time; current configuration requires a verified Read & Write primary credential and separate Read-only Viewer credential.
+
+Status: complete with explicit Viewer security blocker; workspace Situm/analytics migration and legacy authority fencing accepted.
 
 Branch: plan/024-workspace-situm-backend-migration
 
@@ -54,6 +56,8 @@ Do not drop/rewrite history just to simplify migration. If preserving/attributin
 - No external Situm account/org uniqueness assumption.
 
 ## Acceptance
+
+Closeout evidence: migrated workspace routes use owner-checked per-request credentials; legacy global Situm/analytics routes are fenced; configured ClickHouse workspace tables are ready idempotently; legacy analytics rows remain isolated. The Viewer remains intentionally disabled because installed SDK evidence did not prove a scoped least-privilege browser credential exchange. This is an external/security blocker, not a reason to expose a long-lived key. Google OAuth runtime acceptance is separately deferred.
 
 - retained Situm server behavior no longer depends on global account config;
 - explicit workspace switching changes account context without restart/cross-tab authority leakage;

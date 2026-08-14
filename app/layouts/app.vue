@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import TransientFeedback from '~/components/feedback/TransientFeedback.vue'
+
 const { user, clear } = useUserSession()
+const { loadWorkspaces } = useWorkspaceContext()
 const mobileOpen = ref(false)
 const isDesktop = ref(false)
 const searchOpen = ref(false)
@@ -18,8 +21,7 @@ const searchDestinations = [
   { label: 'Points of interest', detail: 'Cartography', to: '/app/pois', icon: 'i-lucide-map-pin' },
   { label: 'Realtime', detail: 'Operations', to: '/app/realtime', icon: 'i-lucide-radio' },
   { label: 'Analytics & reports', detail: 'Operations', to: '/app/analytics', icon: 'i-lucide-bar-chart-3' },
-  { label: 'Groups', detail: 'Organization', to: '/app/groups', icon: 'i-lucide-users-round' },
-  { label: 'Settings', detail: 'Organization', to: '/app/settings', icon: 'i-lucide-settings' }
+  { label: 'Groups', detail: 'Organization', to: '/app/groups', icon: 'i-lucide-users-round' }
 ]
 
 const searchResults = computed(() => {
@@ -48,6 +50,10 @@ function handleGlobalShortcut(event: KeyboardEvent) {
 onMounted(() => window.addEventListener('keydown', handleGlobalShortcut))
 onBeforeUnmount(() => window.removeEventListener('keydown', handleGlobalShortcut))
 
+onMounted(() => {
+  void loadWorkspaces().catch(() => undefined)
+})
+
 let desktopMedia: MediaQueryList | undefined
 function updateDesktopState() {
   isDesktop.value = desktopMedia?.matches ?? false
@@ -63,10 +69,10 @@ onBeforeUnmount(() => desktopMedia?.removeEventListener('change', updateDesktopS
 const navigationHidden = computed(() => !isDesktop.value && !mobileOpen.value)
 
 const navigation = [
-  { group: 'Workspace', items: [{ label: 'Home', to: '/app', icon: 'i-lucide-house' }, { label: 'Dashboard', to: '/app/dashboard', icon: 'i-lucide-layout-dashboard' }, { label: 'Map', to: '/app/map', icon: 'i-lucide-map' }] },
+  { group: 'Workspace', items: [{ label: 'Home', to: '/app', icon: 'i-lucide-house' }, { label: 'Workspaces', to: '/app/workspaces', icon: 'i-lucide-panels-top-left' }, { label: 'Dashboard', to: '/app/dashboard', icon: 'i-lucide-layout-dashboard' }, { label: 'Map', to: '/app/map', icon: 'i-lucide-map' }] },
   { group: 'Cartography', items: [{ label: 'Buildings & floors', to: '/app/buildings', icon: 'i-lucide-building-2' }, { label: 'Points of interest', to: '/app/pois', icon: 'i-lucide-map-pin' }, { label: 'Geofences', to: '/app/geofences', icon: 'i-lucide-scan' }, { label: 'Paths & routing', to: '/app/paths', icon: 'i-lucide-route' }] },
   { group: 'Operations', items: [{ label: 'Realtime', to: '/app/realtime', icon: 'i-lucide-radio' }, { label: 'Analytics & reports', to: '/app/analytics', icon: 'i-lucide-bar-chart-3' }, { label: 'Alarms', to: '/app/alarms', icon: 'i-lucide-triangle-alert' }] },
-  { group: 'Organization', items: [{ label: 'Users & groups', to: '/app/users', icon: 'i-lucide-users' }, { label: 'Groups', to: '/app/groups', icon: 'i-lucide-users-round' }, { label: 'Organization', to: '/app/organization', icon: 'i-lucide-building' }, { label: 'Settings', to: '/app/settings', icon: 'i-lucide-settings' }] }
+  { group: 'Organization', items: [{ label: 'Users & groups', to: '/app/users', icon: 'i-lucide-users' }, { label: 'Groups', to: '/app/groups', icon: 'i-lucide-users-round' }, { label: 'Organization', to: '/app/organization', icon: 'i-lucide-building' }] }
 ]
 
 async function logout() {

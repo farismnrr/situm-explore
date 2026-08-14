@@ -1,133 +1,114 @@
 <script setup lang="ts">
-import SitumSDK, { ViewerEventType } from '@situm/sdk-js'
-import type { RouteType } from '@situm/sdk-js'
+import SitumSDK, { ViewerEventType, type RouteType, type Viewer } from '@situm/sdk-js'
 
-const emit = defineEmits<{
-  status: [state: 'loading' | 'ready' | 'error', message?: string]
-}>()
+const props = defineProps<{ workspaceId?: string; buildingId?: number }>()
+const root = ref<HTMLElement | null>(null)
+const viewer = shallowRef<Viewer | null>(null)
+const buildingConfirmed = ref(false)
+const viewerError = ref(false)
 
-const config = useRuntimeConfig()
-const container = ref<HTMLElement | null>(null)
-const state = ref<'loading' | 'ready' | 'error'>('loading')
-const message = ref('')
-let viewer: ReturnType<SitumSDK['viewer']['create']> | null = null
-
-async function runViewerCommand(command: () => Promise<void>) {
-  if (state.value !== 'ready' || !viewer) throw new Error('The map viewer is not ready.')
-  await command()
-}
-
-function selectBuilding(id: number) {
-  return runViewerCommand(() => viewer!.selectBuilding(id))
-}
-
-function selectFloor(id: number) {
-  return runViewerCommand(() => viewer!.selectFloor(id))
-}
-
-function selectPoi(id: number) {
-  return runViewerCommand(() => viewer!.selectPoiById(id))
-}
-
-function setLanguage(language: string) { return runViewerCommand(() => viewer!.setLanguage(language)) }
-function showUserSettings(visible: boolean) { return runViewerCommand(() => viewer!.showUserSettings(visible)) }
-function updateFontSize(size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl') { return runViewerCommand(() => viewer!.updateFontSize({ size })) }
-function openLocationPicker() { return runViewerCommand(() => viewer!.openLocationPicker()) }
-
-function requirePositiveInteger(value: number, name: string) {
-  if (!Number.isInteger(value) || value <= 0) throw new Error(`${name} must be a positive integer.`)
-  return value
-}
-
-function loadRealtimePositions(buildingId?: number, refreshRateMs?: number) {
-  const resolvedBuildingId = requirePositiveInteger(
-    buildingId ?? Number(config.public.situmBuildingId),
-    'buildingId',
-  )
-  if (refreshRateMs !== undefined) requirePositiveInteger(refreshRateMs, 'refreshRateMs')
-
-  return runViewerCommand(() => viewer!.loadRealtimePositions({
-    filter: { buildingIds: [resolvedBuildingId] },
-    ...(refreshRateMs === undefined ? {} : { refreshRateMs }),
-  }))
-}
-
-function cleanRealtimePositions() {
-  return runViewerCommand(() => viewer!.cleanRealtimePositions())
-}
-
-function startDirections(navigationFrom: number, navigationTo: number, routeType?: RouteType) {
-  const from = requirePositiveInteger(navigationFrom, 'navigationFrom')
-  const to = requirePositiveInteger(navigationTo, 'navigationTo')
-
-  return runViewerCommand(() => viewer!.startDirections({
-    navigationFrom: from,
-    navigationTo: to,
-    ...(routeType === undefined ? {} : { routeType }),
-  }))
-}
-
-function cancelDirections() {
-  return runViewerCommand(() => viewer!.cancelDirections())
-}
-
+const emit = defineEmits<{ status: [state: 'loading' | 'ready' | 'error', message?: string] }>()
+const message = 'Select a configured workspace and building to open the read-only Viewer.'
+const fallbackTitle = 'Map unavailable'
+const fallbackMessage = 'Situm Viewer could not load the selected building. The interactive map has been hidden to avoid showing incorrect cartography.'
+let initializationToken = 0
+async function run<T>(action: () => Promise<T>) { if (!viewer.value) throw new Error('The Viewer is not ready.'); return action() }
+const selectBuilding = (id: number) => run(() => viewer.value!.selectBuilding(id))
+const selectFloor = (id: number) => run(() => viewer.value!.selectFloor(id))
+const selectPoi = (id: number) => run(() => viewer.value!.selectPoiById(id))
+const setLanguage = (language: string) => run(() => viewer.value!.setLanguage(language as never))
+const showUserSettings = (visible: boolean) => run(() => viewer.value!.showUserSettings(visible as never))
+const updateFontSize = (size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl') => run(() => viewer.value!.updateFontSize({ size } as never))
+const openLocationPicker = () => run(() => viewer.value!.openLocationPicker())
+const loadRealtimePositions = (buildingId?: number, refreshRateMs?: number) => run(() => viewer.value!.loadRealtimePositions({ filter: buildingId ? { buildingIds: [buildingId] } : {}, refreshRateMs }))
+const cleanRealtimePositions = () => run(() => viewer.value!.cleanRealtimePositions())
+const startDirections = (from: number, to: number, routeType?: RouteType) => run(() => viewer.value!.startDirections({ navigationFrom: from, navigationTo: to, routeType } as never))
+const cancelDirections = () => run(() => viewer.value!.cancelDirections())
 defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker, loadRealtimePositions, cleanRealtimePositions, startDirections, cancelDirections })
-
-onMounted(() => {
-  if (!config.public.situmApiKey || !config.public.situmBuildingId) {
-    state.value = 'error'
-    message.value = 'The map viewer is not configured.'
-    emit('status', state.value, message.value)
-    return
-  }
+const BUILDING_CONFIRM_TIMEOUT_MS = 12000
+let confirmTimer: ReturnType<typeof setTimeout> | null = null
+function clearConfirmTimer() {
+  if (confirmTimer) clearTimeout(confirmTimer)
+  confirmTimer = null
+}
+async function initialize() {
+  const token = ++initializationToken
+  if (!props.workspaceId || !props.buildingId || !root.value || viewer.value) return
+  viewerError.value = false
+  emit('status', 'loading')
   try {
-    const sdk = new SitumSDK({ auth: { apiKey: config.public.situmApiKey } })
-    viewer = sdk.viewer.create({ domElement: container.value!, buildingId: Number(config.public.situmBuildingId) })
-    viewer.on(ViewerEventType.MAP_IS_READY, () => {
-      state.value = 'ready'
-      emit('status', state.value)
+    const { apiKey } = await $fetch<{ apiKey: string }>(`/api/workspaces/${encodeURIComponent(props.workspaceId)}/viewer-auth`)
+    if (token !== initializationToken || props.workspaceId === undefined || props.buildingId === undefined) return
+    const targetBuildingId = props.buildingId
+    const sdk = new SitumSDK({ auth: { apiKey }, compact: true })
+    const instance = sdk.viewer.create({ domElement: root.value, buildingId: targetBuildingId })
+    confirmTimer = setTimeout(() => {
+      confirmTimer = null
+      if (token !== initializationToken || buildingConfirmed.value) return
+      viewerError.value = true
+      emit('status', 'error', fallbackMessage)
+    }, BUILDING_CONFIRM_TIMEOUT_MS)
+    instance.on(ViewerEventType.APP_ERROR, () => {
+      if (token !== initializationToken) return
+      clearConfirmTimer()
+      viewerError.value = true
+      emit('status', 'error', fallbackMessage)
     })
-    viewer.on(ViewerEventType.APP_ERROR, (payload) => {
-      // The Viewer can report application errors while handling a command
-      // (including directions) after the map has already become usable. Keep
-      // the command surface ready in that case; only initialization errors
-      // should invalidate the map lifecycle.
-      if (state.value === 'ready') return
-      state.value = 'error'
-      message.value = payload.message ? 'The map viewer could not finish loading.' : 'The map viewer encountered an error.'
-      emit('status', state.value, message.value)
+    instance.on(ViewerEventType.BUILDING_SELECTED, (payload) => {
+      if (token !== initializationToken) return
+      if (payload?.identifier !== targetBuildingId) return
+      clearConfirmTimer()
+      buildingConfirmed.value = true
+      emit('status', 'ready')
     })
-  } catch (error: unknown) {
-    state.value = 'error'
-    message.value = error instanceof Error ? 'The map viewer could not be initialized.' : 'The map viewer encountered an error.'
-    emit('status', state.value, message.value)
+    viewer.value = instance
+  } catch {
+    viewerError.value = true
+    emit('status', 'error', props.workspaceId ? fallbackMessage : message)
   }
-})
-
-onBeforeUnmount(() => {
-  if (viewer) void viewer.cleanRealtimePositions().catch(() => undefined)
-  if (viewer) void viewer.cancelDirections().catch(() => undefined)
-})
+}
+function resetViewer() {
+  initializationToken++
+  clearConfirmTimer()
+  buildingConfirmed.value = false
+  viewerError.value = false
+  viewer.value = null
+  if (root.value) root.value.replaceChildren()
+}
+function retry() {
+  resetViewer()
+  void initialize()
+}
+watch(() => [props.workspaceId, props.buildingId], ([workspaceId, buildingId], previous) => {
+  if (workspaceId !== previous?.[0] || buildingId !== previous?.[1]) resetViewer()
+  void initialize()
+}, { immediate: true })
+onBeforeUnmount(resetViewer)
 </script>
 
 <template>
-  <UCard :ui="{ root: 'h-full flex flex-col', body: 'h-full flex-1 p-0 sm:p-0' }">
-    <div class="relative min-h-[22rem] h-full w-full overflow-hidden rounded-lg bg-muted">
-      <div ref="container" class="h-full w-full" />
-
-      <div
-        v-if="state === 'loading'"
-        class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-default/90 px-6 text-center"
-        role="status"
-        aria-live="polite"
-      >
-        <div class="h-10 w-10 animate-pulse motion-reduce:animate-none rounded-full bg-info/15" aria-hidden="true" />
-        <p class="text-sm text-muted">Loading map…</p>
-      </div>
-
-      <div v-else-if="state === 'error'" class="absolute inset-0 flex items-center justify-center bg-default px-6">
-        <UAlert color="error" variant="subtle" title="Map unavailable" :description="message" class="max-w-md" />
-      </div>
+  <UCard class="situm-viewer-card" :ui="{ root: 'h-full min-h-0 flex flex-col', body: 'h-full min-h-0 flex-1 p-0 sm:p-0' }">
+    <div class="situm-viewer-container relative h-full min-h-0 w-full overflow-hidden rounded-lg bg-muted">
+      <div ref="root" class="absolute inset-0" :class="buildingConfirmed ? '' : 'invisible opacity-0'" />
+      <div v-if="!props.workspaceId || !props.buildingId" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="warning" variant="subtle" title="Map Viewer unavailable" :description="message" class="max-w-md" /></div>
+      <div v-else-if="viewerError" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="error" variant="subtle" :title="fallbackTitle" :description="fallbackMessage" :actions="[{ label: 'Retry', color: 'error', variant: 'subtle', onClick: retry }]" class="max-w-md" /></div>
+      <div v-else-if="!buildingConfirmed" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="neutral" variant="subtle" title="Loading map" description="Preparing the read-only Viewer." class="max-w-md" /></div>
     </div>
   </UCard>
 </template>
+
+<style scoped>
+.situm-viewer-card,
+.situm-viewer-card :deep(> div),
+.situm-viewer-card :deep(> div > div) {
+  height: 100%;
+  min-height: 0;
+}
+
+.situm-viewer-container :deep(iframe) {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  display: block;
+}
+</style>

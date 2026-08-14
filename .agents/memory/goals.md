@@ -6,7 +6,7 @@
 - Replace the env-defined single-user login with working database-backed email/password registration/login while preparing Google OAuth for later manual user acceptance. `(source: user-stated)`
 - Let each application user own many private single-owner workspaces; no invite/member model in this roadmap. `(source: user-stated)`
 - Move Situm API-key configuration out of global env values into encrypted server-side workspace configuration. `(source: user-stated)`
-- Support `VIEW_ONLY` and `VIEW_WRITE` product modes with truthful permission handling and safe forbidden UX. `(source: user-stated)`
+- Support verified Situm Read & Write primary credentials and separate Read-only Viewer credentials with truthful permission handling and safe forbidden UX. `(source: user-stated; supersedes former VIEW_ONLY/VIEW_WRITE wording)`
 - Reuse the user's existing observability stack after local discovery, add end-to-end correlation/tracing, and keep critical/internal diagnostics out of client responses. `(source: user-stated)`
 - Keep architecture Nuxt-native, secure, KISS-oriented, and evidence-backed for Situm behavior. `(source: user-stated)`
 

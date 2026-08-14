@@ -3,7 +3,6 @@ import { ensureClickHouseSchema } from '../integrations/clickhouse/schema'
 
 export default defineEventHandler(async (event) => {
   await requireUserSession(event)
-  const config = useRuntimeConfig()
   let clickhouse = await checkClickHouseReadiness()
   if (clickhouse.configured) {
     try {
@@ -15,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }
   return {
     ok: clickhouse.available,
-    situm: { configured: Boolean(config.situmApiKey) },
+    situm: { configured: false, authority: 'workspace' },
     clickhouse
   }
 })

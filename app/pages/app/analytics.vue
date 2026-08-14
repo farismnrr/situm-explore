@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SitumCartographyResponse } from '#shared/situm-cartography'
+import { useWorkspaceContext } from '~/composables/useWorkspaceContext'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Analytics & reports' })
 
@@ -19,14 +20,17 @@ const geofenceId = ref('')
 const syncing = ref(false)
 const syncMessage = ref('')
 const syncError = ref('')
+const { selectedWorkspaceId } = useWorkspaceContext()
+const workspaceCartographyUrl = computed(() => selectedWorkspaceId.value ? `/api/workspaces/${selectedWorkspaceId.value}/situm/cartography` : '')
+const workspaceAnalyticsUrl = computed(() => selectedWorkspaceId.value ? `/api/workspaces/${selectedWorkspaceId.value}/analytics/summary` : '')
 
-const { data: cartography } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
+const { data: cartography, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(workspaceCartographyUrl, { immediate: false })
 const buildings = computed(() => cartography.value?.buildings ?? [])
 const buildingItems = computed(() => [{ label: 'All buildings', value: '' }, ...buildings.value.map(building => ({ label: building.name, value: String(building.id) }))])
 const query = computed(() => ({ fromDate: fromDate.value, toDate: toDate.value, ...(buildingId.value ? { buildingId: buildingId.value } : {}), ...(geofenceId.value.trim() ? { geofenceId: geofenceId.value.trim() } : {}) }))
-const { data, error, status, refresh } = await useFetch<AnalyticsResponse>('/api/analytics/summary', { query, immediate: false })
+const { data, error, status, refresh } = await useFetch<AnalyticsResponse>(workspaceAnalyticsUrl, { query, immediate: false })
 
-const hasData = computed(() => Boolean(data.value && (data.value.visitors.length || data.value.positioning.length || data.value.geofencing.length)))
+const hasData = computed(() => String(status.value) === 'success' && Boolean(data.value && (data.value.visitors.length || data.value.positioning.length || data.value.geofencing.length)))
 const positioning = computed(() => data.value?.positioning[0] ?? null)
 const geofencing = computed(() => data.value?.geofencing[0] ?? null)
 const positioningMinutes = computed(() => positioning.value ? formatNumber(Number(positioning.value.total) / 60) : '—')
@@ -39,7 +43,7 @@ function formatNumber(value: number) {
 async function loadAnalytics() {
   syncMessage.value = ''
   syncError.value = ''
-  await refresh()
+  if (selectedWorkspaceId.value) { await refreshCartography(); await refresh() }
 }
 
 async function syncFromSitum() {
@@ -50,7 +54,7 @@ async function syncFromSitum() {
     const id = buildingId.value ? Number(buildingId.value) : undefined
     const reports = ['visitors', 'positioning_time', 'geofencing_stay_time'] as const
     for (const report of reports) {
-      await $fetch('/api/analytics/sync', { method: 'POST', body: { report, fromDate: fromDate.value, toDate: toDate.value, ...(report === 'geofencing_stay_time' ? { buildingIds: id ? [id] : buildings.value.map(building => building.id) } : { buildingId: id ?? buildings.value[0]?.id }) } })
+      await $fetch(`/api/workspaces/${selectedWorkspaceId.value}/analytics/sync`, { method: 'POST', body: { report, fromDate: fromDate.value, toDate: toDate.value, ...(report === 'geofencing_stay_time' ? { buildingIds: id ? [id] : buildings.value.map(building => building.id) } : { buildingId: id ?? buildings.value[0]?.id }) } })
     }
     syncMessage.value = 'Analytics synced from Situm.'
     await refresh()
@@ -62,13 +66,8 @@ async function syncFromSitum() {
 }
 
 async function exportReport(report: 'visitors' | 'positioning_time' | 'geofencing_stay_time') {
-  const csv = await $fetch<string>('/api/analytics/export', { query: { ...query.value, report }, responseType: 'text' })
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `situm-analytics-${report}.csv`
-  link.click()
-  URL.revokeObjectURL(url)
+  void report
+  syncError.value = 'Workspace analytics export is not yet available for the isolated data path.'
 }
 
 onMounted(loadAnalytics)
@@ -85,7 +84,7 @@ onMounted(loadAnalytics)
         <UFormField label="From date"><UInput v-model="fromDate" type="date" aria-label="Analytics start date" /></UFormField>
         <UFormField label="To date"><UInput v-model="toDate" type="date" aria-label="Analytics end date" /></UFormField>
         <UFormField label="Building"><USelect v-model="buildingId" :items="buildingItems" aria-label="Filter by building" /></UFormField>
-        <UButton label="Apply filters" icon="i-lucide-filter" color="neutral" variant="outline" :loading="status === 'pending'" @click="loadAnalytics" />
+        <UButton label="Apply filters" icon="i-lucide-filter" color="neutral" variant="outline" :loading="String(status) === 'pending'" @click="loadAnalytics" />
       </div>
       <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <UInput v-model="geofenceId" placeholder="Optional geofence ID" aria-label="Filter by geofence ID" class="w-full sm:w-72" />
@@ -96,8 +95,8 @@ onMounted(loadAnalytics)
     <UAlert v-if="syncMessage" color="success" variant="subtle" :title="syncMessage" />
     <UAlert v-if="syncError" color="error" variant="subtle" title="Sync failed" :description="syncError" />
     <UAlert v-if="error" color="error" variant="subtle" title="Analytics unavailable" description="The protected analytics data could not be read from ClickHouse." />
-    <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading analytics" description="Reading the selected report window from ClickHouse." />
-    <UAlert v-else-if="!hasData" color="neutral" variant="subtle" title="No analytics data" description="No synced report rows exist for this date range and filter. Sync from Situm to load the window." />
+    <div v-else-if="String(status) === 'pending' || String(status) === 'idle'" class="space-y-3" aria-label="Loading analytics" aria-busy="true"><USkeleton class="h-24 w-full" /><div class="grid gap-4 sm:grid-cols-3"><USkeleton class="h-20 w-full" /><USkeleton class="h-20 w-full" /><USkeleton class="h-20 w-full" /></div></div>
+    <UAlert v-else-if="String(status) === 'success' && !hasData" color="neutral" variant="subtle" title="No analytics data" description="No synced report rows exist for this date range and filter. Sync from Situm to load the window." />
 
     <template v-if="hasData">
       <div class="grid gap-4 sm:grid-cols-3">

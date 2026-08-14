@@ -43,6 +43,20 @@
       "when": 1786668270709,
       "tag": "0005_classy_vivisector",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786675613657,
+      "tag": "0006_thin_bucky",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1786688031361,
+      "tag": "0007_fantastic_roland_deschain",
+      "breakpoints": true
     }
   ]
 }

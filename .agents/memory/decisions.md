@@ -11,6 +11,24 @@ This file contains **currently active durable decisions**. Completed execution h
 
 Status: active.
 
+## Viewer authentication smoke decision (2026-08-14)
+
+- The installed `@situm/sdk-js` v0.25.0 exchanges an API key through `/api/v1/auth/access_tokens`; `Viewer.setAuth(jwt)` sends the JWT to the embedded Viewer via `postMessage`.
+- Temporary server-side smoke testing confirmed that a read-only key produces a JWT whose sanitized `api_permission` claim is `read-only`, while a read-write key produces a JWT whose claim is `read-write`. Both tokens had an approximately 24-hour lifetime and passed harmless organization/building reads, including bearer-JWT reads.
+- The read-write-derived JWT is therefore broad authority, not a least-privilege Viewer token. It must never be sent to browser code as the final Viewer model.
+- Keep read-write workspace credentials server-only. A separate encrypted read-only Viewer credential is the approved browser model: the owner-scoped server route exchanges it for a temporary JWT, verifies the JWT permission is `read-only`, and returns only that JWT to the Viewer. Production-preview cartography acceptance has now proven this path.
+- No temporary credential or generated JWT may be persisted in repository files, logs, traces, session evidence, or browser storage. By the user's superseding 2026-08-14 instruction, the two temporary smoke-test keys may remain active for bounded local Plan 025 acceptance and must be revoked/deleted only after final acceptance passes.
+
+Status: active security boundary; Plan 025 Viewer blocker resolved by the proven dual-credential model.
+
+## Temporary Situm smoke-key acceptance policy (2026-08-14)
+
+- The user explicitly superseded the earlier immediate-revocation reminder: temporary read-only and read-write smoke keys remain intentionally active until all Plan 025 acceptance is passing.
+- They may be reused only for bounded local acceptance, must remain hidden, and must never be persisted in repository files, session evidence, logs, traces, browser storage, or Git history.
+- Do not remind the user to revoke them while remediation/retest remains incomplete. After final Plan 025 PASS, remind the user to revoke/delete both keys.
+
+Status: active user policy.
+
 ## Full-stack Nuxt architecture
 
 - Situm Explore remains one full-stack Nuxt 4 application with Nitro server routes.
@@ -50,7 +68,7 @@ Approved target:
 - Situm configuration is owned by an authenticated workspace and persisted server-side;
 - stored long-lived workspace credentials use authenticated encryption at rest;
 - browser code must not receive the stored long-lived workspace API key;
-- product access modes are `VIEW_ONLY` and `VIEW_WRITE`;
+- workspace configuration requires a primary credential verified as Situm Read & Write and a separate Viewer credential verified as Situm Read-only; account/organization ID is derived server-side from the primary auth session;
 - verified upstream permission remains authoritative;
 - unsupported/intermediate permission states are handled conservatively;
 - workspace/account/building context must not remain process-global after migration.

@@ -1,6 +1,6 @@
 # Backend Refactor Roadmap — Plans 021–025
 
-Status: **planning ready; integration gate before Plan 021**
+Status: **implementation complete through Plan 025, with explicit Viewer security blocker and separately deferred Google OAuth runtime acceptance**
 
 Planning branch: `roadmap/021-025-backend-refactor`
 

@@ -1,6 +1,6 @@
 # Plan 021 — Identity & Auth Foundation
 
-Status: ready after roadmap integration.
+Status: complete; production auth/UI acceptance passed. Google OAuth runtime remains separately deferred.
 
 Branch: plan/021-auth-identity-foundation
 

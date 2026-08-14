@@ -1,6 +1,8 @@
 # Plan 022 — Private Workspaces & Situm Configuration
 
-Status: **queued after Plan 021 integration**
+> Historical implementation evidence. Its intermediate `VIEW_ONLY`/`VIEW_WRITE` product-mode notes are superseded by the enforced dual-credential model documented in the current architecture and design references.
+
+Status: **complete; workspace ownership, encrypted configuration, and safe validation accepted**
 
 Branch: `plan/022-workspaces-situm-credentials`
 

@@ -1,0 +1,1 @@
+ALTER TABLE "situm_explore"."workspace_situm_configs" ADD COLUMN "encrypted_viewer_api_key" varchar(2048);

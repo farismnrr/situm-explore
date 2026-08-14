@@ -1,5 +1,8 @@
 import { context, propagation, trace } from '@opentelemetry/api'
 import { randomUUID } from 'node:crypto'
+import { emitTelemetryLog } from '../utils/telemetry-logs'
+
+const workspacePath = /\/api\/workspaces\/([0-9a-f-]{36})(?:\/|$)/i
 
 export default defineEventHandler((event) => {
   const tracer = trace.getTracer('situm-explore.server')
@@ -8,11 +11,13 @@ export default defineEventHandler((event) => {
   const traceparent = getRequestHeader(event, 'traceparent')
   if (traceparent) carrier.traceparent = traceparent
   const extracted = propagation.extract(context.active(), carrier)
+  const workspaceId = getRequestURL(event).pathname.match(workspacePath)?.[1]
   const span = tracer.startSpan('http.request', {
     attributes: {
       'http.request.method': event.method,
       'url.path': getRequestURL(event).pathname,
       'app.request_id': requestId,
+      ...(workspaceId ? { 'app.workspace_id': workspaceId } : {}),
     },
   }, extracted)
   const spanContext = trace.setSpan(extracted, span)
@@ -26,7 +31,15 @@ export default defineEventHandler((event) => {
   const finish = () => {
     if (finished) return
     finished = true
-    span.setAttribute('http.response.status_code', event.node.res.statusCode)
+    const statusCode = event.node.res.statusCode
+    span.setAttribute('http.response.status_code', statusCode)
+    emitTelemetryLog(statusCode >= 500 ? 'ERROR' : statusCode >= 400 ? 'WARN' : 'INFO', 'http.request', {
+      'app.request_id': requestId,
+      'http.request.method': event.method,
+      'http.response.status_code': statusCode,
+      'url.path': getRequestURL(event).pathname,
+      ...(workspaceId ? { 'app.workspace_id': workspaceId } : {}),
+    })
     span.end()
   }
   event.node.res.once('finish', finish)

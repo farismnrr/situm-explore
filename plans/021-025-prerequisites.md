@@ -53,6 +53,6 @@ If preserving/attributing old analytics history matters, stop before destructive
 
 ## Before Plan 025 final regression
 
-Full real permission regression ideally needs testable VIEW_ONLY and VIEW_WRITE workspaces. If one permission level is unavailable, leave that external smoke manual/unresolved rather than fabricating it.
+Full real permission regression requires testable Situm Read & Write primary and separate Read-only Viewer credentials. If either permission level is unavailable, leave that external smoke manual/unresolved rather than fabricating it.
 
 Google OAuth runtime acceptance remains user-owned and is not a roadmap blocker unless scope changes.

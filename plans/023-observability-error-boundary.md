@@ -1,6 +1,6 @@
 # Plan 023 — Observability, Correlation & Safe Error Boundary
 
-Status: queued after Plan 022 integration.
+Status: complete; OTLP lifecycle, request correlation, nested spans, and sanitized error paths accepted.
 
 Branch: plan/023-observability-error-boundary
 

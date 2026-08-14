@@ -9,7 +9,7 @@ Plans 017–020 are complete/integrated. Plans 021–025 migrate the working pro
 | Email/password auth + registration | Plan 021 |
 | Google OAuth plumbing | Plan 021; manual runtime acceptance deferred |
 | Private single-owner workspaces | Plan 022 |
-| Workspace Situm configuration + `VIEW_ONLY` / `VIEW_WRITE` | Plan 022 |
+| Workspace Situm configuration with verified Read & Write primary and separate Read-only Viewer credentials; server-derived account ID | Plan 022 / Plan 025 |
 | Correlation, telemetry reuse, safe error contract | Plan 023 |
 | Workspace-scoped Situm backend/account/building context | Plan 024 |
 | Workspace UX + full regression | Plan 025 |

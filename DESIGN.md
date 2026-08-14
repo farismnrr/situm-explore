@@ -63,7 +63,7 @@ Approved additions/changes:
 - database-backed login/session identity;
 - private workspace create/rename/delete/switch flow;
 - workspace Situm configuration form/status;
-- clear `VIEW_ONLY` vs `VIEW_WRITE` explanation;
+- clear explanation that configuration requires separate verified Read & Write primary and Read-only Viewer credentials;
 - read-only action guidance and safe forbidden feedback;
 - correlation/reference ID presentation for unexpected failures when useful;
 - Google sign-in affordance may be wired, but real provider runtime acceptance remains manual/user-owned for now.
@@ -102,8 +102,9 @@ Deletion must use appropriate confirmation because it removes app-owned workspac
 
 Product modes are:
 
-- `VIEW_ONLY` — intended for Situm `Only Read` capability;
-- `VIEW_WRITE` — intended for Situm `Read & Write` capability.
+- Primary credential — required Situm `Read & Write` capability, verified server-side at save time;
+- Viewer credential — required Situm `Only Read` capability, verified server-side and used only for the browser Viewer;
+- Situm account/organization ID — derived server-side from the authenticated primary credential; never entered manually.
 
 The app should explain the expected Situm key type at configuration time.
 

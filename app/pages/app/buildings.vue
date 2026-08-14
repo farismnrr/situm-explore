@@ -6,7 +6,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Buildings & floors' 
 const query = ref('')
 const selectedBuilding = ref<SitumCartographyBuilding | null>(null)
 const drawerOpen = ref(false)
-const { data, error, status } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
+const { selectedWorkspaceId } = useWorkspaceContext()
+const { data, error, status, refresh } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refresh() }, { immediate: true })
 
 const buildings = computed(() => data.value?.buildings ?? [])
 const floors = computed(() => data.value?.floors ?? [])
@@ -27,14 +29,15 @@ function openDetails(building: SitumCartographyBuilding) {
     <ProductPageHeader eyebrow="Cartography" title="Buildings & floors" description="Live Situm venue and floor metadata." />
 
     <UAlert v-if="error" class="mb-4" color="error" variant="subtle" title="Buildings unavailable" description="The authenticated Situm cartography read could not be loaded. No fixture buildings are shown." />
-    <UAlert v-else-if="status === 'pending'" class="mb-4" color="neutral" variant="subtle" title="Loading buildings" description="Reading buildings and floors from Situm." />
+    <div v-else-if="String(status) === 'pending'" class="mb-4 space-y-2" aria-label="Loading buildings" aria-busy="true"><USkeleton class="h-4 w-48" /><USkeleton class="h-3 w-72" /></div>
 
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <UInput v-model="query" icon="i-lucide-search" placeholder="Search buildings…" aria-label="Search buildings" class="w-full sm:w-72" />
       <span class="text-xs text-muted">{{ filteredBuildings.length }} buildings · {{ floors.length }} floors</span>
     </div>
 
-    <UCard :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
+    <div v-if="String(status) !== 'success' && !error" class="space-y-2" aria-label="Loading building rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
+    <UCard v-else :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
       <div class="hidden overflow-x-auto md:block">
         <table class="table-density w-full text-left">
           <thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Building</th><th class="px-4 py-3 font-medium">ID</th><th class="px-4 py-3 font-medium">Floors</th><th class="w-12 px-4 py-3" /></tr></thead>
@@ -52,7 +55,7 @@ function openDetails(building: SitumCartographyBuilding) {
           <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-info/10 text-info"><UIcon name="i-lucide-building-2" /></span><span class="min-w-0 flex-1"><strong class="block truncate text-sm text-highlighted">{{ building.name }}</strong><span class="mt-1 block text-xs text-muted">{{ floorsFor(building.id).length }} floors</span></span><UIcon name="i-lucide-chevron-right" class="text-muted" />
         </button>
       </div>
-      <p v-if="status !== 'pending' && filteredBuildings.length === 0" class="px-5 py-10 text-center text-sm text-muted">No real buildings match your filter.</p>
+      <p v-if="String(status) === 'success' && !error && filteredBuildings.length === 0" class="px-5 py-10 text-center text-sm text-muted">No real buildings match your filter.</p>
     </UCard>
 
     <CartographyDetailsDrawer v-if="selectedBuilding" v-model:open="drawerOpen" title="Building details" type="Building" :name="selectedBuilding.name" :subtitle="selectedBuilding.description || 'Situm building'" :map-to="`/app/map?buildingId=${selectedBuilding.id}`" :details="[{ label: 'Identifier', value: String(selectedBuilding.id) }, { label: 'Floors', value: String(floorsFor(selectedBuilding.id).length) }, { label: 'Latitude', value: String(selectedBuilding.location.lat) }, { label: 'Longitude', value: String(selectedBuilding.location.lng) }]">

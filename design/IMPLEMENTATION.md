@@ -52,7 +52,7 @@ Workspace Situm configuration is write-only secret input plus safe metadata/stat
 
 The stored long-lived credential is encrypted server-side using authenticated encryption, never returned after storage, never placed in public runtime config, and never logged/traced/rendered. Missing encryption configuration fails closed.
 
-Supported product modes are `VIEW_ONLY` and `VIEW_WRITE`. Upstream Situm permission remains authoritative. Do not run a write mutation merely to discover capability.
+Workspace configuration requires a primary credential verified as Situm Read & Write and a separate Viewer credential verified as Situm Read-only. The account/organization ID is derived from the authenticated primary credential. Write capability is derived from verified primary permission metadata; upstream Situm permission remains authoritative. Do not run a write mutation merely to discover capability.
 
 ## Viewer
 
