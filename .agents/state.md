@@ -11,14 +11,14 @@ The Plans 021–025 backend-refactor roadmap and reconciled documentation are in
 ## Active roadmap
 
 ```text
-Plan 021 — Identity & Auth Foundation                       [ready / next]
-Plan 022 — Private Workspaces & Situm Configuration         [queued]
-Plan 023 — Observability, Correlation & Safe Error Boundary [queued]
-Plan 024 — Workspace-scoped Situm Backend Migration         [queued]
-Plan 025 — Workspace UX & Full Regression                   [queued]
+Plan 021 — Identity & Auth Foundation                       [complete]
+Plan 022 — Private Workspaces & Situm Configuration         [complete]
+Plan 023 — Observability, Correlation & Safe Error Boundary [complete]
+Plan 024 — Workspace-scoped Situm Backend Migration         [complete]
+Plan 025 — Workspace UX & Full Regression                   [active security remediation]
 ```
 
-No stacked implementation authorization exists. Plan 021 must start from updated `main`; later plans remain sequential dependencies.
+Stacked implementation of Plans 021–025 was explicitly authorized for this branch; no commits or pushes are performed by the worker.
 
 The former roadmap planning branch is historical after PR #13 and is not an implementation base.
 

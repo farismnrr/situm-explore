@@ -1,133 +1,28 @@
 <script setup lang="ts">
-import SitumSDK, { ViewerEventType } from '@situm/sdk-js'
 import type { RouteType } from '@situm/sdk-js'
 
-const emit = defineEmits<{
-  status: [state: 'loading' | 'ready' | 'error', message?: string]
-}>()
-
-const config = useRuntimeConfig()
-const container = ref<HTMLElement | null>(null)
-const state = ref<'loading' | 'ready' | 'error'>('loading')
-const message = ref('')
-let viewer: ReturnType<SitumSDK['viewer']['create']> | null = null
-
-async function runViewerCommand(command: () => Promise<void>) {
-  if (state.value !== 'ready' || !viewer) throw new Error('The map viewer is not ready.')
-  await command()
-}
-
-function selectBuilding(id: number) {
-  return runViewerCommand(() => viewer!.selectBuilding(id))
-}
-
-function selectFloor(id: number) {
-  return runViewerCommand(() => viewer!.selectFloor(id))
-}
-
-function selectPoi(id: number) {
-  return runViewerCommand(() => viewer!.selectPoiById(id))
-}
-
-function setLanguage(language: string) { return runViewerCommand(() => viewer!.setLanguage(language)) }
-function showUserSettings(visible: boolean) { return runViewerCommand(() => viewer!.showUserSettings(visible)) }
-function updateFontSize(size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl') { return runViewerCommand(() => viewer!.updateFontSize({ size })) }
-function openLocationPicker() { return runViewerCommand(() => viewer!.openLocationPicker()) }
-
-function requirePositiveInteger(value: number, name: string) {
-  if (!Number.isInteger(value) || value <= 0) throw new Error(`${name} must be a positive integer.`)
-  return value
-}
-
-function loadRealtimePositions(buildingId?: number, refreshRateMs?: number) {
-  const resolvedBuildingId = requirePositiveInteger(
-    buildingId ?? Number(config.public.situmBuildingId),
-    'buildingId',
-  )
-  if (refreshRateMs !== undefined) requirePositiveInteger(refreshRateMs, 'refreshRateMs')
-
-  return runViewerCommand(() => viewer!.loadRealtimePositions({
-    filter: { buildingIds: [resolvedBuildingId] },
-    ...(refreshRateMs === undefined ? {} : { refreshRateMs }),
-  }))
-}
-
-function cleanRealtimePositions() {
-  return runViewerCommand(() => viewer!.cleanRealtimePositions())
-}
-
-function startDirections(navigationFrom: number, navigationTo: number, routeType?: RouteType) {
-  const from = requirePositiveInteger(navigationFrom, 'navigationFrom')
-  const to = requirePositiveInteger(navigationTo, 'navigationTo')
-
-  return runViewerCommand(() => viewer!.startDirections({
-    navigationFrom: from,
-    navigationTo: to,
-    ...(routeType === undefined ? {} : { routeType }),
-  }))
-}
-
-function cancelDirections() {
-  return runViewerCommand(() => viewer!.cancelDirections())
-}
-
+const emit = defineEmits<{ status: [state: 'loading' | 'ready' | 'error', message?: string] }>()
+const message = 'Workspace Viewer authentication is not configured. The Viewer is disabled until a scoped browser credential is proven safe.'
+function disabled(): never { throw new Error(message) }
+function selectBuilding(_id: number) { return disabled() }
+function selectFloor(_id: number) { return disabled() }
+function selectPoi(_id: number) { return disabled() }
+function setLanguage(_language: string) { return disabled() }
+function showUserSettings(_visible: boolean) { return disabled() }
+function updateFontSize(_size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl') { return disabled() }
+function openLocationPicker() { return disabled() }
+function loadRealtimePositions(_buildingId?: number, _refreshRateMs?: number) { return disabled() }
+function cleanRealtimePositions() { return disabled() }
+function startDirections(_from: number, _to: number, _routeType?: RouteType) { return disabled() }
+function cancelDirections() { return disabled() }
 defineExpose({ selectBuilding, selectFloor, selectPoi, setLanguage, showUserSettings, updateFontSize, openLocationPicker, loadRealtimePositions, cleanRealtimePositions, startDirections, cancelDirections })
-
-onMounted(() => {
-  if (!config.public.situmApiKey || !config.public.situmBuildingId) {
-    state.value = 'error'
-    message.value = 'The map viewer is not configured.'
-    emit('status', state.value, message.value)
-    return
-  }
-  try {
-    const sdk = new SitumSDK({ auth: { apiKey: config.public.situmApiKey } })
-    viewer = sdk.viewer.create({ domElement: container.value!, buildingId: Number(config.public.situmBuildingId) })
-    viewer.on(ViewerEventType.MAP_IS_READY, () => {
-      state.value = 'ready'
-      emit('status', state.value)
-    })
-    viewer.on(ViewerEventType.APP_ERROR, (payload) => {
-      // The Viewer can report application errors while handling a command
-      // (including directions) after the map has already become usable. Keep
-      // the command surface ready in that case; only initialization errors
-      // should invalidate the map lifecycle.
-      if (state.value === 'ready') return
-      state.value = 'error'
-      message.value = payload.message ? 'The map viewer could not finish loading.' : 'The map viewer encountered an error.'
-      emit('status', state.value, message.value)
-    })
-  } catch (error: unknown) {
-    state.value = 'error'
-    message.value = error instanceof Error ? 'The map viewer could not be initialized.' : 'The map viewer encountered an error.'
-    emit('status', state.value, message.value)
-  }
-})
-
-onBeforeUnmount(() => {
-  if (viewer) void viewer.cleanRealtimePositions().catch(() => undefined)
-  if (viewer) void viewer.cancelDirections().catch(() => undefined)
-})
+onMounted(() => emit('status', 'error', message))
 </script>
 
 <template>
   <UCard :ui="{ root: 'h-full flex flex-col', body: 'h-full flex-1 p-0 sm:p-0' }">
     <div class="relative min-h-[22rem] h-full w-full overflow-hidden rounded-lg bg-muted">
-      <div ref="container" class="h-full w-full" />
-
-      <div
-        v-if="state === 'loading'"
-        class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-default/90 px-6 text-center"
-        role="status"
-        aria-live="polite"
-      >
-        <div class="h-10 w-10 animate-pulse motion-reduce:animate-none rounded-full bg-info/15" aria-hidden="true" />
-        <p class="text-sm text-muted">Loading map…</p>
-      </div>
-
-      <div v-else-if="state === 'error'" class="absolute inset-0 flex items-center justify-center bg-default px-6">
-        <UAlert color="error" variant="subtle" title="Map unavailable" :description="message" class="max-w-md" />
-      </div>
+      <div class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="warning" variant="subtle" title="Map Viewer unavailable" :description="message" class="max-w-md" /></div>
     </div>
   </UCard>
 </template>

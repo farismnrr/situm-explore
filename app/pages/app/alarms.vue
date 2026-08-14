@@ -12,7 +12,7 @@ const type = ref('')
 const selectedAlarm = ref<SitumAlarm | null>(null)
 const detailOpen = ref(false)
 
-const { data: cartography, error: buildingsError } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
+const { data: cartography, error: buildingsError, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
 const buildings = computed(() => cartography.value?.buildings ?? [])
 const buildingItems = computed(() => buildings.value.map(building => ({ label: `${building.name} · ${building.id}`, value: String(building.id) })))
 const buildingNames = computed(() => new Map(buildings.value.map(building => [building.id, building.name])))
@@ -20,7 +20,8 @@ const floorNames = computed(() => new Map((cartography.value?.floors ?? []).map(
 const alarmTypes = ['BREACH', 'DANGER', 'DEADMAN', 'EMERGENCY', 'STATIONARY', 'GEOFENCE_MAX_STAY_TIME', 'ASSISTANCE_REQUEST']
 const typeItems = computed(() => [{ label: 'All types', value: '' }, ...alarmTypes.map(value => ({ label: value, value }))])
 const query = computed(() => ({ building_id: buildingId.value, ...(active.value !== 'all' ? { active: active.value } : {}), ...(type.value ? { type: type.value } : {}) }))
-const { data, error, status, refresh } = await useFetch<SitumAlarmsResponse>('/api/situm/alarms', { query, immediate: false })
+const { data, error, status, refresh } = await useFetch<SitumAlarmsResponse>(useWorkspaceEndpoint('/situm/alarms'), { query, immediate: false })
+onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refreshCartography() })
 const alarms = computed(() => data.value?.alarms ?? [])
 
 watch(buildings, (value) => {
@@ -42,7 +43,7 @@ async function loadAlarms() {
 async function loadDetail(alarm: SitumAlarm) {
   openDetails(alarm)
   try {
-    const response = await $fetch<SitumAlarmResponse>(`/api/situm/alarms/${encodeURIComponent(alarm.uuid)}`)
+  const response = await $fetch<SitumAlarmResponse>(`${useWorkspaceEndpoint('/situm/alarms').value}/${encodeURIComponent(alarm.uuid)}`)
     selectedAlarm.value = response.alarm
   } catch {
     // Keep the verified list row available if its detail is no longer readable.

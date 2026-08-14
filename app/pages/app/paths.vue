@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { SitumPathsResponse } from '#shared/situm-paths'
 
-const { data, error, status } = await useFetch<SitumPathsResponse>('/api/situm/paths')
+const { data, error, status, refresh } = await useFetch<SitumPathsResponse>(useWorkspaceEndpoint('/situm/paths'), { immediate: false })
+onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refresh() })
 const paths = computed(() => data.value?.paths ?? [])
 const pathSummary = computed(() => paths.value.map(path => `${path.nodes.length} nodes · ${path.links.length} links`))
 

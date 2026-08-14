@@ -3,13 +3,14 @@ import { z } from 'zod'
 import { getDb } from '../../db/client'
 import { workspaceSitumConfigs, workspaces } from '../../db/schema'
 import { encryptWorkspaceApiKey } from '../../utils/workspace-credentials'
+import { assertWorkspaceId } from '../../utils/workspace-owner'
 
 const schema = z.object({ situmAccountId: z.string().trim().min(1).max(255), apiKey: z.string().min(1).max(4096), accessMode: z.enum(['VIEW_ONLY', 'VIEW_WRITE']) }).strict()
 
 export default defineEventHandler(async (event) => {
   const parts = (getRouterParam(event, 'workspacePath') || '').split('/').filter(Boolean)
   if (parts.length !== 2 || parts[1] !== 'situm-config') throw createError({ statusCode: 404, statusMessage: 'The requested resource was not found.' })
-  const workspaceId = parts[0] || ''
+  const workspaceId = assertWorkspaceId(parts[0] || '')
   const session = await requireUserSession(event)
   const [owned] = await getDb().select({ id: workspaces.id }).from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.ownerId, session.user.id))).limit(1)
   if (!owned) throw createError({ statusCode: 404, statusMessage: 'Workspace not found.' })

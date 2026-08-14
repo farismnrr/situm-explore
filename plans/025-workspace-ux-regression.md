@@ -1,6 +1,6 @@
 # Plan 025 — Workspace UX & Full Regression
 
-Status: complete after production-preview regression.
+Status: complete with explicit external/security blocker; workspace UX and retained backend regression passed without Viewer acceptance.
 
 Branch: plan/025-workspace-ux-regression
 
@@ -38,6 +38,8 @@ Finish product-facing workspace flow and validate the completed backend refactor
 Apply Plans 023–024 correlation/error behavior. Unexpected failures may show a support/reference id while details remain server-side. Do not dump raw server errors into toast text or browser console.
 
 ## Full regression
+
+Acceptance evidence: production preview passed auth/session/protection, workspace CRUD/switch/delete, config write-only metadata, ownership denial, sanitized errors/reference IDs, workspace analytics readiness, and representative workspace Situm routes. Legacy global authority is fenced and ClickHouse workspace tables are ready. Groups/geofences now use owner-scoped routes and return safe upstream errors when credentials are invalid. The Viewer is disabled safely because scoped least-privilege browser authentication remains unproven; therefore full Viewer/map acceptance and overall roadmap readiness are not claimed. Google OAuth runtime remains separately deferred.
 
 Use npm run build then npm run preview.
 

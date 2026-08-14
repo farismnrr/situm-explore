@@ -1,10 +1,5 @@
-import SitumSDK from '@situm/sdk-js'
+import type SitumSDK from '@situm/sdk-js'
 
-export function getSitumClient() {
-  const config = useRuntimeConfig()
-  if (!config.situmApiKey) {
-    throw createError({ statusCode: 503, statusMessage: 'Situm server integration is not configured.' })
-  }
-
-  return new SitumSDK({ auth: { apiKey: config.situmApiKey }, compact: true })
+export function getSitumClient(): SitumSDK {
+  throw createError({ statusCode: 410, statusMessage: 'Global Situm authority is disabled; select an owned workspace.' })
 }

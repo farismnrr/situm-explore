@@ -1,4 +1,4 @@
-import { buildAnalyticsSyncKey } from '../clickhouse/schema'
+import { buildAnalyticsSyncKey, ensureClickHouseSchema } from '../clickhouse/schema'
 import { clickHouseDatabaseName, getClickHouseClient } from '../clickhouse/client'
 
 export type AnalyticsReport = 'visitors' | 'positioning_time' | 'geofencing_stay_time'
@@ -31,8 +31,9 @@ function string(value: unknown, field: string): string {
 }
 
 export async function syncSitumReport(input: SyncInput) {
-  const config = useRuntimeConfig()
-  const apiKey = input.apiKey || config.situmApiKey
+  if (input.workspaceId) await ensureClickHouseSchema()
+  const apiKey = input.apiKey
+  if (!apiKey) throw createError({ statusCode: 410, statusMessage: 'Global Situm authority is disabled; select an owned workspace.' })
   if (!apiKey) throw createError({ statusCode: 503, statusMessage: 'Situm server integration is not configured.' })
   const scope = input.report === 'geofencing_stay_time' ? (input.buildingIds || []).join(',') : String(input.buildingId)
   const syncKey = buildAnalyticsSyncKey(input.report, input.fromDate, input.toDate, `${input.workspaceId || 'legacy'}:${scope}`)

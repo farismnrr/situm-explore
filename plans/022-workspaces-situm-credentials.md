@@ -1,6 +1,6 @@
 # Plan 022 — Private Workspaces & Situm Configuration
 
-Status: **queued after Plan 021 integration**
+Status: **complete; workspace ownership, encrypted configuration, and safe validation accepted**
 
 Branch: `plan/022-workspaces-situm-credentials`
 

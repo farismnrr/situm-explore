@@ -11,18 +11,17 @@ function upstreamError(status: number, detail = false): never {
   throw createError({ statusCode: 502, statusMessage: 'Situm source request failed.' })
 }
 
-async function request<T>(path: string, params: URLSearchParams, detail = false): Promise<T> {
-  const config = useRuntimeConfig()
-  if (!config.situmApiKey) throw createError({ statusCode: 503, statusMessage: 'Situm server integration is not configured.' })
-  const response = await fetch(`${baseUrl}${path}?${params}`, { headers: { 'X-API-KEY': config.situmApiKey } })
+async function request<T>(path: string, params: URLSearchParams, apiKey: string, detail = false): Promise<T> {
+  const response = await fetch(`${baseUrl}${path}?${params}`, { headers: { 'X-API-KEY': apiKey } })
   if (!response.ok) upstreamError(response.status, detail)
   return await response.json() as T
 }
 
-export async function getSitumGroups(hasParent?: boolean): Promise<SitumGroupSummary[]> {
+export async function getSitumGroups(apiKey?: string | boolean, hasParent?: boolean): Promise<SitumGroupSummary[]> {
+  if (typeof apiKey !== 'string') throw createError({ statusCode: 410, statusMessage: 'Global Situm authority is disabled; select an owned workspace.' })
   const params = new URLSearchParams()
   if (hasParent !== undefined) params.set('has_parent', String(hasParent))
-  const rows = await request<unknown>('/groups', params)
+  const rows = await request<unknown>('/groups', params, apiKey)
   if (!Array.isArray(rows)) throw createError({ statusCode: 502, statusMessage: 'Situm returned an invalid groups response.' })
   return rows.map((row) => {
     const value = row as Record<string, unknown>
@@ -33,14 +32,16 @@ export async function getSitumGroups(hasParent?: boolean): Promise<SitumGroupSum
   })
 }
 
-export async function getSitumAlarms(params: URLSearchParams): Promise<SitumAlarm[]> {
-  const rows = await request<unknown>('/alarms', params)
+export async function getSitumAlarms(apiKey?: string | URLSearchParams, params?: URLSearchParams): Promise<SitumAlarm[]> {
+  if (typeof apiKey !== 'string' || !params) throw createError({ statusCode: 410, statusMessage: 'Global Situm authority is disabled; select an owned workspace.' })
+  const rows = await request<unknown>('/alarms', params, apiKey)
   if (!Array.isArray(rows)) throw createError({ statusCode: 502, statusMessage: 'Situm returned an invalid alarms response.' })
   return rows.map(normalizeAlarm)
 }
 
-export async function getSitumAlarm(uuid: string): Promise<SitumAlarm> {
-  const body = await request<unknown>(`/alarms/${encodeURIComponent(uuid)}`, new URLSearchParams(), true)
+export async function getSitumAlarm(apiKey: string, uuid?: string): Promise<SitumAlarm> {
+  if (!uuid) throw createError({ statusCode: 410, statusMessage: 'Global Situm authority is disabled; select an owned workspace.' })
+  const body = await request<unknown>(`/alarms/${encodeURIComponent(uuid)}`, new URLSearchParams(), apiKey, true)
   if (!body || typeof body !== 'object') throw createError({ statusCode: 502, statusMessage: 'Situm returned an invalid alarm response.' })
   return normalizeAlarm(body)
 }

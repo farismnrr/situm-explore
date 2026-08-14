@@ -6,7 +6,8 @@ type ParentFilter = 'all' | 'parents' | 'children'
 const search = ref('')
 const parentFilter = ref<ParentFilter>('all')
 const query = computed(() => parentFilter.value === 'all' ? {} : { has_parent: parentFilter.value === 'parents' })
-const { data, error, status } = await useFetch<SitumGroupsResponse>('/api/situm/groups', { query })
+const { data, error, status, refresh } = await useFetch<SitumGroupsResponse>(useWorkspaceEndpoint('/situm/groups'), { query, immediate: false })
+onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refresh() })
 const groups = computed(() => data.value?.groups ?? [])
 const filteredGroups = computed(() => {
   const term = search.value.trim().toLowerCase()

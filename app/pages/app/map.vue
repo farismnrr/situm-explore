@@ -26,7 +26,8 @@ const viewer = ref<{
   cancelDirections: () => Promise<void>
 } | null>(null)
 const { showFeedback } = useExploreFeedback()
-const { data: cartography, error: cartographyError, status: cartographyStatus } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
+const { data: cartography, error: cartographyError, status: cartographyStatus, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
+onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refreshCartography() })
 const buildings = computed(() => cartography.value?.buildings ?? [])
 const floors = computed(() => cartography.value?.floors ?? [])
 const pois = computed(() => cartography.value?.pois ?? [])

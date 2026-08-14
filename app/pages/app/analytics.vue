@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SitumCartographyResponse } from '#shared/situm-cartography'
+import { useWorkspaceContext } from '~/composables/useWorkspaceContext'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Analytics & reports' })
 
@@ -19,12 +20,15 @@ const geofenceId = ref('')
 const syncing = ref(false)
 const syncMessage = ref('')
 const syncError = ref('')
+const { selectedWorkspaceId } = useWorkspaceContext()
+const workspaceCartographyUrl = computed(() => selectedWorkspaceId.value ? `/api/workspaces/${selectedWorkspaceId.value}/situm/cartography` : '')
+const workspaceAnalyticsUrl = computed(() => selectedWorkspaceId.value ? `/api/workspaces/${selectedWorkspaceId.value}/analytics/summary` : '')
 
-const { data: cartography } = await useFetch<SitumCartographyResponse>('/api/situm/cartography')
+const { data: cartography, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(workspaceCartographyUrl, { immediate: false })
 const buildings = computed(() => cartography.value?.buildings ?? [])
 const buildingItems = computed(() => [{ label: 'All buildings', value: '' }, ...buildings.value.map(building => ({ label: building.name, value: String(building.id) }))])
 const query = computed(() => ({ fromDate: fromDate.value, toDate: toDate.value, ...(buildingId.value ? { buildingId: buildingId.value } : {}), ...(geofenceId.value.trim() ? { geofenceId: geofenceId.value.trim() } : {}) }))
-const { data, error, status, refresh } = await useFetch<AnalyticsResponse>('/api/analytics/summary', { query, immediate: false })
+const { data, error, status, refresh } = await useFetch<AnalyticsResponse>(workspaceAnalyticsUrl, { query, immediate: false })
 
 const hasData = computed(() => Boolean(data.value && (data.value.visitors.length || data.value.positioning.length || data.value.geofencing.length)))
 const positioning = computed(() => data.value?.positioning[0] ?? null)
@@ -39,7 +43,7 @@ function formatNumber(value: number) {
 async function loadAnalytics() {
   syncMessage.value = ''
   syncError.value = ''
-  await refresh()
+  if (selectedWorkspaceId.value) { await refreshCartography(); await refresh() }
 }
 
 async function syncFromSitum() {
@@ -50,7 +54,7 @@ async function syncFromSitum() {
     const id = buildingId.value ? Number(buildingId.value) : undefined
     const reports = ['visitors', 'positioning_time', 'geofencing_stay_time'] as const
     for (const report of reports) {
-      await $fetch('/api/analytics/sync', { method: 'POST', body: { report, fromDate: fromDate.value, toDate: toDate.value, ...(report === 'geofencing_stay_time' ? { buildingIds: id ? [id] : buildings.value.map(building => building.id) } : { buildingId: id ?? buildings.value[0]?.id }) } })
+      await $fetch(`/api/workspaces/${selectedWorkspaceId.value}/analytics/sync`, { method: 'POST', body: { report, fromDate: fromDate.value, toDate: toDate.value, ...(report === 'geofencing_stay_time' ? { buildingIds: id ? [id] : buildings.value.map(building => building.id) } : { buildingId: id ?? buildings.value[0]?.id }) } })
     }
     syncMessage.value = 'Analytics synced from Situm.'
     await refresh()
@@ -62,13 +66,8 @@ async function syncFromSitum() {
 }
 
 async function exportReport(report: 'visitors' | 'positioning_time' | 'geofencing_stay_time') {
-  const csv = await $fetch<string>('/api/analytics/export', { query: { ...query.value, report }, responseType: 'text' })
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `situm-analytics-${report}.csv`
-  link.click()
-  URL.revokeObjectURL(url)
+  void report
+  syncError.value = 'Workspace analytics export is not yet available for the isolated data path.'
 }
 
 onMounted(loadAnalytics)
