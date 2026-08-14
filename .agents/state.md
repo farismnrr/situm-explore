@@ -4,7 +4,7 @@ _Last reviewed: 2026-08-14_
 
 ## Active Plan 026
 
-Plan 026 production containerization is active on `plan/026-production-containerization`, based on latest `origin/main`. Phases 0–2 are complete. The workflow targets local Buildx publication to GHCR for `linux/amd64` and `linux/arm64`, pull-only staging Compose, and Makefile-driven operations; no CI/PR/merge is authorized.
+Plan 026 production containerization is active on `plan/026-production-containerization`, based on latest `origin/main`. Phases 0–3 are complete. GHCR currently contains SHA `sha-0cf07c08afab` and `staging` multi-platform images with digest `sha256:f28855b6e459da1584c0314b7302dacc63e545bdb9b03489ad3df5d9d397873e`; local arm64 runtime smoke is unavailable due the host emulation entrypoint issue. The workflow targets local Buildx publication to GHCR for `linux/amd64` and `linux/arm64`, pull-only staging Compose, and Makefile-driven operations; no CI/PR/merge is authorized.
 
 ## Integrated baseline
 
