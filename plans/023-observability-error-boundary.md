@@ -17,7 +17,7 @@ Make browser -> Nitro -> database/Situm failures traceable end-to-end while keep
 - [x] Phase 1 — add application OTLP exporter/lifecycle using the existing collector.
 - [x] Phase 2 — add request correlation/trace propagation and meaningful DB/Situm nested spans.
 - [x] Phase 3 — implement safe structured errors and client reference IDs.
-- [ ] Phase 4 — prove application trace/error paths and complete acceptance.
+- [x] Phase 4 — prove application trace/error paths and complete acceptance.
 
 Before adding observability dependencies or containers:
 - inspect docker ps locally;

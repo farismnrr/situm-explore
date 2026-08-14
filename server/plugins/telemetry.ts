@@ -1,6 +1,7 @@
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
 import { resourceFromAttributes } from '@opentelemetry/resources'
 import { NodeSDK } from '@opentelemetry/sdk-node'
+import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 
 export default defineNitroPlugin(() => {
   const config = useRuntimeConfig()
@@ -12,13 +13,11 @@ export default defineNitroPlugin(() => {
     autoDetectResources: false,
     instrumentations: [],
     resource: resourceFromAttributes({ 'service.name': config.otel.serviceName || 'situm-explore' }),
-    traceExporter: exporter,
+    spanProcessors: [new SimpleSpanProcessor(exporter)],
   })
   try {
     void sdk.start()
   } catch {
     // Telemetry must never prevent the application from starting.
   }
-  process.once('SIGTERM', () => { void sdk.shutdown().catch(() => undefined) })
-  process.once('SIGINT', () => { void sdk.shutdown().catch(() => undefined) })
 })
