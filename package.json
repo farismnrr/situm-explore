@@ -16,6 +16,9 @@
   "author": "",
   "license": "ISC",
   "type": "module",
+  "overrides": {
+    "esbuild": "^0.28.2"
+  },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.123",
     "@clickhouse/client": "^1.23.1",
