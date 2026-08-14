@@ -15,6 +15,7 @@
 - Optimize PoC delivery speed without weakening security, capability truthfulness, or accepted behavior. `(source: user-stated)`
 - Verify current Situm contracts instead of implementing from model memory or stale plans. `(source: user-stated)`
 - Runtime acceptance uses `npm run build` plus `npm run preview`, not Nuxt dev mode. `(source: user-stated)`
+- Temporary Situm smoke-test keys remain available for bounded Plan 025 remediation/retest and are revoked only after final acceptance passes; never persist or expose them. `(source: user-stated, 2026-08-14)`
 
 ## Plans 021–025
 
