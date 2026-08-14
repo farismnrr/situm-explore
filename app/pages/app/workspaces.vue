@@ -117,7 +117,7 @@ onMounted(refresh)
     <div class="grid gap-4 lg:grid-cols-[minmax(16rem,0.75fr)_minmax(0,1.5fr)]">
       <UCard :ui="{ body: 'space-y-4' }">
         <div><h2 class="font-semibold text-highlighted">Your workspaces</h2><p class="mt-1 text-xs text-muted">Only you can access these workspaces.</p></div>
-        <div v-if="loading" class="text-sm text-muted">Loading workspaces…</div>
+        <div v-if="loading" class="space-y-2" aria-label="Loading workspaces" aria-busy="true"><USkeleton class="h-9 w-full" /><USkeleton class="h-9 w-5/6" /></div>
         <div v-else-if="workspaces.length" class="space-y-1">
           <button v-for="workspace in workspaces" :key="workspace.id" type="button" class="w-full rounded-lg border px-3 py-2.5 text-left text-sm transition" :class="selectedWorkspaceId === workspace.id ? 'border-primary bg-elevated text-highlighted' : 'border-default text-muted hover:bg-elevated'" @click="selectWorkspace(workspace.id)">{{ workspace.name }}</button>
         </div>

@@ -68,7 +68,7 @@ async function loadDetail(alarm: SitumAlarm) {
     </UCard>
 
     <UAlert v-if="buildingsError" color="error" variant="subtle" title="Buildings unavailable" description="The required building filter could not be loaded." />
-    <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading alarms" description="Reading alarms for the selected building from Situm." />
+    <div v-else-if="String(status) === 'pending'" class="space-y-2" aria-label="Loading alarms" aria-busy="true"><USkeleton class="h-4 w-40" /><USkeleton class="h-3 w-72" /></div>
     <UAlert v-else-if="error" color="error" variant="subtle" title="Alarms unavailable" description="The protected Situm alarms read failed. No fixture rows are shown." />
     <UAlert v-else-if="!buildingId" color="neutral" variant="subtle" title="Select a building" description="A building is required before alarms can be read." />
 

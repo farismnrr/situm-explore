@@ -14,7 +14,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Users & groups' })
       <template #actions><ProductStatusBadge :label="String(status) === 'pending' ? 'Loading' : error ? 'Unavailable' : `${users.length} users`" :tone="String(status) === 'pending' ? 'neutral' : error ? 'error' : 'success'" /></template>
     </ProductPageHeader>
     <UAlert v-if="error" color="error" variant="subtle" title="Users unavailable" description="The authenticated Situm user read failed. No fixture rows are shown." />
-    <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading users" description="Reading the Situm directory." />
+    <div v-else-if="String(status) === 'pending'" class="space-y-2" aria-label="Loading users" aria-busy="true"><USkeleton class="h-4 w-40" /><USkeleton class="h-3 w-72" /></div>
     <UCard v-else-if="String(status) === 'success'"><div v-if="users.length" class="divide-y divide-default"><div v-for="user in users" :key="user.id" class="flex items-center justify-between gap-3 py-3"><div><strong class="text-sm text-highlighted">{{ user.fullName || user.email }}</strong><p class="text-xs text-muted">{{ user.email }}</p></div><span class="text-xs text-muted">{{ user.role }}</span></div></div><p v-else class="py-8 text-center text-sm text-muted">No Situm users returned.</p></UCard>
   </div>
 </template>

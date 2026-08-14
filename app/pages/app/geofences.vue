@@ -31,7 +31,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Geofences' })
       <template #actions><UButton to="/app/map?overlay=geofences" icon="i-lucide-map" label="Show on map" /></template>
     </ProductPageHeader>
     <UAlert v-if="error" color="error" variant="subtle" title="Geofences unavailable" description="The authenticated Situm geofence read failed. No fixture zones are shown." />
-    <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading geofences" description="Reading geofence metadata from Situm." />
+    <div v-else-if="String(status) === 'pending'" class="space-y-2" aria-label="Loading geofences" aria-busy="true"><USkeleton class="h-4 w-44" /><USkeleton class="h-3 w-72" /></div>
 
     <div class="grid gap-4 sm:grid-cols-2">
       <ProductStatCard label="Geofences" :value="geofences.length" :note="`across ${activeBuildingCount} buildings`" />

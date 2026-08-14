@@ -26,7 +26,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Groups' })
     </ProductPageHeader>
 
     <UAlert v-if="error" color="error" variant="subtle" title="Groups unavailable" description="The authenticated Situm groups read failed. No fixture rows are shown." />
-    <UAlert v-else-if="status === 'pending'" color="neutral" variant="subtle" title="Loading groups" description="Reading group metadata from Situm." />
+    <div v-else-if="String(status) === 'pending'" class="space-y-2" aria-label="Loading groups" aria-busy="true"><USkeleton class="h-4 w-40" /><USkeleton class="h-3 w-72" /></div>
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <UInput v-model="search" icon="i-lucide-search" placeholder="Search groups or identifiers" aria-label="Search groups" class="w-full sm:max-w-sm" />

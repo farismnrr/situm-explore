@@ -95,7 +95,7 @@ onMounted(loadAnalytics)
     <UAlert v-if="syncMessage" color="success" variant="subtle" :title="syncMessage" />
     <UAlert v-if="syncError" color="error" variant="subtle" title="Sync failed" :description="syncError" />
     <UAlert v-if="error" color="error" variant="subtle" title="Analytics unavailable" description="The protected analytics data could not be read from ClickHouse." />
-    <UAlert v-else-if="String(status) === 'pending' || String(status) === 'idle'" color="neutral" variant="subtle" title="Loading analytics" description="Reading the selected report window from ClickHouse." />
+    <div v-else-if="String(status) === 'pending' || String(status) === 'idle'" class="space-y-3" aria-label="Loading analytics" aria-busy="true"><USkeleton class="h-24 w-full" /><div class="grid gap-4 sm:grid-cols-3"><USkeleton class="h-20 w-full" /><USkeleton class="h-20 w-full" /><USkeleton class="h-20 w-full" /></div></div>
     <UAlert v-else-if="String(status) === 'success' && !hasData" color="neutral" variant="subtle" title="No analytics data" description="No synced report rows exist for this date range and filter. Sync from Situm to load the window." />
 
     <template v-if="hasData">

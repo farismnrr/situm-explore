@@ -37,7 +37,7 @@ function openDetails(poi: SitumCartographyPoi) {
     </ProductPageHeader>
 
     <UAlert v-if="error" class="mb-4" color="error" variant="subtle" title="POIs unavailable" description="The authenticated Situm cartography read could not be loaded. No fixture POIs are shown." />
-    <UAlert v-else-if="status === 'pending'" class="mb-4" color="neutral" variant="subtle" title="Loading POIs" description="Reading POIs and categories from Situm." />
+    <div v-else-if="String(status) === 'pending'" class="mb-4 space-y-2" aria-label="Loading POIs" aria-busy="true"><USkeleton class="h-4 w-40" /><USkeleton class="h-3 w-72" /></div>
 
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex flex-col gap-2 sm:flex-row"><UInput v-model="query" icon="i-lucide-search" placeholder="Search POIs…" aria-label="Search POIs" class="w-full sm:w-72" /><USelect v-model="categoryFilter" :items="categories" aria-label="Filter by category" class="w-full sm:w-48" /></div>

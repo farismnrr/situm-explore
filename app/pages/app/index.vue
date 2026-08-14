@@ -37,7 +37,7 @@ const homeExplore = [
         <div>
           <p class="eyebrow">Good afternoon</p>
           <h1 class="mt-1 text-2xl font-semibold tracking-tight text-highlighted">Welcome back, {{ firstName }}.</h1>
-          <p class="mt-2 max-w-xl text-sm leading-6 text-muted">{{ String(cartographyStatus) === 'pending' || !selectedWorkspaceId ? 'Loading your indoor workspace…' : cartographyError ? 'Workspace data is temporarily unavailable.' : 'Explore your indoor workspace, check live positions, or browse cartography.' }}</p>
+          <p class="mt-2 max-w-xl text-sm leading-6 text-muted">{{ cartographyError ? 'Workspace data is temporarily unavailable.' : 'Explore your indoor workspace, check live positions, or browse cartography.' }}</p>
         </div>
         <div class="flex shrink-0 flex-wrap gap-2">
           <UButton to="/app/realtime" color="neutral" variant="outline">View realtime</UButton>
@@ -47,7 +47,10 @@ const homeExplore = [
     </UCard>
 
     <UAlert v-if="cartographyError" class="mb-4" color="error" variant="subtle" title="Workspace preview unavailable" description="The selected workspace cartography could not be loaded." />
-    <UAlert v-else-if="String(cartographyStatus) === 'pending'" class="mb-4" color="neutral" variant="subtle" title="Loading workspace preview" description="Reading the selected workspace building and floor data." />
+    <div v-else-if="String(cartographyStatus) === 'pending' || !selectedWorkspaceId" class="content-grid mb-4" aria-label="Loading workspace preview" aria-busy="true">
+      <UCard :ui="{ body: 'p-0' }" class="overflow-hidden"><USkeleton class="h-[15.3125rem] w-full" /></UCard>
+      <UCard><div class="space-y-3"><USkeleton class="h-4 w-32" /><USkeleton class="h-3 w-full" /><USkeleton class="h-3 w-4/5" /></div></UCard>
+    </div>
     <UAlert v-else-if="String(cartographyStatus) !== 'pending' && !previewBuilding" class="mb-4" color="neutral" variant="subtle" title="No building data" description="The selected workspace has not returned any buildings to preview." />
 
     <div v-if="String(cartographyStatus) !== 'pending' && !cartographyError && previewBuilding" class="content-grid mb-4">

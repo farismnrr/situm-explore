@@ -29,7 +29,7 @@ function openDetails(building: SitumCartographyBuilding) {
     <ProductPageHeader eyebrow="Cartography" title="Buildings & floors" description="Live Situm venue and floor metadata." />
 
     <UAlert v-if="error" class="mb-4" color="error" variant="subtle" title="Buildings unavailable" description="The authenticated Situm cartography read could not be loaded. No fixture buildings are shown." />
-    <UAlert v-else-if="status === 'pending'" class="mb-4" color="neutral" variant="subtle" title="Loading buildings" description="Reading buildings and floors from Situm." />
+    <div v-else-if="String(status) === 'pending'" class="mb-4 space-y-2" aria-label="Loading buildings" aria-busy="true"><USkeleton class="h-4 w-48" /><USkeleton class="h-3 w-72" /></div>
 
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <UInput v-model="query" icon="i-lucide-search" placeholder="Search buildings…" aria-label="Search buildings" class="w-full sm:w-72" />
