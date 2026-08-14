@@ -63,3 +63,9 @@ The user explicitly authorized stacked execution of Plans 021–025 without PRs 
 - Completed in Plan 025: Phase 1 workspace context/UI for create, list, switch, rename, delete, Situm config replacement, safe status, and validation feedback. Production build and typecheck pass; dynamic config routing was made explicit through a safe bounded catch-all after runtime route matching was verified.
 - Plan 025 complete on `plan/025-workspace-ux-regression`: production-preview regression passed for auth/session/protection, workspace CRUD/ownership, config write-only metadata, sanitized validation failure, retained pages, and cleanup. External Situm reads remain dependent on configured upstream credentials/availability; Google runtime remains user-owned.
 - Later branches must be created directly from the exact completed predecessor HEAD.
+
+## Latest Viewer security evidence
+
+- 2026-08-14 targeted Situm auth smoke confirmed the installed SDK's API-key exchange and bearer-JWT flow.
+- Read-only and read-write temporary keys produced explicitly different JWT permission claims (`read-only` vs `read-write`), with approximately 24-hour lifetimes. The read-write JWT is broad authority and is not safe for browser Viewer use.
+- Viewer remains intentionally disabled; the Plan 025 security blocker is unresolved. No repository code/config changed during the smoke. Temporary artifacts were deleted and no credentials were persisted.

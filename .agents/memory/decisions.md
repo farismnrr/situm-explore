@@ -11,6 +11,16 @@ This file contains **currently active durable decisions**. Completed execution h
 
 Status: active.
 
+## Viewer authentication smoke decision (2026-08-14)
+
+- The installed `@situm/sdk-js` v0.25.0 exchanges an API key through `/api/v1/auth/access_tokens`; `Viewer.setAuth(jwt)` sends the JWT to the embedded Viewer via `postMessage`.
+- Temporary server-side smoke testing confirmed that a read-only key produces a JWT whose sanitized `api_permission` claim is `read-only`, while a read-write key produces a JWT whose claim is `read-write`. Both tokens had an approximately 24-hour lifetime and passed harmless organization/building reads, including bearer-JWT reads.
+- The read-write-derived JWT is therefore broad authority, not a least-privilege Viewer token. It must never be sent to browser code as the final Viewer model.
+- Keep the Viewer disabled until Situm provides/proves a scoped browser credential. A separate read-only Viewer credential may be viable, but it still requires an actual Viewer/cartography acceptance test before implementation is approved.
+- No temporary credential or generated JWT may be persisted in repository files, logs, traces, session evidence, or browser storage. Temporary test credentials must be revoked/deleted after use.
+
+Status: active security boundary; Plan 025 Viewer blocker remains unresolved.
+
 ## Full-stack Nuxt architecture
 
 - Situm Explore remains one full-stack Nuxt 4 application with Nitro server routes.
