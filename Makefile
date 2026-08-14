@@ -10,6 +10,7 @@ PLATFORMS ?= linux/amd64,linux/arm64
 LOCAL_PLATFORM ?= $(shell docker version --format '{{.Server.Os}}/{{.Server.Arch}}' 2>/dev/null || printf 'linux/amd64')
 COMPOSE_FILE ?= deploy/staging.compose.yml
 STAGING_ENV_FILE ?= deploy/staging.env
+STAGING_ENV_MATERIALIZER ?= ./scripts/materialize-staging-env.sh
 STAGING_PORT ?= 3005
 BUILD_CONTEXT ?= $(shell mktemp -d "$${TMPDIR:-/tmp}/situm-explore-docker.XXXXXX")
 BUILDX_BUILDER ?= situm-explore
@@ -18,7 +19,7 @@ export COMPOSE_FILE STAGING_ENV_FILE STAGING_PORT IMAGE_REPOSITORY STAGING_TAG
 
 .PHONY: help doctor check image-build image-push image-inspect image-security-check \
         staging-pull staging-up staging-update staging-down staging-restart \
-        staging-ps staging-logs staging-smoke staging-migrate release-staging
+        staging-ps staging-logs staging-smoke staging-migrate staging-config release-staging
 
 help:
 	@printf '%s\n' \
@@ -87,10 +88,13 @@ define COMPOSE
 endef
 
 staging-pull:
+	$(STAGING_CONFIG)
 	$(COMPOSE) pull
 staging-up:
+	$(STAGING_CONFIG)
 	$(COMPOSE) up -d
 staging-update:
+	$(STAGING_CONFIG)
 	$(COMPOSE) pull
 	$(COMPOSE) up -d --force-recreate
 staging-down:
@@ -101,14 +105,21 @@ staging-ps:
 	$(COMPOSE) ps
 staging-logs:
 	$(COMPOSE) logs -f
+staging-config:
+	$(STAGING_CONFIG)
 staging-smoke:
 	@attempt=0; until curl --fail --silent --show-error --max-time 10 'http://127.0.0.1:$(STAGING_PORT)/api/health/liveness' >/dev/null; do \
 		attempt=$$((attempt + 1)); test $$attempt -lt 10 || exit 1; sleep 1; \
 	done
 	@echo 'staging smoke: ok'
 staging-migrate:
-	@test -f '$(STAGING_ENV_FILE)' || { echo 'missing curated staging env file: $(STAGING_ENV_FILE)' >&2; exit 1; }
+	$(STAGING_CONFIG)
 	@database_url=$$(awk -F= '/^[[:space:]]*DATABASE_URL[[:space:]]*=/{sub(/^[[:space:]]*DATABASE_URL[[:space:]]*=/, ""); print; exit}' '$(STAGING_ENV_FILE)'); \
 		test -n "$$database_url" || { echo 'staging env is missing DATABASE_URL' >&2; exit 1; }; \
 		DATABASE_URL="$$database_url" npm run db:migrate
+
+define STAGING_CONFIG
+	@test -x '$(STAGING_ENV_MATERIALIZER)' || { echo 'missing executable staging env materializer: $(STAGING_ENV_MATERIALIZER)' >&2; exit 1; }
+	@'$(STAGING_ENV_MATERIALIZER)' .env '$(STAGING_ENV_FILE)'
+endef
 release-staging: image-push staging-update
