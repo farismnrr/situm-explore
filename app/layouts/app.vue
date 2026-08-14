@@ -118,7 +118,7 @@ async function logout() {
           <p class="truncate text-xs text-muted">Workspace <span class="px-1">/</span> <span class="text-highlighted">{{ $route.meta.title || 'Home' }}</span></p>
         </div>
         <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <button class="search-trigger hidden sm:flex" type="button" aria-haspopup="dialog" @click="openSearch"><span class="flex items-center gap-2"><UIcon name="i-lucide-search" />Search anything…</span><kbd>⌘ K</kbd></button>
+          <button class="search-trigger hidden min-[801px]:flex" type="button" aria-haspopup="dialog" @click="openSearch"><span class="flex items-center gap-2"><UIcon name="i-lucide-search" />Search anything…</span><kbd>⌘ K</kbd></button>
           <ProductStatusBadge label="POC configured" tone="success" dot class="hidden sm:inline-flex" />
         </div>
       </header>
