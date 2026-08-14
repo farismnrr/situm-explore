@@ -5,12 +5,29 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Dashboard' })
 const { data: foundation, status: foundationStatus } = await useFetch('/api/me')
 const { selectedWorkspaceId } = useWorkspaceContext()
 const { data: situm, error: situmError, status: situmStatus, refresh: refreshSitum } = await useFetch<{ configured?: boolean }>(useWorkspaceEndpoint('/situm/status'), { immediate: false })
-watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refreshSitum() }, { immediate: true })
+type DashboardAnalytics = {
+  visitors: Array<{ visitors: number | string }>
+  positioning: Array<{ total: number | string }>
+  geofencing: Array<{ seconds: number | string }>
+}
+const today = new Date()
+const analyticsQuery = computed(() => ({
+  fromDate: new Date(today.getTime() - 6 * 86400000).toISOString().slice(0, 10),
+  toDate: today.toISOString().slice(0, 10),
+}))
+const analyticsUrl = computed(() => selectedWorkspaceId.value ? `/api/workspaces/${selectedWorkspaceId.value}/analytics/summary` : '')
+const { data: analytics, error: analyticsError, status: analyticsStatus, refresh: refreshAnalytics } = await useFetch<DashboardAnalytics>(analyticsUrl, { query: analyticsQuery, immediate: false })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) { refreshSitum(); refreshAnalytics() } }, { immediate: true })
 
 const databaseLabel = computed(() => foundationStatus.value === 'pending' ? 'Loading' : foundation.value?.status === 'connected' || foundation.value?.status === 'connected-empty' ? 'Connected' : 'Unavailable')
 const databaseColor = computed(() => databaseLabel.value === 'Connected' ? 'success' : databaseLabel.value === 'Loading' ? 'neutral' : 'error')
 const situmLabel = computed(() => situmStatus.value === 'pending' ? 'Loading' : situmError.value ? 'Unavailable' : situm.value?.configured ? 'Configured' : 'Not configured')
 const situmColor = computed(() => situmLabel.value === 'Configured' ? 'success' : situmLabel.value === 'Loading' ? 'neutral' : situmLabel.value === 'Unavailable' ? 'error' : 'warning')
+const analyticsLoaded = computed(() => String(analyticsStatus.value) === 'success' && !analyticsError.value)
+const hasAnalytics = computed(() => analyticsLoaded.value && Boolean(analytics.value && (analytics.value.visitors.length || analytics.value.positioning.length || analytics.value.geofencing.length)))
+const visitorTotal = computed(() => analytics.value?.visitors.reduce((sum, row) => sum + Number(row.visitors), 0) ?? 0)
+const positioningMinutes = computed(() => analytics.value?.positioning[0] ? Math.round(Number(analytics.value.positioning[0].total) / 60 * 10) / 10 : 0)
+const geofenceHours = computed(() => analytics.value?.geofencing[0] ? Math.round(Number(analytics.value.geofencing[0].seconds) / 3600 * 10) / 10 : 0)
 </script>
 
 <template>
@@ -20,7 +37,13 @@ const situmColor = computed(() => situmLabel.value === 'Configured' ? 'success' 
     </ProductPageHeader>
 
     <div class="content-grid mb-4">
-      <UCard><UAlert color="neutral" variant="subtle" title="Dashboard metrics remain unresolved" description="Real report summaries are available in Reports. Alarm, user and group totals are not shown here because their source scope and denominator are not equivalent to one another." /></UCard>
+      <UCard :ui="{ body: 'space-y-4' }">
+        <div><h2 class="font-semibold text-highlighted">Workspace metrics</h2><p class="mt-1 text-xs text-muted">Reported analytics for the last 7 days. Each metric keeps its source semantics.</p></div>
+        <div v-if="String(analyticsStatus) === 'pending' || String(analyticsStatus) === 'idle'" class="grid gap-3 sm:grid-cols-3" aria-label="Loading workspace metrics" aria-busy="true"><USkeleton class="h-16 w-full" /><USkeleton class="h-16 w-full" /><USkeleton class="h-16 w-full" /></div>
+        <UAlert v-else-if="analyticsError" color="error" variant="subtle" title="Metrics unavailable" description="The workspace analytics summary could not be loaded." />
+        <UAlert v-else-if="!hasAnalytics" color="neutral" variant="subtle" title="No reported metrics" description="No synced analytics rows are available for the last 7 days." />
+        <div v-else class="grid gap-3 sm:grid-cols-3"><ProductStatCard label="Visitors" :value="visitorTotal" note="Reported visitor count" /><ProductStatCard label="Positioning time" :value="`${positioningMinutes} min`" note="Reported positioning time" /><ProductStatCard label="Geofence stay" :value="`${geofenceHours} hr`" note="Reported matched-fence time" /></div>
+      </UCard>
       <UCard :ui="{ body: 'p-0' }"><div class="panel-head"><h2 class="font-semibold text-highlighted">System status</h2><span class="text-xs text-muted">Just now</span></div><div class="status-list panel-body"><div><span>Map Viewer</span><ProductStatusBadge label="Open map to verify" /></div><div><span>Database</span><ProductStatusBadge :label="databaseLabel" :tone="databaseColor" /></div><div><span>Situm configuration</span><ProductStatusBadge :label="situmLabel" :tone="situmColor" /></div></div></UCard>
     </div>
   </div>
