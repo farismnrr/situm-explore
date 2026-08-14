@@ -283,6 +283,7 @@ body {
   .app-sidebar.translate-x-0 { transform: translateX(0); }
   .shell-menu-button { display: inline-flex; }
   .shell-menu-backdrop { display: block; }
+  .search-trigger { display: none; }
 }
 
 @media (max-width: 639px) {
