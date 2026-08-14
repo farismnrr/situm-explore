@@ -47,8 +47,9 @@ Detailed prerequisites and potential blockers live in `plans/021-025-prerequisit
 
 The user explicitly authorized stacked execution of Plans 021–025 without PRs or merges.
 
-- Active branch: `plan/021-auth-identity-foundation`
+- Active branch: `plan/022-workspaces-situm-credentials`
 - Completed in this branch: Plan 021 Phase 1 audit and Phase 2 identity schema/migration.
 - Completed in this branch: Plan 021 Phases 1–6; identity, registration/login, sessions, conditional Google preparation, UI, and acceptance validation.
-- Current phase: Plan 021 closeout review before creating the stacked Plan 022 branch.
+- Completed in Plan 022 branch: Phase 1 workspace ownership schema/migration.
+- Current phase: Plan 022 Phase 2 owned workspace CRUD and authorization.
 - Later branches must be created directly from the exact completed predecessor HEAD.

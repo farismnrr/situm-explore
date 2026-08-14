@@ -30,6 +30,18 @@ export const providerIdentities = app.table('provider_identities', {
   unique('provider_account_unique').on(table.provider, table.providerAccountId),
 ])
 
+export const workspaces = app.table('workspaces', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  ownerId: uuid('owner_id').notNull(),
+  name: varchar('name', { length: 120 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, table => [
+  foreignKey({ columns: [table.ownerId], foreignColumns: [users.id] }).onDelete('cascade'),
+])
+
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 export type ProviderIdentity = typeof providerIdentities.$inferSelect
+export type Workspace = typeof workspaces.$inferSelect
+export type NewWorkspace = typeof workspaces.$inferInsert
