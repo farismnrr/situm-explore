@@ -14,6 +14,14 @@ Plan 022 does **not** migrate every existing Situm/Viewer/analytics consumer and
 
 ## Required scope
 
+### Stacked execution progress
+
+- [x] Phase 1 — add and apply private workspace ownership schema.
+- [x] Phase 2 — implement owned workspace CRUD and authorization.
+- [x] Phase 3 — implement encrypted workspace Situm configuration and safe metadata.
+- [x] Phase 4 — validate non-destructive Situm configuration and permission metadata.
+- [x] Phase 5 — complete Plan 022 acceptance and retained global baseline smoke.
+
 - one app user may own many private workspaces;
 - one owner per workspace; no invites/members/team model;
 - different users may independently configure workspaces that refer to the same external Situm account;
