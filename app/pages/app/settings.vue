@@ -51,7 +51,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Viewer settings' })
     </div>
 
     <div v-else class="settings-stage relative">
-      <SitumViewer ref="viewer" class="settings-viewer" @status="handleViewerStatus" />
+      <SitumViewer ref="viewer" :workspace-id="useWorkspaceContext().selectedWorkspaceId.value || undefined" class="settings-viewer" @status="handleViewerStatus" />
 
       <UCard v-if="panelOpen" class="settings-panel absolute bottom-28 left-6 z-10 w-72 shadow-lg" :ui="{ body: 'space-y-4' }">
         <div class="flex items-start justify-between gap-2">

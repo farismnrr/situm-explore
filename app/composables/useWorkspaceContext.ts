@@ -11,6 +11,7 @@ export interface WorkspaceSitumConfig {
   situmAccountId: string
   accessMode: 'VIEW_ONLY' | 'VIEW_WRITE'
   configured: boolean
+  viewerConfigured: boolean
   updatedAt: string
 }
 

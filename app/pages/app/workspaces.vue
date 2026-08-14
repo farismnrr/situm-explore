@@ -13,6 +13,7 @@ const newName = ref('')
 const renameName = ref('')
 const situmAccountId = ref('')
 const apiKey = ref('')
+const viewerApiKey = ref('')
 const accessMode = ref<'VIEW_ONLY' | 'VIEW_WRITE'>('VIEW_ONLY')
 const config = ref<WorkspaceSitumConfig | null>(null)
 
@@ -78,8 +79,9 @@ async function saveConfig() {
   if (!selectedWorkspaceId.value || !situmAccountId.value.trim() || !apiKey.value) return
   saving.value = true; errorMessage.value = ''; message.value = ''
   try {
-    config.value = await $fetch<WorkspaceSitumConfig & { configured: boolean }>(`/api/workspaces/${selectedWorkspaceId.value}/situm-config`, { method: 'PUT', body: { situmAccountId: situmAccountId.value, apiKey: apiKey.value, accessMode: accessMode.value } })
+    config.value = await $fetch<WorkspaceSitumConfig & { configured: boolean }>(`/api/workspaces/${selectedWorkspaceId.value}/situm-config`, { method: 'PUT', body: { situmAccountId: situmAccountId.value, apiKey: apiKey.value, ...(viewerApiKey.value ? { viewerApiKey: viewerApiKey.value } : {}), accessMode: accessMode.value } })
     apiKey.value = ''
+    viewerApiKey.value = ''
     message.value = 'Situm configuration saved. The credential will not be shown again.'
   } catch (error: unknown) { errorMessage.value = getSafeErrorMessage(error, 'Situm configuration could not be saved.') } finally { saving.value = false }
 }
@@ -121,10 +123,11 @@ onMounted(refresh)
         </UCard>
         <UCard :ui="{ body: 'space-y-4' }">
           <div><h2 class="font-semibold text-highlighted">Situm configuration</h2><p class="mt-1 text-xs leading-5 text-muted">Credentials are encrypted on the server. The stored API key is never returned or shown again.</p></div>
-          <div v-if="config" class="grid gap-3 rounded-lg border border-default bg-elevated p-3 text-xs sm:grid-cols-3"><div><span class="block text-muted">Status</span><strong class="text-highlighted">Configured</strong></div><div><span class="block text-muted">Access mode</span><strong class="text-highlighted">{{ config.accessMode === 'VIEW_ONLY' ? 'Only Read' : 'Read & Write' }}</strong></div><div><span class="block text-muted">Account</span><strong class="break-all text-highlighted">{{ config.situmAccountId }}</strong></div></div>
+          <div v-if="config" class="grid gap-3 rounded-lg border border-default bg-elevated p-3 text-xs sm:grid-cols-4"><div><span class="block text-muted">Status</span><strong class="text-highlighted">Configured</strong></div><div><span class="block text-muted">Access mode</span><strong class="text-highlighted">{{ config.accessMode === 'VIEW_ONLY' ? 'Only Read' : 'Read & Write' }}</strong></div><div><span class="block text-muted">Account</span><strong class="break-all text-highlighted">{{ config.situmAccountId }}</strong></div><div><span class="block text-muted">Viewer credential</span><strong class="text-highlighted">{{ config.viewerConfigured ? 'Configured' : 'Not configured' }}</strong></div></div>
           <UAlert v-else color="neutral" variant="subtle" title="Not configured" description="Add a Situm Only Read or Read & Write API key to connect this workspace." />
           <div class="grid gap-3 sm:grid-cols-2"><UFormField label="Situm account ID"><UInput v-model="situmAccountId" placeholder="Account ID" class="w-full" /></UFormField><UFormField label="Access mode"><select v-model="accessMode" class="h-9 w-full rounded-md border border-default bg-default px-2 text-sm text-highlighted"><option value="VIEW_ONLY">Only Read</option><option value="VIEW_WRITE">Read & Write</option></select></UFormField></div>
           <UFormField label="API key" hint="Required to add or replace the stored key"><UInput v-model="apiKey" type="password" autocomplete="new-password" placeholder="Enter a new key" class="w-full" /></UFormField>
+          <UFormField label="Read-only Viewer API key" hint="Optional; write-only and never returned"><UInput v-model="viewerApiKey" type="password" autocomplete="new-password" placeholder="Enter a read-only key" class="w-full" /></UFormField>
           <div class="flex flex-wrap gap-2"><UButton label="Save configuration" :loading="saving" :disabled="saving || !situmAccountId.trim() || !apiKey" @click="saveConfig" /><UButton v-if="config" label="Validate configuration" color="neutral" variant="outline" :loading="validating" :disabled="saving || validating" @click="validateConfig" /></div>
         </UCard>
       </div>

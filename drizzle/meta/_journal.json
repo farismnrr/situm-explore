@@ -43,6 +43,13 @@
       "when": 1786668270709,
       "tag": "0005_classy_vivisector",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786675613657,
+      "tag": "0006_thin_bucky",
+      "breakpoints": true
     }
   ]
 }

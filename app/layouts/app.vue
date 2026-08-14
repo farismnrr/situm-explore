@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { user, clear } = useUserSession()
+const { loadWorkspaces } = useWorkspaceContext()
 const mobileOpen = ref(false)
 const isDesktop = ref(false)
 const searchOpen = ref(false)
@@ -47,6 +48,10 @@ function handleGlobalShortcut(event: KeyboardEvent) {
 
 onMounted(() => window.addEventListener('keydown', handleGlobalShortcut))
 onBeforeUnmount(() => window.removeEventListener('keydown', handleGlobalShortcut))
+
+onMounted(() => {
+  void loadWorkspaces().catch(() => undefined)
+})
 
 let desktopMedia: MediaQueryList | undefined
 function updateDesktopState() {

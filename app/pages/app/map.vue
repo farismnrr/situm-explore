@@ -26,8 +26,9 @@ const viewer = ref<{
   cancelDirections: () => Promise<void>
 } | null>(null)
 const { showFeedback } = useExploreFeedback()
+const { selectedWorkspaceId } = useWorkspaceContext()
 const { data: cartography, error: cartographyError, status: cartographyStatus, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
-onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) refreshCartography() })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refreshCartography() }, { immediate: true })
 const buildings = computed(() => cartography.value?.buildings ?? [])
 const floors = computed(() => cartography.value?.floors ?? [])
 const pois = computed(() => cartography.value?.pois ?? [])
@@ -261,7 +262,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map', fullWidth: tru
     <section class="relative flex min-h-[34rem] min-w-0 flex-1 flex-col bg-elevated sm:min-h-[38rem] lg:min-h-0">
       <UButton v-if="sidebarCollapsed" icon="i-lucide-panel-left-open" aria-label="Show sidebar" color="neutral" variant="solid" size="sm" class="absolute left-3 top-3 z-10 hidden shadow-sm lg:inline-flex" @click="sidebarCollapsed = false" />
       <div class="min-h-0 flex-1 p-2 sm:p-3">
-        <SitumViewer ref="viewer" class="h-full" @status="handleViewerStatus" />
+        <SitumViewer ref="viewer" :workspace-id="selectedWorkspaceId || undefined" :building-id="activeBuilding?.id" class="h-full" @status="handleViewerStatus" />
       </div>
       <UCard v-if="selectedPoi" class="absolute right-6 top-6 z-10 w-64 shadow-lg" :ui="{ body: 'p-4' }">
         <div class="flex items-start justify-between gap-3">

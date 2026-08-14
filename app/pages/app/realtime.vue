@@ -15,14 +15,16 @@ const overlayState = ref<'idle' | 'loading' | 'active' | 'error'>('idle')
 const overlayMessage = ref('')
 const selectedBuildingId = ref<number | null>(null)
 const statusMessage = ref('')
+const { selectedWorkspaceId } = useWorkspaceContext()
 
 const { data: cartography, error: cartographyError, status: cartographyStatus, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
 const { data, error, status, refresh } = await useFetch<SitumRealtimeResponse>(useWorkspaceEndpoint('/situm/realtime'), { immediate: false })
-onMounted(() => { if (useWorkspaceContext().selectedWorkspaceId.value) { refreshCartography(); refresh() } })
+watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) { refreshCartography(); refresh() } }, { immediate: true })
 const positions = computed(() => data.value?.positions ?? [])
 const buildings = computed(() => cartography.value?.buildings ?? [])
 const searchQuery = ref('')
 const selectedBuilding = computed(() => buildings.value.find(building => building.id === selectedBuildingId.value) ?? buildings.value[0] ?? null)
+const selectedBuildingForViewer = computed(() => selectedBuilding.value)
 const filteredPositions = computed(() => {
   const query = searchQuery.value.trim().toLocaleLowerCase()
   return positions.value.filter((position) => {
@@ -139,7 +141,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
         </div>
         <div v-if="!isDesktopViewport" class="flex h-[420px] items-center justify-center border-t border-default p-6 text-center"><UAlert color="neutral" variant="subtle" title="Desktop Viewer unavailable" description="The realtime Situm Viewer is not mounted on mobile. The current position list remains available below." class="max-w-md" /></div>
         <div v-else class="realtime-map relative overflow-hidden border-t border-default" aria-label="Situm realtime map">
-          <SitumViewer ref="viewer" class="h-full" @status="handleViewerStatus" />
+          <SitumViewer ref="viewer" :workspace-id="selectedWorkspaceId || undefined" :building-id="selectedBuildingForViewer?.id" class="h-full" @status="handleViewerStatus" />
           <div v-if="viewerState === 'loading'" class="absolute inset-0 flex items-center justify-center bg-default/70 p-6"><UAlert color="neutral" variant="subtle" title="Loading Viewer" description="Waiting for the Situm map to become ready." class="max-w-md" /></div>
           <div v-else-if="viewerState === 'error'" class="absolute inset-0 flex items-center justify-center bg-default/80 p-6"><UAlert color="error" variant="subtle" title="Viewer unavailable" description="The Situm map could not be loaded. The server position context remains independent." class="max-w-md" /></div>
           <div v-else-if="overlayState === 'loading'" class="absolute left-4 top-4"><UBadge color="warning" variant="soft">Starting realtime overlay…</UBadge></div>
