@@ -56,5 +56,6 @@ The user explicitly authorized stacked execution of Plans 021–025 without PRs 
 - Active branch: `plan/024-workspace-situm-backend-migration`
 - Completed in Plan 024: Phase 1 reusable owner-scoped Situm context plus workspace-scoped config and core read routes. Lint, typecheck, and build pass; upstream status smoke remains externally dependent because the Situm read hung.
 - Completed in Plan 024: Phase 2 explicit workspace routes for paths and realtime; static mutation surface remains read-only. Lint, typecheck, and build pass; upstream route smoke returned sanitized upstream 404s, with no credential exposure.
-- Current phase: Plan 024 Phase 3 workspace-scoped analytics and acceptance.
+- Completed in Plan 024: Phase 3 workspace-scoped ClickHouse tables, owner-checked summary/sync routes, per-request workspace credential use, and legacy-row exclusion. Lint, typecheck, build, and bounded authorization smoke pass.
+- Current phase: Plan 024 final acceptance and closeout review.
 - Later branches must be created directly from the exact completed predecessor HEAD.
