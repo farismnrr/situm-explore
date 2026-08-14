@@ -6,6 +6,12 @@ Branch: plan/024-workspace-situm-backend-migration
 
 Depends on: Plan 023 accepted and integrated into updated main.
 
+## Current stacked execution
+
+- [x] Phase 1 — define reusable owner-scoped workspace Situm context and migrate organization/users/status/cartography/config routes.
+- [ ] Phase 2 — migrate remaining retained Situm consumers and permission paths.
+- [ ] Phase 3 — migrate workspace-scoped analytics and complete acceptance.
+
 ## Goal
 
 Migrate retained Situm-backed backend behavior from one global runtime configuration to authenticated per-workspace context.

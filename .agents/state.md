@@ -53,4 +53,7 @@ The user explicitly authorized stacked execution of Plans 021–025 without PRs 
 - Completed in Plan 023 branch: Phases 1–2 application OTLP lifecycle, request correlation, and nested DB/Situm spans.
 - Completed in Plan 023 branch: Phase 3 safe structured errors and client reference IDs.
 - Current phase: Plan 023 Phase 4 application trace/error-path acceptance.
+- Active branch: `plan/024-workspace-situm-backend-migration`
+- Completed in Plan 024: Phase 1 reusable owner-scoped Situm context plus workspace-scoped config and core read routes. Lint, typecheck, and build pass; upstream status smoke remains externally dependent because the Situm read hung.
+- Current phase: Plan 024 Phase 2 remaining Situm consumers and permission paths.
 - Later branches must be created directly from the exact completed predecessor HEAD.
