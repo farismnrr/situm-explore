@@ -40,8 +40,22 @@ export const workspaces = app.table('workspaces', {
   foreignKey({ columns: [table.ownerId], foreignColumns: [users.id] }).onDelete('cascade'),
 ])
 
+export const workspaceSitumConfigs = app.table('workspace_situm_configs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().unique(),
+  accessMode: varchar('access_mode', { length: 20 }).notNull(),
+  situmAccountId: varchar('situm_account_id', { length: 255 }).notNull(),
+  encryptedApiKey: varchar('encrypted_api_key', { length: 2048 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, table => [
+  foreignKey({ columns: [table.workspaceId], foreignColumns: [workspaces.id] }).onDelete('cascade'),
+  check('workspace_situm_configs_access_mode_check', sql`${table.accessMode} in ('VIEW_ONLY', 'VIEW_WRITE')`),
+])
+
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 export type ProviderIdentity = typeof providerIdentities.$inferSelect
 export type Workspace = typeof workspaces.$inferSelect
 export type NewWorkspace = typeof workspaces.$inferInsert
+export type WorkspaceSitumConfig = typeof workspaceSitumConfigs.$inferSelect

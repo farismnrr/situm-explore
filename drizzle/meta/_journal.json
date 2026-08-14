@@ -29,6 +29,20 @@
       "when": 1786667935638,
       "tag": "0003_hot_supernaut",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786668220223,
+      "tag": "0004_slippery_pestilence",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786668270709,
+      "tag": "0005_classy_vivisector",
+      "breakpoints": true
     }
   ]
 }

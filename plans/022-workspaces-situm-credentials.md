@@ -18,7 +18,7 @@ Plan 022 does **not** migrate every existing Situm/Viewer/analytics consumer and
 
 - [x] Phase 1 — add and apply private workspace ownership schema.
 - [x] Phase 2 — implement owned workspace CRUD and authorization.
-- [ ] Phase 3 — implement encrypted workspace Situm configuration and safe metadata.
+- [x] Phase 3 — implement encrypted workspace Situm configuration and safe metadata.
 - [ ] Phase 4 — validate non-destructive Situm configuration and permission metadata.
 - [ ] Phase 5 — complete Plan 022 acceptance and retained global baseline smoke.
 
