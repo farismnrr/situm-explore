@@ -49,5 +49,6 @@ The user explicitly authorized stacked execution of Plans 021–025 without PRs 
 
 - Active branch: `plan/021-auth-identity-foundation`
 - Completed in this branch: Plan 021 Phase 1 audit and Phase 2 identity schema/migration.
-- Current phase: Plan 021 Phase 3 registration/password login.
+- Completed in this branch: Plan 021 Phases 1–3 through registration/password login.
+- Current phase: Plan 021 Phase 4 session identity and protected API continuity.
 - Later branches must be created directly from the exact completed predecessor HEAD.

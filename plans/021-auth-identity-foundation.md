@@ -41,7 +41,7 @@ Replace the current single-user environment-based login with database-backed app
 
 - [x] Phase 1 — audit existing auth/session/database/runtime contracts.
 - [x] Phase 2 — add and apply PostgreSQL users/provider-identities schema and migrations.
-- [ ] Phase 3 — implement registration and password login.
+- [x] Phase 3 — implement registration and password login.
 - [ ] Phase 4 — migrate session identity and protected API continuity.
 - [ ] Phase 5 — prepare conditional Google provider wiring.
 - [ ] Phase 6 — update auth UI and complete acceptance validation.
