@@ -6,7 +6,7 @@ import { decryptWorkspaceApiKey } from '../../../../utils/workspace-credentials'
 
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
-  const workspaceId = getRouterParam(event, 'id') || ''
+  const workspaceId = getRouterParam(event, 'workspaceId') || ''
   const [config] = await getDb().select({ situmAccountId: workspaceSitumConfigs.situmAccountId, encryptedApiKey: workspaceSitumConfigs.encryptedApiKey }).from(workspaceSitumConfigs).innerJoin(workspaces, eq(workspaceSitumConfigs.workspaceId, workspaces.id)).where(and(eq(workspaceSitumConfigs.workspaceId, workspaceId), eq(workspaces.ownerId, session.user.id))).limit(1)
   if (!config) throw createError({ statusCode: 404, statusMessage: 'Situm configuration not found.' })
 

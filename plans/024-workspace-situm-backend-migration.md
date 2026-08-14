@@ -11,6 +11,7 @@ Depends on: Plan 023 accepted and integrated into updated main.
 - [x] Phase 1 — define reusable owner-scoped workspace Situm context and migrate organization/users/status/cartography/config routes.
 - [x] Phase 2 — migrate remaining retained Situm consumers and permission paths.
 - [x] Phase 3 — migrate workspace-scoped analytics and complete acceptance.
+- [x] Phase 4 — remove migrated global Situm route authority and complete production acceptance.
 
 ## Goal
 
