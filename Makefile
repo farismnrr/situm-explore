@@ -14,7 +14,7 @@ STAGING_PORT ?= 3000
 BUILD_CONTEXT ?= $(shell mktemp -d "$${TMPDIR:-/tmp}/situm-explore-docker.XXXXXX")
 BUILDX_BUILDER ?= situm-explore
 
-export COMPOSE_FILE STAGING_ENV_FILE
+export COMPOSE_FILE STAGING_ENV_FILE STAGING_PORT IMAGE_REPOSITORY STAGING_TAG
 
 .PHONY: help doctor check image-build image-push image-inspect image-security-check \
         staging-pull staging-up staging-update staging-down staging-restart \
@@ -82,24 +82,24 @@ image-security-check:
 define COMPOSE
 	@test -f '$(COMPOSE_FILE)' || { echo 'missing pull-only staging Compose file: $(COMPOSE_FILE)' >&2; exit 1; }
 	@test -f '$(STAGING_ENV_FILE)' || { echo 'missing staging env file: $(STAGING_ENV_FILE)' >&2; exit 1; }
-	docker compose --env-file '$(STAGING_ENV_FILE)' -f '$(COMPOSE_FILE)' 
+	docker compose --env-file '$(STAGING_ENV_FILE)' -f '$(COMPOSE_FILE)'
 endef
 
 staging-pull:
-	$(COMPOSE)pull
+	$(COMPOSE) pull
 staging-up:
-	$(COMPOSE)up -d
+	$(COMPOSE) up -d
 staging-update:
-	$(COMPOSE)pull
-	$(COMPOSE)up -d --force-recreate
+	$(COMPOSE) pull
+	$(COMPOSE) up -d --force-recreate
 staging-down:
-	$(COMPOSE)down
+	$(COMPOSE) down
 staging-restart:
-	$(COMPOSE)restart
+	$(COMPOSE) restart
 staging-ps:
-	$(COMPOSE)ps
+	$(COMPOSE) ps
 staging-logs:
-	$(COMPOSE)logs -f
+	$(COMPOSE) logs -f
 staging-smoke:
 	@curl --fail --silent --show-error --max-time 10 'http://127.0.0.1:$(STAGING_PORT)/api/health/liveness' >/dev/null
 	@echo 'staging smoke: ok'
