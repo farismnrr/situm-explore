@@ -25,7 +25,7 @@ Provide a local-only, production-grade Docker release workflow for GHCR with lin
 - [x] Phase 3 — Multi-platform Buildx build and GHCR publication.
 - [x] Phase 4 — Pull-only Compose and ignored staging runtime environment.
 - [x] Phase 5 — Final image security and runtime-hardening audit.
-- [ ] Phase 6 — GHCR push, pull-back, and registry-only staging proof.
+- [x] Phase 6 — GHCR push, pull-back, and registry-only staging proof.
 - [ ] Phase 7 — Full local staging runtime acceptance.
 - [ ] Phase 8 — Pull/recreate staging update simulation and rollback evidence.
 - [ ] Phase 9 — Explicit database migration operation.
