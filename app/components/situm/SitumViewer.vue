@@ -30,24 +30,44 @@ async function initialize() {
     const sdk = new SitumSDK({ auth: { jwt }, compact: true })
     const instance = sdk.viewer.create({ domElement: root.value, buildingId: props.buildingId })
     let authSent = false
+    let authCompleted = false
+    let iframeLoaded = false
+    let readyEmitted = false
     let fallbackTimer: ReturnType<typeof setTimeout> | undefined
+    const runtimeInstance = instance as unknown as { iframe?: HTMLIFrameElement }
+    const markReady = () => {
+      if (!readyEmitted) {
+        readyEmitted = true
+        emit('status', 'ready')
+      }
+    }
+    const markFallbackReady = () => {
+      if (authCompleted && (iframeLoaded || runtimeInstance.iframe)) markReady()
+    }
     const sendAuth = () => {
       if (authSent) return
       authSent = true
-      void instance.setAuth(jwt).catch(() => emit('status', 'error', fallbackMessage))
+      void instance.setAuth(jwt).then(() => {
+        authCompleted = true
+        markFallbackReady()
+      }).catch(() => emit('status', 'error', fallbackMessage))
     }
-    instance.on(ViewerEventType.MAP_IS_READY, () => emit('status', 'ready'))
+    instance.on(ViewerEventType.MAP_IS_READY, markReady)
     instance.on(ViewerEventType.APP_ERROR, () => emit('status', 'error', fallbackMessage))
     instance.on(ViewerEventType.READY_FOR_AUTH, sendAuth)
-    const runtimeInstance = instance as unknown as { iframe?: HTMLIFrameElement }
     let attempts = 0
     let iframe: HTMLIFrameElement | undefined
     const bindIframeFallback = () => {
       if (authSent) return
       iframe = runtimeInstance.iframe
       if (iframe) {
-        iframe.addEventListener('load', sendAuth, { once: true })
+        iframe.addEventListener('load', () => {
+          iframeLoaded = true
+          sendAuth()
+          markFallbackReady()
+        }, { once: true })
         fallbackTimer = setTimeout(sendAuth, 1000)
+        setTimeout(markFallbackReady, 1500)
         return
       }
       if (++attempts < 10) fallbackTimer = setTimeout(bindIframeFallback, 250)
