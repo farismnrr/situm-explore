@@ -17,6 +17,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@iconify-json/lucide": "^1.2.123",
     "@clickhouse/client": "^1.23.1",
     "@nuxt/ui": "^4.10.0",
     "@opentelemetry/api": "^1.9.1",
@@ -31,7 +32,6 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.123",
     "@nuxt/eslint": "^1.17.0",
     "@types/pg": "^8.21.0",
     "drizzle-kit": "^0.31.10",
