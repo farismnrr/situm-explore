@@ -37,6 +37,15 @@ Replace the current single-user environment-based login with database-backed app
 
 ## Execution
 
+### Stacked execution progress
+
+- [x] Phase 1 — audit existing auth/session/database/runtime contracts.
+- [x] Phase 2 — add and apply PostgreSQL users/provider-identities schema and migrations.
+- [ ] Phase 3 — implement registration and password login.
+- [ ] Phase 4 — migrate session identity and protected API continuity.
+- [ ] Phase 5 — prepare conditional Google provider wiring.
+- [ ] Phase 6 — update auth UI and complete acceptance validation.
+
 1. Audit auth routes, middleware, session typing, login UI, DB schema/migrations, Nuxt config, and installed nuxt-auth-utils behavior.
 2. Verify DATABASE_URL, app-schema migration rights, and NUXT_SESSION_PASSWORD.
 3. Add the smallest user/provider-identity schema needed for password + Google identities.

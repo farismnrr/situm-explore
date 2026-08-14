@@ -43,6 +43,11 @@ Historical plans, sessions, and branches remain evidence only.
 
 Detailed prerequisites and potential blockers live in `plans/021-025-prerequisites.md` and are intentionally handled in a later user-gated step.
 
-## Next action
+## Current stacked execution
 
-When the user authorizes implementation, create `plan/021-auth-identity-foundation` from updated `main` and execute Plan 021 only.
+The user explicitly authorized stacked execution of Plans 021–025 without PRs or merges.
+
+- Active branch: `plan/021-auth-identity-foundation`
+- Completed in this branch: Plan 021 Phase 1 audit and Phase 2 identity schema/migration.
+- Current phase: Plan 021 Phase 3 registration/password login.
+- Later branches must be created directly from the exact completed predecessor HEAD.
