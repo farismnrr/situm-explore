@@ -87,8 +87,8 @@ onBeforeUnmount(resetViewer)
 </script>
 
 <template>
-  <UCard :ui="{ root: 'h-full flex flex-col', body: 'h-full flex-1 p-0 sm:p-0' }">
-    <div class="relative min-h-[22rem] h-full w-full overflow-hidden rounded-lg bg-muted">
+  <UCard class="situm-viewer-card" :ui="{ root: 'h-full min-h-0 flex flex-col', body: 'h-full min-h-0 flex-1 p-0 sm:p-0' }">
+    <div class="situm-viewer-container relative h-full min-h-0 w-full overflow-hidden rounded-lg bg-muted">
       <div ref="root" class="absolute inset-0" :class="buildingConfirmed ? '' : 'invisible opacity-0'" />
       <div v-if="!props.workspaceId || !props.buildingId" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="warning" variant="subtle" title="Map Viewer unavailable" :description="message" class="max-w-md" /></div>
       <div v-else-if="viewerError" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="error" variant="subtle" :title="fallbackTitle" :description="fallbackMessage" :actions="[{ label: 'Retry', color: 'error', variant: 'subtle', onClick: retry }]" class="max-w-md" /></div>
@@ -96,3 +96,19 @@ onBeforeUnmount(resetViewer)
     </div>
   </UCard>
 </template>
+
+<style scoped>
+.situm-viewer-card,
+.situm-viewer-card :deep(> div),
+.situm-viewer-card :deep(> div > div) {
+  height: 100%;
+  min-height: 0;
+}
+
+.situm-viewer-container :deep(iframe) {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  display: block;
+}
+</style>
