@@ -1,5 +1,7 @@
 # Plan 024 — Workspace-scoped Situm Backend Migration
 
+> Historical implementation evidence. Permission-mode wording below describes the migration state at that time; current configuration requires a verified Read & Write primary credential and separate Read-only Viewer credential.
+
 Status: complete with explicit Viewer security blocker; workspace Situm/analytics migration and legacy authority fencing accepted.
 
 Branch: plan/024-workspace-situm-backend-migration

@@ -35,7 +35,7 @@ Historical plans, sessions, and branches remain evidence only.
 - Google OAuth prepared for later manual acceptance;
 - many private single-owner workspaces per user;
 - workspace-managed Situm configuration;
-- `VIEW_ONLY` / `VIEW_WRITE` product modes with upstream permission authoritative;
+- dual workspace credentials: a verified Situm Read & Write primary credential and a separate verified Situm Read-only Viewer credential; account ID is derived server-side;
 - workspace-scoped Situm, Viewer/building, and analytics context;
 - reuse existing observability infrastructure;
 - end-to-end correlation/tracing;

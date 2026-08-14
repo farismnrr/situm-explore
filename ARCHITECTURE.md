@@ -138,7 +138,8 @@ Rules:
 - raw stored credentials are never returned by read APIs;
 - raw credentials are never logged, traced, persisted in docs/tests, or exposed through public runtime config;
 - missing/invalid encryption configuration fails closed;
-- product modes are `VIEW_ONLY` and `VIEW_WRITE`;
+- workspace configuration requires a primary Situm credential verified as Read & Write and a separate Viewer credential verified as Read-only;
+- the Situm organization/account ID is derived from the authenticated primary credential and persisted as server-side metadata;
 - upstream Situm authorization remains authoritative;
 - do not run a mutation merely to discover whether a key can write.
 
@@ -167,7 +168,7 @@ Rules:
 - one verified capability should have one primary access path;
 - direct official REST from Nitro is allowed where verified and simpler than an SDK wrapper;
 - existing capabilities are migrated, not expanded speculatively;
-- `VIEW_ONLY` prevents product writes locally where known, while upstream authorization remains the final truth;
+- write capability is derived from verified primary-credential permission metadata; upstream authorization remains the final truth;
 - upstream forbidden/internal details are normalized before reaching the client.
 
 Account-specific building context must also become workspace/product state; one global public building ID cannot remain authoritative for multiple workspaces.

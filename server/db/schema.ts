@@ -43,7 +43,6 @@ export const workspaces = app.table('workspaces', {
 export const workspaceSitumConfigs = app.table('workspace_situm_configs', {
   id: uuid('id').defaultRandom().primaryKey(),
   workspaceId: uuid('workspace_id').notNull().unique(),
-  accessMode: varchar('access_mode', { length: 20 }).notNull(),
   situmAccountId: varchar('situm_account_id', { length: 255 }).notNull(),
   encryptedApiKey: varchar('encrypted_api_key', { length: 2048 }).notNull(),
   encryptedViewerApiKey: varchar('encrypted_viewer_api_key', { length: 2048 }),
@@ -51,7 +50,6 @@ export const workspaceSitumConfigs = app.table('workspace_situm_configs', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, table => [
   foreignKey({ columns: [table.workspaceId], foreignColumns: [workspaces.id] }).onDelete('cascade'),
-  check('workspace_situm_configs_access_mode_check', sql`${table.accessMode} in ('VIEW_ONLY', 'VIEW_WRITE')`),
 ])
 
 export type User = typeof users.$inferSelect

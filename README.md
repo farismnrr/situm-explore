@@ -30,7 +30,7 @@ Plans 021–025 move the product to:
 - Google OAuth plumbing prepared for later manual acceptance;
 - many private single-owner workspaces per user;
 - protected server-side Situm configuration per workspace;
-- `VIEW_ONLY` / `VIEW_WRITE` product modes with upstream permission authoritative;
+- workspace configuration requires a verified Situm Read & Write primary credential plus a separate verified Situm Read-only Viewer credential; the account ID is derived server-side;
 - workspace-scoped Situm, Viewer/building, and ClickHouse analytics context;
 - reuse of the user's existing observability stack;
 - end-to-end request correlation/tracing;

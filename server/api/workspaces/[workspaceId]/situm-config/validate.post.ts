@@ -1,4 +1,4 @@
-import SitumSDK from '@situm/sdk-js'
+import SitumSDK, { SitumApiPermissionLevel } from '@situm/sdk-js'
 import { and, eq } from 'drizzle-orm'
 import { getDb } from '../../../../db/client'
 import { workspaceSitumConfigs, workspaces } from '../../../../db/schema'
@@ -12,6 +12,8 @@ export default defineEventHandler(async (event) => {
   if (!config) throw createError({ statusCode: 404, statusMessage: 'Situm configuration not found.' })
   try {
     const sdk = new SitumSDK({ auth: { apiKey: decryptWorkspaceApiKey(config.encryptedApiKey) }, compact: true })
+    const auth = await sdk.authSession
+    if (auth.apiPermissionLevel !== SitumApiPermissionLevel.READ_WRITE || auth.organizationId !== config.situmAccountId) throw new Error('Primary credential context mismatch')
     const organization = await sdk.cartography.getCurrentOrganization()
     if (!organization.id || organization.id !== config.situmAccountId) throw new Error('Account context mismatch')
   } catch {

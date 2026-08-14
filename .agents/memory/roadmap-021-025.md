@@ -18,7 +18,7 @@ This file records roadmap-specific decisions that remain useful across individua
 
 - Situm configuration becomes workspace-managed from the authenticated product rather than permanent global runtime configuration.
 - Protected workspace configuration is persisted server-side.
-- Product access modes are `VIEW_ONLY` and `VIEW_WRITE`.
+- The enforced workspace configuration model uses a verified Situm Read & Write primary credential and a separate verified Situm Read-only Viewer credential; account/organization ID is derived server-side.
 - Real upstream permission remains authoritative.
 - Unsupported/intermediate Situm permission states are handled conservatively.
 - Browser Viewer authentication changes require exact verification against current official Situm docs and the installed SDK.

@@ -68,7 +68,7 @@ Approved target:
 - Situm configuration is owned by an authenticated workspace and persisted server-side;
 - stored long-lived workspace credentials use authenticated encryption at rest;
 - browser code must not receive the stored long-lived workspace API key;
-- product access modes are `VIEW_ONLY` and `VIEW_WRITE`;
+- workspace configuration requires a primary credential verified as Situm Read & Write and a separate Viewer credential verified as Situm Read-only; account/organization ID is derived server-side from the primary auth session;
 - verified upstream permission remains authoritative;
 - unsupported/intermediate permission states are handled conservatively;
 - workspace/account/building context must not remain process-global after migration.
