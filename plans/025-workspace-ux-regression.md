@@ -6,6 +6,11 @@ Branch: plan/025-workspace-ux-regression
 
 Depends on: Plan 024 accepted and integrated into updated main.
 
+## Current stacked execution
+
+- [x] Phase 1 — workspace context composable and authenticated workspace management UI.
+- [ ] Phase 2 — full production-preview/browser regression and final documentation closeout.
+
 ## Goal
 
 Finish product-facing workspace flow and validate the completed backend refactor end-to-end.

@@ -9,15 +9,12 @@ export default defineEventHandler(async (event) => {
   const workspaceId = getRouterParam(event, 'workspaceId') || ''
   const [config] = await getDb().select({ situmAccountId: workspaceSitumConfigs.situmAccountId, encryptedApiKey: workspaceSitumConfigs.encryptedApiKey }).from(workspaceSitumConfigs).innerJoin(workspaces, eq(workspaceSitumConfigs.workspaceId, workspaces.id)).where(and(eq(workspaceSitumConfigs.workspaceId, workspaceId), eq(workspaces.ownerId, session.user.id))).limit(1)
   if (!config) throw createError({ statusCode: 404, statusMessage: 'Situm configuration not found.' })
-
-  let organization: { id: string }
   try {
     const sdk = new SitumSDK({ auth: { apiKey: decryptWorkspaceApiKey(config.encryptedApiKey) }, compact: true })
-    organization = await sdk.cartography.getCurrentOrganization()
+    const organization = await sdk.cartography.getCurrentOrganization()
+    if (!organization.id || organization.id !== config.situmAccountId) throw new Error('Account context mismatch')
   } catch {
     throw createError({ statusCode: 422, statusMessage: 'Situm configuration could not be validated.' })
   }
-
-  if (!organization.id || organization.id !== config.situmAccountId) throw createError({ statusCode: 422, statusMessage: 'Situm account context could not be validated.' })
   return { valid: true, status: 'validated', accountContext: 'matched' }
 })

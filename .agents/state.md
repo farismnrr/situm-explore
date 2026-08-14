@@ -59,4 +59,7 @@ The user explicitly authorized stacked execution of Plans 021–025 without PRs 
 - Completed in Plan 024: Phase 3 workspace-scoped ClickHouse tables, owner-checked summary/sync routes, per-request workspace credential use, and legacy-row exclusion. Lint, typecheck, build, and bounded authorization smoke pass.
 - Plan 024 complete on `plan/024-workspace-situm-backend-migration`: migrated Situm/config routes use explicit owner-scoped workspace IDs; workspace analytics writes/reads carry workspace identity; legacy unscoped analytics remain untouched and excluded. Final lint, typecheck, build, and bounded preview checks pass; external Situm upstream reads remain subject to available upstream data/permissions.
 - Current phase: create Plan 025 from exact Plan 024 HEAD.
+- Active branch: `plan/025-workspace-ux-regression`
+- Completed in Plan 025: Phase 1 workspace context/UI for create, list, switch, rename, delete, Situm config replacement, safe status, and validation feedback. Production build and typecheck pass; dynamic config routing was made explicit through a safe bounded catch-all after runtime route matching was verified.
+- Current phase: Plan 025 Phase 2 full production-preview/browser regression and closeout.
 - Later branches must be created directly from the exact completed predecessor HEAD.
