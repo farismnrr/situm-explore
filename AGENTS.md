@@ -29,21 +29,17 @@ Completed/integrated:
 Plan 017 -> 018 -> 019 -> 019A -> 020 [complete/integrated]
 ```
 
-Active planning roadmap:
+Active implementation roadmap:
 
 ```text
-Plan 021 [ready after roadmap integration]
--> Plan 022 [queued]
--> Plan 023 [queued]
--> Plan 024 [queued]
--> Plan 025 [queued]
+Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
 Planning branch:
 
 `roadmap/021-025-backend-refactor`
 
-No stacked implementation authorization exists for Plans 021–025.
+Stacked implementation was explicitly authorized for this execution. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 

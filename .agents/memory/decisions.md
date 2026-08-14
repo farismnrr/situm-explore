@@ -16,10 +16,10 @@ Status: active.
 - The installed `@situm/sdk-js` v0.25.0 exchanges an API key through `/api/v1/auth/access_tokens`; `Viewer.setAuth(jwt)` sends the JWT to the embedded Viewer via `postMessage`.
 - Temporary server-side smoke testing confirmed that a read-only key produces a JWT whose sanitized `api_permission` claim is `read-only`, while a read-write key produces a JWT whose claim is `read-write`. Both tokens had an approximately 24-hour lifetime and passed harmless organization/building reads, including bearer-JWT reads.
 - The read-write-derived JWT is therefore broad authority, not a least-privilege Viewer token. It must never be sent to browser code as the final Viewer model.
-- Keep the Viewer disabled until Situm provides/proves a scoped browser credential. A separate read-only Viewer credential may be viable, but it still requires an actual Viewer/cartography acceptance test before implementation is approved.
+- Keep read-write workspace credentials server-only. A separate encrypted read-only Viewer credential is the approved browser model: the owner-scoped server route exchanges it for a temporary JWT, verifies the JWT permission is `read-only`, and returns only that JWT to the Viewer. Production-preview cartography acceptance has now proven this path.
 - No temporary credential or generated JWT may be persisted in repository files, logs, traces, session evidence, or browser storage. By the user's superseding 2026-08-14 instruction, the two temporary smoke-test keys may remain active for bounded local Plan 025 acceptance and must be revoked/deleted only after final acceptance passes.
 
-Status: active security boundary; Plan 025 Viewer blocker remains unresolved.
+Status: active security boundary; Plan 025 Viewer blocker resolved by the proven dual-credential model.
 
 ## Temporary Situm smoke-key acceptance policy (2026-08-14)
 

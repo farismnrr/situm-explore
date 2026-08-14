@@ -1,6 +1,6 @@
 # Plan 025 — Workspace UX & Full Regression
 
-Status: complete with explicit external/security blocker; workspace UX and retained backend regression passed without Viewer acceptance.
+Status: complete; Viewer security acceptance passed with a dual-credential model. Google OAuth runtime remains externally deferred.
 
 Branch: plan/025-workspace-ux-regression
 
@@ -39,7 +39,7 @@ Apply Plans 023–024 correlation/error behavior. Unexpected failures may show a
 
 ## Full regression
 
-Acceptance evidence: production preview passed auth/session/protection, workspace CRUD/switch/delete, config write-only metadata, ownership denial, sanitized errors/reference IDs, workspace analytics readiness, and representative workspace Situm routes. Legacy global authority is fenced and ClickHouse workspace tables are ready. Groups/geofences now use owner-scoped routes and return safe upstream errors when credentials are invalid. The Viewer is disabled safely because scoped least-privilege browser authentication remains unproven; therefore full Viewer/map acceptance and overall roadmap readiness are not claimed. Google OAuth runtime remains separately deferred.
+Acceptance evidence: production preview passed auth/session/protection, workspace CRUD/switch/delete, dual-credential write-only metadata, ownership denial, sanitized errors/reference IDs, workspace analytics readiness, representative workspace Situm routes, and actual Viewer/cartography rendering. The primary Read & Write credential remained server-only; the separate Only Read credential produced a verified read-only JWT for `Viewer.setAuth(jwt)`. The Viewer iframe rendered cartography and survived navigate-away/back. Legacy global authority is fenced and ClickHouse workspace tables are ready. Google OAuth runtime remains user-owned/deferred.
 
 Use npm run build then npm run preview.
 
