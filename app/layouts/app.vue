@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import TransientFeedback from '~/components/feedback/TransientFeedback.vue'
+
 const { user, clear } = useUserSession()
 const { loadWorkspaces } = useWorkspaceContext()
 const mobileOpen = ref(false)
