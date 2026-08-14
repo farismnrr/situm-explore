@@ -156,7 +156,10 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Realtime' })
           <UInput v-model="searchQuery" icon="i-lucide-search" placeholder="Search IDs or building/floor context" aria-label="Search realtime positions" />
           <UAlert v-if="error" color="error" variant="subtle" title="Positions unavailable" description="The authenticated Situm position read failed." />
           <div v-else-if="String(status) === 'idle' || String(status) === 'pending'" class="space-y-2" aria-label="Loading positions" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-16 w-full" /></div>
-          <UAlert v-else-if="String(status) === 'success' && positions.length === 0" color="neutral" variant="subtle" title="No current positions" description="Situm returned no current position records." />
+          <div v-else-if="String(status) === 'success' && positions.length === 0" class="flex flex-wrap items-center gap-3">
+            <UAlert color="neutral" variant="subtle" title="No devices currently tracking" description="Realtime monitoring is ready. Indoor positioning is produced by the native mobile app. Start tracking from a Situm-enabled mobile device to see live positions here." class="flex-1" />
+            <UButton label="Download Android app" to="https://farismnrr.com" target="_blank" rel="noopener noreferrer" />
+          </div>
           <UAlert v-else-if="filteredPositions.length === 0" color="neutral" variant="subtle" title="No matching positions" description="Try another identifier or clear the search and building context." />
           <div v-else class="space-y-2">
             <div v-for="position in filteredPositions" :key="position.id" class="rounded-lg border border-default p-3">
