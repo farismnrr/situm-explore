@@ -16,7 +16,7 @@ export default function App() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [workspaceError, setWorkspaceError] = useState('')
-  const [activeTab, setActiveTab] = useState<'home' | 'map' | 'realtime' | 'settings'>('home')
+  const [activeTab, setActiveTab] = useState<'explore' | 'realtime' | 'recent' | 'settings'>('explore')
   const [lifecycle, setLifecycle] = useState(AppState.currentState)
   const { width } = useWindowDimensions()
   const showRail = width >= 700
@@ -46,14 +46,14 @@ export default function App() {
   )
 }
 
-function AuthenticatedShell(props: { auth: AuthSession, workspaces: WorkspaceContext, activeTab: 'home' | 'map' | 'realtime' | 'settings', setActiveTab: (tab: 'home' | 'map' | 'realtime' | 'settings') => void, lifecycle: string, showRail: boolean, wide: boolean, workspaceError: string, setWorkspaceError: (value: string) => void, onLogout: () => void }) {
+function AuthenticatedShell(props: { auth: AuthSession, workspaces: WorkspaceContext, activeTab: 'explore' | 'realtime' | 'recent' | 'settings', setActiveTab: (tab: 'explore' | 'realtime' | 'recent' | 'settings') => void, lifecycle: string, showRail: boolean, wide: boolean, workspaceError: string, setWorkspaceError: (value: string) => void, onLogout: () => void }) {
   const { workspaces, activeTab, setActiveTab, lifecycle, showRail, wide, workspaceError, setWorkspaceError, onLogout } = props
   useSyncExternalStore(workspaces.subscribe, workspaces.getSnapshot, workspaces.getSnapshot)
   const [loading, setLoading] = useState(workspaces.state === 'idle')
   useEffect(() => { if (workspaces.state === 'idle') workspaces.load().then(() => workspaces.loadConfiguration()).catch((e: unknown) => setWorkspaceError(e instanceof ApiError ? e.message : 'Workspaces are unavailable.')).finally(() => setLoading(false)) }, [workspaces, setWorkspaceError])
   const selected = workspaces.selectedWorkspace
   const select = (id: string) => { try { workspaces.select(id); void workspaces.loadConfiguration().catch(() => undefined) } catch (e) { setWorkspaceError(e instanceof ApiError ? e.message : 'Workspace could not be selected.') } }
-  const title = activeTab === 'map' ? 'Map' : activeTab === 'realtime' ? 'Realtime' : activeTab === 'settings' ? 'Settings' : 'Explore'
+  const title = activeTab.charAt(0).toUpperCase() + activeTab.slice(1)
   return <SafeAreaView style={styles.safeArea}>
     <View style={styles.shell}>
       {showRail ? <View style={[styles.rail, !wide && styles.compactRail]}><Brand compact={!wide} /><NavItems compact={!wide} activeTab={activeTab} setActiveTab={setActiveTab} /><TouchableOpacity style={styles.railSignOut} onPress={onLogout}><Text style={styles.railSignOutText}>{wide ? 'Sign out' : '×'}</Text></TouchableOpacity></View> : null}
@@ -63,7 +63,7 @@ function AuthenticatedShell(props: { auth: AuthSession, workspaces: WorkspaceCon
           {loading ? <ActivityIndicator color="#111827" /> : workspaces.state === 'error' ? <StateCard title="Workspaces unavailable" body={workspaceError || 'Check your connection and try again.'} action={() => workspaces.load().catch(() => undefined)} /> : workspaces.state === 'empty' ? <StateCard title="No workspaces yet" body="Create your first workspace in Situm Explore web to continue." /> : <>
             <View style={styles.workspacePicker}><Text style={styles.eyebrow}>ACTIVE WORKSPACE</Text><Text style={styles.workspaceName}>{selected?.name || 'Select a workspace'}</Text><View style={styles.workspaceChoices}>{workspaces.workspaces.map(workspace => <TouchableOpacity key={workspace.id} onPress={() => select(workspace.id)} style={[styles.choice, workspace.id === selected?.id && styles.choiceActive]}><Text style={[styles.choiceText, workspace.id === selected?.id && styles.choiceTextActive]}>{workspace.name}</Text></TouchableOpacity>)}</View></View>
             {workspaceError ? <StateCard title="Workspace notice" body={workspaceError} /> : null}
-            {activeTab === 'home' ? <HomeCard configuration={workspaces.configuration} /> : activeTab === 'map' ? <Placeholder title="Map is coming in Plan 030" body="The native map and positioning experience is not enabled in this foundation build." /> : activeTab === 'realtime' ? <Placeholder title="Realtime is coming in Plan 031" body="Reported device positions will appear here after the server-mediated Realtime phase." /> : <SettingsCard onLogout={onLogout} />}
+            {activeTab === 'explore' ? <HomeCard configuration={workspaces.configuration} /> : activeTab === 'realtime' ? <Placeholder title="Realtime is coming in Plan 031" body="Reported device positions will appear here after the server-mediated Realtime phase." /> : activeTab === 'recent' ? <Placeholder title="Recent is coming in a later plan" body="Recent activity is not enabled in this foundation build." /> : <SettingsCard onLogout={onLogout} />}
           </>}
         </View>
         {!showRail ? <View style={styles.bottom}><NavItems bottom activeTab={activeTab} setActiveTab={setActiveTab} /></View> : null}
@@ -74,15 +74,15 @@ function AuthenticatedShell(props: { auth: AuthSession, workspaces: WorkspaceCon
 
 function Brand({ compact = false }: { compact?: boolean }) { return <View style={styles.brand}><View style={styles.brandMark}><BrandIcon /></View>{compact ? null : <Text style={styles.brandText}>Situm Explore</Text>}</View> }
 function BrandIcon() { return <Svg width={18} height={18} viewBox="0 0 24 24" accessibilityLabel="Situm Explore"><Path d="M21 3 3 10.5l7.5 3L14 21 21 3Z" fill="#fff" /></Svg> }
-type IconName = 'home' | 'map' | 'realtime' | 'settings'
+type IconName = 'explore' | 'realtime' | 'recent' | 'settings'
 function Icon({ name, size = 17 }: { name: IconName, size?: number }) {
   const common = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
-  if (name === 'home') return <Svg width={size} height={size} viewBox="0 0 24 24"><Path {...common} d="M12 2a10 10 0 1 0 10 10" /><Path {...common} d="m16 8-4 8-4-4 8-4Z" /></Svg>
-  if (name === 'map') return <Svg width={size} height={size} viewBox="0 0 24 24"><Path {...common} d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z" /><Path {...common} d="M9 3v15M15 6v15" /></Svg>
+  if (name === 'explore') return <Svg width={size} height={size} viewBox="0 0 24 24"><Path {...common} d="M12 2a10 10 0 1 0 10 10" /><Path {...common} d="m16 8-4 8-4-4 8-4Z" /></Svg>
   if (name === 'realtime') return <Svg width={size} height={size} viewBox="0 0 24 24"><Path {...common} d="M4.9 19.1a10 10 0 0 1 0-14.2M7.8 16.2a6 6 0 0 1 0-8.4" /><Circle {...common} cx="12" cy="12" r="2" /><Path {...common} d="M16.2 7.8a6 6 0 0 1 0 8.4M19.1 4.9a10 10 0 0 1 0 14.2" /></Svg>
+  if (name === 'recent') return <Svg width={size} height={size} viewBox="0 0 24 24"><Path {...common} d="M3 12a9 9 0 1 0 3-6.7" /><Path {...common} d="M3 4v5h5M12 7v5l3 2" /></Svg>
   return <Svg width={size} height={size} viewBox="0 0 24 24"><Path {...common} d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4" /><Circle {...common} cx="12" cy="12" r="4" /></Svg>
 }
-function NavItems({ activeTab, setActiveTab, compact = false, bottom = false }: { activeTab: string, setActiveTab: (tab: 'home' | 'map' | 'realtime' | 'settings') => void, compact?: boolean, bottom?: boolean }) { return <View style={[styles.nav, bottom && styles.navBottom]}>{(['home', 'map', 'realtime', 'settings'] as const).map(tab => <TouchableOpacity accessibilityRole="button" accessibilityLabel={tab} key={tab} style={[styles.navItem, bottom && styles.navItemBottom, compact && styles.navItemCompact, activeTab === tab && styles.navActive]} onPress={() => setActiveTab(tab)}><Icon name={tab} /><Text style={[styles.navText, compact && styles.navTextCompact, activeTab === tab && styles.navTextActive]}>{compact ? '' : `${tab[0]?.toUpperCase()}${tab.slice(1)}`}</Text></TouchableOpacity>)}</View> }
+function NavItems({ activeTab, setActiveTab, compact = false, bottom = false }: { activeTab: string, setActiveTab: (tab: 'explore' | 'realtime' | 'recent' | 'settings') => void, compact?: boolean, bottom?: boolean }) { return <View style={[styles.nav, bottom && styles.navBottom]}>{(['explore', 'realtime', 'recent', 'settings'] as const).map(tab => <TouchableOpacity accessibilityRole="button" accessibilityLabel={tab} key={tab} style={[styles.navItem, bottom && styles.navItemBottom, compact && styles.navItemCompact, activeTab === tab && styles.navActive]} onPress={() => setActiveTab(tab)}><Icon name={tab} /><Text style={[styles.navText, compact && styles.navTextCompact, activeTab === tab && styles.navTextActive]}>{compact ? '' : `${tab[0]?.toUpperCase()}${tab.slice(1)}`}</Text></TouchableOpacity>)}</View> }
 function HomeCard({ configuration }: { configuration: { positioningConfigured: boolean } | null }) { return <View style={styles.card}><Text style={styles.cardTitle}>Your workspace is ready</Text><Text style={styles.body}>The native foundation shares your existing account and owner-authorized workspace.</Text><View style={styles.status}><Text style={styles.statusDot}>{configuration?.positioningConfigured ? '●' : '○'}</Text><Text style={styles.statusText}>{configuration?.positioningConfigured ? 'Positioning authority configured' : 'Positioning setup is still required'}</Text></View></View> }
 function Placeholder({ title, body }: { title: string, body: string }) { return <View style={styles.card}><Text style={styles.eyebrow}>FOUNDATION PLACEHOLDER</Text><Text style={styles.cardTitle}>{title}</Text><Text style={styles.body}>{body}</Text></View> }
 function SettingsCard({ onLogout }: { onLogout: () => void }) { return <View style={styles.card}><Text style={styles.cardTitle}>Settings</Text><Text style={styles.body}>Session, workspace access, and device lifecycle are managed safely for this build.</Text><TouchableOpacity style={styles.button} onPress={onLogout}><Text style={styles.buttonText}>Sign out</Text></TouchableOpacity></View> }

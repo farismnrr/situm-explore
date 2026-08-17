@@ -1,6 +1,6 @@
-# Plan 029 Final Review — Second Remediation Required
+# Plan 029 Final Review — Second Remediation Complete
 
-Status: NOT PR-ready yet; no PR or merge performed.
+Status: PR-ready pending user authorization; no PR or merge performed.
 
 Reviewer verified the implementation branch at `696bb32` and reran Android build evidence on 2026-08-17.
 
@@ -93,3 +93,9 @@ The first six implementation defects were fixed, but Plan 029 is not PR-ready un
 10. Current state still contains one stale sentence saying Plan 029 is `under final reviewer remediation`; reconcile authority after the above fixes.
 
 After resolving 7–10, rerun the full Plan 029 closeout and stop before PR/merge.
+
+## Second remediation closeout — 2026-08-17
+
+Findings 7–10 are resolved. The Positioning test now exercises the shared owner-scoped resolver with two owner/workspace records, proves owner access, cross-owner denial, and the dedicated response allowlist. The native shell vocabulary is `Explore / Realtime / Recent / Settings`. Expo 57 dependencies are aligned to `expo-secure-store ~57.0.1`, `expo-status-bar ~57.0.1`, and TypeScript `~6.0.3`; `expo-doctor` reports 20/21 with only the known `@situm/react-native` New Architecture metadata warning. Current state no longer claims reviewer remediation is pending.
+
+Final validation passed: root lint, typecheck, build, and 13 tests; mobile lint/typecheck; clean Expo prebuild; Android `assembleDebug` with `/home/farismnrr/Android/Sdk`; bounded secret checks; `git diff --check`; and full branch diff review. iOS remains macOS/Xcode/device-gated. No PR, merge, or Plan 030 work was performed.
