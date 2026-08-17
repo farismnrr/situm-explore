@@ -270,6 +270,8 @@ Current web runtime may retain verified:
 
 Plans 028–032 add a **separate native companion client** while keeping Nitro as the single application backend. They do not turn the Nuxt runtime into a native wrapper or introduce a second backend.
 
+Plan 031 implements native Realtime as a foreground-only, server-mediated list/detail read from the owner-scoped workspace route. The mobile client receives only sanitized position/device fields and never receives Situm credentials for remote monitoring. The installed SDK's generic realtime and Share Live Location surfaces remain capability evidence only; no remote MapView markers, focus behavior, or background positioning is claimed.
+
 Approved target ownership:
 
 - desktop/tablet web Map remains the existing Viewer experience where explicit layout acceptance passes;

@@ -270,3 +270,12 @@ Status: active durable roadmap acceptance decision.
 - Remote monitoring remains server-mediated unless a narrower/equivalent least-privilege native path is proven. The dedicated mobile Positioning credential must not be widened for convenience.
 
 Status: active Plan 031 execution baseline; Phase 0 may narrow or supersede only with exact evidence.
+
+## Plan 031 implementation boundary (2026-08-17)
+
+- Native Realtime uses the authenticated `/api/workspaces/:workspaceId/situm/realtime` route and a typed minimal mobile model. It polls immediately and every 10 seconds only while the destination is foreground-active; in-flight requests abort on unmount, workspace change, background, or refresh replacement.
+- The screen is a useful list/detail composition without a map. It shows device/position identity, building/floor IDs, accuracy, coordinates, source time, and local older/stale display hints. It never claims online/idle/offline presence.
+- Phase 0 source inspection found native generic realtime and Share Live Location APIs in `@situm/react-native` 3.19.2, but not equivalent application/workspace authorization or Positioning-key permission evidence. They remain unused; remote markers/focus and Share Live Location are absent.
+- Background positioning and own-device Realtime publishing are not required by the frozen v1 scope and remain outside Plan 031.
+
+Status: active Plan 031 implementation decision.
