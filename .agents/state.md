@@ -2,9 +2,9 @@
 
 _Last reviewed: 2026-08-17_
 
-## Plan 028 — Native Capability, Auth & Distribution Spike (complete; awaiting integration)
+## Active Plan 029 — Native App Foundation & Workspace Session
 
-The native roadmap was integrated into `main` via PR #22 (merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`). Plan 028 is complete on `plan/028-native-capability-auth-spike`; Phases 0–6 passed and Plan 029 is ready to begin from an updated/integrated base. No native product Map/Realtime implementation has started. The sequence remains Plan 028 -> Plan 029 -> Plan 030 -> Plan 031 -> Plan 032, with each later plan gated on predecessor integration.
+Plan 028 was reviewed and integrated into `main` via PR #23 (merge commit `e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`), and its branch was deleted. `plan/029-native-app-foundation` was created from that exact updated `origin/main`; implementation has not started yet. Execute Plan 029 using `.agents/execution/plan-029.md` plus `plans/029-native-app-foundation.md`. Plans 030–032 remain gated on predecessor integration.
 
 Locked product policy for this roadmap:
 
@@ -22,7 +22,7 @@ Locked product policy for this roadmap:
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
 - the server-side Read & Write Situm credential must never be exposed to mobile; the frozen native authority is a dedicated least-privilege Positioning credential issued only after owner authorization, while native Realtime remains server-mediated.
 
-Normal workflow: Plan 029 starts sequentially from updated `origin/main` only after Plan 028 is reviewed and integrated; later plans follow the same predecessor-integration rule unless the user explicitly authorizes stacked branches.
+Normal workflow: execute Plan 029 on `plan/029-native-app-foundation`; after review/integration, later plans follow the same predecessor-integration rule unless the user explicitly authorizes stacked branches.
 
 ## Plan 027 (complete/integrated)
 
