@@ -1,12 +1,12 @@
-# Plan 031 final implementation review — final visual-truthfulness remediation required
+# Plan 031 final implementation review — implementation approved
 
-Reviewed 2026-08-17 on `plan/031-native-realtime-operations`, implementation commits through `79b6cfb`.
+Reviewed 2026-08-17 on `plan/031-native-realtime-operations`, implementation commits through `c02a8f3`.
 
 ## Outcome
 
 The three prior implementation/runtime-integrity blockers are resolved in `79b6cfb`: caller cancellation now reaches the underlying fetch without being converted into a timeout, unsupported local freshness thresholds/labels are removed, and malformed Realtime payloads fail closed. Independent reviewer checks pass 21/21 tests plus root/mobile lint/typecheck and `git diff --check`.
 
-Plan 031 is **not PR-ready yet** because one final visual-truthfulness blocker remains in the Realtime row presentation.
+Plan 031 implementation is **approved and PR-ready pending user authorization**. The final visual-truthfulness blocker is resolved in `c02a8f3`: Realtime rows no longer render an unsupported green status indicator, and focused regression coverage prevents status-colored row semantics from returning.
 
 The frozen v1 scope does not include person identity, online/idle/offline presence, trajectories, generic remote MapView markers/focus, Share Live Location, background positioning, or own-device publishing beyond the existing Plan 030 foreground positioning boundary.
 
@@ -20,16 +20,14 @@ The frozen v1 scope does not include person identity, online/idle/offline presen
 
 The three findings above are resolved in `79b6cfb` and are no longer blocking.
 
-## Remaining blocking finding
+## Final visual finding — resolved in `c02a8f3`
 
-4. **Green row dot still implies unsupported positive/fresh/online state.** After removing the local freshness classifier, every Realtime position row still renders `styles.dot` with success green `#168754`. The Realtime contract has no authoritative per-record online/fresh/healthy boolean, and Plan 031 explicitly forbids implying every device is online. A success-colored status indicator without a proven meaning is still semantic overclaim even when nearby copy says presence is not inferred. Remove the status dot or make it visually neutral/non-status in a way that cannot reasonably encode freshness/presence. Add a focused presentation/source assertion if practical so unsupported green/amber/red status semantics do not regress.
-
-This is a non-device visual-truthfulness finding, not Plan 032 physical-device carry-over.
+4. **Green row dot implied unsupported positive/fresh/online state.** The unsupported success-green per-row status indicator was removed from `RealtimeScreen`, along with its status style. The regression suite now asserts that the row source does not render `styles.dot` or reintroduce green/amber/stale status semantics. Realtime rows are limited to device/position identity, building/floor, accuracy, and source time.
 
 ## Evidence and validation
 
 - Phase 0 authority and SDK findings: `.agents/evidence/plan-031-realtime.md`.
-- Focused and full root tests pass: 20/20.
+- Focused and full root tests pass: 22/22, including caller abort propagation, fail-closed payload validation, unsupported freshness absence, and Realtime-row status-indicator regression coverage.
 - Root lint, Nuxt typecheck, production build, and `git diff --check` pass.
 - Mobile typecheck and lint pass.
 - Expo prebuild passes without tracked generated-file drift.
@@ -48,4 +46,4 @@ These are not claimed as passed. Plan 032 remains the mandatory terminal physica
 
 ## Handoff
 
-Branch was clean/synchronized at reviewed HEAD before this reviewer-doc update. Remediate all three findings, rerun focused/root/mobile validation plus diff/secret checks, commit/push, and return for reviewer approval. Keep physical-device-only Realtime/native lifecycle items explicitly unpassed for Plan 032. Do not create a PR/merge or start Plan 032.
+Independent reviewer validation passes at `c02a8f3`: 22/22 tests, root/mobile lint and typecheck, and `git diff --check`, with the branch clean/synchronized before this reviewer-doc update. Plan 031 implementation is approved and PR-ready pending user authorization. Physical-device-only Realtime/native lifecycle items remain explicitly unpassed Plan 032 carry-over. Do not start Plan 032 until Plan 031 is integrated into updated `main`.
