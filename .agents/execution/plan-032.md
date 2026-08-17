@@ -48,6 +48,10 @@ Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execut
 - Reconciled architecture, capability matrix, README/plan router, and Plan 033 handoff evidence.
 - Plan 032 implementation is complete pending review/integration. Plan 033 was not started.
 
-## Phase 033 carry-over
+## Reviewer remediation
+
+Final reviewer findings are authoritative in `/home/farismnrr/Projects/situm-explore/.agents/reviews/plan-032-final.md`. Resolve every non-device implementation blocker there before claiming Plan 032 approval or PR readiness. Keep the Plan 033 acceptance inventory unpassed.
+
+## Plan 033 carry-over
 
 The Plan 030/031 physical-device acceptance remains unpassed. Plan 033 must also run real cross-client handoff, install/open, deep-link, login restoration, workspace authorization, invalid-link, logout/restart, and secret-audit acceptance after this plan is integrated.
