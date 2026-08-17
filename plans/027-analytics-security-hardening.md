@@ -23,7 +23,7 @@ Fix confirmed analytics correctness, workspace data-lifecycle, authentication-ab
 - [x] Phase 0 — Pre-flight and authority reconciliation.
 - [x] Phase 1 — Analytics correctness and filter contract.
 - [x] Phase 2 — Workspace deletion data lifecycle.
-- [ ] Phase 3 — Authentication abuse protection.
+- [x] Phase 3 — Authentication abuse protection.
 - [ ] Phase 4 — Situm credential consistency (org match).
 - [ ] Phase 5 — Bounded upstream failures and timeouts.
 - [ ] Phase 6 — Browser security hardening.
@@ -66,6 +66,16 @@ Finding 5 confirmed: `server/api/workspaces/[id].delete.ts` previously only dele
 - This ordering means the only inconsistency window is theoretical (ClickHouse cleanup succeeds, then the Postgres delete itself fails) — in that case Postgres still reflects the workspace as existing and the operation can be safely retried; ClickHouse cleanup is idempotent (re-running `DELETE WHERE workspace_id = ...` against already-empty rows is a no-op).
 - Unrelated workspaces/users are unaffected because every mutation is `WHERE workspace_id = {workspace_id:UUID}`, never a blanket delete.
 - Validation: `npm run lint` and `npm run typecheck` pass clean. Live row-count regression evidence (before/after row counts for the deleted workspace and an unrelated control workspace) is captured in Phase 7 against the reachable local ClickHouse instance (`shared-clickhouse` container, port 8124).
+
+## Phase 3 evidence
+
+Findings 6–7 confirmed by inspecting `server/api/auth/{register,login}.post.ts`: no rate limiting existed on either endpoint, and registration called `hashPassword` (scrypt via `nuxt-auth-utils`) before checking whether the email already existed — an unauthenticated caller could trigger repeated expensive scrypt work by POSTing to `/api/auth/register` regardless of outcome, and could always force one scrypt hash per request with no throttling.
+
+- Added `server/utils/rate-limit.ts`: a KISS in-memory fixed-window limiter keyed by `scope:ip` (uses h3's `getRequestIP` with `xForwardedFor: true`). No Redis/queue — this repo runs a single Nitro process (Plan 026 production containerization target), so a shared external store is not justified. `requireRateLimit` throws a `429` before any expensive work runs.
+- `register.post.ts`: rate limit (5/min/IP) is checked first, before body parsing; existing-account check now runs before `hashPassword` (previously reversed), so an unauthenticated caller hitting `/api/auth/register` with an already-registered email no longer triggers a scrypt hash at all, and repeated distinct-email attempts are bounded by the rate limit regardless.
+- `login.post.ts`: rate limit (10/min/IP) added; login already avoided hashing when no matching user existed (`verifyPassword` was only called when `record[0]?.passwordHash` was truthy), so no reordering was needed there — only the rate limit was added. Generic `401 Invalid credentials.` response is unchanged for both missing-user and wrong-password cases.
+- This is intentionally per-process/in-memory (not distributed), consistent with the KISS requirement; a restart clears counters, which is an acceptable tradeoff for abuse throttling (not a hard security boundary) at this scale. No redesign of the account/email-verification system was made or needed.
+- Validation: `npm run lint` and `npm run typecheck` pass clean.
 
 ## Acceptance evidence
 

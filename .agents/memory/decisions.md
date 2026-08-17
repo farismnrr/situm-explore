@@ -150,3 +150,10 @@ While this roadmap is active, also read:
 - the active plan.
 
 Status: active.
+
+## Auth abuse protection (Plan 027)
+
+- Rate limiting for `/api/auth/login` and `/api/auth/register` uses a KISS in-memory, per-process, fixed-window limiter (`server/utils/rate-limit.ts`), not Redis/a shared store. This is deliberate: the repository runs as a single Nitro process (see Plan 026 production containerization target); a distributed store would be infrastructure the current architecture does not justify. Revisit only if the runtime becomes genuinely multi-instance.
+- Registration checks for an existing account before running the expensive scrypt password hash, to avoid unauthenticated CPU/memory amplification. Login already avoided hashing for unknown emails and was left as-is; only rate limiting was added there. Generic invalid-credentials responses are unchanged.
+
+Status: active.

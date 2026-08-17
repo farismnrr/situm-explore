@@ -9,14 +9,17 @@ const registrationSchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  requireRateLimit(event, 'auth:register', 5, 60_000)
+
   const parsed = registrationSchema.safeParse(await readBody(event))
   if (!parsed.success) throw createError({ statusCode: 400, statusMessage: 'A valid email and password are required.' })
 
   const email = parsed.data.email.toLowerCase()
-  const passwordHash = await hashPassword(parsed.data.password)
 
   const existing = await getDb().select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1)
   if (existing[0]) throw createError({ statusCode: 409, statusMessage: 'An account with that email already exists.' })
+
+  const passwordHash = await hashPassword(parsed.data.password)
 
   try {
     const [user] = await getDb().insert(users).values({ email, passwordHash }).returning({ id: users.id, email: users.email })
