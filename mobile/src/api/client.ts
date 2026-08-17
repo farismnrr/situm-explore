@@ -20,7 +20,12 @@ export class MobileApiClient {
   async request<T>(path: string, options: RequestOptions = {}): Promise<T> {
     if (!apiBaseUrl) throw new ApiError('The mobile service address is not configured.', { code: 'SERVICE_UNAVAILABLE' })
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), options.timeoutMs ?? defaultTimeoutMs)
+    const callerSignal = options.signal
+    let timedOut = false
+    const abortFromCaller = () => controller.abort()
+    if (callerSignal?.aborted) controller.abort()
+    else callerSignal?.addEventListener('abort', abortFromCaller, { once: true })
+    const timeout = setTimeout(() => { timedOut = true; controller.abort() }, options.timeoutMs ?? defaultTimeoutMs)
     const headers = new Headers(options.headers)
     headers.set('accept', 'application/json')
     headers.set('x-request-id', requestId())
@@ -42,10 +47,14 @@ export class MobileApiClient {
       return (body ?? {}) as T
     } catch (error) {
       if (error instanceof ApiError) throw error
-      if (error instanceof Error && error.name === 'AbortError') throw new ApiError('The request timed out. Check your connection and try again.', { code: 'TIMEOUT' })
+      if (error instanceof Error && error.name === 'AbortError') {
+        if (callerSignal?.aborted && !timedOut) throw error
+        throw new ApiError('The request timed out. Check your connection and try again.', { code: 'TIMEOUT' })
+      }
       throw new ApiError('The service is unavailable. Check your connection and try again.', { code: 'NETWORK_ERROR' })
     } finally {
       clearTimeout(timeout)
+      callerSignal?.removeEventListener('abort', abortFromCaller)
     }
   }
 

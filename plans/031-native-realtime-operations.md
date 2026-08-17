@@ -3,7 +3,7 @@
 Branch: `plan/031-native-realtime-operations`
 Base: updated `origin/main` after Plan 030 is integrated
 Depends on: Plan 030 complete/integrated
-Status: implementation remediation required after final reviewer pass; not PR-ready
+Status: implementation complete after final reviewer remediation; PR-ready pending user-gated PR/merge
 
 ## Objective
 
@@ -144,6 +144,6 @@ Plan 032 is the non-deferrable final gate: it must exercise the accumulated Plan
 
 ## Closeout disposition (2026-08-17)
 
-Plan 031 implementation and non-physical runtime contracts passed on the plan branch. The final evidence is in `.agents/reviews/plan-031-final.md` and `.agents/evidence/plan-031-realtime.md`. Physical-device Realtime lifecycle, own-device Realtime positioning/publishing, sensor behavior, and accumulated native lifecycle checks remain explicitly unpassed Plan 032 carry-over. No PR or merge was created.
+Plan 031 implementation and non-physical runtime contracts passed on the plan branch after remediation of caller cancellation, unsupported local freshness classification, and malformed-payload handling. Focused regression coverage and the final validation evidence are recorded in the implementation commit and `.agents/evidence/plan-031-realtime.md`. Physical-device Realtime lifecycle, own-device Realtime positioning/publishing, sensor behavior, and accumulated native lifecycle checks remain explicitly unpassed Plan 032 carry-over. No PR or merge was created.
 
 Run repository/mobile validations, update architecture/capability evidence, commit/push each phase, and stop before PR until user authorization.

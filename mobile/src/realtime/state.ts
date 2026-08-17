@@ -1,10 +1,15 @@
 import type { SitumRealtimePosition, SitumRealtimeResponse } from '../../../shared/situm-realtime'
 
 export const realtimePollIntervalMs = 10_000
-export const realtimeStaleAfterMs = 5 * 60 * 1000
 
 export type RealtimeLoadState = 'idle' | 'loading' | 'ready' | 'empty' | 'error'
-export type RealtimeFreshness = 'fresh' | 'older' | 'stale' | 'unknown'
+
+export class RealtimePayloadError extends Error {
+  constructor() {
+    super('The Realtime service returned invalid position data.')
+    this.name = 'RealtimePayloadError'
+  }
+}
 
 export function isRealtimePosition(value: unknown): value is SitumRealtimePosition {
   if (!value || typeof value !== 'object') return false
@@ -13,17 +18,10 @@ export function isRealtimePosition(value: unknown): value is SitumRealtimePositi
 }
 
 export function normalizeRealtimeResponse(value: unknown): SitumRealtimePosition[] {
-  if (!value || typeof value !== 'object' || !Array.isArray((value as Partial<SitumRealtimeResponse>).positions)) return []
-  return (value as SitumRealtimeResponse).positions.filter(isRealtimePosition)
-}
-
-export function realtimeFreshness(time: string, now = Date.now()): RealtimeFreshness {
-  const sourceTime = Date.parse(time)
-  if (!Number.isFinite(sourceTime)) return 'unknown'
-  const age = Math.max(0, now - sourceTime)
-  if (age <= 60_000) return 'fresh'
-  if (age <= realtimeStaleAfterMs) return 'older'
-  return 'stale'
+  if (!value || typeof value !== 'object' || !Array.isArray((value as Partial<SitumRealtimeResponse>).positions)) throw new RealtimePayloadError()
+  const positions = (value as SitumRealtimeResponse).positions
+  if (!positions.every(isRealtimePosition)) throw new RealtimePayloadError()
+  return positions
 }
 
 export function formatSourceTime(time: string, locale = 'en-US') {
