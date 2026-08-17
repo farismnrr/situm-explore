@@ -12,6 +12,8 @@ Plan 031 owns Native Realtime Operations. Baseline v1 semantics remain device-po
 
 Remote monitoring should remain server-mediated through the existing authenticated workspace boundary unless exact current evidence proves a safer least-privilege native path. Do not widen the mobile Positioning credential for convenience. Own-device location remains the Plan 030 native positioning boundary; background positioning is added only if Plan 031 Phase 0 proves a real Realtime requirement.
 
+Phase 0 evidence is recorded in `.agents/evidence/plan-031-realtime.md`: the installed native generic realtime and Share Live Location APIs do not prove an equivalent application/workspace boundary or Positioning-credential permission, so Plan 031 v1 uses the existing sanitized Nitro route. No remote markers/focus or background positioning are enabled.
+
 Plan 031 must prove every implementation/server/runtime contract truthfully available without physical sensor evidence. Any physical-device-only Realtime/own-position/background checks remain explicitly unpassed Plan 032 carry-over. Plan 032 is the non-deferrable consolidated native physical-E2E gate.
 
 Locked product policy for this roadmap:
