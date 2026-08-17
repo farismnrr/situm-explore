@@ -22,7 +22,7 @@ Fix confirmed analytics correctness, workspace data-lifecycle, authentication-ab
 
 - [x] Phase 0 — Pre-flight and authority reconciliation.
 - [x] Phase 1 — Analytics correctness and filter contract.
-- [ ] Phase 2 — Workspace deletion data lifecycle.
+- [x] Phase 2 — Workspace deletion data lifecycle.
 - [ ] Phase 3 — Authentication abuse protection.
 - [ ] Phase 4 — Situm credential consistency (org match).
 - [ ] Phase 5 — Bounded upstream failures and timeouts.
@@ -56,6 +56,16 @@ Findings 1–4 confirmed exactly as described by inspecting `server/integrations
 - `sync.post.ts` now validates its body with a zod schema (`report` enum, `fromDate`/`toDate` strings checked by `isValidDateRange`, bounded `buildingId`/`buildingIds`) instead of relying on a TS generic on `readBody`.
 - All identifiers remain parameter-bound; table/database names remain allowlist-validated. No changes to legacy (non-workspace) query paths or legacy row attribution.
 - Validation: `npm run lint` and `npm run typecheck` both pass clean.
+
+## Phase 2 evidence
+
+Finding 5 confirmed: `server/api/workspaces/[id].delete.ts` previously only deleted the Postgres `workspaces` row and never touched ClickHouse-owned analytics (`analytics_workspace_visitors`, `analytics_workspace_positioning_time`, `analytics_workspace_geofencing_stay`, `analytics_workspace_sync_runs`), leaving orphaned rows keyed to a now-deleted `workspace_id`.
+
+- Added `deleteWorkspaceAnalytics(workspaceId)` in `server/integrations/clickhouse/analytics.ts`: issues `ALTER TABLE ... DELETE WHERE workspace_id = {workspace_id:UUID}` (parameter-bound, `mutations_sync: '2'` for deterministic completion) against a hardcoded allowlist of exactly the four `analytics_workspace_*` tables. Legacy/unscoped tables (`analytics_visitors`, `analytics_positioning_time`, `analytics_geofencing_stay`, `analytics_sync_runs`) are never referenced by this function.
+- Reordered the delete route: (1) verify ownership via a `SELECT` (404 if not owned/found) without mutating anything yet; (2) run the bounded ClickHouse cleanup — if it throws, the handler throws a 503 and the Postgres workspace row is left untouched (no partial state, no false "deleted" report); (3) only once ClickHouse cleanup succeeds does the Postgres `DELETE ... RETURNING` run, scoped by both `id` and `ownerId` as before.
+- This ordering means the only inconsistency window is theoretical (ClickHouse cleanup succeeds, then the Postgres delete itself fails) — in that case Postgres still reflects the workspace as existing and the operation can be safely retried; ClickHouse cleanup is idempotent (re-running `DELETE WHERE workspace_id = ...` against already-empty rows is a no-op).
+- Unrelated workspaces/users are unaffected because every mutation is `WHERE workspace_id = {workspace_id:UUID}`, never a blanket delete.
+- Validation: `npm run lint` and `npm run typecheck` pass clean. Live row-count regression evidence (before/after row counts for the deleted workspace and an unrelated control workspace) is captured in Phase 7 against the reachable local ClickHouse instance (`shared-clickhouse` container, port 8124).
 
 ## Acceptance evidence
 

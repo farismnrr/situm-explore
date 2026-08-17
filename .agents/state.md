@@ -8,6 +8,7 @@ Plan 027 (analytics correctness & security hardening) is active on `plan/027-ana
 
 - Phase 0 complete: dependency confirmed (PR #20 merged into main), branch created from up-to-date main, stale "Plan 026 active" references in `AGENTS.md`/`.agents/state.md` reconciled.
 - Phase 1 complete: `queryWorkspaceAnalytics` now scopes reads by `workspace_id` + exact requested-window `source_window_id` prefix (same pattern as the legacy query path), preventing double-counting across overlapping/re-synced windows and making positioning/geofencing obey the requested date window. `buildingId`/`geofenceId` filters from the UI are now parsed, validated, and applied in `summary.get.ts`. `sync.post.ts` body is now validated with a zod schema instead of a bare TS generic. Lint and typecheck pass.
+- Phase 2 complete: workspace deletion (`[id].delete.ts`) now verifies ownership, then runs a bounded parameter-bound ClickHouse cleanup (`deleteWorkspaceAnalytics`) against exactly the four `analytics_workspace_*` tables before deleting the Postgres row; ClickHouse cleanup failure aborts the whole deletion (503) rather than reporting success with orphaned analytics. Legacy/unscoped analytics tables are never touched. Lint/typecheck pass; local `shared-clickhouse` container (port 8124) is reachable for live regression evidence in Phase 7.
 
 ## Plan 026 (integrated)
 

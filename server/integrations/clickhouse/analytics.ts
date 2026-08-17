@@ -40,6 +40,21 @@ export async function queryWorkspaceAnalytics(workspaceId: string, filters: Anal
   return { visitors, positioning, geofencing }
 }
 
+const workspaceOwnedTables = ['analytics_workspace_visitors', 'analytics_workspace_positioning_time', 'analytics_workspace_geofencing_stay', 'analytics_workspace_sync_runs'] as const
+
+export async function deleteWorkspaceAnalytics(workspaceId: string): Promise<void> {
+  const client = getClickHouseClient()
+  const database = clickHouseDatabaseName()
+  if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(database)) throw new Error('Invalid ClickHouse database configuration')
+  for (const name of workspaceOwnedTables) {
+    await client.command({
+      query: `ALTER TABLE \`${database}\`.${name} DELETE WHERE workspace_id = {workspace_id:UUID}`,
+      query_params: { workspace_id: workspaceId },
+      clickhouse_settings: { mutations_sync: '2' }
+    })
+  }
+}
+
 export async function exportAnalytics(filters: AnalyticsFilters, report: 'visitors' | 'positioning_time' | 'geofencing_stay_time') {
   const p = params(filters)
   p.source_prefix = `${report}:${filters.fromDate}:${filters.toDate}:`
