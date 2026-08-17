@@ -3,7 +3,7 @@
 Branch: `plan/028-native-capability-auth-spike`
 Base: updated `origin/main` after the native roadmap planning branch is integrated
 Depends on: `plans/028-032-native-mobile-roadmap.md`
-Status: active — Phase 1 complete; Phase 2 next
+Status: active — Phase 2 complete; Phase 3 next
 
 ## Objective
 
@@ -27,7 +27,7 @@ Downstream native UI implementation is visually governed by `DESIGN.md` and `des
 
 - [x] Phase 0 — Pre-flight, dependency and authority reconciliation.
 - [x] Phase 1 — Freeze React Native / Expo / Situm SDK compatibility matrix.
-- [ ] Phase 2 — Prove native Map, positioning, permission and navigation surfaces.
+- [x] Phase 2 — Prove native Map, positioning, permission and navigation surfaces.
 - [ ] Phase 3 — Freeze least-privilege Situm mobile authentication contract.
 - [ ] Phase 4 — Freeze application login/session transport for native.
 - [ ] Phase 5 — Freeze secure-storage, deep-link and distribution contracts.
@@ -94,6 +94,34 @@ Proof details:
 Repository structure decision: Plan 029 should use a standalone `mobile/` package, not npm workspaces. The existing root is a single Nuxt package with no workspace arrangement; keeping the future native package isolated preserves the smallest reproducible change and avoids coupling native dependency resolution to the web lockfile. Plan 029 must create that package; this phase creates no production mobile project.
 
 Phase 1 capability/UI constraint handoff: this proof establishes native build integration only. It does not authorize the approved reference's Map, blue-dot, floor, POI, directions, route-metric, remote-position, background, or Share Live Location interactions. Those remain Phase 2 evidence questions; unsupported reference states must use documented truthful fallbacks.
+
+### Phase 2 evidence — 2026-08-17
+
+The exact installed wrapper source was inspected from `/tmp/situm-explore-plan028-proof/node_modules/@situm/react-native` at 3.19.2. The Android module compiled in Phase 1. The source proves the following public surface; no production screen or credential-backed runtime test was performed.
+
+| Reference interaction | Classification | Evidence / downstream constraint |
+| --- | --- | --- |
+| Root initialization / `SitumProvider` | PROVEN SUPPORTED | Provider initializes the plugin, applies `apiDomain`, and accepts `apiKey` or `token`; children render only after initialization/auth effects complete. |
+| MapView / current map destination | PROVEN SUPPORTED | `MapView` is a React Native WebView-backed component requiring `buildingIdentifier`; it exposes load/error, POI, floor and favorite callbacks plus imperative map controls. Native compile is proven; map rendering/runtime remains device/backend-gated. |
+| Building selection | SUPPORTED WITH PLATFORM/OWNER DIFFERENCE | `fetchBuildings`, `fetchBuildingInfo`, and `MapView` building configuration are exposed. There is no public imperative `selectBuilding` method; Plan 030 must own workspace/building changes by controlled MapView lifecycle/remount and must clear stale state. |
+| Contextual location permission / user helper | PROVEN SUPPORTED WITH PLATFORM DIFFERENCE | `configureUserHelper`, `enableUserHelper`, and `disableUserHelper` exist; the helper addresses missing Location/Bluetooth permission and sensors. Android/iOS system permission behavior still requires device proof. Request only from positioning-dependent actions. |
+| Find my location / blue dot | PROVEN SUPPORTED | `requestLocationUpdates`/`removeLocationUpdates`, `onLocationUpdate`, status and error callbacks exist; MapView forwards location/status/error to its viewer. Runtime sensor accuracy and denial states require device proof. |
+| Floor switching | PROVEN SUPPORTED | `MapViewRef.selectFloor` and `onFloorChanged`, plus `fetchFloorsFromBuilding`, are present. Floor IDs are string-based in SDK data and must not be conflated with display level numbers. |
+| POI selection/search/details | PROVEN SUPPORTED | Indoor/outdoor POI fetch, category fetch, `selectPoi`, `deselectPoi`, category selection, search and POI callbacks are present. HTML `infoHtml` is upstream data and needs safe product rendering later. |
+| Directions/navigation | PROVEN SUPPORTED | `MapViewRef.navigateToPoi`/`navigateToPoint`/`cancelNavigation`, `requestDirections`, navigation start/progress/destination/out-of-route/cancel/error callbacks and update/remove methods exist. The wrapper's `Directions` alias is `any`; route metrics must be used only from concrete returned progress/route fields. |
+| Route metrics/instructions | SUPPORTED WITH TRUTHFUL LIMIT | `NavigationProgress` source types expose distances, time-at-1m/s, indications, points and segments; however the MapView viewer event payload and real device semantics were not runtime-proven. Do not display ETA/steps/geometry unless the later device proof confirms the exact payload. |
+| Generic Realtime positions | PROVEN DATA API; TRUTHFUL MAP FALLBACK REQUIRED | `requestRealTimeUpdates(options)` emits `realtimeUpdated`/`realtimeError`; `RealTimeRequest` is `{building, pollTime}` and `RealTimeData` is `{locations: Location[]}`. Location data includes coordinates, building/floor and accuracy where present. No public MapView remote-marker/focus API exists; Plan 031 must retain a list/detail experience and only map-focus if separately proven. |
+| Selected remote-position focus | BLOCKED / UNPROVEN | The wrapper has no public remote-marker overlay or selected-remote focus method. Do not simulate a marker or identity mapping. |
+| Background positioning | SUPPORTED WITH PLATFORM DIFFERENCE; NOT ENABLED BY THIS SPIKE | Android `LocationRequest` exposes foreground-service options; iOS source handles foreground/background notifications and Always authorization only when configured. This does not prove a safe product background contract. Plan 030 must not request background location in the initial flow. |
+| Share Live Location | PROVEN API SURFACE; SEMANTICS/DEVICE GATED | `startShareLiveLocation`/`stopShareLiveLocation` exist and MapView handles share-session start/stop messages plus `setShareLiveLocationSession`. Session creation, permissions, links and cross-device behavior require later device/backend proof. |
+
+Platform/source constraints:
+
+- Android and iOS both expose the base wrapper methods, token bridges, positioning, directions, realtime and Share Live Location native methods. Android additionally exposes foreground-service notification options in `LocationRequest`; iOS exposes `outdoorLocationOptions` as Android-only in the TypeScript contract and maps Always/When-In-Use authorization through iOS location APIs.
+- `MapView` uses `react-native-webview`; external links default to the system browser unless intercepted. The native share polyfill path is explicitly Android-only in the MapView source. `validateMapViewProjectSettings` is guarded to iOS.
+- The public npm package declares `lib/typescript` and `lib/module` in `package.json`, but the 3.19.2 published tarball/install has no `lib/` directory. Metro uses its `react-native: src/index` entry and the Android build succeeds, so this is not a native compilation blocker. It is a TypeScript package-resolution issue that Plan 029 must recheck before choosing a local declaration/source-resolution workaround; no patch is introduced in Plan 028.
+
+Phase 2 conclusion: native build integration, MapView, positioning, cartography, navigation, permissions helper, generic realtime data, and Share Live Location API surfaces are source-proven. Generic remote map overlays/focus, runtime payload semantics, system permissions, background behavior, session sharing and iOS compilation remain unproven or gated as classified above. No capability is promoted to production implementation solely from this source proof.
 
 ## Phase 2 — Situm mobile capability proof
 

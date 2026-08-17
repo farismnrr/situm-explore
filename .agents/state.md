@@ -4,7 +4,7 @@ _Last reviewed: 2026-08-17_
 
 ## Active Plan 028 — Native Capability, Auth & Distribution Spike
 
-The native roadmap was integrated into `main` via PR #22 (merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`). Plan 028 is active on `plan/028-native-capability-auth-spike`, created from that exact updated `origin/main`. Phase 0 pre-flight and Phase 1 compatibility-matrix evidence are complete; Phase 2 wrapper capability proof is next. No native product Map/Realtime implementation has started. The sequence remains Plan 028 -> Plan 029 -> Plan 030 -> Plan 031 -> Plan 032, with each later plan gated on predecessor integration.
+The native roadmap was integrated into `main` via PR #22 (merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`). Plan 028 is active on `plan/028-native-capability-auth-spike`, created from that exact updated `origin/main`. Phases 0–2 are complete; Phase 3 least-privilege Situm auth proof is next. No native product Map/Realtime implementation has started. The sequence remains Plan 028 -> Plan 029 -> Plan 030 -> Plan 031 -> Plan 032, with each later plan gated on predecessor integration.
 
 Locked product policy for this roadmap:
 
@@ -14,6 +14,7 @@ Locked product policy for this roadmap:
 - React Native + Expo development builds + `@situm/react-native` is the target stack, subject to Plan 028 exact-version/capability proof;
 - Phase 1 froze Expo 57.0.13 / React Native 0.86.2 / React 19.2.3 / `@situm/react-native` 3.19.2 / `react-native-webview` 13.16.1, Android min/compile/target 24/36/36, JDK 21.0.10, Kotlin 2.1.20 and Gradle 9.3.1. A disposable Expo prebuild plus Android `assembleDebug` passed with New Architecture enabled; iOS compile/runtime remain macOS/device-gated.
 - The future native package will be standalone under `mobile/`; Plan 029 must create it without npm workspaces or a production app in Plan 028.
+- Phase 2 source proof confirms MapView, cartography, positioning, navigation, permission helper, generic realtime data, and Share Live Location APIs. It does not prove generic remote-map overlays/focus, runtime payload semantics, background permission safety, or iOS compile/runtime. Unsupported reference interactions remain truthful fallbacks.
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
 - the server-side Read & Write Situm credential must never be exposed to mobile; Plan 028 must freeze a proven short-lived-token or dedicated Positioning-credential contract before Plan 029 implementation.
 

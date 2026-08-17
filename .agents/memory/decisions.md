@@ -71,6 +71,15 @@ Status: approved roadmap direction; exact auth/session/distribution contracts re
 
 Status: active Plan 028 Phase 1 evidence; later capability/auth phases may supersede exact selections only with new proof.
 
+### Plan 028 Phase 2 wrapper capability boundary (2026-08-17)
+
+- The installed 3.19.2 wrapper source proves `SitumProvider`, WebView-backed `MapView`, building/floor/POI reads and selection, positioning/status/error callbacks, navigation, permission user-helper, generic `requestRealTimeUpdates`, and Share Live Location method surfaces.
+- Generic realtime returns `RealTimeData.locations` with `Location` fields such as position/building/floor and accuracy; it does not provide a public MapView remote-marker/focus API. Native Realtime must use a truthful list/detail fallback unless a separate proven overlay path is found.
+- Building selection has no public imperative selector; downstream code must own MapView lifecycle/remount and stale-state clearing. Background location is not requested by default; Android foreground service and iOS authorization differences require later device proof.
+- The 3.19.2 npm tarball omits the `lib/` files referenced by its package `types`/`module` fields. Android/Metro source integration works, but Plan 029 must recheck TypeScript package resolution before selecting a non-speculative workaround.
+
+Status: active Plan 028 Phase 2 evidence; runtime/device proof and auth decisions remain open.
+
 ## Plans 021–025 identity/workspace model
 
 - Real application users are persisted in PostgreSQL.
