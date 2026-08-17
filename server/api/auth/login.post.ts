@@ -15,11 +15,11 @@ export default defineEventHandler(async (event) => {
   if (!parsed.success) throw createError({ statusCode: 400, statusMessage: 'Email and password are required.' })
 
   const email = parsed.data.email.toLowerCase()
-  const record = await getDb().select({ id: users.id, email: users.email, passwordHash: users.passwordHash }).from(users).where(eq(users.email, email)).limit(1)
+  const record = await getDb().select({ id: users.id, email: users.email, passwordHash: users.passwordHash, sessionVersion: users.sessionVersion }).from(users).where(eq(users.email, email)).limit(1)
   const passwordMatches = record[0]?.passwordHash ? await verifyPassword(record[0].passwordHash, parsed.data.password) : false
 
   if (!record[0] || !passwordMatches) throw createError({ statusCode: 401, statusMessage: 'Invalid credentials.' })
 
-  await setUserSession(event, { user: { id: record[0].id, email: record[0].email } })
+  await setUserSession(event, { user: { id: record[0].id, email: record[0].email, sessionVersion: record[0].sessionVersion } })
   return { ok: true }
 })

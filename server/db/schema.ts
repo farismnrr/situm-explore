@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { check, foreignKey, pgSchema, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
+import { check, foreignKey, integer, pgSchema, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
 
 const app = pgSchema('situm_explore')
 
@@ -13,6 +13,7 @@ export const users = app.table('users', {
   id: uuid('id').defaultRandom().primaryKey(),
   email: varchar('email', { length: 320 }).notNull().unique(),
   passwordHash: varchar('password_hash', { length: 255 }),
+  sessionVersion: integer('session_version').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, table => [
@@ -46,6 +47,7 @@ export const workspaceSitumConfigs = app.table('workspace_situm_configs', {
   situmAccountId: varchar('situm_account_id', { length: 255 }).notNull(),
   encryptedApiKey: varchar('encrypted_api_key', { length: 2048 }).notNull(),
   encryptedViewerApiKey: varchar('encrypted_viewer_api_key', { length: 2048 }),
+  encryptedPositioningApiKey: varchar('encrypted_positioning_api_key', { length: 2048 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, table => [

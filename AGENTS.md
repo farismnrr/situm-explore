@@ -8,16 +8,17 @@ Keep this file short. Current authority lives in `.agents/state.md`.
 
 1. `.agents/identity.md`
 2. `.agents/state.md`
-3. `.agents/protocols/chat-lifecycle.md`
-4. `.agents/protocols/git-workflow.md`
-5. `.agents/memory/decisions.md`
-6. `.agents/memory/roadmap-021-025.md` for completed-roadmap context when needed
-7. `ARCHITECTURE.md`
-8. `plans/README.md`
-9. `plans/021-025-prerequisites.md` when historical prerequisite context is needed
-10. `design/data-source-matrix.md` when Situm/product capability scope matters
-11. the relevant plan
-12. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes
+3. `.agents/execution/plan-029.md` when Plan 029 is active
+4. `.agents/protocols/chat-lifecycle.md`
+5. `.agents/protocols/git-workflow.md`
+6. `.agents/memory/decisions.md`
+7. `.agents/memory/roadmap-021-025.md` for completed-roadmap context when needed
+8. `ARCHITECTURE.md`
+9. `plans/README.md`
+10. `plans/021-025-prerequisites.md` when historical prerequisite context is needed
+11. `design/data-source-matrix.md` when Situm/product capability scope matters
+12. the relevant plan
+13. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes
 
 Historical plans/sessions/branches are evidence only and do not override current state, durable decisions, architecture, or the active plan.
 
@@ -35,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–027 are complete/integrated via PRs #20–#21. The approved next roadmap is Plans 028–032 for the native Situm Explore companion app; implementation has not started. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–028 are complete/integrated via PRs #20–#23. Plan 029 is the active native foundation plan on `plan/029-native-app-foundation`; production native implementation starts here. Plans 030–032 remain dependent follow-ups. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 

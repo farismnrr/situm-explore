@@ -55,12 +55,12 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Approved native companion roadmap
 
-Plan 028 evidence is complete on `plan/028-native-capability-auth-spike` and pending review/integration. Production native implementation has not started; Plan 029 is next after Plan 028 is integrated.
+Plan 028 evidence is integrated into `main`. Plan 029 foundation implementation is complete on `plan/029-native-app-foundation` and pending review/integration; Plans 030–032 remain gated on that integration.
 
 ```text
-roadmap/028-032-native-mobile                       [Plan 028 complete; pending integration]
+roadmap/028-032-native-mobile                       [Plan 029 complete; pending integration]
 -> Plan 028 — Native Capability, Auth & Distribution Spike [complete]
--> Plan 029 — Native App Foundation & Workspace Session
+-> Plan 029 — Native App Foundation & Workspace Session [complete; pending integration]
 -> Plan 030 — Native Map, Positioning & Navigation
 -> Plan 031 — Native Realtime Operations
 -> Plan 032 — Web/Native Handoff, Distribution & Full Regression

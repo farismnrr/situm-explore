@@ -2,9 +2,23 @@
 
 _Last reviewed: 2026-08-17_
 
-## Plan 028 — Native Capability, Auth & Distribution Spike (complete; awaiting integration)
+## Active Plan 029 — Native App Foundation & Workspace Session
 
-The native roadmap was integrated into `main` via PR #22 (merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`). Plan 028 is complete on `plan/028-native-capability-auth-spike`; Phases 0–6 passed and Plan 029 is ready to begin from an updated/integrated base. No native product Map/Realtime implementation has started. The sequence remains Plan 028 -> Plan 029 -> Plan 030 -> Plan 031 -> Plan 032, with each later plan gated on predecessor integration.
+Execution started on `plan/029-native-app-foundation` on 2026-08-17. Phase 0 confirms the branch is based on the integrated Plan 028 merge (`e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`) and JDK 21.0.10 is available. Plan 029 implementation and second-review remediation are approved; one documentation-only dependency-authority reconciliation remains before PR readiness. No PR or merge has been performed.
+
+Plan 029 Phase 1 implementation exists: standalone `mobile/` package, Expo 57.0.13 config, frozen identifiers/schemes, SecureStore and build-properties plugins, strict TypeScript, and ignored generated native projects are in place. The published `@situm/react-native` 3.19.2 package has no declared `lib/`; a narrow TypeScript source path was added, but tracked Plan 029 code does not yet directly import the package, so type/runtime claims must remain bounded. Reviewer verification found the Android SDK at `/home/farismnrr/Android/Sdk` and `assembleDebug` passes; iOS remains macOS-gated.
+
+Plan 029 Phase 2 is complete: `mobile/src/api` provides an environment-only API base URL, correlation IDs, sealed-session header injection, bounded fetch cancellation, typed response contracts, and normalized safe product errors that retain only status/category/request ID. No direct database/upstream access or raw proxy was added.
+
+Plan 029 Phase 3 implementation defects are fixed: `mobileSessionConfig()` explicitly preserves the `nuxt-session` h3 bucket and session-version validation fails closed for missing/invalid/mismatched/revoked sessions. Focused session and Positioning owner-isolation regressions pass, including cross-owner denial and response allowlisting.
+
+Plan 029 Phase 4 is complete: the mobile client has an owner-scoped workspace list/select context and fetches only the selected workspace's dedicated Positioning credential. The key remains in memory for the caller and is never stored in the workspace context, persisted, logged, or returned alongside primary/Viewer credentials. Missing configuration is a typed recoverable error.
+
+Plan 029 Phase 5 layout/lifecycle defects are fixed: workspace selection is externally subscribable/reactive and only its ID is restored through SecureStore; phone navigation is horizontal, tablet/POS and wide rails are distinct, SVG brand/Lucide-style icons replace the text mark, lifecycle labels use Foreground/Background, and visible navigation matches the approved `Explore / Realtime / Recent / Settings` reference without implementing Plan 030/031 features.
+
+Plan 029 closeout passes: root lint/typecheck/build and 13 tests, mobile lint/typecheck, Expo prebuild, and Android `assembleDebug` using `/home/farismnrr/Android/Sdk`. `expo-doctor` is 20/21 with only the known `@situm/react-native` New Architecture metadata warning; `expo-secure-store`/`expo-status-bar` are `~57.0.1` and TypeScript is `~6.0.3`. iOS remains macOS/Xcode/device-gated. No PR/merge was created and Plan 030 was not started.
+
+Plan 028 was reviewed and integrated into `main` via PR #23 (merge commit `e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`), and its branch was deleted. `plan/029-native-app-foundation` was created from that exact updated `origin/main`; implementation and second-review remediation are complete. Execute Plan 029 using `.agents/execution/plan-029.md`, `.agents/reviews/plan-029-final.md`, and `plans/029-native-app-foundation.md`. Plans 030–032 remain gated on predecessor integration.
 
 Locked product policy for this roadmap:
 
@@ -17,12 +31,12 @@ Locked product policy for this roadmap:
 - Phase 2 source proof confirms MapView, cartography, positioning, navigation, permission helper, generic realtime data, and Share Live Location APIs. It does not prove generic remote-map overlays/focus, runtime payload semantics, background permission safety, or iOS compile/runtime. Unsupported reference interactions remain truthful fallbacks.
 - Phase 3 froze a dedicated encrypted workspace Positioning API key for the native SDK. The server-only Read & Write key and browser Read-only key remain excluded; native Realtime remains server-mediated. JWT wrapper support is present but unselected until issuer/claims/lifetime/refresh/revocation evidence exists.
 - Phase 4 froze same-user application auth over an opaque sealed h3 session value in `x-nuxt-session`, with a 7-day maximum age and OS secure storage later. Cookie-only native persistence is not proven; this transport keeps the existing Nitro/PostgreSQL identity and ownership boundary.
-- Phase 5 froze `expo-secure-store` `~15.0.x` for bearer-equivalent session/Situm material, identifiers `com.situm.explore`, custom schemes `situm-explore-{dev,staging}` and `situm-explore`, and local Expo development/Gradle Android artifact workflow. HTTPS association, Apple signing, and store delivery remain external gates; EAS is not selected.
+- Plan 028 Phase 5 historically froze `expo-secure-store` `~15.0.x`; Plan 029 superseded that package line with Expo 57-compatible `expo-secure-store` `~57.0.1` for bearer-equivalent session/Situm material. Identifiers remain `com.situm.explore`, custom schemes remain `situm-explore-{dev,staging}` and `situm-explore`, and local Expo development/Gradle Android artifact workflow remains selected. HTTPS association, Apple signing, and store delivery remain external gates; EAS is not selected.
 - Phase 6 completed the final matrix and capability-to-reference handoff. Plan 029 is GO for foundation work, with TypeScript package resolution, mobile auth/revocation, device runtime, iOS/macOS, public HTTPS association, and release signing/store delivery retained as explicit gates.
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
 - the server-side Read & Write Situm credential must never be exposed to mobile; the frozen native authority is a dedicated least-privilege Positioning credential issued only after owner authorization, while native Realtime remains server-mediated.
 
-Normal workflow: Plan 029 starts sequentially from updated `origin/main` only after Plan 028 is reviewed and integrated; later plans follow the same predecessor-integration rule unless the user explicitly authorizes stacked branches.
+Normal workflow: execute Plan 029 on `plan/029-native-app-foundation`; after review/integration, later plans follow the same predecessor-integration rule unless the user explicitly authorizes stacked branches.
 
 ## Plan 027 (complete/integrated)
 

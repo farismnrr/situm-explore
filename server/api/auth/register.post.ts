@@ -22,9 +22,9 @@ export default defineEventHandler(async (event) => {
   const passwordHash = await hashPassword(parsed.data.password)
 
   try {
-    const [user] = await getDb().insert(users).values({ email, passwordHash }).returning({ id: users.id, email: users.email })
+    const [user] = await getDb().insert(users).values({ email, passwordHash }).returning({ id: users.id, email: users.email, sessionVersion: users.sessionVersion })
     if (!user) throw createError({ statusCode: 500, statusMessage: 'Unable to create account.' })
-    await setUserSession(event, { user: { id: user.id, email: user.email } })
+    await setUserSession(event, { user: { id: user.id, email: user.email, sessionVersion: user.sessionVersion } })
     return { ok: true, user: { id: user.id, email: user.email } }
   } catch (error: unknown) {
     if ((error as { code?: string }).code === '23505') throw createError({ statusCode: 409, statusMessage: 'An account with that email already exists.' })

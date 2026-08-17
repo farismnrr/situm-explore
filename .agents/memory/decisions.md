@@ -104,9 +104,16 @@ Status: active Plan 028 Phase 4 evidence; implementation and revocation/version 
 
 Status: active Plan 028 Phase 5 evidence; HTTPS association and store distribution remain external gates.
 
+### Plan 029 Expo 57 dependency authority (2026-08-17)
+
+- Superseding decision: the Plan 029 Expo 57 mobile app uses `expo-secure-store` `~57.0.1` as the only approved persistent storage boundary for bearer-equivalent session/Situm material, `expo-status-bar` `~57.0.1`, and TypeScript `~6.0.3`. This is based on the actual Expo 57 package compatibility evidence and validation performed in the real `mobile/` package.
+- The earlier Plan 028 `expo-secure-store` `~15.0.x` decision remains historical evidence for that spike and must not be treated as the current Plan 029 dependency authority.
+
+Status: durable Plan 029 dependency decision; no production credential persistence outside SecureStore.
+
 ### Plan 028 Phase 6 readiness gate (2026-08-17)
 
-- Plan 028 is complete as an evidence spike. Plan 029 is GO for standalone foundation work from an updated/integrated base, but must first recheck the published wrapper TypeScript `lib/` omission, implement the mobile session response plus server-side revocation/version checks, and keep device/iOS/release gates explicit.
+- Plan 028 is complete as an evidence spike. Plan 029 implementation is active: the published wrapper TypeScript `lib/` omission was rechecked in the real package and handled through its documented source entry with a narrow mobile TypeScript path; the mobile session response now uses the same sealed h3 value over `x-nuxt-session`, seven-day expiry, and a server-side user session-version revocation check. Device/iOS/release gates remain explicit.
 - The approved native reference remains authoritative for presentation; capability evidence overrides any depicted interaction. Remote-position map focus is unproven and gets a list/detail fallback. Background location is not default, Realtime identity/status semantics remain backend-truth-bound, and no fake capability is permitted.
 
 Status: complete Plan 028; Plan 029 readiness GO with explicit external/runtime gates.
@@ -228,3 +235,11 @@ Status: active durable runtime decision.
 - A Content-Security-Policy was deliberately NOT added. The Situm Map Viewer's exact script/frame/connect origins are not proven by any live network trace in this repo, and this repo has already hit one real Viewer-behavior surprise (the wait_for_auth/postMessage building-mismatch investigation). A guessed CSP risks silently breaking the map for every user. Revisit only with a live browser network trace against the real hosted Viewer to derive a proven allowlist.
 
 Status: active durable security decision; CSP is an open, intentionally documented limitation, not solved.
+
+## Plan 029 native remediation
+
+- Direct mobile h3 sealing must use the explicit `nuxt-session` session name and the native transport remains `x-nuxt-session`; session-version checks fail closed for missing or invalid values.
+- Workspace restoration persists only the selected workspace ID through `expo-secure-store`; workspace credentials remain transient and are never persisted by the context.
+- The native shell uses horizontal phone navigation, compact tablet/POS and wide rails, SVG brand/Lucide-style icons, and Foreground/Background lifecycle labels that do not imply network connectivity.
+
+Status: active durable runtime/security decision.
