@@ -4,28 +4,45 @@ This file is the current design router for Situm Explore.
 
 It separates **visual authority** from **product/capability authority** so historical prototypes cannot override current backend/security truth.
 
-## Canonical visual reference
+## Canonical visual references
 
-The approved visual/interaction reference remains:
+The approved shared web/product visual reference remains:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-Use it for:
+The approved native/responsive companion reference is:
+
+`design/reference/situm-explore-native-responsive-prototype.html`
+
+Use the shared reference for:
 
 - hierarchy and composition;
 - density and spacing;
 - typography and surface treatment;
-- responsive intent;
-- interaction presentation.
+- shared tenant brand/tokens;
+- web interaction presentation.
 
-Do not copy its HTML/CSS/JS wholesale into production.
+Use the native reference for Plans 029–032 when implementing native-facing UI/UX:
+
+- mobile-first information hierarchy and end-user wording;
+- Map and Realtime screen composition;
+- location-permission, denied, stale/freshness and safe fallback presentation;
+- phone bottom navigation, tablet/POS rail, and wide-screen expanded-navigation intent;
+- responsive behavior across phone, tablet, Android POS/kiosk and TV/wide displays;
+- Lucide-style icon language and the same light, cool-neutral Situm Explore surface system used by web.
+
+The native app is still the same Situm Explore tenant/product. Do not invent a parallel native design system, unrelated color palette, typography, spacing scale, icon family, or product vocabulary merely because the runtime is React Native.
+
+The native reference is visual/interaction authority, **not capability or data-contract evidence**. If a reference interaction cannot be supported truthfully by the installed Situm SDK/current backend contract, keep the visual intent where possible but implement only the evidenced capability and record the deviation in the active plan. Never fake SDK behavior, identity, online/offline state, position freshness, route data or permissions to match the prototype.
+
+Do not copy either reference HTML/CSS/JS wholesale into production.
 
 ## Authority order
 
 ### Visual decisions
 
 1. user's latest explicit visual direction;
-2. canonical HTML reference;
+2. applicable canonical HTML reference (shared web/product, then native for native-facing UI);
 3. active plan;
 4. `design/IMPLEMENTATION.md`;
 5. agent judgment only for uncovered gaps.

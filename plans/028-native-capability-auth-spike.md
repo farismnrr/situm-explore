@@ -11,6 +11,8 @@ Prove the exact current contracts required to build Situm Explore Mobile before 
 
 This is an evidence plan. Do not implement product Map/Realtime screens here.
 
+Downstream native UI implementation is visually governed by `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html`. Plan 028 must not redesign that reference; it must identify any SDK/platform constraints that Plans 029–032 need to apply truthfully when translating it to React Native.
+
 ## Rules
 
 - No capability claim without current official documentation, installed-package/source evidence, or a bounded runtime proof.
@@ -150,6 +152,8 @@ Plan 029 may start only when all of these are frozen:
 - exact supported platform baseline;
 - exact deep-link/application identifiers;
 - exact distribution workflow or clearly recorded external gate.
+
+Plan 028 closeout must also hand downstream plans an explicit capability-to-reference note for any native reference interaction that cannot be implemented exactly as drawn (for example generic remote-position map overlays, permission helpers, route metrics, background behavior or platform-specific navigation differences). Absence of such a capability means a documented truthful fallback, never prototype-matching fake behavior.
 
 ## Validation
 

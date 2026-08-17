@@ -19,6 +19,8 @@ Do not implement the production Map, positioning/navigation, or Realtime feature
 - Follow the Plan 028 auth/session and secure-storage decisions exactly; reopen them only with new evidence.
 - Keep secrets and signing material external/ignored.
 - Use the repository's npm workflow; do not introduce a second package manager.
+- Treat `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html` as the binding native visual/interaction reference. Reuse the existing Situm Explore tenant identity rather than creating a separate native design system.
+- Capability/security truth from Plan 028 overrides prototype presentation; document any required visual/interaction deviation instead of faking unavailable behavior.
 - No PR/merge without explicit user authorization.
 
 ## Phase checklist
@@ -108,6 +110,13 @@ Provide the minimum real app shell required by Plans 030–031:
 - foreground/background lifecycle hooks needed by later plans without starting positioning prematurely;
 - accessibility basics and mobile-safe layouts;
 - no duplicate web admin/analytics UI unless required by the mobile product.
+
+Visual acceptance for this phase:
+
+- shell, brand, surface treatment, typography/density, icon language and responsive navigation follow the native reference;
+- phone, tablet/POS and wide-display layouts preserve the reference hierarchy rather than merely scaling one phone layout;
+- placeholder destinations use the same Map/Realtime vocabulary that Plans 030–031 will implement;
+- no dark-mode/native-only visual identity is introduced unless the user later explicitly changes the product direction.
 
 ## Phase 6 — Acceptance
 

@@ -33,6 +33,7 @@ This plan changes UX routing only after the native destinations exist and are ac
 - Never put auth/session/Situm credentials in links, QR codes, store URLs or analytics events.
 - Deep links may carry non-secret routing context such as feature/workspace/building identifiers only when authorization is rechecked after app open/login.
 - Store/signing credentials and private keys remain external/ignored.
+- Web/native handoff UI and native destinations must remain visibly one Situm Explore tenant. Use `DESIGN.md` plus both canonical HTML references; do not introduce platform-specific branding or contradictory feature vocabulary during handoff.
 - No PR/merge without explicit user authorization.
 
 ## Phase checklist
@@ -86,7 +87,8 @@ It should support:
 - explicit "not available yet" state when a store/build URL is not configured;
 - runtime configuration for public store/download/deep-link destinations rather than hardcoded release-specific URLs where appropriate;
 - accessibility and keyboard/screen-reader behavior;
-- analytics/telemetry only with non-sensitive event metadata.
+- analytics/telemetry only with non-sensitive event metadata;
+- visual treatment, icon language, spacing and copy hierarchy remain consistent with the canonical Situm Explore web/native references so the handoff feels like a continuation of the same product rather than an advertisement for a separate app.
 
 ## Phase 3 — Web Map policy
 
@@ -166,7 +168,8 @@ Native acceptance:
 - install/open fallback works on supported Android target and iOS where available;
 - workspace switch, logout and app restart do not retain unauthorized context;
 - positioning/realtime listeners clean up across deep-link navigation;
-- no credentials appear in URLs, QR contents, logs or bundled public configuration.
+- no credentials appear in URLs, QR contents, logs or bundled public configuration;
+- Map/Realtime shell, naming, states and responsive hierarchy remain aligned with `design/reference/situm-explore-native-responsive-prototype.html` except for explicitly documented capability-driven deviations.
 
 Run root and mobile validation suites, production web preview, available native production/dev builds, and real-device smoke. Reconcile `ARCHITECTURE.md`, `design/data-source-matrix.md`, `plans/README.md`, `.agents/state.md`, durable decisions/knowledge and final roadmap status to exact runtime truth.
 

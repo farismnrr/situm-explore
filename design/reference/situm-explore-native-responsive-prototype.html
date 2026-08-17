@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Situm Explore — End-user Safe Native UX</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f6f7f9;--surface:#fff;--surface-subtle:#fafbfc;--surface-hover:#f4f5f7;
+  --text:#16181c;--text2:#515862;--text3:#5f6874;--line:#e6e8ec;--line-strong:#d8dce2;
+  --ink:#111827;--ink-hover:#202939;--accent:#2563eb;--accent-soft:#eff6ff;
+  --green:#168754;--green-soft:#edf9f2;--amber:#a16207;--amber-soft:#fffaeb;
+  --red:#b8433b;--red-soft:#fff0ee;--purple:#7c3aed;--purple-soft:#f5f3ff;
+  --r-xs:7px;--r-sm:9px;--r-md:12px;--r-lg:16px;--r-xl:22px;
+  --shadow-xs:0 1px 2px rgba(16,24,40,.04);--shadow-sm:0 8px 24px rgba(16,24,40,.06);--shadow-md:0 18px 55px rgba(16,24,40,.10);
+  --sidebar:228px
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.hidden{display:none!important}.shell{min-height:100vh}
+.brandmark{width:30px;height:30px;border-radius:var(--r-sm);background:var(--ink);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow-xs);flex:0 0 auto}
+.brandmark svg{width:17px;height:17px;fill:currentColor}.lucide{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}.navicon .lucide{width:16px;height:16px;margin:auto}.bottom .ico .lucide{width:17px;height:17px;margin:0 auto 3px}.iconbtn .lucide,.sysicon .lucide{width:18px;height:18px;margin:auto}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:#fbfbfc;border-right:1px solid var(--line);display:none;flex-direction:column;z-index:30}
+.sidebar-head{height:64px;padding:0 16px;border-bottom:1px solid var(--line);display:flex;align-items:center}
+.brand{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;letter-spacing:-.02em}
+.side-nav{padding:13px 10px;flex:1;overflow:auto}.group{margin:15px 8px 7px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#a0a7b0;font-weight:760}
+.nav{width:100%;min-height:40px;border:0;border-radius:8px;background:transparent;padding:0 9px;display:flex;align-items:center;gap:9px;color:#555d67;font-size:12px;text-align:left;margin-bottom:2px}
+.nav:hover{background:#f1f2f4;color:#242a31}.nav.active{background:#e9ebee;color:#111827;font-weight:680}.navicon{width:18px;text-align:center}
+.side-foot{border-top:1px solid var(--line);padding:10px}.user{display:flex;align-items:center;gap:9px;padding:8px}.avatar{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:#e6e9ed;color:#404752;font-size:11px;font-weight:780}
+.usercopy{min-width:0}.usercopy strong{font-size:11px;display:block}.usercopy span{font-size:10px;color:var(--text3);display:block;margin-top:2px}
+.main{min-height:100vh;padding-top:64px}.topbar{position:fixed;top:0;left:0;right:0;height:64px;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);display:flex;align-items:center;z-index:20}
+.topin{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px}.top-left{display:flex;align-items:center;gap:10px;min-width:0}.mobile-brand{display:flex;align-items:center}
+.crumb{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.crumb strong{color:var(--text);font-weight:680}
+.pill{display:inline-flex;align-items:center;gap:7px;min-height:28px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--text2);font-size:11px;font-weight:680}
+.pill.green{background:var(--green-soft);border-color:#d8efe3;color:#126d45}.pill.blue{background:var(--accent-soft);border-color:#dbeafe;color:#1d4ed8}.pill.amber{background:var(--amber-soft);border-color:#f5e7b8;color:#8a5706}.pill.red{background:var(--red-soft);border-color:#f6d6d2;color:#a83832}
+.dot{width:7px;height:7px;border-radius:50%;background:#a8afb8}.dot.green{background:var(--green)}.dot.blue{background:var(--accent)}.dot.amber{background:#d59a16}.dot.red{background:var(--red)}
+.content{max-width:1480px;margin:0 auto;padding:18px 12px 90px}.screen{display:none}.screen.active{display:block}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}.eyebrow{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#a0a7b0;font-weight:760}.title{font-size:26px;line-height:1.08;letter-spacing:-.045em;margin:4px 0 7px;font-weight:740}.sub{font-size:12px;color:var(--text2);line-height:1.5;margin:0}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-xs)}.soft{background:var(--surface-subtle);border:1px solid var(--line);border-radius:var(--r-md)}
+.btn{appearance:none;min-height:44px;border:1px solid transparent;border-radius:10px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:680;transition:.15s ease}
+.btn:active{transform:translateY(1px)}.primary{background:var(--ink);color:#fff}.primary:hover{background:var(--ink-hover)}.secondary{background:#fff;border-color:var(--line);color:var(--text)}.secondary:hover{background:var(--surface-hover);border-color:var(--line-strong)}.accent{background:var(--accent);color:#fff}.danger{background:#fff;border-color:#f1d3cf;color:var(--red)}
+.iconbtn{width:44px;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text2);display:grid;place-items:center}.iconbtn:hover{background:var(--surface-hover)}
+.welcome{padding:18px;margin-bottom:12px;background:linear-gradient(135deg,#fff,#fafbfc)}.welcome h2{font-size:22px;letter-spacing:-.04em;margin:4px 0 7px}.welcome p{margin:0;color:var(--text2);font-size:12px;line-height:1.5}
+.searchbox{margin-top:14px;display:flex;gap:8px}.searchbox input{height:46px;flex:1;min-width:0;border:1px solid var(--line-strong);background:#fff;color:var(--text);border-radius:10px;padding:0 13px;box-shadow:var(--shadow-xs)}.searchbox input::placeholder{color:#8b939e}
+.quick{display:flex;gap:7px;overflow:auto;padding-top:10px;scrollbar-width:none}.quick::-webkit-scrollbar{display:none}.quick button{white-space:nowrap;min-height:36px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:0 11px;color:var(--text2);font-size:11px;font-weight:650}
+.location-note{margin-bottom:12px;padding:12px 13px;display:flex;align-items:center;justify-content:space-between;gap:12px}.location-note strong{font-size:11px;display:block}.location-note span{display:block;font-size:10px;color:var(--text3);margin-top:3px;line-height:1.45}
+.map-layout{display:grid;gap:12px}.map-stage{position:relative;min-height:520px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#eef1f3}
+.canvas{position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.43),rgba(255,255,255,.43)),repeating-linear-gradient(0deg,transparent 0 31px,#e1e5e9 32px),repeating-linear-gradient(90deg,transparent 0 31px,#e1e5e9 32px),#edf0f2}
+.floor{position:absolute;left:10%;right:8%;top:12%;bottom:11%;border:2px solid #bec5cd;background:rgba(255,255,255,.94);border-radius:25px;transform:rotate(-2deg);box-shadow:0 22px 60px rgba(16,24,40,.09)}
+.floor:before{content:"";position:absolute;left:8%;right:8%;top:10%;height:29%;border:1px solid #d6dbe0;border-radius:13px;background:repeating-linear-gradient(90deg,#fafbfc 0 60px,#e5e8ec 61px,#fafbfc 62px 121px)}.floor:after{content:"";position:absolute;left:14%;right:12%;bottom:10%;height:39%;border:1px solid #d6dbe0;border-radius:13px;background:repeating-linear-gradient(90deg,#fafbfc 0 78px,#e5e8ec 79px,#fafbfc 80px 158px)}
+.pin{position:absolute;z-index:5;width:24px;height:24px;border:0;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);background:var(--accent);box-shadow:0 6px 14px rgba(37,99,235,.25)}.pin:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;left:8.5px;top:8.5px}.pin.green{background:var(--green)}.pin.purple{background:var(--purple)}.pin.amber{background:#d97706}
+.blue-dot{position:absolute;left:46%;top:54%;width:14px;height:14px;border-radius:50%;background:#0ea5e9;border:3px solid #fff;box-shadow:0 0 0 5px rgba(14,165,233,.14);z-index:6;display:none}.blue-dot.on{display:block}
+.route{position:absolute;z-index:4;width:34%;height:3px;background:var(--accent);left:38%;top:50%;transform:rotate(25deg);transform-origin:left center;border-radius:999px;display:none}.route.on{display:block}.route:after{content:"";position:absolute;right:-5px;top:-4px;border-left:9px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent}
+.floors{position:absolute;right:10px;bottom:10px;display:flex;gap:4px;background:#fff;padding:4px;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow-sm);z-index:8}.floors button{height:32px;border:0;background:transparent;border-radius:7px;padding:0 10px;color:var(--text2);font-size:10px;font-weight:680}.floors button.active{background:var(--ink);color:#fff}
+.map-action{position:absolute;left:10px;bottom:10px;z-index:8}.details{padding:14px}.details h3{font-size:16px;letter-spacing:-.02em;margin:5px 0}.details p{font-size:11px;line-height:1.5;color:var(--text3);margin:0}.distance{font-size:12px;color:var(--text2);margin-top:8px}.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.route-card{margin-top:12px;padding:12px;background:#fafbfc;border:1px solid var(--line);border-radius:11px}.route-card strong{font-size:11px}.route-card p{margin-top:5px}
+.live-intro{padding:13px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px}.live-intro .i{width:30px;height:30px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:0 0 auto}.live-intro .i .lucide{width:15px;height:15px}.live-intro strong{display:block;font-size:11px}.live-intro span{display:block;font-size:10px;line-height:1.45;color:var(--text3);margin-top:3px}
+.live-grid{display:grid;gap:12px}.list-card{overflow:hidden}.panel-head{min-height:52px;padding:15px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}.panel-head h3{font-size:13px;margin:0}.panel-body{padding:8px 14px}
+.person{padding:12px 2px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:9px;align-items:start}.person:last-child{border-bottom:0}.person strong{font-size:11px;display:block}.person span{font-size:10px;color:var(--text3);display:block;margin-top:3px}.person .stale{color:var(--amber)}.person .old{color:var(--red)}
+.realtime-toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.realtime-toolbar .field-select,.realtime-toolbar .field-search{min-height:40px;border:1px solid var(--line-strong);background:#fff;color:var(--text);border-radius:10px;padding:0 11px;font-size:11px}
+.realtime-toolbar .field-search{flex:1;min-width:180px}
+.device-row{cursor:pointer}.device-row.selected{background:var(--accent-soft);margin-inline:-8px;padding-inline:10px;border-radius:10px;border-bottom-color:transparent}
+.device-id{font-weight:700;color:var(--text)}
+.device-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.device-meta .mini{font-size:9px;color:var(--text3);border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 6px}
+.realtime-footnote{font-size:10px;color:var(--text3);line-height:1.5;padding-top:10px;margin-top:10px;border-top:1px solid var(--line)}
+.selected-device-card{position:absolute;left:12px;right:12px;bottom:12px;z-index:8;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-sm);padding:11px}
+.selected-device-card strong{font-size:11px;display:block}.selected-device-card span{font-size:10px;color:var(--text3);display:block;margin-top:3px}
+.marker-label{position:absolute;transform:translate(-50%,-100%);z-index:7;background:#111827;color:#fff;border-radius:7px;padding:4px 6px;font-size:9px;white-space:nowrap;box-shadow:var(--shadow-sm);display:none}
+.marker-label.on{display:block}
+.live-map{position:relative;min-height:480px;overflow:hidden;background:repeating-linear-gradient(0deg,#fafbfc 0 27px,#eff1f3 28px),repeating-linear-gradient(90deg,transparent 0 27px,#eff1f3 28px)}.live-floor{position:absolute;inset:12% 10%;background:#fff;border:2px solid #d6dae0;border-radius:18px;transform:rotate(-2deg)}.live-floor:before{content:"";position:absolute;inset:15% 12%;border:1px solid #e0e3e7;border-radius:9px;box-shadow:70px 28px 0 -8px #f3f4f6,-50px 90px 0 -16px #f3f4f6}
+.userdot{position:absolute;width:13px;height:13px;border-radius:50%;background:#0ea5e9;border:3px solid #fff;box-shadow:0 0 0 5px rgba(14,165,233,.14);z-index:6}.userdot.stale{background:#d59a16;box-shadow:0 0 0 5px rgba(213,154,22,.14)}.userdot.old{background:#a8afb8;box-shadow:0 0 0 5px rgba(168,175,184,.16)}
+.setting{display:flex;justify-content:space-between;gap:18px;padding:14px 0;border-top:1px solid var(--line);align-items:flex-start}.setting:first-child{border-top:0}.setting strong{font-size:11px;display:block}.setting span{font-size:10px;color:var(--text3);display:block;margin-top:4px;line-height:1.45}.setting-action{flex:0 0 auto}
+.bottom{position:fixed;left:10px;right:10px;bottom:10px;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:5px;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-sm)}.bottom button{border:0;background:transparent;border-radius:9px;min-height:52px;color:#6a7380;font-size:10px;font-weight:650}.bottom button.active{background:#eef0f2;color:#111827}.bottom .ico{display:block;font-size:14px;margin-bottom:3px}
+.system-modal{position:fixed;inset:0;background:rgba(17,24,39,.28);z-index:100;display:none;place-items:end center;padding:12px;backdrop-filter:blur(3px)}.system-modal.open{display:grid}.system-card{width:min(100%,420px);background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-md);overflow:hidden}.system-body{padding:18px}.system-body .sysicon{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin-bottom:12px}.system-body h3{font-size:15px;margin:0 0 7px;letter-spacing:-.02em}.system-body p{font-size:11px;line-height:1.55;color:var(--text2);margin:0}.system-note{margin-top:10px;font-size:10px;color:var(--text3);background:#fafbfc;border:1px solid var(--line);padding:9px 10px;border-radius:9px}.system-actions{display:grid;border-top:1px solid var(--line)}.system-actions button{min-height:48px;border:0;border-bottom:1px solid var(--line);background:#fff;color:var(--accent);font-weight:650}.system-actions button:last-child{border-bottom:0;color:var(--text2)}
+.toast{position:fixed;left:50%;bottom:82px;transform:translate(-50%,15px);opacity:0;z-index:120;background:var(--ink);color:#fff;border-radius:10px;padding:10px 12px;font-size:11px;box-shadow:var(--shadow-md);transition:.2s ease;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(min-width:700px){
+  :root{--sidebar:72px}.sidebar{display:flex;width:72px}.sidebar-head{justify-content:center;padding:0}.sidebar .brandcopy,.sidebar .group,.sidebar .navlabel,.sidebar .usercopy{display:none}.side-nav{padding:13px 8px}.nav{justify-content:center;padding:0}.side-foot{padding:9px}.user{justify-content:center;padding:5px}
+  .main{margin-left:72px}.topbar{left:72px}.mobile-brand{display:none}.topin{padding:0 18px}.content{padding:22px 18px 32px}.bottom{display:none}
+  .map-layout{grid-template-columns:minmax(0,1.65fr) minmax(250px,.72fr)}.map-stage{min-height:650px}.live-grid{grid-template-columns:300px minmax(0,1fr)}.live-map{min-height:650px}.system-modal{place-items:center}
+}
+@media(min-width:1050px){
+  :root{--sidebar:208px}.sidebar{width:208px}.sidebar-head{justify-content:flex-start;padding:0 16px}.sidebar .brandcopy,.sidebar .group,.sidebar .navlabel,.sidebar .usercopy{display:block}.side-nav{padding:13px 10px}.nav{justify-content:flex-start;padding:0 9px}.side-foot{padding:10px}.user{justify-content:flex-start;padding:8px}
+  .main{margin-left:208px}.topbar{left:208px}.content{padding:28px 26px 46px}.title{font-size:30px}.welcome h2{font-size:24px}.map-stage{min-height:700px}
+}
+@media(min-width:1280px){
+  :root{--sidebar:228px}.sidebar{width:228px}.main{margin-left:228px}.topbar{left:228px}.map-layout{grid-template-columns:minmax(0,1fr) 320px}.map-stage{min-height:calc(100vh - 295px)}.live-grid{grid-template-columns:320px minmax(0,1fr)}.live-map{min-height:calc(100vh - 240px)}
+}
+@media(min-width:1800px){
+  .content{max-width:none;padding:30px 34px 48px}.map-layout{grid-template-columns:minmax(0,1fr) 360px}.map-stage{min-height:calc(100vh - 300px)}
+  .btn{min-height:48px;font-size:14px}.nav{min-height:46px;font-size:13px}.person{padding:15px 2px}.person strong{font-size:13px}.person span{font-size:11px}.title{font-size:34px}
+}
+@media(max-width:520px){
+  .content{padding:14px 10px 86px}.page-head{display:block}.title{font-size:24px}.hide-phone{display:none}.location-note{align-items:flex-start;flex-direction:column}.location-note .btn{width:100%}.map-stage{min-height:555px}.detail-actions .btn{flex:1}.live-map{min-height:450px}.setting{flex-direction:column}.setting-action{width:100%}.setting-action .btn{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar-head"><div class="brand"><span class="brandmark"><svg viewBox="0 0 24 24"><path d="M21 3 3 10.5l7.5 3L14 21 21 3Z"/></svg></span><span class="brandcopy">Situm Explore</span></div></div>
+    <nav class="side-nav">
+      <div class="group">Workspace</div>
+      <button class="nav active" data-screen="explore"><span class="navicon"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10"/><path d="m16 8-4 8-4-4 8-4Z"/></svg></span><span class="navlabel">Explore</span></button>
+      <button class="nav" data-screen="realtime"><span class="navicon"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.9 19.1a10 10 0 0 1 0-14.2"/><path d="M7.8 16.2a6 6 0 0 1 0-8.4"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M19.1 4.9a10 10 0 0 1 0 14.2"/></svg></span><span class="navlabel">Realtime</span></button>
+      <button class="nav" data-screen="recent"><span class="navicon"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg></span><span class="navlabel">Recent</span></button>
+      <div class="group">Account</div>
+      <button class="nav" data-screen="settings"><span class="navicon"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.72l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="navlabel">Settings</span></button>
+    </nav>
+    <div class="side-foot"><div class="user"><span class="avatar">FM</span><span class="usercopy"><strong>Faris M.</strong><span>faris@example.com</span></span></div></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topin">
+        <div class="top-left">
+          <div class="mobile-brand"><span class="brandmark"><svg viewBox="0 0 24 24"><path d="M21 3 3 10.5l7.5 3L14 21 21 3Z"/></svg></span></div>
+          <div class="crumb">Jakarta HQ <span style="padding:0 4px">/</span> <strong id="crumb">Explore</strong></div>
+        </div>
+        <span class="pill green hide-phone"><span class="dot green"></span> Workspace ready</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="screen active" id="screen-explore">
+        <div class="welcome card">
+          <div class="eyebrow">Jakarta HQ</div>
+          <h2>Where do you want to go?</h2>
+          <p>Find a place, see where you are, or get indoor directions.</p>
+          <div class="searchbox">
+            <input id="placeSearch" placeholder="Search rooms, places, or facilities" aria-label="Search places" />
+            <button class="iconbtn" id="searchGo" aria-label="Search"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button>
+          </div>
+          <div class="quick">
+            <button data-place="Reception">Reception</button><button data-place="Cafe">Cafe</button><button data-place="Meeting 2A">Meeting 2A</button><button data-place="East Exit">East Exit</button>
+          </div>
+        </div>
+
+        <div class="location-note soft" id="locationNote">
+          <div><strong id="locationTitle">Your location is off</strong><span id="locationCopy">You can still browse places and plan a route. Turn on location only when you want to see where you are.</span></div>
+          <button class="btn secondary" id="findMe">Find my location</button>
+        </div>
+
+        <div class="map-layout">
+          <div class="map-stage">
+            <div class="canvas"></div><div class="floor"></div>
+            <button class="pin" style="left:37%;top:34%" data-place="Reception"></button>
+            <button class="pin green" style="left:60%;top:55%" data-place="Cafe"></button>
+            <button class="pin purple" style="left:68%;top:31%" data-place="Meeting 2A"></button>
+            <button class="pin amber" style="left:49%;top:67%" data-place="East Exit"></button>
+            <div class="blue-dot" id="blueDot"></div><div class="route" id="route"></div>
+            <div class="map-action"><button class="btn primary" id="mapFindMe">Find my location</button></div>
+            <div class="floors"><button>Level 1</button><button class="active">Level 2</button><button>Level 3</button></div>
+          </div>
+
+          <aside class="card details">
+            <div class="eyebrow">Place</div>
+            <h3 id="placeTitle">Reception</h3>
+            <p id="placeMeta">South Tower · Level 2</p>
+            <div class="distance" id="distanceText">About 1 minute away when your location is available.</div>
+            <div class="detail-actions">
+              <button class="btn primary" id="directionsBtn">Directions</button>
+              <button class="btn secondary">View details</button>
+            </div>
+            <div class="route-card hidden" id="routeCard">
+              <strong>Guidance started</strong>
+              <p>Continue straight, then turn right toward Reception.</p>
+              <button class="btn danger" id="stopGuide" style="width:100%;margin-top:10px">Stop guidance</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-realtime">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Operations</div>
+            <h1 class="title">Realtime positions</h1>
+            <p class="sub">See the latest device-produced positions reported for this workspace.</p>
+          </div>
+          <span class="pill blue"><span class="dot blue"></span> South Tower</span>
+        </div>
+
+        <div class="live-intro soft">
+          <div class="i"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+          <div>
+            <strong>Realtime shows reported device positions — not guaranteed online presence.</strong>
+            <span>Each record keeps its source time and accuracy visible so an older position is not mistaken for a current one.</span>
+          </div>
+        </div>
+
+        <div class="realtime-toolbar">
+          <select id="buildingFilter" class="field-select" aria-label="Realtime building">
+            <option value="south">South Tower</option>
+            <option value="north">North Tower</option>
+          </select>
+          <input id="deviceSearch" class="field-search" placeholder="Search device ID or floor" aria-label="Search realtime positions" />
+          <button id="refreshRealtime" class="btn secondary">Refresh</button>
+        </div>
+
+        <div class="live-grid">
+          <div class="card list-card">
+            <div class="panel-head">
+              <div><h3>Tracked devices</h3><span style="font-size:10px;color:var(--text3);display:block;margin-top:3px">4 sample position records</span></div>
+              <span class="pill"><span class="dot blue"></span> Realtime</span>
+            </div>
+            <div class="panel-body" id="deviceList">
+              <div class="person device-row selected" data-device="A12F-9C2" data-floor="Level 1" data-building="South Tower" data-accuracy="3.8 m" data-seen="12 sec ago" data-lat="-6.21462" data-lng="106.84513">
+                <span class="dot blue"></span>
+                <div>
+                  <strong class="device-id">Device ID A12F-9C2</strong>
+                  <span>South Tower · Level 1</span>
+                  <div class="device-meta"><span class="mini">accuracy 3.8 m</span><span class="mini">last seen 12 sec ago</span></div>
+                </div>
+                <time class="time">12s</time>
+              </div>
+              <div class="person device-row" data-device="B77D-441" data-floor="Level 2" data-building="South Tower" data-accuracy="5.1 m" data-seen="19 sec ago" data-lat="-6.21470" data-lng="106.84528">
+                <span class="dot blue"></span>
+                <div>
+                  <strong class="device-id">Device ID B77D-441</strong>
+                  <span>South Tower · Level 2</span>
+                  <div class="device-meta"><span class="mini">accuracy 5.1 m</span><span class="mini">last seen 19 sec ago</span></div>
+                </div>
+                <time class="time">19s</time>
+              </div>
+              <div class="person device-row" data-device="POS-07" data-floor="Level 2" data-building="South Tower" data-accuracy="7.4 m" data-seen="3 min ago" data-lat="-6.21491" data-lng="106.84501">
+                <span class="dot amber"></span>
+                <div>
+                  <strong class="device-id">Device ID POS-07</strong>
+                  <span>South Tower · Level 2</span>
+                  <div class="device-meta"><span class="mini">accuracy 7.4 m</span><span class="mini">last seen 3 min ago</span></div>
+                </div>
+                <time class="time stale">3m</time>
+              </div>
+              <div class="person device-row" data-device="C02E-118" data-floor="Level 2" data-building="South Tower" data-accuracy="9.2 m" data-seen="18 min ago" data-lat="-6.21454" data-lng="106.84544">
+                <span class="dot"></span>
+                <div>
+                  <strong class="device-id">Device ID C02E-118</strong>
+                  <span>South Tower · Level 2</span>
+                  <div class="device-meta"><span class="mini">accuracy 9.2 m</span><span class="mini">last seen 18 min ago</span></div>
+                </div>
+                <time class="time old">18m</time>
+              </div>
+
+              <div class="realtime-footnote">
+                Device identity, building, floor, accuracy, coordinates and source time mirror the product's current realtime data contract. No online/offline state is inferred.
+              </div>
+            </div>
+          </div>
+
+          <div class="card live-map" aria-label="Realtime device position map">
+            <div class="live-floor"></div>
+            <button class="userdot" style="left:34%;top:34%" data-marker-device="A12F-9C2" aria-label="Device A12F-9C2"></button>
+            <button class="userdot" style="left:62%;top:44%" data-marker-device="B77D-441" aria-label="Device B77D-441"></button>
+            <button class="userdot stale" style="left:54%;top:68%" data-marker-device="POS-07" aria-label="Device POS-07"></button>
+            <button class="userdot old" style="left:72%;top:29%" data-marker-device="C02E-118" aria-label="Device C02E-118"></button>
+
+            <div id="markerLabel" class="marker-label on" style="left:34%;top:calc(34% - 10px)">A12F-9C2</div>
+
+            <div class="selected-device-card" id="selectedDeviceCard">
+              <strong id="selectedDeviceTitle">Device ID A12F-9C2</strong>
+              <span id="selectedDeviceLine">South Tower · Level 1 · accuracy 3.8 m · last seen 12 sec ago</span>
+              <span id="selectedDeviceCoords">-6.21462, 106.84513</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-recent">
+        <div class="page-head"><div><div class="eyebrow">Your activity</div><h1 class="title">Recent</h1><p class="sub">Places and actions you recently used in this workspace.</p></div></div>
+        <div class="card" style="padding:0 16px">
+          <div class="setting"><div><strong>Reception</strong><span>Directions completed · 23 min ago</span></div><button class="btn secondary setting-action">Go again</button></div>
+          <div class="setting"><div><strong>Cafe</strong><span>Viewed · 51 min ago</span></div><button class="btn secondary setting-action">Open</button></div>
+          <div class="setting"><div><strong>Meeting 2A</strong><span>Viewed yesterday</span></div><button class="btn secondary setting-action">Open</button></div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-settings">
+        <div class="page-head"><div><div class="eyebrow">Account</div><h1 class="title">Settings</h1><p class="sub">Manage workspace, location access, and your session.</p></div></div>
+        <div class="card" style="padding:0 16px">
+          <div class="setting"><div><strong>Workspace</strong><span>Jakarta HQ · South Tower</span></div><button class="btn secondary setting-action">Switch</button></div>
+          <div class="setting"><div><strong>Location access</strong><span id="settingLocation">Not granted. Explore still works without your current position.</span></div><button class="btn secondary setting-action" id="manageLocation">Review</button></div>
+          <div class="setting"><div><strong>Background location</strong><span>Not requested. It should only be requested by a feature that clearly needs background access.</span></div><span class="pill setting-action">Not requested</span></div>
+          <div class="setting"><div><strong>Session</strong><span>faris@example.com</span></div><button class="btn secondary setting-action">Sign out</button></div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom">
+      <button class="active" data-screen="explore"><span class="ico"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10"/><path d="m16 8-4 8-4-4 8-4Z"/></svg></span>Explore</button>
+      <button data-screen="realtime"><span class="ico"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.9 19.1a10 10 0 0 1 0-14.2"/><path d="M7.8 16.2a6 6 0 0 1 0-8.4"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M19.1 4.9a10 10 0 0 1 0 14.2"/></svg></span>Realtime</button>
+      <button data-screen="recent"><span class="ico"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg></span>Recent</button>
+      <button data-screen="settings"><span class="ico"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.72l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="3"/></svg></span>Settings</button>
+    </nav>
+  </div>
+</div>
+
+<div class="system-modal" id="permissionModal" aria-modal="true" role="dialog">
+  <div class="system-card">
+    <div class="system-body">
+      <div class="sysicon"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></div>
+      <h3>Allow Situm Explore to use your location?</h3>
+      <p>Your location helps show where you are inside the building and gives you directions from your current position.</p>
+      <div class="system-note">Prototype note: production should use the operating system’s permission prompt. This preview simulates that step.</div>
+    </div>
+    <div class="system-actions">
+      <button id="allowLocation">Allow while using the app</button>
+      <button id="denyLocation">Not now</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Done</div>
+
+<script>
+const screens=[...document.querySelectorAll('.screen')], navs=[...document.querySelectorAll('[data-screen]')], crumb=document.getElementById('crumb');
+const names={explore:'Explore',realtime:'Realtime',recent:'Recent',settings:'Settings'};
+function go(id){screens.forEach(s=>s.classList.toggle('active',s.id==='screen-'+id));navs.forEach(n=>n.classList.toggle('active',n.dataset.screen===id));crumb.textContent=names[id]||id}
+navs.forEach(n=>n.onclick=()=>go(n.dataset.screen));
+
+const placeTitle=document.getElementById('placeTitle'),placeMeta=document.getElementById('placeMeta');
+function choosePlace(name){placeTitle.textContent=name;placeMeta.textContent='South Tower · Level 2';showToast(name+' selected')}
+document.querySelectorAll('[data-place]').forEach(x=>x.onclick=()=>choosePlace(x.dataset.place));
+document.getElementById('searchGo').onclick=()=>{const v=document.getElementById('placeSearch').value.trim();if(v)choosePlace(v)}
+document.getElementById('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.value.trim())choosePlace(e.target.value.trim())});
+
+document.querySelectorAll('.floors button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.floors button').forEach(x=>x.classList.remove('active'));b.classList.add('active');showToast(b.textContent+' selected')});
+
+const modal=document.getElementById('permissionModal'),blue=document.getElementById('blueDot');
+const findButtons=[document.getElementById('findMe'),document.getElementById('mapFindMe'),document.getElementById('manageLocation')];
+let locationState='off';
+function openPermission(){modal.classList.add('open')}
+function closePermission(){modal.classList.remove('open')}
+findButtons.forEach(b=>b.onclick=openPermission);
+document.getElementById('allowLocation').onclick=()=>{
+  locationState='on';blue.classList.add('on');closePermission();
+  document.getElementById('locationTitle').textContent='Your location is on';
+  document.getElementById('locationCopy').textContent='Your current indoor position is available while you use location-based features.';
+  document.getElementById('findMe').textContent='Center on me';document.getElementById('mapFindMe').textContent='Center on me';
+  document.getElementById('settingLocation').textContent='Allowed while using the app.';
+  document.getElementById('distanceText').textContent='About 1 minute away · 42 m from you.';
+  showToast('Location enabled');
+};
+document.getElementById('denyLocation').onclick=()=>{
+  locationState='denied';blue.classList.remove('on');closePermission();
+  document.getElementById('locationTitle').textContent='Location is off';
+  document.getElementById('locationCopy').textContent='No problem — you can keep browsing places and plan routes without your current position.';
+  document.getElementById('findMe').textContent='Try location again';document.getElementById('mapFindMe').textContent='Find my location';
+  document.getElementById('settingLocation').textContent='Not granted. Explore still works without your current position.';
+  showToast('Continuing without location');
+};
+modal.addEventListener('click',e=>{if(e.target===modal)closePermission()});
+
+let routing=false;
+const route=document.getElementById('route'),routeCard=document.getElementById('routeCard'),directions=document.getElementById('directionsBtn');
+directions.onclick=()=>{routing=true;route.classList.add('on');routeCard.classList.remove('hidden');directions.textContent='Guidance active';if(locationState!=='on')showToast('Route planned without current location')};
+document.getElementById('stopGuide').onclick=()=>{routing=false;route.classList.remove('on');routeCard.classList.add('hidden');directions.textContent='Directions';showToast('Guidance stopped')};
+
+
+const deviceRows=[...document.querySelectorAll('.device-row')];
+const deviceMarkers=[...document.querySelectorAll('[data-marker-device]')];
+
+function selectDevice(deviceId){
+  const row=deviceRows.find(r=>r.dataset.device===deviceId);
+  if(!row)return;
+  deviceRows.forEach(r=>r.classList.toggle('selected',r===row));
+  document.getElementById('selectedDeviceTitle').textContent='Device ID '+row.dataset.device;
+  document.getElementById('selectedDeviceLine').textContent=`${row.dataset.building} · ${row.dataset.floor} · accuracy ${row.dataset.accuracy} · last seen ${row.dataset.seen}`;
+  document.getElementById('selectedDeviceCoords').textContent=`${row.dataset.lat}, ${row.dataset.lng}`;
+  const marker=deviceMarkers.find(m=>m.dataset.markerDevice===deviceId);
+  if(marker){
+    const label=document.getElementById('markerLabel');
+    label.textContent=deviceId;
+    label.style.left=marker.style.left;
+    label.style.top=`calc(${marker.style.top} - 10px)`;
+    label.classList.add('on');
+  }
+}
+deviceRows.forEach(row=>row.addEventListener('click',()=>selectDevice(row.dataset.device)));
+deviceMarkers.forEach(marker=>marker.addEventListener('click',()=>selectDevice(marker.dataset.markerDevice)));
+
+document.getElementById('deviceSearch').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  deviceRows.forEach(row=>{
+    const hay=`${row.dataset.device} ${row.dataset.floor} ${row.dataset.building}`.toLowerCase();
+    row.style.display=!q||hay.includes(q)?'':'none';
+  });
+});
+
+document.getElementById('buildingFilter').addEventListener('change',e=>{
+  const south=e.target.value==='south';
+  deviceRows.forEach(row=>row.style.display=south?'':'none');
+  deviceMarkers.forEach(marker=>marker.style.display=south?'':'none');
+  document.getElementById('selectedDeviceCard').style.display=south?'':'none';
+  document.getElementById('markerLabel').style.display=south?'':'none';
+  if(!south) showToast('No sample positions for North Tower');
+});
+
+document.getElementById('refreshRealtime').addEventListener('click',()=>showToast('Realtime positions refreshed'));
+
+
+const toast=document.getElementById('toast');let toastTimer;
+function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1800)}
+</script>
+</body>
+</html>

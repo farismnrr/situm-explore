@@ -64,6 +64,17 @@ Normal workflow requires this planning branch to be integrated into `main` befor
 - Realtime being native-only is an intentional product policy; do not describe it as a technical impossibility of the web SDK.
 - Situm capability changes remain subject to **no evidence, no implementation**.
 
+## Cross-plan native UI/UX contract
+
+Native implementation must use `DESIGN.md` plus `design/reference/situm-explore-native-responsive-prototype.html` as the canonical native visual/interaction reference.
+
+- Native remains the same Situm Explore tenant/product as web: reuse the existing light cool-neutral palette, brand mark, typography/density intent, border-first surfaces, radius/shadow language and Lucide-style icons rather than creating a separate visual identity.
+- Adapt interaction for native/window size without changing product truth: phone may use bottom navigation, tablet/POS may use a compact rail, and large/wide displays may use an expanded sidebar according to the reference.
+- Keep cross-client feature vocabulary coherent. Map remains the Map product destination even when the screen copy is end-user-oriented (for example, “Where do you want to go?”). Realtime remains Realtime positions rather than an invented social/presence concept.
+- Realtime native UI must align with the same Situm/backend data semantics used by the web history/current workspace route: device/position identity, building, floor, accuracy, coordinates where useful, and source time/freshness. Do not invent person names or online/idle/offline state unless a later evidenced contract proves them.
+- Permission UX is contextual and degradable: request location only from a feature that needs it, keep supported browsing/route-planning flows usable when permission is denied where the evidenced SDK flow allows it, and do not request background location merely because the platform exposes it.
+- The HTML reference never overrides capability/security evidence. If Plan 028 or an installed SDK proves a referenced interaction unavailable, implement the truthful supported state and document the deviation rather than simulating success.
+
 ## Platform target
 
 Target Android and iOS from one React Native codebase. Android physical-device acceptance is expected to be locally executable when an Android device/toolchain is available. iOS build/device acceptance may remain explicitly user/macOS-gated if the execution environment cannot run Xcode; source/config acceptance must still be complete and truthful.
