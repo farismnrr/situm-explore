@@ -1,6 +1,6 @@
-# Plan 029 Final Review — Remediation Complete
+# Plan 029 Final Review — Second Remediation Required
 
-Status: PR-ready pending user authorization; no PR or merge performed.
+Status: NOT PR-ready yet; no PR or merge performed.
 
 Reviewer verified the implementation branch at `696bb32` and reran Android build evidence on 2026-08-17.
 
@@ -68,3 +68,28 @@ All blocking findings are resolved:
 6. The Android evidence is corrected: `assembleDebug` passed with `/home/farismnrr/Android/Sdk`; the APK was generated at `mobile/android/app/build/outputs/apk/debug/app-debug.apk`. iOS remains correctly macOS/Xcode/device-gated.
 
 Validation passed: root lint, typecheck, build, and 13 tests; mobile lint/typecheck; Expo prebuild; Android assembleDebug; bounded secret checks; and final branch diff review. The `@situm/react-native` TypeScript-path claim remains bounded: tracked Plan 029 code does not directly import the package.
+
+## Second reviewer pass — 2026-08-17
+
+The first six implementation defects were fixed, but Plan 029 is not PR-ready until these remaining issues are resolved:
+
+7. Positioning security regression is not meaningful yet.
+   - The new test constructs a literal response object and checks its keys; it does not execute the owner-scoped route or prove cross-owner denial.
+   - Add focused regression proof for the actual Positioning authorization boundary: owner access succeeds, another user/workspace cannot obtain the credential, and primary/Viewer credential material cannot appear in the mobile response.
+   - Keep the existing route SQL ownership predicate or refactor only as much as needed for testability; do not weaken server-side ownership.
+
+8. Native visible navigation still diverges from the approved reference.
+   - The approved native HTML uses `Explore / Realtime / Recent / Settings` as the visible navigation vocabulary.
+   - Current shell exposes `Home / Map / Realtime / Settings` and omits `Recent`.
+   - Reconcile visible navigation with `design/reference/situm-explore-native-responsive-prototype.html`. The Explore destination may remain the product Map destination internally; do not implement Plan 030 map capability. Add only the truthful foundation-level shell/placeholder needed to preserve approved IA.
+
+9. Expo SDK 57 dependency compatibility is currently red.
+   - Reviewer reran `npx expo-doctor`: 19/21 checks pass.
+   - The expected non-blocking Situm New Architecture metadata warning remains.
+   - A separate Expo package-version check fails: installed `expo-secure-store@15.0.8`, `expo-status-bar@3.0.9`, and `typescript@5.9.3` do not match Expo 57.0.13's expected `expo-secure-store ~57.0.1`, `expo-status-bar ~57.0.1`, and TypeScript `~6.0.3`.
+   - `expo/bundledNativeModules.json` confirms `react-native-svg 15.15.4` and `react-native-webview 13.16.1` are aligned, while SecureStore/StatusBar are not.
+   - Treat this as new primary evidence superseding the stale frozen auxiliary-package versions. Resolve with the smallest Expo-supported version alignment, re-run mobile lint/typecheck, `expo-doctor`, clean prebuild, and Android assembleDebug. Do not suppress/exclude the mismatch merely to make doctor green unless official evidence justifies it.
+
+10. Current state still contains one stale sentence saying Plan 029 is `under final reviewer remediation`; reconcile authority after the above fixes.
+
+After resolving 7–10, rerun the full Plan 029 closeout and stop before PR/merge.
