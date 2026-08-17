@@ -20,7 +20,7 @@ Locked product policy for this roadmap:
 - Phase 5 froze `expo-secure-store` `~15.0.x` for bearer-equivalent session/Situm material, identifiers `com.situm.explore`, custom schemes `situm-explore-{dev,staging}` and `situm-explore`, and local Expo development/Gradle Android artifact workflow. HTTPS association, Apple signing, and store delivery remain external gates; EAS is not selected.
 - Phase 6 completed the final matrix and capability-to-reference handoff. Plan 029 is GO for foundation work, with TypeScript package resolution, mobile auth/revocation, device runtime, iOS/macOS, public HTTPS association, and release signing/store delivery retained as explicit gates.
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
-- the server-side Read & Write Situm credential must never be exposed to mobile; Plan 028 must freeze a proven short-lived-token or dedicated Positioning-credential contract before Plan 029 implementation.
+- the server-side Read & Write Situm credential must never be exposed to mobile; the frozen native authority is a dedicated least-privilege Positioning credential issued only after owner authorization, while native Realtime remains server-mediated.
 
 Normal workflow: Plan 029 starts sequentially from updated `origin/main` only after Plan 028 is reviewed and integrated; later plans follow the same predecessor-integration rule unless the user explicitly authorizes stacked branches.
 
