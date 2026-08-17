@@ -27,7 +27,7 @@ Fix confirmed analytics correctness, workspace data-lifecycle, authentication-ab
 - [x] Phase 4 — Situm credential consistency (org match).
 - [x] Phase 5 — Bounded upstream failures and timeouts.
 - [x] Phase 6 — Browser security hardening.
-- [ ] Phase 7 — Regression coverage and testing decision.
+- [x] Phase 7 — Regression coverage and testing decision.
 - [ ] Phase 8 — Full acceptance and closeout.
 
 ## Confirmed findings (pre-implementation)
@@ -103,6 +103,21 @@ Finding 10 confirmed: no security response headers were set anywhere (`nuxt.conf
 - Added `server/middleware/security-headers.ts` setting `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY` (this app is not meant to be iframed by third parties; does not affect this app embedding the Situm Viewer, which is the reverse direction), and a conservative `Permissions-Policy` denying `camera`/`microphone`/`geolocation`/`payment`/`usb` (none are used; `ARCHITECTURE.md`/decisions confirm no browser geolocation/"My location" feature exists).
 - Live-verified via local dev server: `curl -sI http://localhost:3000/` returned all four headers; app root still returned `200`.
 - **CSP intentionally not shipped.** A Content-Security-Policy strict enough to be meaningful (script-src/frame-src/connect-src allowlists) requires knowing every origin the hosted Situm Viewer release actually loads scripts/frames/XHR from at runtime. This repo's own evidence (`.agents/state.md`'s Viewer building-mismatch investigation) shows the Viewer's exact behavior has previously differed from assumptions in ways that broke the feature; guessing a CSP allowlist risks the same failure mode with a worse blast radius (broken map for every user) and cannot be proven safe without a live browser network trace against the real hosted Viewer, which is out of scope for this non-UI-testing pass. This is recorded as an open, intentionally unresolved limitation, not silently treated as solved.
+
+## Phase 7 evidence — regression coverage and testing decision
+
+**Decision: no new test framework was installed.** Node 24 (the installed runtime) has a native `node --test` runner, and `tsx` (already a project dependency, used elsewhere for TS execution) provides TS transpilation for it — this satisfies "tooling already available or Node-native facilities" without adding Vitest/Jest/etc. Added a `"test": "node --import tsx --test test/**/*.test.ts"` script.
+
+- `test/pure-logic.test.ts` (8 tests, run via `npm test`, all pass): unit coverage for framework-independent pure logic — `isValidDateRange` (valid/invalid/reversed/366-day-boundary ranges), `buildAnalyticsSyncKey` (proves overlapping-but-differently-dated windows produce distinct keys, the mechanism the Phase 1 fix relies on), `rateLimit` (limit enforcement, window reset, per-key isolation — the mechanism the Phase 3 fix relies on), and `boundedFetch`/`UpstreamTimeoutError` (live-proves a hung local HTTP server is aborted within the configured bound, and a fast response still resolves normally — the mechanism the Phase 5 fix relies on).
+- `test/regression/analytics-clickhouse.regression.ts` (manual, not part of `npm test` — requires a reachable ClickHouse; run via `node --import tsx test/regression/analytics-clickhouse.regression.ts`): exercises the **actual production functions** (`queryWorkspaceAnalytics`, `deleteWorkspaceAnalytics`, `ensureClickHouseSchema` — imported directly from `server/integrations/clickhouse/`, not reimplemented) against the real local `shared-clickhouse` instance. 10/10 checks passed:
+  - overlapping/re-synced windows are not double-counted (a month-window sync and a differently-dated sub-window re-sync for the same day each keep their own value; querying the month window returns only that window's value);
+  - date filtering excludes an unrelated prior sync window from positioning results;
+  - workspace isolation: a control workspace's rows never leak into another workspace's query results;
+  - `buildingId` filter returns matching rows and excludes non-matching ones;
+  - `geofenceId` filter returns exactly the matching row and excludes non-matching ones;
+  - workspace deletion leaves zero rows across all three workspace-owned analytics tables for the deleted workspace, while an unrelated control workspace's row count is unchanged.
+- Auth rate-limit-before-hash ordering (Phase 3) and Situm organization-mismatch rejection (Phase 4) are verified by direct code inspection of the committed diffs (the ordering/check is structurally unambiguous — see Phase 3/4 evidence above) rather than a live scripted test: exercising them end-to-end would require either a live scrypt-timing side channel (unreliable as a regression signal) or real Situm credentials from two different organizations (external/credential-gated, consistent with the plan's Phase 4 acceptance note).
+- Every regression evidence category listed in the plan objective is covered by either the `npm test` suite or the manual ClickHouse regression script, except the two items above which are covered by direct code evidence for the stated reasons.
 
 ## Acceptance evidence
 
