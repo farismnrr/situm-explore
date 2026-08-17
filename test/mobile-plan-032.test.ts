@@ -24,3 +24,11 @@ test('Plan 032 native lifecycle owns one deep-link listener and rechecks workspa
   assert.match(context, /That workspace is not available to this account/)
   assert.doesNotMatch(parser, /session|apiKey|password|bearer/i)
 })
+
+test('Plan 032 shared web gate contains no credential-bearing handoff fields', () => {
+  const gate = readFileSync(new URL('../app/components/native/NativeAppGate.vue', import.meta.url), 'utf8')
+  assert.match(gate, /QRCode\.toDataURL/)
+  assert.match(gate, /Copy app link/)
+  assert.match(gate, /androidStoreUrl|iosStoreUrl/)
+  assert.doesNotMatch(gate, /session|password|apiKey|credential|bearer/i)
+})

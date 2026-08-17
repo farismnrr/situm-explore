@@ -42,7 +42,7 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 
 - [x] Phase 0 — Native release/deep-link readiness and web breakpoint matrix.
 - [x] Phase 1 — Native deep-link routing and authenticated context restoration.
-- [ ] Phase 2 — Reusable web Native App Gate component/configuration.
+- [x] Phase 2 — Reusable web Native App Gate component/configuration.
 - [ ] Phase 3 — Map desktop/tablet web vs phone-native policy.
 - [ ] Phase 4 — Realtime all-web native handoff policy.
 - [ ] Phase 5 — Install/open-app, QR and distribution fallback UX.
@@ -98,6 +98,14 @@ Requirements:
 - duplicate/open-link lifecycle does not create duplicate positioning/realtime listeners by design and testable state ownership; final full lifecycle E2E remains Plan 033.
 
 ## Phase 2 — Reusable Native App Gate
+
+### Execution evidence — 2026-08-17
+
+- Added `NativeAppGate.vue` as the single Map/Realtime web handoff surface.
+- It supports feature-specific copy, configured Open in app/install/download actions, QR generation, copyable link, keyboard-accessible buttons/links, and explicit unavailable messaging when store/download destinations are absent.
+- Public configuration is read from Nuxt runtime config. The generated target contains only validated `workspaceId` and Map `buildingId` hints; no session, password, Situm credential, bearer token, or encrypted secret is accepted.
+- QR generation uses the root `qrcode` package and is performed client-side after mount.
+- Added source-level gate/security regression coverage.
 
 Build one reusable web component/composable for native handoff rather than separate ad-hoc Map/Realtime modals.
 

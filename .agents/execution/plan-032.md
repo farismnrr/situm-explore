@@ -16,6 +16,11 @@ Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execut
 - Preserved pending destination through login and re-authorized optional workspace/building context against Nitro-backed workspace state.
 - Added focused parser and secret-shape regression tests.
 
+## Phase 2 — complete
+
+- Added the reusable accessible `NativeAppGate` with configured app/install/download actions, client-side QR, copy link, and truthful unavailable distribution state.
+- Added root `qrcode` dependency; no store/signing secrets or credentials are included.
+
 ## Phase 033 carry-over
 
 The Plan 030/031 physical-device acceptance remains unpassed. Plan 033 must also run real cross-client handoff, install/open, deep-link, login restoration, workspace authorization, invalid-link, logout/restart, and secret-audit acceptance after this plan is integrated.
