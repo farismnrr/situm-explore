@@ -42,3 +42,13 @@ test('Plan 032 Map capability is geometry-based and gates Viewer work before fet
   assert.match(map, /<NativeAppGate feature="map"/)
   assert.doesNotMatch(map, /useDesktopViewport|Desktop required/)
 })
+
+test('Plan 032 all web Realtime entry copy uses the native product policy', () => {
+  const realtime = readFileSync(new URL('../app/pages/app/realtime.vue', import.meta.url), 'utf8')
+  const home = readFileSync(new URL('../app/pages/app/index.vue', import.meta.url), 'utf8')
+  assert.match(realtime, /<NativeAppGate feature="realtime"/)
+  assert.match(realtime, /native Situm Explore experience/)
+  assert.doesNotMatch(realtime, /Coming soon|Download Android app|web realtime monitoring is not available/i)
+  assert.match(home, /to: '\/app\/realtime'/)
+  assert.match(home, /Open native workspace positions/)
+})

@@ -27,6 +27,11 @@ Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execut
 - Kept the existing Viewer path for capable layouts and gated cartography fetches before phone/short layouts.
 - Removed the obsolete desktop-only viewport composable.
 
+## Phase 4 — complete
+
+- Routed `/app/realtime` through the shared gate at every viewport and replaced unavailable/Coming soon wording with the intentional native product policy.
+- Kept all existing web navigation entry points valid and updated the home card copy.
+
 ## Phase 033 carry-over
 
 The Plan 030/031 physical-device acceptance remains unpassed. Plan 033 must also run real cross-client handoff, install/open, deep-link, login restoration, workspace authorization, invalid-link, logout/restart, and secret-audit acceptance after this plan is integrated.

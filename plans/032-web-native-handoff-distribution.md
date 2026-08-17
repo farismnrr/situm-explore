@@ -44,7 +44,7 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 - [x] Phase 1 — Native deep-link routing and authenticated context restoration.
 - [x] Phase 2 — Reusable web Native App Gate component/configuration.
 - [x] Phase 3 — Map desktop/tablet web vs phone-native policy.
-- [ ] Phase 4 — Realtime all-web native handoff policy.
+- [x] Phase 4 — Realtime all-web native handoff policy.
 - [ ] Phase 5 — Install/open-app, QR and distribution fallback UX.
 - [ ] Phase 6 — Production mobile packaging/distribution documentation.
 - [ ] Phase 7 — Implementation validation, documentation reconciliation and Plan 033 handoff.
@@ -144,6 +144,13 @@ Requirements:
 - rename/remove desktop-only abstractions whose semantics no longer match the actual tablet-capable policy.
 
 ## Phase 4 — Web Realtime policy
+
+### Execution evidence — 2026-08-17
+
+- `/app/realtime` now uses the shared Native App Gate at every viewport size and identifies Realtime as an intentional native product experience.
+- Removed the obsolete unavailable/Coming soon Android modal and misleading technical-absence wording.
+- Existing home and app-shell navigation links remain `/app/realtime` entry points and now land on the native handoff page; home copy identifies the native workspace-position experience.
+- No web Realtime overlay or Situm web capability claim was added; native Realtime remains the existing foreground, server-mediated list/detail implementation.
 
 Make every web Realtime entry point a native handoff on desktop, tablet and phone.
 

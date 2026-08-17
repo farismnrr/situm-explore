@@ -24,7 +24,7 @@ const previewFloorMapUrl = computed(() => previewFloors.value.find(floor => floo
 const homeExplore = [
   { icon: 'i-lucide-building-2', title: 'Buildings & floors', detail: 'Browse venue and floor metadata.', to: '/app/buildings' },
   { icon: 'i-lucide-map-pin', title: 'POIs', detail: 'Search destinations and categories.', to: '/app/pois' },
-  { icon: 'i-lucide-radio', title: 'Realtime', detail: 'Track current positions.', to: '/app/realtime' },
+  { icon: 'i-lucide-radio', title: 'Realtime', detail: 'Open native workspace positions.', to: '/app/realtime' },
   { icon: 'i-lucide-route', title: 'Directions', detail: 'Preview routes and accessibility.', to: '/app/paths' },
   { icon: 'i-lucide-bar-chart-3', title: 'Reports', detail: 'Visitors, heatmaps and stay time.', to: '/app/analytics' }
 ]
