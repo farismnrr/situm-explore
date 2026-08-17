@@ -1,6 +1,6 @@
 # Plan 029 Final Review — Second Remediation Complete
 
-Status: PR-ready pending user authorization; no PR or merge performed.
+Status: implementation-approved; one final authority reconciliation is required before PR readiness. No PR or merge performed.
 
 Reviewer verified the implementation branch at `696bb32` and reran Android build evidence on 2026-08-17.
 
@@ -99,3 +99,13 @@ After resolving 7–10, rerun the full Plan 029 closeout and stop before PR/merg
 Findings 7–10 are resolved. The Positioning test now exercises the shared owner-scoped resolver with two owner/workspace records, proves owner access, cross-owner denial, and the dedicated response allowlist. The native shell vocabulary is `Explore / Realtime / Recent / Settings`. Expo 57 dependencies are aligned to `expo-secure-store ~57.0.1`, `expo-status-bar ~57.0.1`, and TypeScript `~6.0.3`; `expo-doctor` reports 20/21 with only the known `@situm/react-native` New Architecture metadata warning. Current state no longer claims reviewer remediation is pending.
 
 Final validation passed: root lint, typecheck, build, and 13 tests; mobile lint/typecheck; clean Expo prebuild; Android `assembleDebug` with `/home/farismnrr/Android/Sdk`; bounded secret checks; `git diff --check`; and full branch diff review. iOS remains macOS/Xcode/device-gated. No PR, merge, or Plan 030 work was performed.
+
+## Final authority reconciliation required
+
+Implementation is approved. Before PR readiness, reconcile the current Plan 029 authority to the dependency versions actually accepted by Expo 57:
+
+- `/home/farismnrr/Projects/situm-explore/plans/029-native-app-foundation.md` still calls `expo-secure-store ~15.0.x` the only approved persistent storage boundary; update the current Plan 029 contract to `~57.0.1` and record that the Plan 028 `~15.0.x` evidence was superseded by real Expo 57 package compatibility evidence during Plan 029.
+- `/home/farismnrr/Projects/situm-explore/.agents/state.md` still contains a historical/current-policy bullet freezing `~15.0.x`; reconcile it so current state is unambiguous while preserving Plan 028 historical evidence where appropriate.
+- `/home/farismnrr/Projects/situm-explore/.agents/memory/decisions.md` still has the durable decision to use `~15.0.x`; add an explicit superseding durable decision for `expo-secure-store ~57.0.1`, `expo-status-bar ~57.0.1`, and TypeScript `~6.0.3` under Expo 57. Do not rewrite Plan 028 historical evidence as if it never happened.
+
+After this documentation-only reconciliation, run `git diff --check`, a bounded stale-authority scan, commit/push, and stop before PR/merge. No production implementation changes are requested.

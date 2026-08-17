@@ -4,7 +4,7 @@ _Last reviewed: 2026-08-17_
 
 ## Active Plan 029 — Native App Foundation & Workspace Session
 
-Execution started on `plan/029-native-app-foundation` on 2026-08-17. Phase 0 confirms the branch is based on the integrated Plan 028 merge (`e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`) and JDK 21.0.10 is available. Plan 029 second-review remediation is complete on this branch; it is PR-ready pending user authorization, with no PR or merge performed.
+Execution started on `plan/029-native-app-foundation` on 2026-08-17. Phase 0 confirms the branch is based on the integrated Plan 028 merge (`e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`) and JDK 21.0.10 is available. Plan 029 implementation and second-review remediation are approved; one documentation-only dependency-authority reconciliation remains before PR readiness. No PR or merge has been performed.
 
 Plan 029 Phase 1 implementation exists: standalone `mobile/` package, Expo 57.0.13 config, frozen identifiers/schemes, SecureStore and build-properties plugins, strict TypeScript, and ignored generated native projects are in place. The published `@situm/react-native` 3.19.2 package has no declared `lib/`; a narrow TypeScript source path was added, but tracked Plan 029 code does not yet directly import the package, so type/runtime claims must remain bounded. Reviewer verification found the Android SDK at `/home/farismnrr/Android/Sdk` and `assembleDebug` passes; iOS remains macOS-gated.
 
