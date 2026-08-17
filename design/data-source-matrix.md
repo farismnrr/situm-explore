@@ -2,7 +2,7 @@
 
 This is the current capability/status router. Detailed rules live in `ARCHITECTURE.md`, `design/IMPLEMENTATION.md`, `.agents/state.md`, and the active plan.
 
-Plans 017–020 are complete/integrated. Plans 021–025 migrate the working product to DB-backed users and private workspace context.
+Plans 017–027 are complete/integrated. Plans 028–032 are the approved, not-yet-implemented native companion roadmap for mobile positioning/navigation/realtime plus web/native handoff.
 
 | Capability | Status / owner |
 | --- | --- |
@@ -13,17 +13,17 @@ Plans 017–020 are complete/integrated. Plans 021–025 migrate the working pro
 | Correlation, telemetry reuse, safe error contract | Plan 023 |
 | Workspace-scoped Situm backend/account/building context | Plan 024 |
 | Workspace UX + full regression | Plan 025 |
-| Viewer lifecycle | Implemented; migrate workspace context |
-| Buildings/Floors/POIs/Categories | Implemented; migrate workspace context |
-| Geofences/Paths | Implemented; migrate workspace context |
-| Static directions between known POIs | Implemented; keep Viewer-owned rendering |
-| Realtime overlay | Implemented; migrate workspace context |
+| Viewer lifecycle | Implemented on web; desktop/tablet web remains target, phone-native handoff planned in Plan 032 |
+| Buildings/Floors/POIs/Categories | Implemented on web/workspace context; native mobile subset planned in Plan 030 |
+| Geofences/Paths | Implemented on web/workspace context; native scope only when required/evidenced |
+| Static directions between known POIs | Implemented on web; native directions/navigation planned in Plan 030 |
+| Realtime operations | Workspace-scoped backend capability exists; product UI is planned native in Plan 031, with all web Realtime entry points handing off in Plan 032 |
 | Trajectory | Unresolved/omitted |
 | Organization/Users/Groups/Alarms reads | Implemented; migrate workspace context |
 | Analytics + CSV | Implemented; make workspace-isolated |
 | Legacy pre-workspace analytics rows | Historical/unscoped; do not attribute without evidence/policy |
 | Route metrics/steps/geometry/ETA | Unresolved; do not invent |
-| Handset positioning/blue dot/live navigation/rerouting | Native-only; do not build in this web roadmap |
+| Handset positioning/blue dot/live navigation/rerouting | Native-only; planned for the React Native companion in Plan 030, not the Nuxt web runtime |
 
 The current pre-refactor runtime still contains process-global Situm/Viewer/building context. Plans 022–024 migrate that context; old global configuration is not the final target.
 

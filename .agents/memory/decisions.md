@@ -29,23 +29,38 @@ Status: active security boundary; Plan 025 Viewer blocker resolved by the proven
 
 Status: active user policy.
 
-## Full-stack Nuxt architecture
+## Full-stack Nuxt backend/web architecture
 
-- Situm Explore remains one full-stack Nuxt 4 application with Nitro server routes.
-- Use Nuxt UI, `nuxt-auth-utils`, PostgreSQL/Drizzle in the application-owned `situm_explore` schema, and the existing ClickHouse analytics integration.
-- Keep `app/`, `server/`, and genuinely shared `shared/` boundaries Nuxt-native.
+- The existing Nuxt 4 application with Nitro server routes remains the single web application and application backend for Situm Explore.
+- Plans 028–032 may add a React Native companion **client**, but not a second backend/service or separate application authority.
+- Use Nuxt UI, `nuxt-auth-utils`, PostgreSQL/Drizzle in the application-owned `situm_explore` schema, and the existing ClickHouse analytics integration for the web/backend runtime.
+- Keep `app/`, `server/`, and genuinely shared `shared/` boundaries Nuxt-native; share contracts with mobile only when they are genuinely runtime-neutral.
 - KISS is the default tie-breaker. Do not add generic repositories/services, DI, global stores, event buses, caches, workers, or a second backend without concrete need.
 
 Status: active.
 
 ## Web vs native Situm boundary
 
-- The web product is an operations/admin/exploration console.
-- Web may own verified Viewer interaction, cartography, static directions, realtime monitoring, reports, and admin/read surfaces.
-- Device indoor positioning, sensor/permission handling, handset blue-dot positioning, movement-aware rerouting, and native turn-by-turn behavior remain outside this Nuxt roadmap.
+- The Nuxt web product remains the operations/admin/exploration/analytics client; Nitro remains the single application backend.
+- Plans 028–032 add a separate React Native companion client rather than turning the Nuxt application into a hybrid/mobile wrapper.
+- Device indoor positioning, sensor/permission handling, handset blue-dot positioning, mobile navigation/rerouting, and the product's mobile Realtime experience belong to the native companion roadmap.
+- Web Map remains the product path for desktop/tablet layouts that pass explicit Viewer usability acceptance; phone web Map will hand off to native only after the native Map is accepted.
+- Web Realtime will intentionally hand off to native on desktop/tablet/phone after native Realtime is accepted. This is a product policy, not a claim that Situm web APIs are technically incapable of realtime reads.
 - Situm-domain UI without a truthful owner is removed or left unresolved rather than faked.
 
-Status: active.
+Status: active; implementation of the native companion has not started.
+
+## Native companion technology and credential direction (Plans 028–032)
+
+- Target stack: React Native + Expo development builds + `@situm/react-native`, subject to Plan 028 freezing the exact supported dependency/platform matrix from current evidence.
+- Expo Go is not the runtime target for Situm native code; native development builds are required by the current official integration model.
+- Mobile reuses the same application users/workspaces and Nitro authorization boundary; no second backend or mobile-only identity database.
+- The workspace Read & Write Situm credential remains server-only and must never be embedded, returned, or persisted in the mobile app.
+- Plan 028 must choose the least-privilege mobile Situm auth contract from evidence: prefer a proven short-lived token if the current React Native wrapper exposes it; otherwise use a dedicated Positioning-permission workspace credential, encrypted server-side and handled with approved OS secure storage when persistence is required.
+- Read-only Realtime authority should remain server-mediated unless the native product requirement and current SDK contract prove a narrower safe direct path.
+- Deep links may carry only non-secret navigation context. Application sessions, Situm credentials and tokens must never be placed in URLs/QR codes.
+
+Status: approved roadmap direction; exact auth/session/distribution contracts remain Plan 028 gates.
 
 ## Plans 021–025 identity/workspace model
 

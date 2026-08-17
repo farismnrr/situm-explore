@@ -2,9 +2,24 @@
 
 _Last reviewed: 2026-08-17_
 
-## Plan 027 (complete + review remediation done, pending review/integration)
+## Approved next roadmap — Plans 028–032 native companion
 
-Plan 027 (analytics correctness & security hardening) is complete on `plan/027-analytics-security-hardening`, based on latest `origin/main` (which includes Plan 026, merged via PR #20). All phases 0–8 passed; a subsequent pre-PR review surfaced 6 remediation items (all reconfirmed valid), all fixed on the same branch — see "Review remediation (post-Phase-8)" in `plans/027-analytics-security-hardening.md` for full evidence. Branch pushed and synchronized with origin; no PR/merge performed.
+The user approved the native companion direction on 2026-08-17. Planning artifacts live on `roadmap/028-032-native-mobile`; implementation has not started. The sequence is Plan 028 capability/auth/distribution spike -> Plan 029 native foundation/workspace session -> Plan 030 native Map/positioning/navigation -> Plan 031 native Realtime -> Plan 032 web/native handoff/distribution/full regression.
+
+Locked product policy for this roadmap:
+
+- web Map remains available on desktop/tablet layouts that pass explicit Viewer usability acceptance;
+- phone web Map becomes a native open/install handoff after the native Map exists;
+- web Realtime becomes a native open/install handoff on desktop/tablet/phone after native Realtime exists;
+- React Native + Expo development builds + `@situm/react-native` is the target stack, subject to Plan 028 exact-version/capability proof;
+- the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
+- the server-side Read & Write Situm credential must never be exposed to mobile; Plan 028 must freeze a proven short-lived-token or dedicated Positioning-credential contract before Plan 029 implementation.
+
+Normal workflow: integrate the roadmap planning branch first, then execute each plan sequentially from updated `origin/main` unless the user explicitly authorizes stacked branches.
+
+## Plan 027 (complete/integrated)
+
+Plan 027 (analytics correctness & security hardening) is complete and integrated into `main` via PR #21 (merge commit `0c45aab8f188129bcb4a61678c1d3c2d8ea8cce3`). All phases 0–8 plus the pre-PR review remediation passed before integration; its former plan branch was deleted local/remote after merge.
 
 - Remediated: rate-limit identity no longer trusts client-supplied `X-Forwarded-For` (this deployment publishes Nitro directly on the host port with no proxy — see `deploy/staging.compose.yml`); limiter now prunes expired buckets on every call; the window-reset test now genuinely crosses the boundary; the ClickHouse workspace-isolation regression assertion was trivial and is now a real cross-workspace query check; `analytics_workspace_sync_runs` deletion now has regression coverage (all 4 workspace-owned tables); the regression script's undeclared `dotenv` import was removed in favor of `--env-file=.env`.
 - Live-verified: 12 login attempts with a distinct spoofed `X-Forwarded-For` per request still hit 429 after 10, against the real production bundle on an isolated port; existing staging container was untouched.
@@ -45,7 +60,7 @@ The former roadmap planning branch is historical after PR #13 and is not an impl
 
 ## Current authority
 
-Read `.agents/memory/decisions.md`, `.agents/memory/roadmap-021-025.md`, `ARCHITECTURE.md`, `plans/README.md`, `plans/021-025-prerequisites.md`, the capability matrix when relevant, and the active plan.
+Read `.agents/memory/decisions.md`, `ARCHITECTURE.md`, `plans/README.md`, `plans/028-032-native-mobile-roadmap.md` for the approved next roadmap, the capability matrix when relevant, and the active plan. Read `.agents/memory/roadmap-021-025.md` / `plans/021-025-prerequisites.md` only when completed backend-roadmap history is materially relevant.
 
 Historical plans, sessions, and branches remain evidence only.
 

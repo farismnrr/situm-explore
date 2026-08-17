@@ -19,7 +19,7 @@ A little explicit duplication is better than speculative infrastructure.
 
 ## Runtime model
 
-Situm Explore remains one full-stack Nuxt 4 application.
+The integrated web/backend runtime remains one full-stack Nuxt 4 application. Plans 028–032 add a React Native companion client while keeping Nitro as the single application backend.
 
 ```text
 browser / Vue / Nuxt UI
@@ -259,21 +259,26 @@ Missing material evidence stays unresolved/absent. Historical plans and prototyp
 
 ## Web/native boundary
 
-Web may retain verified:
+Current web runtime may retain verified:
 
 - cartography/map exploration;
 - static directions between known points;
-- realtime monitoring of positioned devices;
 - analytics/reports;
 - organization/users/groups/alarms read views;
-- browser-safe Viewer settings/actions.
+- browser-safe Viewer settings/actions;
+- workspace-scoped realtime backend reads where needed by server/client contracts.
 
-Outside this roadmap:
+Plans 028–032 add a **separate native companion client** while keeping Nitro as the single application backend. They do not turn the Nuxt runtime into a native wrapper or introduce a second backend.
 
-- sensor-generated handset indoor blue dot;
-- device positioning permissions/runtime;
-- movement-aware turn-by-turn navigation;
-- rerouting based on the handset's actual position.
+Approved target ownership:
+
+- desktop/tablet web Map remains the existing Viewer experience where explicit layout acceptance passes;
+- phone web Map hands off to the native app only after native Map acceptance;
+- web Realtime entry points hand off to native on desktop/tablet/phone only after native Realtime acceptance;
+- sensor-generated handset indoor blue dot, positioning permissions/runtime, mobile navigation/rerouting and the native Realtime experience belong to the React Native companion;
+- both clients reuse the same application users/workspaces and server-side ownership boundary.
+
+The workspace Read & Write Situm credential remains server-only. Mobile authority must be least-privilege and frozen by Plan 028 from current evidence before production native implementation.
 
 ## Data fetching / validation
 
@@ -297,20 +302,30 @@ Do not add without a concrete requirement:
 - new observability containers;
 - generic Situm cache;
 - workspace invite/member hierarchy;
-- password reset/email verification flows;
-- native positioning/navigation behavior.
+- password reset/email verification flows.
+
+Native positioning/navigation is no longer deferred generically; it is owned explicitly by Plans 028–032 and must stay within those plan boundaries/evidence gates.
 
 ## Active roadmap execution order
 
+Completed/integrated baseline:
+
 ```text
-Plan 021 — Identity & Auth Foundation
--> Plan 022 — Private Workspaces & Situm Configuration
--> Plan 023 — Observability, Correlation & Safe Error Boundary
--> Plan 024 — Workspace-scoped Situm Backend Migration
--> Plan 025 — Workspace UX & Full Regression
+Plan 021 -> 022 -> 023 -> 024 -> 025
+Plan 026 -> 027
 ```
 
-Normal Git workflow requires each dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking.
+Approved next roadmap (implementation not started):
+
+```text
+Plan 028 — Native Capability, Auth & Distribution Spike
+-> Plan 029 — Native App Foundation & Workspace Session
+-> Plan 030 — Native Map, Positioning & Navigation
+-> Plan 031 — Native Realtime Operations
+-> Plan 032 — Web/Native Handoff, Distribution & Full Regression
+```
+
+Normal Git workflow requires the roadmap planning branch to be integrated before Plan 028 starts and each later dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking.
 
 ## Review checklist
 

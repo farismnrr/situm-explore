@@ -1,0 +1,131 @@
+# Plan 029 — Native App Foundation & Workspace Session
+
+Branch: `plan/029-native-app-foundation`
+Base: updated `origin/main` after Plan 028 is integrated
+Depends on: Plan 028 complete/integrated
+Status: planned
+
+## Objective
+
+Create the production-owned Situm Explore Mobile application foundation using the exact contracts frozen by Plan 028: React Native + Expo development build, existing Situm Explore application identity/workspaces, secure native session handling, least-privilege Situm mobile authorization, environment configuration, navigation shell, and safe error/telemetry boundaries.
+
+Do not implement the production Map, positioning/navigation, or Realtime feature set yet.
+
+## Rules
+
+- Reuse the existing Nitro backend, PostgreSQL users, workspace ownership and safe-error conventions.
+- No second backend, second user database or duplicated business authority.
+- Do not expose the workspace Read & Write Situm credential to mobile.
+- Follow the Plan 028 auth/session and secure-storage decisions exactly; reopen them only with new evidence.
+- Keep secrets and signing material external/ignored.
+- Use the repository's npm workflow; do not introduce a second package manager.
+- No PR/merge without explicit user authorization.
+
+## Phase checklist
+
+- [ ] Phase 0 — Pre-flight and Plan 028 contract verification.
+- [ ] Phase 1 — Production mobile project scaffold and reproducible native configuration.
+- [ ] Phase 2 — Environment, API client, safe error and correlation boundary.
+- [ ] Phase 3 — Native login/session/logout using existing application identity.
+- [ ] Phase 4 — Workspace list/select and mobile Situm credential readiness.
+- [ ] Phase 5 — Mobile shell, lifecycle and secure persistence.
+- [ ] Phase 6 — Foundation acceptance and persistence closeout.
+
+## Phase 0 — Contract verification
+
+- Confirm Plan 028 is integrated into updated `main`.
+- Read the frozen version/auth/session/storage/distribution decisions and refuse to substitute newer guesses silently.
+- Recheck current SDK release notes only if the dependency version materially changed since Plan 028; record any required revalidation.
+
+## Phase 1 — Mobile project
+
+Create the mobile application in the exact repository location selected by Plan 028 (expected `mobile/` unless the spike chose otherwise).
+
+Requirements:
+
+- React Native + Expo development-build project using the frozen versions;
+- reproducible native Android/iOS generation/configuration;
+- Situm native repository/plugin configuration survives the approved regeneration workflow;
+- application/bundle identifiers match Plan 028;
+- TypeScript strict enough for app-owned contracts;
+- platform-specific config is explicit and minimal;
+- build output, machine-local SDK paths, provisioning files and signing secrets remain ignored/external;
+- do not convert the entire repository into a generic monorepo abstraction unless Plan 028 proved it necessary.
+
+## Phase 2 — API boundary
+
+Add a small typed mobile API layer for the existing Nitro backend.
+
+Requirements:
+
+- environment-aware API base URL without embedded credentials;
+- existing request/correlation header conventions reused where practical;
+- safe normalized product errors; detailed diagnostics stay server-side;
+- timeouts/cancellation on app-owned network calls where the runtime supports them;
+- no direct PostgreSQL/ClickHouse access;
+- no generic backend proxy or raw endpoint escape hatch;
+- authenticated workspace routes remain owner-checked server-side.
+
+## Phase 3 — Application session
+
+Implement the Plan 028-approved native application-session model.
+
+Acceptance-critical behavior:
+
+- login with existing email/password account;
+- same app user identity as web;
+- session survives an ordinary app restart only when the approved security model allows persistence;
+- logout clears/revokes native session material according to the frozen contract;
+- invalid/expired/revoked session returns to login safely;
+- no password/session token stored in AsyncStorage/plaintext files/logs/traces;
+- rate-limited existing auth endpoints remain respected rather than bypassed with a parallel auth path.
+
+If Plan 028 selected a new mobile session endpoint/token, implement the narrowest version needed and keep all user/workspace authorization in the existing server model.
+
+## Phase 4 — Workspace context and mobile Situm authority
+
+Implement:
+
+- owner-scoped workspace list;
+- selected workspace state;
+- workspace switching;
+- clear states for missing/incomplete mobile Situm configuration;
+- the exact Plan 028 least-privilege mobile Situm auth flow;
+- organization/permission validation before mobile authority is issued;
+- no Read & Write credential in mobile responses, storage or bundles.
+
+If the frozen model uses a dedicated Positioning credential, extend workspace configuration/persistence with authenticated encryption and write-only UX metadata following the existing primary/Viewer credential pattern. If it uses short-lived Situm tokens, implement bounded issuance/refresh without persisting broader authority than necessary.
+
+## Phase 5 — Shell and lifecycle
+
+Provide the minimum real app shell required by Plans 030–031:
+
+- authenticated navigation structure;
+- workspace switcher/access point;
+- placeholder Map and Realtime destinations clearly marked as not yet implemented;
+- loading/offline/error states;
+- session/workspace restoration;
+- foreground/background lifecycle hooks needed by later plans without starting positioning prematurely;
+- accessibility basics and mobile-safe layouts;
+- no duplicate web admin/analytics UI unless required by the mobile product.
+
+## Phase 6 — Acceptance
+
+Required local checks include the root repository validation plus the mobile package's lint/typecheck/build checks frozen by Plan 028.
+
+Runtime acceptance on available physical/simulator targets must prove:
+
+- login/logout;
+- session persistence/expiry behavior;
+- workspace selection/switching;
+- owner isolation;
+- mobile Situm auth readiness without credential leakage;
+- app restart behavior;
+- safe handling of backend unavailability;
+- no secrets in logs, tracked files or generated distributable bundle inspection where practical.
+
+Do not claim iOS runtime acceptance if no iOS-capable host/device is available; record the external gate explicitly.
+
+## Closeout
+
+Update the plan, `.agents/state.md`, durable decisions/knowledge when warranted, architecture/capability docs if runtime truth changed, and session evidence before every phase commit. Commit/push each completed phase according to repository protocol; stop before PR until user authorization.
