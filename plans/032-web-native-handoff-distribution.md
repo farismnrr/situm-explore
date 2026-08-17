@@ -3,7 +3,7 @@
 Branch: `plan/032-web-native-handoff-distribution`
 Base: updated `origin/main` after Plan 031 is integrated
 Depends on: Plan 031 complete/integrated
-Status: final reviewer remediation required; one same-workspace foreground Map deep-link lifecycle blocker remains
+Status: implementation remediation complete; final reviewer confirmation required before integration
 
 ## Objective
 
@@ -84,6 +84,12 @@ If tablet acceptance is not actually usable, record that evidence and obtain an 
 - Added focused parser/lifecycle regression coverage in `test/mobile-plan-032.test.ts`.
 
 Real device link association/open behavior and login/workspace cross-client E2E remain unpassed for Plan 033.
+
+### Final lifecycle remediation evidence — 2026-08-17
+
+- `WorkspaceContext` now represents each Map deep link as a monotonic `mapRequest` with a request ID and building ID. Consumption is idempotent and manual workspace selection clears pending requests.
+- `NativeMapScreen` consumes each request once and keys only its inner Map runtime by the locally applied request ID. A second foreground link to another building in the same authorized workspace is consequently applied once without stale building context or a request-clearing remount loop.
+- Focused regression coverage proves sequential request IDs/buildings and repeated-consumption safety. Root tests now pass 31/31; all physical-device and full cross-client acceptance remains explicitly unpassed for Plan 033.
 
 Implement the frozen Universal Link / Android App Link / app-scheme contract.
 

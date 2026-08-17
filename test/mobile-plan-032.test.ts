@@ -4,6 +4,7 @@ import test from 'node:test'
 import { nativeDestinationFromLink, parseNativeDeepLink } from '../mobile/src/navigation/deep-link'
 import { mapViewerBreakpoint } from '../app/composables/useMapViewerCapability'
 import { getNativeInstallOptions } from '../app/components/native/install-options'
+import { consumeMapDeepLinkRequest, createMapDeepLinkRequest, type MapDeepLinkRequest } from '../mobile/src/map/deep-link-state'
 
 test('Plan 032 parses only non-secret Map and Realtime routing context', () => {
   assert.deepEqual(parseNativeDeepLink('situm-explore://map?workspaceId=workspace_a&buildingId=42'), { destination: 'map', workspaceId: 'workspace_a', buildingId: 42 })
@@ -78,13 +79,33 @@ test('Plan 032 install options use OS for mobile and expose all configured targe
   assert.deepEqual(getNativeInstallOptions('unknown', { androidStoreUrl: config.androidStoreUrl }).map(option => option.url), [config.androidStoreUrl])
 })
 
-test('Plan 032 deep-link building hints are cleared on workspace changes and after Map consumption', () => {
+test('Plan 032 Map handoff requests are cleared on workspace changes and consumed without remount loops', () => {
   const context = readFileSync(new URL('../mobile/src/workspaces/context.ts', import.meta.url), 'utf8')
   const map = readFileSync(new URL('../mobile/src/map/NativeMapScreen.tsx', import.meta.url), 'utf8')
   const app = readFileSync(new URL('../mobile/App.tsx', import.meta.url), 'utf8')
-  assert.match(context, /this\.requestedBuildingId = null/)
-  assert.match(context, /clearRequestedBuilding\(\) \{\n\s{4}if \(this\.requestedBuildingId === null\) return/)
-  assert.match(map, /const \[initialBuildingId\] = useState\(workspaces\.requestedBuildingId\)/)
-  assert.match(map, /workspaces\.clearRequestedBuilding\(\)/)
+  assert.match(context, /this\.mapRequest = null/)
+  assert.match(context, /createMapDeepLinkRequest\(\+\+this\.mapRequestSequence/)
+  assert.match(context, /consumeMapRequest\(requestId: number\)/)
+  assert.match(map, /pendingMapRequest = workspaces\.mapRequest/)
+  assert.match(map, /handledMapRequestId\.current === pendingMapRequest\.requestId/)
+  assert.match(map, /workspaces\.consumeMapRequest\(pendingMapRequest\.requestId\)/)
+  assert.match(map, /key=\{`\$\{workspaceId\}:\$\{activeMapRequestId \?\? 'default'\}`\}/)
   assert.doesNotMatch(app, /requestedBuildingId\|\| 'default'/)
+})
+
+test('Plan 032 applies sequential same-workspace Map links as distinct one-shot requests', () => {
+  const firstRequest: MapDeepLinkRequest = createMapDeepLinkRequest(1, 101)
+  assert.deepEqual(firstRequest, { requestId: 1, buildingId: 101 })
+
+  let request: MapDeepLinkRequest | null = consumeMapDeepLinkRequest(firstRequest, firstRequest.requestId)
+  assert.equal(request, null)
+
+  const secondRequest: MapDeepLinkRequest = createMapDeepLinkRequest(2, 202)
+  request = secondRequest
+  assert.deepEqual(secondRequest, { requestId: 2, buildingId: 202 })
+  assert.notEqual(secondRequest.requestId, firstRequest.requestId)
+
+  request = consumeMapDeepLinkRequest(request, secondRequest.requestId)
+  request = consumeMapDeepLinkRequest(request, secondRequest.requestId)
+  assert.equal(request, null)
 })

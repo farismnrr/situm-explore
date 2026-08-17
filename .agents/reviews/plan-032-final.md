@@ -8,7 +8,7 @@ The two prior Plan 032 review blockers are resolved in `ab35054`: deep-link buil
 
 Independent reviewer validation passes 30/30 root tests plus root/mobile lint/typecheck and `git diff --check`.
 
-Plan 032 is **not PR-ready yet** because one non-device foreground deep-link lifecycle blocker remains.
+Plan 032 is **not PR-ready yet** because this remediation still requires final reviewer confirmation; the implementation blocker described below has been resolved on the working branch.
 
 ## Prior blocking findings — resolved in `ab35054`
 
@@ -16,11 +16,11 @@ Plan 032 is **not PR-ready yet** because one non-device foreground deep-link lif
 
 2. **Native App Gate defaulted wider/unknown clients to iOS.** Resolved: platform detection is now independent of viewport geometry, Android/iOS clients receive matching configured options, and desktop/unknown clients receive all configured platform options through `getNativeInstallOptions()` with focused regression coverage.
 
-## Remaining blocking finding
+## Remediated finding — validation pending final reviewer confirmation
 
-3. **A foreground Map deep link to another building in the already-selected workspace can be ignored while Explore is already mounted.** `NativeMapScreen` now snapshots `workspaces.requestedBuildingId` only once with `useState(...)`, while `App.tsx` keys `NativeMapScreen` only by `selectedWorkspaceId`. When a new foreground Map link targets the same workspace but a different `buildingId`, `WorkspaceContext.applyDeepLink()` updates `requestedBuildingId`, but the existing `NativeMapScreen` instance does not remount and its `initialBuildingId` snapshot does not change. The new hint is therefore not consumed/applied even though Plan 032 explicitly owns foreground deep-link routing. The previous key containing `requestedBuildingId` forced a remount but also coupled remounting to hint clearing; the remediation needs a one-shot request/remount mechanism that applies each new Map building hint exactly once without retaining stale context or remount-looping when the hint is cleared.
+3. **Resolved on the remediation branch:** `WorkspaceContext` now emits monotonic `mapRequest` values, `NativeMapScreen` consumes each request exactly once, and only the local native Map runtime key includes the applied request ID. A second foreground link to another building in the already-selected workspace therefore produces a distinct runtime application without changing the parent Explore key or remounting when the context request is cleared.
 
-Add focused regression coverage that proves two sequential Map deep links to different buildings in the same authorized workspace can each produce a distinct one-shot Map request/remount/application, while manual workspace changes still clear stale hints.
+Focused regression coverage now proves two sequential Map deep links to different buildings produce distinct one-shot requests, repeated consumption is idempotent, and source wiring clears requests on workspace changes without a parent remount-loop key.
 
 This is a Plan 032 implementation lifecycle issue, not a physical-device/full-cross-client Plan 033 acceptance item.
 
@@ -28,7 +28,7 @@ This is a Plan 032 implementation lifecycle issue, not a physical-device/full-cr
 
 Independent checks at `ab35054`:
 
-- root tests: 30/30 pass;
+- root tests: 31/31 pass;
 - root lint and Nuxt typecheck pass;
 - mobile lint and typecheck pass;
 - `git diff --check origin/main...HEAD` passes;
@@ -42,4 +42,4 @@ All Plan 030/031 physical-device acceptance and Plan 032 real cross-client/open/
 
 ## Handoff
 
-Resolve finding 3, add focused lifecycle regression coverage, rerun root/mobile validation plus build/diff/secret checks as appropriate, update evidence/state truthfully, commit and push, then return for final reviewer approval. Stop before PR/merge and do not start Plan 033.
+Final reviewer should confirm the request-id lifecycle remediation and its 31-test validation. Stop before PR/merge and do not start Plan 033.

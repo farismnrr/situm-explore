@@ -3,6 +3,7 @@ import * as SecureStore from 'expo-secure-store'
 import type { PositioningCredentialResponse, Workspace, WorkspaceConfigSummary } from '../api/types'
 import type { AuthSession } from '../auth/session'
 import type { NativeDeepLink } from '../navigation/deep-link'
+import { consumeMapDeepLinkRequest, createMapDeepLinkRequest, type MapDeepLinkRequest } from '../map/deep-link-state'
 
 export type WorkspaceState = 'idle' | 'loading' | 'ready' | 'empty' | 'error'
 const workspaceStorageKey = 'situm-explore.workspace-id'
@@ -14,7 +15,8 @@ export class WorkspaceContext {
   state: WorkspaceState = 'idle'
   error: ApiError | null = null
   configuration: WorkspaceConfigSummary | null = null
-  requestedBuildingId: number | null = null
+  mapRequest: MapDeepLinkRequest | null = null
+  private mapRequestSequence = 0
   private version = 0
   private readonly listeners = new Set<() => void>()
 
@@ -59,20 +61,21 @@ export class WorkspaceContext {
     if (!this.workspaces.some(workspace => workspace.id === workspaceId)) throw new ApiError('That workspace is not available to this account.', { code: 'FORBIDDEN' })
     this.selectedWorkspaceId = workspaceId
     this.configuration = null
-    this.requestedBuildingId = null
+    this.mapRequest = null
     this.persistSelection(workspaceId)
     this.notify()
   }
 
   applyDeepLink(link: NativeDeepLink) {
     if (link.workspaceId) this.select(link.workspaceId)
-    this.requestedBuildingId = link.destination === 'map' ? link.buildingId ?? null : null
+    this.mapRequest = link.destination === 'map' ? createMapDeepLinkRequest(++this.mapRequestSequence, link.buildingId ?? null) : null
     this.notify()
   }
 
-  clearRequestedBuilding() {
-    if (this.requestedBuildingId === null) return
-    this.requestedBuildingId = null
+  consumeMapRequest(requestId: number) {
+    const nextRequest = consumeMapDeepLinkRequest(this.mapRequest, requestId)
+    if (nextRequest === this.mapRequest) return
+    this.mapRequest = nextRequest
     this.notify()
   }
 
