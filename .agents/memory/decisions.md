@@ -208,7 +208,7 @@ Status: active.
 
 ## Completed roadmap transition
 
-Plans 017–020, Plans 021–025, and Plans 026–029 are complete/integrated historical execution. Plan 030 implementation is reviewer-approved and PR-ready pending integration; Plans 031–032 remain gated by predecessor integration, with consolidated physical-device E2E reserved for Plan 032.
+Plans 017–020, Plans 021–025, and Plans 026–030 are complete/integrated historical execution. Plan 031 is the active Native Realtime Operations branch; Plan 032 remains the dependent terminal handoff/distribution/full-regression plan, with consolidated physical-device E2E reserved for Plan 032.
 
 The following are historical context only:
 
@@ -216,7 +216,7 @@ The following are historical context only:
 - `plans/021-025-prerequisites.md`;
 - `design/ROADMAP-021-025-OVERRIDES.md`.
 
-The Plans 028–032 roadmap is the current planning authority. Plans 028–029 are integrated; Plan 030 is active and Plans 031–032 remain gated.
+The Plans 028–032 roadmap is the current planning authority. Plans 028–030 are integrated; Plan 031 is active and Plan 032 remains gated on Plan 031 integration.
 
 Status: active.
 
@@ -261,3 +261,21 @@ Status: active durable native product/security boundary.
 - Android Studio emulator evidence may supplement launch/UI/WebView/non-sensor regression, but it cannot prove real indoor positioning, BLE/Wi-Fi/sensor behavior, blue-dot/floor transitions, or equivalent physical-device semantics.
 
 Status: active durable roadmap acceptance decision.
+
+## Plan 031 Realtime execution baseline (2026-08-17)
+
+- Realtime Positions is operational device-position monitoring; Situm Share Live Location is a separate session-based feature and must not be conflated with it.
+- The current owner-scoped Nitro Realtime route is the preferred remote-monitoring boundary and exposes only position/device identity, source time, building/floor, accuracy, coordinates, and optional device ID.
+- No friendly person identity, online/idle/offline presence, trajectory, generic remote marker, or remote focus semantics exist unless Phase 0 proves them from exact current evidence.
+- Remote monitoring remains server-mediated unless a narrower/equivalent least-privilege native path is proven. The dedicated mobile Positioning credential must not be widened for convenience.
+
+Status: active Plan 031 execution baseline; Phase 0 may narrow or supersede only with exact evidence.
+
+## Plan 031 implementation boundary (2026-08-17)
+
+- Native Realtime uses the authenticated `/api/workspaces/:workspaceId/situm/realtime` route and a typed minimal mobile model. It polls immediately and every 10 seconds only while the destination is foreground-active; in-flight requests abort on unmount, workspace change, background, or refresh replacement.
+- The screen is a useful list/detail composition without a map. It shows device/position identity, building/floor IDs, accuracy, coordinates, source time, and local older/stale display hints. It never claims online/idle/offline presence.
+- Phase 0 source inspection found native generic realtime and Share Live Location APIs in `@situm/react-native` 3.19.2, but not equivalent application/workspace authorization or Positioning-key permission evidence. They remain unused; remote markers/focus and Share Live Location are absent.
+- Background positioning and own-device Realtime publishing are not required by the frozen v1 scope and remain outside Plan 031.
+
+Status: active Plan 031 implementation decision.

@@ -17,7 +17,7 @@ Plans 017–027 are complete/integrated. Plans 028–032 are the approved, not-y
 | Buildings/Floors/POIs/Categories | Implemented on web/workspace context; native mobile subset planned in Plan 030 |
 | Geofences/Paths | Implemented on web/workspace context; native scope only when required/evidenced |
 | Static directions between known POIs | Implemented on web; native directions/navigation planned in Plan 030 |
-| Realtime operations | Workspace-scoped backend capability exists; product UI is planned native in Plan 031, with all web Realtime entry points handing off in Plan 032 |
+| Realtime operations | Implemented in the native companion as a server-mediated workspace-scoped device-position list/detail experience in Plan 031; generic remote MapView markers and Share Live Location are not used; web entry points hand off in Plan 032 |
 | Trajectory | Unresolved/omitted |
 | Organization/Users/Groups/Alarms reads | Implemented; migrate workspace context |
 | Analytics + CSV | Implemented; make workspace-isolated |

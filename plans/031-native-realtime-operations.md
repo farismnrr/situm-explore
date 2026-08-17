@@ -3,7 +3,7 @@
 Branch: `plan/031-native-realtime-operations`
 Base: updated `origin/main` after Plan 030 is integrated
 Depends on: Plan 030 complete/integrated
-Status: planned
+Status: implementation complete/reviewer-approved; PR-ready pending user authorization
 
 ## Objective
 
@@ -26,13 +26,13 @@ Realtime is intentionally a native product destination in this roadmap even if s
 
 ## Phase checklist
 
-- [ ] Phase 0 — Freeze Realtime product semantics and current SDK/backend evidence.
-- [ ] Phase 1 — Native realtime data boundary and typed state model.
-- [ ] Phase 2 — Realtime operations screen and freshness/error states.
-- [ ] Phase 3 — Map/focus/live-location integration where proven.
-- [ ] Phase 4 — Own-device positioning/background behavior required by Realtime.
-- [ ] Phase 5 — Privacy, lifecycle, performance and failure handling.
-- [ ] Phase 6 — Implementation/runtime acceptance, explicit physical-E2E carry-over, and closeout.
+- [x] Phase 0 — Freeze Realtime product semantics and current SDK/backend evidence.
+- [x] Phase 1 — Native realtime data boundary and typed state model.
+- [x] Phase 2 — Realtime operations screen and freshness/error states.
+- [x] Phase 3 — Map/focus/live-location integration where proven.
+- [x] Phase 4 — Own-device positioning/background behavior required by Realtime.
+- [x] Phase 5 — Privacy, lifecycle, performance and failure handling.
+- [x] Phase 6 — Implementation/runtime acceptance, explicit physical-E2E carry-over, and closeout.
 
 ## Phase 0 — Realtime contract
 
@@ -141,5 +141,9 @@ Use real workspace/Situm data where safely available without persisting credenti
 Any acceptance item that materially depends on a supported physical device—especially own-device positioning/background behavior, sensor-dependent publishing, or physical-device Realtime lifecycle—must be listed explicitly as **unpassed Plan 032 carry-over** rather than guessed or silently dropped. Plan 031 may be reviewed/integrated once its implementation/runtime evidence is approved and every such carry-over is recorded.
 
 Plan 032 is the non-deferrable final gate: it must exercise the accumulated Plan 030 and Plan 031 physical-device E2E before roadmap closeout/merge.
+
+## Closeout disposition (2026-08-17)
+
+Plan 031 implementation and non-physical runtime contracts passed on the plan branch after remediation of caller cancellation, unsupported local freshness classification, and malformed-payload handling. Focused regression coverage and the final validation evidence are recorded in the implementation commit and `.agents/evidence/plan-031-realtime.md`. Physical-device Realtime lifecycle, own-device Realtime positioning/publishing, sensor behavior, and accumulated native lifecycle checks remain explicitly unpassed Plan 032 carry-over. No PR or merge was created.
 
 Run repository/mobile validations, update architecture/capability evidence, commit/push each phase, and stop before PR until user authorization.

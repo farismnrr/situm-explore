@@ -55,20 +55,20 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Approved native companion roadmap
 
-Plans 028–029 are integrated into `main`. Plan 030 native Map/positioning/navigation implementation is reviewer-approved and PR-ready pending user authorization on `plan/030-native-map-positioning-navigation`; its unpassed physical-device E2E is explicitly carried to Plan 032's terminal gate. Plans 031–032 remain gated on Plan 030 integration.
+Plans 028–030 are integrated into `main`. Plan 031 Native Realtime Operations is active on `plan/031-native-realtime-operations`; Plan 032 remains gated on Plan 031 integration and owns the consolidated terminal physical-device E2E.
 
 ```text
-roadmap/028-032-native-mobile                       [Plan 030 PR-ready; physical E2E consolidated in Plan 032]
+roadmap/028-032-native-mobile                       [Plan 031 active; physical E2E consolidated in Plan 032]
 -> Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
 -> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
--> Plan 030 — Native Map, Positioning & Navigation [implementation approved; PR-ready]
--> Plan 031 — Native Realtime Operations
+-> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 032]
+-> Plan 031 — Native Realtime Operations [active]
 -> Plan 032 — Web/Native Handoff, Distribution & Full Regression [terminal physical-E2E gate]
 ```
 
 Roadmap overview: `plans/028-032-native-mobile-roadmap.md`.
 
-Plan 030 starts only from updated `main` after Plan 029 is integrated; each later dependent plan starts after its predecessor is integrated unless the user explicitly authorizes stacked execution.
+Plan 031 starts only from updated `main` after Plan 030 is integrated; Plan 032 starts after Plan 031 is integrated unless the user explicitly authorizes stacked execution.
 
 ## Transition direction
 

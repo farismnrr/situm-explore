@@ -6,6 +6,7 @@ import { ApiError } from './src/api/errors'
 import { AuthSession } from './src/auth/session'
 import { WorkspaceContext } from './src/workspaces/context'
 import { NativeMapScreen } from './src/map/NativeMapScreen'
+import { RealtimeScreen } from './src/realtime/RealtimeScreen'
 
 export default function App() {
   const auth = useMemo(() => new AuthSession(), [])
@@ -64,7 +65,7 @@ function AuthenticatedShell(props: { auth: AuthSession, workspaces: WorkspaceCon
           {loading ? <ActivityIndicator color="#111827" /> : workspaces.state === 'error' ? <StateCard title="Workspaces unavailable" body={workspaceError || 'Check your connection and try again.'} action={() => workspaces.load().catch(() => undefined)} /> : workspaces.state === 'empty' ? <StateCard title="No workspaces yet" body="Create your first workspace in Situm Explore web to continue." /> : <>
             <View style={styles.workspacePicker}><Text style={styles.eyebrow}>ACTIVE WORKSPACE</Text><Text style={styles.workspaceName}>{selected?.name || 'Select a workspace'}</Text><View style={styles.workspaceChoices}>{workspaces.workspaces.map(workspace => <TouchableOpacity key={workspace.id} onPress={() => select(workspace.id)} style={[styles.choice, workspace.id === selected?.id && styles.choiceActive]}><Text style={[styles.choiceText, workspace.id === selected?.id && styles.choiceTextActive]}>{workspace.name}</Text></TouchableOpacity>)}</View></View>
             {workspaceError ? <StateCard title="Workspace notice" body={workspaceError} /> : null}
-            {activeTab === 'explore' ? <NativeMapScreen key={workspaces.selectedWorkspaceId || 'no-workspace'} workspaces={workspaces} lifecycle={lifecycle} /> : activeTab === 'realtime' ? <Placeholder title="Realtime is coming in Plan 031" body="Reported device positions will appear here after the server-mediated Realtime phase." /> : activeTab === 'recent' ? <Placeholder title="Recent is coming in a later plan" body="Recent activity is not enabled in this foundation build." /> : <SettingsCard onLogout={onLogout} />}
+            {activeTab === 'explore' ? <NativeMapScreen key={workspaces.selectedWorkspaceId || 'no-workspace'} workspaces={workspaces} lifecycle={lifecycle} /> : activeTab === 'realtime' ? <RealtimeScreen key={workspaces.selectedWorkspaceId || 'no-workspace'} workspaces={workspaces} lifecycle={lifecycle} /> : activeTab === 'recent' ? <Placeholder title="Recent is coming in a later plan" body="Recent activity is not enabled in this foundation build." /> : <SettingsCard onLogout={onLogout} />}
           </>}
         </View>
         {!showRail ? <View style={styles.bottom}><NavItems bottom activeTab={activeTab} setActiveTab={setActiveTab} /></View> : null}

@@ -1,6 +1,6 @@
 # Plan 030 Final Review — Implementation Approved / Physical E2E Deferred to Plan 032
 
-Status: implementation-approved and PR-ready pending user authorization. Physical-device E2E remains unpassed and is explicitly transferred to Plan 032's mandatory terminal gate. No PR or merge performed.
+Status: implementation-approved and integrated via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`. Physical-device E2E remains unpassed and is explicitly transferred to Plan 032's mandatory terminal gate.
 
 Reviewed commits: `df7d22b71001e94a4a27a7784a458a2b3fd245be`, `74b9a99a2a991478d6abad58a358eb5ca58a75e1`, `8afb39b56db6c20c44f469df032d6ab0303a371b`.
 
@@ -86,4 +86,4 @@ Commit `8afb39b56db6c20c44f469df032d6ab0303a371b` resolves findings 7–8. Out-o
 
 Independent reviewer validation passes: root tests 17/17, root lint/typecheck, mobile lint/typecheck, `git diff --check origin/main...HEAD`, and branch clean/synchronized. The reported Expo prebuild and Android `assembleDebug` evidence remains consistent with the reviewed branch; `expo-doctor` 19/21 is limited to the known Situm New Architecture metadata warning plus frozen Expo patch drift and is not a blocker under current authority.
 
-Plan 030 implementation through Phase 6 is approved. Under the consolidated roadmap acceptance decision recorded on 2026-08-17, the supported-Android physical checks are not waived or accepted; they are transferred as explicit unpassed carry-over to Plan 032's non-deferrable final E2E gate. This authority change makes Plan 030 PR-ready pending user authorization. Plan 031 may start only after Plan 030 is integrated into updated `main`; Plan 032 may not close/merge until it discharges the carried Map/positioning/blue-dot/floor/POI/navigation device acceptance.
+Plan 030 implementation through Phase 6 is approved and integrated via PR #25. Under the consolidated roadmap acceptance decision recorded on 2026-08-17, the supported-Android physical checks are not waived or accepted; they remain explicit unpassed carry-over to Plan 032's non-deferrable final E2E gate. Plan 031 has started from the updated Plan 030 merge baseline; Plan 032 may not close/merge until it discharges the carried Map/positioning/blue-dot/floor/POI/navigation device acceptance.

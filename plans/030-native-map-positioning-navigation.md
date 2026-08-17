@@ -3,7 +3,7 @@
 Branch: `plan/030-native-map-positioning-navigation`
 Base: updated `origin/main` after Plan 029 is integrated
 Depends on: Plan 029 complete/integrated
-Status: implementation complete/reviewed; physical-device E2E explicitly deferred to Plan 032; PR-ready pending user authorization
+Status: complete/integrated via PR #25; physical-device E2E remains explicitly unpassed and carried to Plan 032
 
 ## Objective
 
