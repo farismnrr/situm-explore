@@ -51,4 +51,5 @@ export class MobileApiClient {
 
   get<T>(path: string, options?: Omit<RequestOptions, 'method'>) { return this.request<T>(path, { ...options, method: 'GET' }) }
   post<T>(path: string, body?: unknown, options?: Omit<RequestOptions, 'method' | 'body'>) { return this.request<T>(path, { ...options, method: 'POST', body }) }
+  delete<T>(path: string, options?: Omit<RequestOptions, 'method'>) { return this.request<T>(path, { ...options, method: 'DELETE' }) }
 }

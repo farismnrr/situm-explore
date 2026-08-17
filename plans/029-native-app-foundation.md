@@ -47,7 +47,7 @@ Required early gates:
 - [x] Phase 0 — Pre-flight and Plan 028 contract verification.
 - [x] Phase 1 — Production mobile project scaffold and reproducible native configuration.
 - [x] Phase 2 — Environment, API client, safe error and correlation boundary.
-- [ ] Phase 3 — Native login/session/logout using existing application identity.
+- [x] Phase 3 — Native login/session/logout using existing application identity.
 - [ ] Phase 4 — Workspace list/select and mobile Situm credential readiness.
 - [ ] Phase 5 — Mobile shell, lifecycle and secure persistence.
 - [ ] Phase 6 — Foundation acceptance and persistence closeout.
