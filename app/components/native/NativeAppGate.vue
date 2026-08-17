@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import QRCode from 'qrcode'
+import { getNativeInstallOptions, type NativeInstallPlatform } from './install-options'
 
 type Feature = 'map' | 'realtime'
 
@@ -20,7 +21,7 @@ const config = useRuntimeConfig()
 const mobileConfig = config.public.mobile
 const copied = ref(false)
 const qrCode = ref('')
-const isMobileBrowser = ref(false)
+const platform = ref<NativeInstallPlatform>('unknown')
 
 const destinationLabel = computed(() => props.feature === 'map' ? 'Map' : 'Realtime')
 const destinationPath = computed(() => props.feature === 'map' ? 'map' : 'realtime')
@@ -34,11 +35,9 @@ const deepLink = computed(() => {
   const base = mobileConfig.universalLinkBaseUrl?.replace(/\/$/, '') || `${mobileConfig.appScheme}:/`
   return `${base}/${destinationPath.value}${routeQuery.value ? `?${routeQuery.value}` : ''}`
 })
-const storeUrl = computed(() => isMobileBrowser.value && /android/i.test(navigator.userAgent) ? mobileConfig.androidStoreUrl : mobileConfig.iosStoreUrl)
-const downloadUrl = computed(() => isMobileBrowser.value && /android/i.test(navigator.userAgent) ? mobileConfig.androidDownloadUrl : mobileConfig.iosDownloadUrl)
+const installOptions = computed(() => getNativeInstallOptions(platform.value, mobileConfig))
 const openConfigured = computed(() => Boolean(mobileConfig.universalLinkBaseUrl || mobileConfig.appScheme))
-const hasInstallFallback = computed(() => Boolean(storeUrl.value || downloadUrl.value))
-const installLabel = computed(() => isMobileBrowser.value && /android/i.test(import.meta.client ? navigator.userAgent : '') ? 'Get Android app' : 'Get iOS app')
+const hasInstallFallback = computed(() => installOptions.value.length > 0)
 
 async function generateQr() {
   if (!import.meta.client || !deepLink.value) return
@@ -53,7 +52,8 @@ async function copyLink() {
 }
 
 onMounted(() => {
-  isMobileBrowser.value = window.matchMedia('(max-width: 767px)').matches
+  const userAgent = navigator.userAgent
+  platform.value = /android/i.test(userAgent) ? 'android' : /iphone|ipad|ipod/i.test(userAgent) ? 'ios' : 'unknown'
   void generateQr()
 })
 watch(deepLink, () => { void generateQr() })
@@ -72,8 +72,7 @@ watch(deepLink, () => { void generateQr() })
       </div>
       <div class="flex flex-wrap items-center gap-2 lg:justify-end">
         <UButton v-if="openConfigured" :href="deepLink" label="Open in app" icon="i-lucide-external-link" target="_self" />
-        <UButton v-if="storeUrl" :href="storeUrl" :label="installLabel" icon="i-lucide-download" target="_blank" rel="noreferrer" color="neutral" variant="outline" />
-        <UButton v-if="downloadUrl" :href="downloadUrl" label="Download build" icon="i-lucide-download" target="_blank" rel="noreferrer" color="neutral" variant="outline" />
+        <UButton v-for="option in installOptions" :key="`${option.kind}-${option.platform}`" :href="option.url" :label="option.label" icon="i-lucide-download" target="_blank" rel="noreferrer" color="neutral" variant="outline" />
       </div>
     </div>
     <div class="mt-7 flex flex-col gap-5 border-t border-default pt-5 sm:flex-row sm:items-center sm:justify-between">

@@ -59,6 +59,7 @@ export class WorkspaceContext {
     if (!this.workspaces.some(workspace => workspace.id === workspaceId)) throw new ApiError('That workspace is not available to this account.', { code: 'FORBIDDEN' })
     this.selectedWorkspaceId = workspaceId
     this.configuration = null
+    this.requestedBuildingId = null
     this.persistSelection(workspaceId)
     this.notify()
   }
@@ -70,6 +71,7 @@ export class WorkspaceContext {
   }
 
   clearRequestedBuilding() {
+    if (this.requestedBuildingId === null) return
     this.requestedBuildingId = null
     this.notify()
   }

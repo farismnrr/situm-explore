@@ -48,9 +48,14 @@ Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execut
 - Reconciled architecture, capability matrix, README/plan router, and Plan 033 handoff evidence.
 - Plan 032 implementation is complete pending review/integration. Plan 033 was not started.
 
-## Reviewer remediation
+## Final reviewer remediation — complete
 
-Final reviewer findings are authoritative in `/home/farismnrr/Projects/situm-explore/.agents/reviews/plan-032-final.md`. Resolve every non-device implementation blocker there before claiming Plan 032 approval or PR readiness. Keep the Plan 033 acceptance inventory unpassed.
+- Added one-shot building-hint cleanup and OS-independent install-option resolution.
+- Added focused regressions; final validation is 30 passing root tests plus root/mobile build checks. Physical-device and full cross-client acceptance remain Plan 033 UNPASSED.
+
+## Reviewer remediation — complete
+
+Final reviewer findings are authoritative in `/home/farismnrr/Projects/situm-explore/.agents/reviews/plan-032-final.md`. Both non-device blockers are remediated: building hints are one-shot and cleared on workspace change/Map consumption; install options use OS detection independently of viewport and expose all configured platforms for desktop/unknown clients. Focused regressions cover both cases. Keep the Plan 033 acceptance inventory unpassed pending final review/integration.
 
 ## Plan 033 carry-over
 

@@ -19,6 +19,7 @@ export function NativeMapScreen({ workspaces, lifecycle }: { workspaces: Workspa
   const [error, setError] = useState('')
   const [retryNonce, setRetryNonce] = useState(0)
   const workspaceId = workspaces.selectedWorkspaceId
+  const [initialBuildingId] = useState(workspaces.requestedBuildingId)
   useEffect(() => {
     let cancelled = false
     setCredential(null); setCartography(null); setError('')
@@ -28,11 +29,15 @@ export function NativeMapScreen({ workspaces, lifecycle }: { workspaces: Workspa
     }).catch((cause: unknown) => { if (!cancelled) setError(cause instanceof ApiError ? cause.message : 'Map data is unavailable for this workspace.') })
     return () => { cancelled = true }
   }, [workspaceId, workspaces, retryNonce])
+  useEffect(() => {
+    if (initialBuildingId === null) return
+    workspaces.clearRequestedBuilding()
+  }, [initialBuildingId, workspaces])
   if (!workspaceId) return <StateCard title="Select a workspace" body="Map loads only after an owned workspace is selected." />
   if (error) return <StateCard title="Map unavailable" body={error} action={() => setRetryNonce(value => value + 1)} />
   if (!credential || !cartography) return <View style={styles.loading}><ActivityIndicator color="#111827" /><Text style={styles.muted}>Loading workspace cartography…</Text></View>
   if (!cartography.buildings.length) return <StateCard title="No buildings available" body="This workspace has no building available for native exploration." />
-  return <SitumProvider apiKey={credential.apiKey}><NativeMapRuntime key={workspaceId} workspaceId={workspaceId} cartography={cartography} lifecycle={lifecycle} initialBuildingId={workspaces.requestedBuildingId} /></SitumProvider>
+  return <SitumProvider apiKey={credential.apiKey}><NativeMapRuntime key={workspaceId} workspaceId={workspaceId} cartography={cartography} lifecycle={lifecycle} initialBuildingId={initialBuildingId} /></SitumProvider>
 }
 
 function NativeMapRuntime({ workspaceId, cartography, lifecycle, initialBuildingId }: { workspaceId: string, cartography: Cartography, lifecycle: string, initialBuildingId: number | null }) {

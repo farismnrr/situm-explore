@@ -3,7 +3,7 @@
 Branch: `plan/032-web-native-handoff-distribution`
 Base: updated `origin/main` after Plan 031 is integrated
 Depends on: Plan 031 complete/integrated
-Status: final reviewer remediation required; not PR-ready
+Status: implementation and final remediation complete; review/integration pending
 
 ## Objective
 
@@ -218,6 +218,12 @@ Do not add CI/App Store automation unless the user explicitly authorizes it.
 - Architecture, capability matrix, README/plan router, durable state, execution context, session evidence, and Plan 033 handoff were reconciled. No PR, merge, or Plan 033 execution occurred.
 
 Plan 032 implementation is complete on this branch pending review/integration. The terminal Plan 033 gate may start only after this branch is integrated into updated `main`.
+
+### Final reviewer remediation — 2026-08-17
+
+- Resolved the stale building-context blocker: manual workspace selection clears `requestedBuildingId`, and `NativeMapScreen` snapshots then clears the deep-link hint on Map mount without remounting away the intended initial selection.
+- Resolved the install-platform blocker: recognized Android/iOS user agents select their OS regardless of viewport width; desktop/unknown clients receive every configured Android/iOS store/download option instead of defaulting to iOS.
+- Added pure install-option tests and source-level cross-workspace/one-shot-hint regressions. The Plan 033 physical-device and full cross-client inventory remains explicitly UNPASSED.
 
 Plan 032 validation must prove every contract that does **not** require the final real-device/full-E2E environment:
 

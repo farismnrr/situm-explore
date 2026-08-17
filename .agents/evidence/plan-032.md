@@ -36,3 +36,10 @@ The following remain explicitly **UNPASSED** and are handed to Plan 033; this fi
 3. Plan 032 cross-client E2E: real phone Map handoff, preserved tablet/desktop Viewer behavior, all web Realtime handoffs, supported Android app-link/open/install behavior, QR/link decoding, logged-out login restoration, workspace authorization, invalid/deleted/unowned context, logout/restart, duplicate-listener checks, and final secret audit.
 
 Plan 033 remains the terminal hard gate. No physical-device, store/install, OS association, or cross-client item was converted to PASS here.
+
+## Final reviewer remediation evidence — 2026-08-17
+
+- Building deep-link hints are now one-shot: the selected workspace clears any prior hint, Map snapshots the intended hint before clearing it, and later workspace/navigation changes cannot reuse it. Focused regression coverage verifies the cleanup contract.
+- Install fallback platform selection is now independent of Map viewport capability: Android/iOS user agents receive their matching options at any width, while desktop/unknown clients receive all configured platform options. Pure option-resolution tests cover Android tablet, iOS, and desktop/unknown behavior.
+- Remediation validation passed: root production build, root lint/typecheck, root tests (30/30), mobile lint/typecheck, Expo config rendering, and `git diff --check`.
+- The Plan 033 inventory above is unchanged: every Plan 030/031 physical-device item and every Plan 032 full cross-client/open/install/auth/workspace/security item remains **UNPASSED**.

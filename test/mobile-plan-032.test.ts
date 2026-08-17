@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import { nativeDestinationFromLink, parseNativeDeepLink } from '../mobile/src/navigation/deep-link'
 import { mapViewerBreakpoint } from '../app/composables/useMapViewerCapability'
+import { getNativeInstallOptions } from '../app/components/native/install-options'
 
 test('Plan 032 parses only non-secret Map and Realtime routing context', () => {
   assert.deepEqual(parseNativeDeepLink('situm-explore://map?workspaceId=workspace_a&buildingId=42'), { destination: 'map', workspaceId: 'workspace_a', buildingId: 42 })
@@ -28,9 +29,10 @@ test('Plan 032 native lifecycle owns one deep-link listener and rechecks workspa
 
 test('Plan 032 shared web gate contains no credential-bearing handoff fields', () => {
   const gate = readFileSync(new URL('../app/components/native/NativeAppGate.vue', import.meta.url), 'utf8')
+  const installOptions = readFileSync(new URL('../app/components/native/install-options.ts', import.meta.url), 'utf8')
   assert.match(gate, /QRCode\.toDataURL/)
   assert.match(gate, /Copy app link/)
-  assert.match(gate, /androidStoreUrl|iosStoreUrl/)
+  assert.match(installOptions, /androidStoreUrl|iosStoreUrl/)
   assert.doesNotMatch(gate, /session|password|apiKey|credential|bearer/i)
 })
 
@@ -61,4 +63,28 @@ test('Plan 032 distribution fallback has no timer-based app detection', () => {
   assert.match(config, /associatedDomains/)
   assert.match(config, /intentFilters/)
   assert.match(config, /EXPO_PUBLIC_UNIVERSAL_LINK_HOST/)
+})
+
+test('Plan 032 install options use OS for mobile and expose all configured targets elsewhere', () => {
+  const config = {
+    androidStoreUrl: 'https://play.example/app',
+    iosStoreUrl: 'https://apps.example/app',
+    androidDownloadUrl: 'https://download.example/android',
+    iosDownloadUrl: 'https://download.example/ios'
+  }
+  assert.deepEqual(getNativeInstallOptions('android', config).map(option => option.platform), ['android', 'android'])
+  assert.deepEqual(getNativeInstallOptions('ios', config).map(option => option.platform), ['ios', 'ios'])
+  assert.deepEqual(getNativeInstallOptions('unknown', config).map(option => option.platform), ['android', 'android', 'ios', 'ios'])
+  assert.deepEqual(getNativeInstallOptions('unknown', { androidStoreUrl: config.androidStoreUrl }).map(option => option.url), [config.androidStoreUrl])
+})
+
+test('Plan 032 deep-link building hints are cleared on workspace changes and after Map consumption', () => {
+  const context = readFileSync(new URL('../mobile/src/workspaces/context.ts', import.meta.url), 'utf8')
+  const map = readFileSync(new URL('../mobile/src/map/NativeMapScreen.tsx', import.meta.url), 'utf8')
+  const app = readFileSync(new URL('../mobile/App.tsx', import.meta.url), 'utf8')
+  assert.match(context, /this\.requestedBuildingId = null/)
+  assert.match(context, /clearRequestedBuilding\(\) \{\n\s{4}if \(this\.requestedBuildingId === null\) return/)
+  assert.match(map, /const \[initialBuildingId\] = useState\(workspaces\.requestedBuildingId\)/)
+  assert.match(map, /workspaces\.clearRequestedBuilding\(\)/)
+  assert.doesNotMatch(app, /requestedBuildingId\|\| 'default'/)
 })
