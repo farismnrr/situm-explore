@@ -21,6 +21,12 @@ Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execut
 - Added the reusable accessible `NativeAppGate` with configured app/install/download actions, client-side QR, copy link, and truthful unavailable distribution state.
 - Added root `qrcode` dependency; no store/signing secrets or credentials are included.
 
+## Phase 3 — complete
+
+- Replaced the generic desktop-only Map branch with the geometry-based native handoff policy.
+- Kept the existing Viewer path for capable layouts and gated cartography fetches before phone/short layouts.
+- Removed the obsolete desktop-only viewport composable.
+
 ## Phase 033 carry-over
 
 The Plan 030/031 physical-device acceptance remains unpassed. Plan 033 must also run real cross-client handoff, install/open, deep-link, login restoration, workspace authorization, invalid-link, logout/restart, and secret-audit acceptance after this plan is integrated.

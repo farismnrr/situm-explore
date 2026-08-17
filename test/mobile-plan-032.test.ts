@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import { nativeDestinationFromLink, parseNativeDeepLink } from '../mobile/src/navigation/deep-link'
+import { mapViewerBreakpoint } from '../app/composables/useMapViewerCapability'
 
 test('Plan 032 parses only non-secret Map and Realtime routing context', () => {
   assert.deepEqual(parseNativeDeepLink('situm-explore://map?workspaceId=workspace_a&buildingId=42'), { destination: 'map', workspaceId: 'workspace_a', buildingId: 42 })
@@ -31,4 +32,13 @@ test('Plan 032 shared web gate contains no credential-bearing handoff fields', (
   assert.match(gate, /Copy app link/)
   assert.match(gate, /androidStoreUrl|iosStoreUrl/)
   assert.doesNotMatch(gate, /session|password|apiKey|credential|bearer/i)
+})
+
+test('Plan 032 Map capability is geometry-based and gates Viewer work before fetch', () => {
+  const map = readFileSync(new URL('../app/pages/app/map.vue', import.meta.url), 'utf8')
+  assert.deepEqual(mapViewerBreakpoint, { minWidth: 768, minHeight: 600 })
+  assert.match(map, /watch\(\[selectedWorkspaceId, isMapViewerCapable\]/)
+  assert.match(map, /if \(workspaceId && capable\) refreshCartography\(\)/)
+  assert.match(map, /<NativeAppGate feature="map"/)
+  assert.doesNotMatch(map, /useDesktopViewport|Desktop required/)
 })

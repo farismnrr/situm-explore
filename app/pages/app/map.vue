@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { SitumCartographyResponse } from '#shared/situm-cartography'
 
-const isDesktopViewport = useDesktopViewport()
+const isMapViewerCapable = useMapViewerCapability()
 const viewerState = ref<'loading' | 'ready' | 'error'>('loading')
 const viewer = ref<{ showUserSettings: (visible: boolean) => Promise<void> } | null>(null)
 const actionMessage = ref('')
 const { selectedWorkspaceId } = useWorkspaceContext()
 const { data: cartography, error: cartographyError, status: cartographyStatus, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
-watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refreshCartography() }, { immediate: true })
+watch([selectedWorkspaceId, isMapViewerCapable], ([workspaceId, capable]) => { if (workspaceId && capable) refreshCartography() }, { immediate: true })
 const activeBuildingId = computed(() => cartography.value?.buildings[0]?.id)
 
 function handleViewerStatus(state: 'loading' | 'ready' | 'error') {
@@ -31,13 +31,9 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Map', fullWidth: tru
 </script>
 
 <template>
-  <div v-if="!isDesktopViewport" class="map-desktop-required -m-4 flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center gap-4 border border-default bg-default p-8 text-center sm:-m-6 lg:-m-8">
-    <UIcon name="i-lucide-monitor" class="size-9 text-muted" aria-hidden="true" />
-    <div>
-      <p class="text-sm font-semibold text-highlighted">Desktop required</p>
-      <p class="mt-1.5 max-w-xs text-xs leading-5 text-muted">The Map Viewer needs more screen space than a mobile device can offer. Please open this page on a desktop or a tablet in landscape mode.</p>
-    </div>
-    <UButton to="/app" label="Back to home" color="neutral" variant="outline" size="sm" />
+  <div v-if="!isMapViewerCapable" class="map-native-required -m-4 flex min-h-[calc(100vh-4rem)] flex-col justify-center gap-4 bg-default p-4 sm:-m-6 lg:-m-8">
+    <NativeAppGate feature="map" :workspace-id="selectedWorkspaceId" :building-id="activeBuildingId" title="Take the Map with you" description="The mobile app provides the native Map, positioning, and navigation experience on phone-sized layouts."
+    />
   </div>
 
   <div v-else class="map-workspace relative -m-4 flex h-[calc(100vh-4rem)] min-h-0 flex-col overflow-hidden border border-default bg-default sm:-m-6 lg:-m-8">

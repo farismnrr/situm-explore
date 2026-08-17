@@ -43,7 +43,7 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 - [x] Phase 0 — Native release/deep-link readiness and web breakpoint matrix.
 - [x] Phase 1 — Native deep-link routing and authenticated context restoration.
 - [x] Phase 2 — Reusable web Native App Gate component/configuration.
-- [ ] Phase 3 — Map desktop/tablet web vs phone-native policy.
+- [x] Phase 3 — Map desktop/tablet web vs phone-native policy.
 - [ ] Phase 4 — Realtime all-web native handoff policy.
 - [ ] Phase 5 — Install/open-app, QR and distribution fallback UX.
 - [ ] Phase 6 — Production mobile packaging/distribution documentation.
@@ -122,6 +122,14 @@ It should support:
 - visual treatment consistent with canonical Situm Explore web/native references.
 
 ## Phase 3 — Web Map policy
+
+### Execution evidence — 2026-08-17
+
+- Replaced the generic Desktop required branch with the shared native Map gate below the frozen 768×600 geometry threshold.
+- The cartography `useFetch` remains lazy and now refreshes only when an authorized workspace exists and the viewport is Viewer-capable, so phone layouts do not initialize unnecessary Viewer/cartography work.
+- Viewer-capable layouts continue to render the existing `SitumViewer` path and accessibility controls unchanged.
+- Resize/orientation changes are owned by one `matchMedia` listener and switch between gate/Viewer branches through Vue state; branch unmounting prevents duplicate Viewer instances.
+- Removed the now-unused `useDesktopViewport` abstraction.
 
 Replace the current generic "Desktop required" behavior with the approved product contract.
 
