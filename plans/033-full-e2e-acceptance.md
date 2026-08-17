@@ -11,6 +11,8 @@ Run the complete cross-client and supported-Android physical-device acceptance f
 
 This is the terminal roadmap gate. No E2E item may be deferred again.
 
+Plan 032's inherited unpassed inventory is recorded at `.agents/evidence/plan-032.md`; those items remain unpassed until the corresponding Plan 033 phases produce real evidence.
+
 ## Mode
 
 Plan 033 is acceptance-first, not a new feature plan.
