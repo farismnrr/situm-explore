@@ -1,35 +1,45 @@
-# Plan 032 final implementation review — remediation required
+# Plan 032 final implementation review — one final deep-link lifecycle remediation required
 
-Reviewed 2026-08-17 on `plan/032-web-native-handoff-distribution`, implementation through `faad63e`.
+Reviewed 2026-08-17 on `plan/032-web-native-handoff-distribution`, implementation through `ab35054`.
 
 ## Outcome
 
-Plan 032 is **not PR-ready yet**. The overall handoff/distribution direction is correct, the Plan 033 acceptance inventory remains explicitly unpassed, and independent reviewer validation passes 28/28 tests plus root/mobile lint/typecheck and `git diff --check`. Two non-device implementation blockers remain and must be remediated before Plan 032 approval.
+The two prior Plan 032 review blockers are resolved in `ab35054`: deep-link building hints are cleared after Map consumption and on workspace selection, and install targets are now chosen by OS independently of viewport width with all configured Android/iOS choices exposed on desktop/unknown platforms.
 
-## Blocking findings
+Independent reviewer validation passes 30/30 root tests plus root/mobile lint/typecheck and `git diff --check`.
 
-1. **Deep-link building context is not one-shot and can leak across later workspace/navigation changes.** `WorkspaceContext.applyDeepLink()` stores `requestedBuildingId`, and `NativeMapScreen` consumes it as `initialBuildingId`, but `clearRequestedBuilding()` is never called and normal `select()` does not clear it. After a Map deep link, a later manual workspace switch or a later return to Explore can therefore reuse the old building hint; if another workspace happens to contain the same numeric building ID, the stale hint can silently select that building. Deep-link routing context is an untrusted navigation hint and must not survive beyond its intended application. Make the building hint one-shot or otherwise clear it on manual workspace change/after safe consumption without causing a remount that loses the intended initial selection. Add focused regression coverage for cross-workspace stale-hint cleanup.
+Plan 032 is **not PR-ready yet** because one non-device foreground deep-link lifecycle blocker remains.
 
-2. **The shared Native App Gate selects install destinations from viewport width and defaults non-phone layouts to iOS.** `NativeAppGate.vue` sets `isMobileBrowser` from `(max-width: 767px)` and then chooses Android vs iOS store/download URLs only when that geometry flag is true; otherwise it selects the iOS URLs. An Android tablet wider than 767px can therefore receive iOS install/download actions, and desktop/tablet gates expose only one platform instead of the configured platform choices required by the Plan 032 fallback contract. Platform selection may use OS/user-agent detection, but Map capability must remain geometry-based. Separate those concerns: on recognized mobile OS choose the matching platform regardless of viewport width; on desktop/unknown platforms expose the applicable configured Android/iOS install choices rather than silently defaulting to iOS. Add focused regression coverage for Android tablet and desktop/unknown-platform behavior.
+## Prior blocking findings — resolved in `ab35054`
 
-These are Plan 032 implementation/fallback-integrity findings. They are not physical-device or full cross-client E2E items and therefore must not be deferred to Plan 033.
+1. **Stale building hint could leak across later workspace/navigation changes.** Resolved: `WorkspaceContext.select()` clears `requestedBuildingId`, `NativeMapScreen` snapshots the requested building as a one-shot initial value and calls `clearRequestedBuilding()` after consumption, and focused regression coverage asserts cleanup.
+
+2. **Native App Gate defaulted wider/unknown clients to iOS.** Resolved: platform detection is now independent of viewport geometry, Android/iOS clients receive matching configured options, and desktop/unknown clients receive all configured platform options through `getNativeInstallOptions()` with focused regression coverage.
+
+## Remaining blocking finding
+
+3. **A foreground Map deep link to another building in the already-selected workspace can be ignored while Explore is already mounted.** `NativeMapScreen` now snapshots `workspaces.requestedBuildingId` only once with `useState(...)`, while `App.tsx` keys `NativeMapScreen` only by `selectedWorkspaceId`. When a new foreground Map link targets the same workspace but a different `buildingId`, `WorkspaceContext.applyDeepLink()` updates `requestedBuildingId`, but the existing `NativeMapScreen` instance does not remount and its `initialBuildingId` snapshot does not change. The new hint is therefore not consumed/applied even though Plan 032 explicitly owns foreground deep-link routing. The previous key containing `requestedBuildingId` forced a remount but also coupled remounting to hint clearing; the remediation needs a one-shot request/remount mechanism that applies each new Map building hint exactly once without retaining stale context or remount-looping when the hint is cleared.
+
+Add focused regression coverage that proves two sequential Map deep links to different buildings in the same authorized workspace can each produce a distinct one-shot Map request/remount/application, while manual workspace changes still clear stale hints.
+
+This is a Plan 032 implementation lifecycle issue, not a physical-device/full-cross-client Plan 033 acceptance item.
 
 ## Reviewer validation
 
-Independent reviewer checks at `faad63e`:
+Independent checks at `ab35054`:
 
-- root tests: 28/28 pass;
+- root tests: 30/30 pass;
 - root lint and Nuxt typecheck pass;
 - mobile lint and typecheck pass;
 - `git diff --check origin/main...HEAD` passes;
-- branch is clean and synchronized with `origin/plan/032-web-native-handoff-distribution`.
+- branch is clean and synchronized with `origin/plan/032-web-native-handoff-distribution` before this reviewer-doc update.
 
-Agent-reported build/runtime evidence remains recorded in `.agents/evidence/plan-032.md`: root production build, Expo prebuild/config, Android `assembleDebug`, production-preview HTTP/security-header smoke, diff and secret checks. The full Plan 030/031 physical-device acceptance and Plan 032 cross-client/open/install/auth E2E remain explicitly unpassed for Plan 033.
+Agent-reported root build, Expo config validation and other Plan 032 non-device evidence remain recorded in `.agents/evidence/plan-032.md`.
 
 ## Plan 033 carry-over
 
-Do not consume Plan 033 during remediation. The existing `.agents/evidence/plan-032.md` inventory remains the terminal acceptance inventory and must stay unpassed until real Plan 033 evidence exists.
+All Plan 030/031 physical-device acceptance and Plan 032 real cross-client/open/install/auth/workspace/secret-audit E2E remain explicitly **UNPASSED** for Plan 033. Do not consume or relabel those items during this remediation.
 
 ## Handoff
 
-Remediate both findings, add focused regressions, rerun root/mobile validation plus build/diff/secret checks as appropriate, update evidence/state truthfully, commit and push, then return for final reviewer approval. Stop before PR/merge and do not start Plan 033.
+Resolve finding 3, add focused lifecycle regression coverage, rerun root/mobile validation plus build/diff/secret checks as appropriate, update evidence/state truthfully, commit and push, then return for final reviewer approval. Stop before PR/merge and do not start Plan 033.

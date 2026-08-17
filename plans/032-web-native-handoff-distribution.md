@@ -3,7 +3,7 @@
 Branch: `plan/032-web-native-handoff-distribution`
 Base: updated `origin/main` after Plan 031 is integrated
 Depends on: Plan 031 complete/integrated
-Status: implementation and final remediation complete; review/integration pending
+Status: final reviewer remediation required; one same-workspace foreground Map deep-link lifecycle blocker remains
 
 ## Objective
 
