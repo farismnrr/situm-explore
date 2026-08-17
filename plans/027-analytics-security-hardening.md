@@ -25,7 +25,7 @@ Fix confirmed analytics correctness, workspace data-lifecycle, authentication-ab
 - [x] Phase 2 — Workspace deletion data lifecycle.
 - [x] Phase 3 — Authentication abuse protection.
 - [x] Phase 4 — Situm credential consistency (org match).
-- [ ] Phase 5 — Bounded upstream failures and timeouts.
+- [x] Phase 5 — Bounded upstream failures and timeouts.
 - [ ] Phase 6 — Browser security hardening.
 - [ ] Phase 7 — Regression coverage and testing decision.
 - [ ] Phase 8 — Full acceptance and closeout.
@@ -85,6 +85,16 @@ Finding 8 confirmed in `server/api/workspaces/[...workspacePath].ts` PUT handler
 - The existing READ_WRITE/READ_ONLY invariant is unchanged; the primary credential remains server-only (never returned to the client — only `situmAccountId`, `updatedAt`, and boolean `configured`/`viewerConfigured` flags are returned).
 - Invalid pairs fail before the `encryptWorkspaceApiKey`/DB insert calls, so no persistence occurs on mismatch.
 - Validation: `npm run lint` and `npm run typecheck` pass clean. Live verification against real Situm credentials from two different organizations is externally credential-gated and not available in this environment; the fix is a direct equality check on values already fetched and verified by the existing, previously-accepted `authSession` calls for both credentials, so no new SDK behavior is being relied upon.
+
+## Phase 5 evidence
+
+Finding 9 confirmed: three app-owned raw `fetch` calls to Situm/telemetry had no timeout/cancellation (`server/integrations/situm/reports.ts`, `server/integrations/situm/groups-alarms.ts`, `server/utils/telemetry-logs.ts`).
+
+- Added `server/utils/bounded-fetch.ts`: an `AbortController`-based `boundedFetch(url, init, timeoutMs)` (default 10s) that aborts on timeout and throws a distinct `UpstreamTimeoutError` (message contains only the URL pathname, never headers/body/credentials).
+- Wired into `reports.ts` (analytics sync from Situm) and `groups-alarms.ts` (groups/alarms reads), both mapping `UpstreamTimeoutError` to a sanitized `504` product error, consistent with their existing `errorFor`/`upstreamError` sanitization pattern; the `X-API-KEY` header is never included in the thrown error.
+- Wired into `telemetry-logs.ts`'s fire-and-forget OTLP log emission with a 5s bound, so a hung telemetry endpoint can no longer leave an unbounded dangling request.
+- **`@situm/sdk-js` (installed v0.25.0) — evidence and decision:** the installed SDK's `SDKConfiguration` type (`node_modules/@situm/sdk-js/dist/situm-sdk.d.ts`) declares `timeouts?: Record<string, number>`, proving *some* timeout configuration surface exists (axios-based client). However, neither the type definitions nor the README document the record's valid keys, units, per-operation scope, or default/fallback behavior for unspecified keys. Per the repository's "no evidence, no implementation" rule, this SDK-level timeout config was intentionally **not** set anywhere `SitumSDK` is constructed (`server/utils/viewer-auth.ts`, `server/api/workspaces/[workspaceId]/situm-config/validate.post.ts`, `server/api/workspaces/[...workspacePath].ts`), since guessing key names/semantics could silently produce no effect or an incorrectly-scoped timeout. This is recorded as an intentionally unresolved item, not a fix.
+- Validation: `npm run lint` and `npm run typecheck` pass clean.
 
 ## Acceptance evidence
 

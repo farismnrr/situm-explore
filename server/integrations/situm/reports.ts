@@ -14,6 +14,10 @@ function errorFor(status: number): never {
   throw createError({ statusCode: 502, statusMessage: 'Situm analytics source request failed.' })
 }
 
+function timeoutError(): never {
+  throw createError({ statusCode: 504, statusMessage: 'Situm analytics source request timed out.' })
+}
+
 function asRows(body: ReportResponse): Record<string, unknown>[] {
   const rows = body.data ?? body.rows ?? []
   return Array.isArray(rows) ? rows.filter(row => row && typeof row === 'object') as Record<string, unknown>[] : []
@@ -42,7 +46,7 @@ export async function syncSitumReport(input: SyncInput) {
   else if (input.buildingId !== undefined) params.set('building_id', String(input.buildingId))
   if (input.timeZone) params.set('time_zone', input.timeZone)
   if (input.grouping) params.set('grouping', input.grouping)
-  const response = await fetch(`https://api.situm.com/api/v1/reports/${paths[input.report]}.json?${params}`, { headers: { 'X-API-KEY': apiKey } })
+  const response = await boundedFetch(`https://api.situm.com/api/v1/reports/${paths[input.report]}.json?${params}`, { headers: { 'X-API-KEY': apiKey } }).catch((error) => { if (error instanceof UpstreamTimeoutError) timeoutError(); throw error })
   if (!response.ok) errorFor(response.status)
   const rows = asRows(await response.json() as ReportResponse)
   const client = getClickHouseClient()
