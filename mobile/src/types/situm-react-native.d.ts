@@ -10,7 +10,7 @@ declare module '@situm/react-native' {
   export type OnPoiSelectedResult = { identifier: string, buildingIdentifier: string }
   export type OnPoiDeselectedResult = { identifier: string, buildingIdentifier: string }
   export type OnFloorChangedResult = { toFloorName: string }
-  export type MapViewRef = { selectPoi: (id: number) => void, deselectPoi: () => void, selectFloor: (id: number) => void, navigateToPoi: (params: { identifier: number }) => void }
+  export type MapViewRef = { selectPoi: (id: number) => void, deselectPoi: () => void, selectFloor: (id: number) => void, navigateToPoi: (params: { identifier: number }) => void, cancelNavigation: () => void }
   export type MapViewProps = {
     configuration: { buildingIdentifier: string, situmApiKey?: string, profile?: string, language?: string }
     style?: StyleProp<ViewStyle>
@@ -21,7 +21,7 @@ declare module '@situm/react-native' {
     onFloorChanged?: (event: OnFloorChangedResult) => void
   }
   export const MapView: ForwardRefExoticComponent<MapViewProps & RefAttributes<MapViewRef>>
-  export const SitumProvider: (props: { children?: ReactNode }) => ReactNode
+  export const SitumProvider: (props: { children?: ReactNode, email?: string, apiKey?: string, token?: string, apiDomain?: string }) => ReactNode
   const SitumPlugin: {
     init: () => void
     setApiKey: (apiKey: string) => Promise<void>
