@@ -2,11 +2,8 @@
 // production ClickHouse query/deletion code (not a reimplementation) against
 // a real local ClickHouse instance. Not part of `npm test` (requires a
 // reachable ClickHouse) -- run manually:
-//   node --import tsx test/regression/analytics-clickhouse.regression.ts
+//   node --import tsx --env-file=.env test/regression/analytics-clickhouse.regression.ts
 import { randomUUID } from 'node:crypto'
-import { config } from 'dotenv'
-
-config()
 
 ;(globalThis as Record<string, unknown>).useRuntimeConfig = () => ({
   clickhouse: {
@@ -81,7 +78,11 @@ async function main() {
   check('overlapping windows: month-window row for 2026-01-15 counted exactly once (50)', visitorsByDate['2026-01-15'] === 50)
   check('overlapping windows: querying the month window returns only that window\'s value for 2026-01-10 (100), not summed with the differently-keyed sub-window sync\'s 999', visitorsByDate['2026-01-10'] === 100)
   check('date filtering: positioning excludes the unrelated Dec 2025 sync window', Number((requestedWindow.positioning as { total: string }[])[0]?.total) === 10)
-  check('workspace isolation: control workspace B never appears in workspace A results', !Object.keys(visitorsByDate).includes('workspaceB'))
+
+  const workspaceBResult = await queryWorkspaceAnalytics(workspaceB, { fromDate: '2026-01-01', toDate: '2026-01-31' })
+  const workspaceBVisitorsByDate = Object.fromEntries((workspaceBResult.visitors as { date: string, visitors: string }[]).map(r => [r.date, Number(r.visitors)]))
+  check('workspace isolation: querying workspace B returns only its own row (42), not workspace A\'s rows for the same date range', workspaceBVisitorsByDate['2026-01-10'] === 42 && Object.keys(workspaceBVisitorsByDate).length === 1)
+  check('workspace isolation: querying workspace A never returns workspace B\'s value (42) for the shared date', visitorsByDate['2026-01-10'] !== 42)
 
   const buildingFiltered = await queryWorkspaceAnalytics(workspaceA, { fromDate: '2026-01-01', toDate: '2026-01-31', buildingId: 7 })
   const buildingMismatch = await queryWorkspaceAnalytics(workspaceA, { fromDate: '2026-01-01', toDate: '2026-01-31', buildingId: 999 })
@@ -93,25 +94,44 @@ async function main() {
   check('geofence filter: matching geofenceId returns 1 row', (geofenceFiltered.geofencing as { rows: number }[])[0]?.rows === 1)
   check('geofence filter: non-matching geofenceId returns 0 rows', (geofenceMismatch.geofencing as { rows: number }[])[0]?.rows === 0)
 
-  // Phase 2: workspace deletion lifecycle.
+  // Phase 2: workspace deletion lifecycle, including the fourth
+  // workspace-owned table (analytics_workspace_sync_runs) from the original
+  // Plan 027 lifecycle finding.
+  await client.insert({
+    table: 'analytics_workspace_sync_runs',
+    values: [{ workspace_id: workspaceA, sync_key: monthWindow, report: 'visitors', from_date: '2026-01-01 00:00:00.000', to_date: '2026-01-31 00:00:00.000', scope: workspaceA + ':7', status: 'completed', started_at: '2026-01-31 00:00:00.000', completed_at: '2026-01-31 00:00:01.000', updated_at: '2026-01-31 00:00:01.000' }],
+    format: 'JSONEachRow',
+  })
+  await client.insert({
+    table: 'analytics_workspace_sync_runs',
+    values: [{ workspace_id: workspaceB, sync_key: 'visitors:2026-01-01:2026-01-31:' + workspaceB + ':9', report: 'visitors', from_date: '2026-01-01 00:00:00.000', to_date: '2026-01-31 00:00:00.000', scope: workspaceB + ':9', status: 'completed', started_at: '2026-01-31 00:00:00.000', completed_at: '2026-01-31 00:00:01.000', updated_at: '2026-01-31 00:00:01.000' }],
+    format: 'JSONEachRow',
+  })
+
   const beforeA = await client.query({ query: 'SELECT count() AS c FROM `situm_explore_analytics`.analytics_workspace_visitors WHERE workspace_id = {w:UUID}', query_params: { w: workspaceA }, format: 'JSONEachRow' }).then(r => r.json<{ c: string }>())
   check('sanity: workspace A has rows before deletion', Number(beforeA[0]?.c) > 0)
+  const syncRunsBeforeA = await client.query({ query: 'SELECT count() AS c FROM `situm_explore_analytics`.analytics_workspace_sync_runs WHERE workspace_id = {w:UUID}', query_params: { w: workspaceA }, format: 'JSONEachRow' }).then(r => r.json<{ c: string }>())
+  check('sanity: workspace A has a sync-run row before deletion', Number(syncRunsBeforeA[0]?.c) === 1)
 
   await deleteWorkspaceAnalytics(workspaceA)
 
-  const afterA = await Promise.all(['analytics_workspace_visitors', 'analytics_workspace_positioning_time', 'analytics_workspace_geofencing_stay'].map(table =>
+  const afterA = await Promise.all(['analytics_workspace_visitors', 'analytics_workspace_positioning_time', 'analytics_workspace_geofencing_stay', 'analytics_workspace_sync_runs'].map(table =>
     client.query({ query: `SELECT count() AS c FROM \`situm_explore_analytics\`.${table} WHERE workspace_id = {w:UUID}`, query_params: { w: workspaceA }, format: 'JSONEachRow' }).then(r => r.json<{ c: string }>())))
   check('workspace deletion: analytics_workspace_visitors has zero rows for workspace A after deletion', Number(afterA[0]?.[0]?.c) === 0)
   check('workspace deletion: analytics_workspace_positioning_time has zero rows for workspace A after deletion', Number(afterA[1]?.[0]?.c) === 0)
   check('workspace deletion: analytics_workspace_geofencing_stay has zero rows for workspace A after deletion', Number(afterA[2]?.[0]?.c) === 0)
+  check('workspace deletion: analytics_workspace_sync_runs has zero rows for workspace A after deletion', Number(afterA[3]?.[0]?.c) === 0)
 
   const afterB = await client.query({ query: 'SELECT count() AS c FROM `situm_explore_analytics`.analytics_workspace_visitors WHERE workspace_id = {w:UUID}', query_params: { w: workspaceB }, format: 'JSONEachRow' }).then(r => r.json<{ c: string }>())
   check('workspace deletion: unrelated control workspace B is untouched', Number(afterB[0]?.c) === 1)
+  const syncRunsAfterB = await client.query({ query: 'SELECT count() AS c FROM `situm_explore_analytics`.analytics_workspace_sync_runs WHERE workspace_id = {w:UUID}', query_params: { w: workspaceB }, format: 'JSONEachRow' }).then(r => r.json<{ c: string }>())
+  check('workspace deletion: unrelated control workspace B\'s sync-run row is untouched', Number(syncRunsAfterB[0]?.c) === 1)
 
-  // Cleanup control workspace's synthetic row.
+  // Cleanup control workspace's synthetic rows.
   await client.command({ query: 'ALTER TABLE `situm_explore_analytics`.analytics_workspace_visitors DELETE WHERE workspace_id = {w:UUID}', query_params: { w: workspaceB }, clickhouse_settings: { mutations_sync: '2' } })
+  await client.command({ query: 'ALTER TABLE `situm_explore_analytics`.analytics_workspace_sync_runs DELETE WHERE workspace_id = {w:UUID}', query_params: { w: workspaceB }, clickhouse_settings: { mutations_sync: '2' } })
 
-  console.log(failures === 0 ? `\nAll ${6 + 4} checks passed.` : `\n${failures} check(s) FAILED.`)
+  console.log(failures === 0 ? '\nAll 17 checks passed.' : `\n${failures} check(s) FAILED.`)
   process.exit(failures === 0 ? 0 : 1)
 }
 

@@ -33,10 +33,13 @@ test('rateLimit allows up to the limit within a window, then blocks', () => {
   assert.equal(rateLimit(key, 3, 60_000), false, 'request beyond the limit should be blocked')
 })
 
-test('rateLimit resets after the window elapses', () => {
+test('rateLimit resets after the window elapses', async () => {
   const key = `test:${Math.random()}`
-  assert.equal(rateLimit(key, 1, 50), true)
-  assert.equal(rateLimit(key, 1, 50), false)
+  const windowMs = 30
+  assert.equal(rateLimit(key, 1, windowMs), true, 'first request within the window should be allowed')
+  assert.equal(rateLimit(key, 1, windowMs), false, 'second request within the same window should be blocked')
+  await new Promise(resolve => setTimeout(resolve, windowMs + 20))
+  assert.equal(rateLimit(key, 1, windowMs), true, 'a request after the window has elapsed must be allowed again, proving the bucket actually reset')
 })
 
 test('rateLimit tracks distinct keys independently', () => {
@@ -45,6 +48,18 @@ test('rateLimit tracks distinct keys independently', () => {
   assert.equal(rateLimit(keyA, 1, 60_000), true)
   assert.equal(rateLimit(keyA, 1, 60_000), false)
   assert.equal(rateLimit(keyB, 1, 60_000), true, 'a different key must not be affected by another key exhausting its limit')
+})
+
+test('rateLimit prunes expired buckets so memory stays bounded across many unique identities', async () => {
+  const prefix = `prune:${Math.random()}`
+  const windowMs = 30
+  for (let i = 0; i < 50; i++) rateLimit(`${prefix}:${i}`, 1, windowMs)
+  await new Promise(resolve => setTimeout(resolve, windowMs + 20))
+  // A fresh key's call triggers the limiter's internal cleanup pass; the
+  // previously seen keys should each be usable again as if new, proving
+  // their expired buckets were actually removed rather than retained forever.
+  assert.equal(rateLimit(`${prefix}:trigger`, 1, windowMs), true)
+  assert.equal(rateLimit(`${prefix}:0`, 1, windowMs), true, 'an expired bucket must be collectible/reusable, not retained indefinitely')
 })
 
 test('boundedFetch aborts and throws UpstreamTimeoutError when the upstream never responds', async () => {

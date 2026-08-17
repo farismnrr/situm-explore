@@ -2,9 +2,12 @@
 
 _Last reviewed: 2026-08-17_
 
-## Plan 027 (complete, pending review/integration)
+## Plan 027 (complete + review remediation done, pending review/integration)
 
-Plan 027 (analytics correctness & security hardening) is complete on `plan/027-analytics-security-hardening`, based on latest `origin/main` (which includes Plan 026, merged via PR #20). All phases 0–8 passed; branch pushed and synchronized with origin; no PR/merge performed.
+Plan 027 (analytics correctness & security hardening) is complete on `plan/027-analytics-security-hardening`, based on latest `origin/main` (which includes Plan 026, merged via PR #20). All phases 0–8 passed; a subsequent pre-PR review surfaced 6 remediation items (all reconfirmed valid), all fixed on the same branch — see "Review remediation (post-Phase-8)" in `plans/027-analytics-security-hardening.md` for full evidence. Branch pushed and synchronized with origin; no PR/merge performed.
+
+- Remediated: rate-limit identity no longer trusts client-supplied `X-Forwarded-For` (this deployment publishes Nitro directly on the host port with no proxy — see `deploy/staging.compose.yml`); limiter now prunes expired buckets on every call; the window-reset test now genuinely crosses the boundary; the ClickHouse workspace-isolation regression assertion was trivial and is now a real cross-workspace query check; `analytics_workspace_sync_runs` deletion now has regression coverage (all 4 workspace-owned tables); the regression script's undeclared `dotenv` import was removed in favor of `--env-file=.env`.
+- Live-verified: 12 login attempts with a distinct spoofed `X-Forwarded-For` per request still hit 429 after 10, against the real production bundle on an isolated port; existing staging container was untouched.
 
 - Phase 0 complete: dependency confirmed (PR #20 merged into main), branch created from up-to-date main, stale "Plan 026 active" references in `AGENTS.md`/`.agents/state.md` reconciled.
 - Phase 1 complete: `queryWorkspaceAnalytics` now scopes reads by `workspace_id` + exact requested-window `source_window_id` prefix (same pattern as the legacy query path), preventing double-counting across overlapping/re-synced windows and making positioning/geofencing obey the requested date window. `buildingId`/`geofenceId` filters from the UI are now parsed, validated, and applied in `summary.get.ts`. `sync.post.ts` body is now validated with a zod schema instead of a bare TS generic. Lint and typecheck pass.

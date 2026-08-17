@@ -155,6 +155,8 @@ Status: active.
 
 - Rate limiting for `/api/auth/login` and `/api/auth/register` uses a KISS in-memory, per-process, fixed-window limiter (`server/utils/rate-limit.ts`), not Redis/a shared store. This is deliberate: the repository runs as a single Nitro process (see Plan 026 production containerization target); a distributed store would be infrastructure the current architecture does not justify. Revisit only if the runtime becomes genuinely multi-instance.
 - Registration checks for an existing account before running the expensive scrypt password hash, to avoid unauthenticated CPU/memory amplification. Login already avoided hashing for unknown emails and was left as-is; only rate limiting was added there. Generic invalid-credentials responses are unchanged.
+- **Trusted-proxy stance (Plan 027 review remediation):** the limiter derives client identity from the server-observed socket address only (`getRequestIP(event, { xForwardedFor: false })`), never from client-supplied `X-Forwarded-For`. Evidence: `deploy/staging.compose.yml` publishes the Nitro container directly on the host port (`"${STAGING_PORT:-3005}:3000"`) with no reverse proxy in the deployment, so nothing sanitizes that header before it reaches the app — trusting it would let any caller rotate the header to bypass throttling entirely (live-verified: 12 rotated-header login attempts still hit 429 after 10). Revisit only if a trusted reverse proxy is introduced in front of Nitro with a proven, documented forwarding contract; do not flip this back to trusting `X-Forwarded-For` without that evidence.
+- The limiter map self-prunes expired buckets on every `rateLimit()` call (no background timers) so memory stays bounded as more unique client identities are seen.
 
 Status: active.
 
