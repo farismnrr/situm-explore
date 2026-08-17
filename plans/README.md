@@ -55,20 +55,20 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Approved native companion roadmap
 
-Plan 028 evidence is integrated into `main`. Plan 029 foundation implementation is complete on `plan/029-native-app-foundation` and pending review/integration; Plans 030–032 remain gated on that integration.
+Plans 028–029 are integrated into `main`. Plan 030 native Map/positioning/navigation implementation is active on `plan/030-native-map-positioning-navigation`; Plans 031–032 remain gated on Plan 030 integration.
 
 ```text
-roadmap/028-032-native-mobile                       [Plan 029 complete; pending integration]
--> Plan 028 — Native Capability, Auth & Distribution Spike [complete]
--> Plan 029 — Native App Foundation & Workspace Session [complete; pending integration]
--> Plan 030 — Native Map, Positioning & Navigation
+roadmap/028-032-native-mobile                       [Plan 030 active]
+-> Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
+-> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
+-> Plan 030 — Native Map, Positioning & Navigation [active]
 -> Plan 031 — Native Realtime Operations
 -> Plan 032 — Web/Native Handoff, Distribution & Full Regression
 ```
 
 Roadmap overview: `plans/028-032-native-mobile-roadmap.md`.
 
-Plan 029 starts only from updated `main` after Plan 028 is integrated; each later dependent plan starts after its predecessor is integrated unless the user explicitly authorizes stacked execution.
+Plan 030 starts only from updated `main` after Plan 029 is integrated; each later dependent plan starts after its predecessor is integrated unless the user explicitly authorizes stacked execution.
 
 ## Transition direction
 

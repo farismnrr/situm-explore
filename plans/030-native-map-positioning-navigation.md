@@ -3,7 +3,7 @@
 Branch: `plan/030-native-map-positioning-navigation`
 Base: updated `origin/main` after Plan 029 is integrated
 Depends on: Plan 029 complete/integrated
-Status: planned
+Status: active
 
 ## Objective
 
