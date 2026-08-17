@@ -1,8 +1,8 @@
-# Plan 030 Final Review — Remediation Required
+# Plan 030 Final Review — Second Remediation Required
 
-Status: NOT PR-ready. Physical-device acceptance remains externally blocked, but reviewer found implementation blockers that must be fixed first.
+Status: NOT PR-ready. The original six implementation blockers are resolved at `74b9a99`, but two navigation-truthfulness/lifecycle blockers remain before implementation approval. Physical-device acceptance remains externally blocked.
 
-Reviewed commit: `df7d22b71001e94a4a27a7784a458a2b3fd245be`.
+Reviewed commits: `df7d22b71001e94a4a27a7784a458a2b3fd245be`, `74b9a99a2a991478d6abad58a358eb5ca58a75e1`.
 
 ## Blocking findings
 
@@ -57,3 +57,23 @@ Reviewed commit: `df7d22b71001e94a4a27a7784a458a2b3fd245be`.
 Fix every implementation blocker above first. Add focused regression coverage for pure/testable ownership/freshness/state-transition logic without inventing device behavior. Then rerun root/mobile validation, Expo prebuild/doctor, Android `assembleDebug` with `/home/farismnrr/Android/Sdk`, secret checks, and full branch diff review.
 
 After code remediation, Plan 030 must still remain BLOCKED at Phase 7 until real supported physical-device acceptance can be performed with a reachable app backend, owner-authorized Positioning credential, and calibrated real building/profile. Do not fabricate device evidence, create a PR, merge, or start Plan 031.
+
+## Second reviewer pass — 2026-08-17
+
+The original findings 1–6 are materially resolved in `74b9a99`: the Positioning key reaches `SitumProvider` before SDK children mount, workspace changes key/remount the runtime, current-location freshness is workspace/building-bounded, MapView navigation cancellation is wired, POI selection resolves real cartography, retry refetches, and focused pure regressions pass (16/16 total root tests).
+
+Two implementation blockers remain:
+
+7. **Out-of-route copy overclaims automatic rerouting.**
+   - Current `onNavigationOutOfRoute()` renders `You are outside the route. Situm is recalculating.`
+   - Installed `@situm/react-native` 3.19.2 proves only the out-of-route callback. Its wrapper source does not prove automatic recalculation/rerouting from that event.
+   - Use truthful copy limited to the evidenced state unless runtime/device evidence later proves automatic rerouting.
+
+8. **Positioning stop/navigation state is not fully owned or truthful.**
+   - The explicit `Stop positioning` action removes location updates and invalidates the current fix but does not cancel an active navigation, so navigation can remain logically active after its current-location source is intentionally stopped.
+   - `cancelNavigation()` always writes `Directions cancelled.` even when no navigation was active; building/effect cleanup can therefore manufacture a cancellation state/message.
+   - Make cancellation state conditional on actual navigation ownership/running state, and ensure explicitly stopping positioning cannot leave active navigation against a stopped location source.
+
+`expo-doctor` currently reports 19/21: the known Situm New Architecture metadata warning plus patch-version drift (`expo` 57.0.13 vs expected ~57.0.14 and `expo-build-properties` 57.0.11 vs expected ~57.0.12). These exact versions are frozen by Plan 028/029 authority, so patch drift is not a blocker unless intentionally superseded with new evidence.
+
+After findings 7–8 are fixed, rerun focused/root/mobile validation and diff checks. Physical-device Phase 7 acceptance remains mandatory and blocked until real supported-device/runtime credentials/building evidence exists.
