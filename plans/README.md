@@ -55,11 +55,11 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Approved native companion roadmap
 
-Implementation has not started.
+Plan 028 evidence is complete on `plan/028-native-capability-auth-spike` and pending review/integration. Production native implementation has not started; Plan 029 is next after Plan 028 is integrated.
 
 ```text
-roadmap/028-032-native-mobile                       [planning]
--> Plan 028 — Native Capability, Auth & Distribution Spike
+roadmap/028-032-native-mobile                       [Plan 028 complete; pending integration]
+-> Plan 028 — Native Capability, Auth & Distribution Spike [complete]
 -> Plan 029 — Native App Foundation & Workspace Session
 -> Plan 030 — Native Map, Positioning & Navigation
 -> Plan 031 — Native Realtime Operations
@@ -68,7 +68,7 @@ roadmap/028-032-native-mobile                       [planning]
 
 Roadmap overview: `plans/028-032-native-mobile-roadmap.md`.
 
-Normal sequential execution starts Plan 028 only after this planning branch is integrated into updated `main`; each dependent plan starts after its predecessor is integrated unless the user explicitly authorizes stacked execution.
+Plan 029 starts only from updated `main` after Plan 028 is integrated; each later dependent plan starts after its predecessor is integrated unless the user explicitly authorizes stacked execution.
 
 ## Transition direction
 

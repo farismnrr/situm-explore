@@ -61,6 +61,56 @@ Status: active; implementation of the native companion has not started.
 
 Status: approved roadmap direction; exact auth/session/distribution contracts remain Plan 028 gates.
 
+### Plan 028 Phase 1 native build matrix (2026-08-17)
+
+- Freeze Expo 57.0.13, React Native 0.86.2, React 19.2.3, `@situm/react-native` 3.19.2, and `react-native-webview` 13.16.1 for the evidence track.
+- Freeze Android min/compile/target SDK 24/36/36, JDK 21.0.10, Kotlin 2.1.20, and Gradle wrapper 9.3.1. Android compilation under Expo SDK 57 / React Native 0.86 New Architecture is proven by a disposable `assembleDebug`; this is not a claim of full wrapper New Architecture compatibility.
+- The Situm package's Android Gradle module supplies its own Situm Maven repository sufficiently for the clean proof; do not add an app-owned config plugin or patch unless later evidence requires it.
+- Use a standalone future `mobile/` package rather than npm workspaces. Plan 029 owns production project creation.
+- Effective iOS app baseline is 16.4 with Xcode 26.4+; wrapper iOS dependency is SitumSDK 3.41.0 through CocoaPods. Linux source/package evidence is available, but iOS compile/runtime remain macOS/device-gated.
+
+Status: active Plan 028 Phase 1 evidence; later capability/auth phases may supersede exact selections only with new proof.
+
+### Plan 028 Phase 2 wrapper capability boundary (2026-08-17)
+
+- The installed 3.19.2 wrapper source proves `SitumProvider`, WebView-backed `MapView`, building/floor/POI reads and selection, positioning/status/error callbacks, navigation, permission user-helper, generic `requestRealTimeUpdates`, and Share Live Location method surfaces.
+- Generic realtime returns `RealTimeData.locations` with `Location` fields such as position/building/floor and accuracy; it does not provide a public MapView remote-marker/focus API. Native Realtime must use a truthful list/detail fallback unless a separate proven overlay path is found.
+- Building selection has no public imperative selector; downstream code must own MapView lifecycle/remount and stale-state clearing. Background location is not requested by default; Android foreground service and iOS authorization differences require later device proof.
+- The 3.19.2 npm tarball omits the `lib/` files referenced by its package `types`/`module` fields. Android/Metro source integration works, but Plan 029 must recheck TypeScript package resolution before selecting a non-speculative workaround.
+
+Status: active Plan 028 Phase 2 evidence; runtime/device proof and auth decisions remain open.
+
+### Plan 028 Phase 3 Situm mobile auth boundary (2026-08-17)
+
+- Native v1 uses a dedicated workspace Situm Positioning API key, encrypted at rest server-side and issued only after the authenticated app session proves workspace ownership. It is separate from the server-only Read & Write primary and browser Read-only Viewer key.
+- Read-only Realtime and broad GET operations remain server-mediated; the Positioning key is not widened for them.
+- JWT support in the wrapper is source-proven but unselected because no complete issuer/claims/lifetime/refresh/revocation contract is proven for Situm Explore. Revisit only with current evidence.
+
+Status: active Plan 028 Phase 3 evidence; transport/storage implementation remains in later phases.
+
+### Plan 028 Phase 4 application session boundary (2026-08-17)
+
+- Native uses the same `nuxt-auth-utils` sealed PostgreSQL-user session through an `x-nuxt-session` header. Plan 029 must add a mobile login response that issues this opaque sealed value; it is not a second identity or JWT system.
+- Freeze a 7-day mobile session maximum age, OS secure storage later selected by Phase 5, explicit server logout, and no credential/token values in URLs or logs. Cookie-only React Native persistence is not proven.
+- Existing `requireUserSession` ownership checks remain authoritative for every native request; client-provided user/workspace identity is never trusted.
+
+Status: active Plan 028 Phase 4 evidence; implementation and revocation/version checks remain gated by later phases.
+
+### Plan 028 Phase 5 secure storage and distribution (2026-08-17)
+
+- Use `expo-secure-store` `~15.0.x` (registry version inspected: 15.0.8) for the sealed application session and any future Situm Positioning material. Treat both as bearer-equivalent authentication secrets; never place them in URLs, deep links, QR codes, logs, analytics, crash metadata, AsyncStorage or plaintext persistence.
+- Freeze Android/iOS identity as `com.situm.explore`; custom schemes are `situm-explore-dev://`, `situm-explore-staging://`, and `situm-explore://`. Deep-link context is limited to untrusted `workspace`, `building`, and `feature` hints for `/map` or `/realtime`, followed by authenticated re-authorization.
+- Own local Expo development builds and Gradle Android debug/direct-internal artifacts. iOS compilation/device/archive and all signing/store delivery are macOS/Apple-account gates. Do not select EAS without new evidence; keep all signing material external/ignored.
+
+Status: active Plan 028 Phase 5 evidence; HTTPS association and store distribution remain external gates.
+
+### Plan 028 Phase 6 readiness gate (2026-08-17)
+
+- Plan 028 is complete as an evidence spike. Plan 029 is GO for standalone foundation work from an updated/integrated base, but must first recheck the published wrapper TypeScript `lib/` omission, implement the mobile session response plus server-side revocation/version checks, and keep device/iOS/release gates explicit.
+- The approved native reference remains authoritative for presentation; capability evidence overrides any depicted interaction. Remote-position map focus is unproven and gets a list/detail fallback. Background location is not default, Realtime identity/status semantics remain backend-truth-bound, and no fake capability is permitted.
+
+Status: complete Plan 028; Plan 029 readiness GO with explicit external/runtime gates.
+
 ## Plans 021–025 identity/workspace model
 
 - Real application users are persisted in PostgreSQL.

@@ -18,6 +18,8 @@ Realtime is intentionally a native product destination in this roadmap even if s
 - Prefer existing owner-scoped backend Realtime APIs for other-device/user monitoring when that preserves least privilege.
 - Share Live Location/session-based Situm features may be used only when their current semantics match the product requirement exactly.
 - Do not fabricate map overlays, trajectories, online state or freshness semantics.
+- Treat `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html` as the visual/interaction reference for Realtime, while keeping the current Situm/backend data contract authoritative.
+- Keep Realtime vocabulary aligned with web/backend semantics. Do not replace device/position records with invented person identities or social-presence language unless a proven identity mapping exists.
 - Treat location data as sensitive operational data: minimize persistence/logging and expose only to authorized workspace users.
 - No PR/merge without explicit user authorization.
 
@@ -38,11 +40,14 @@ Before implementation, answer with current evidence:
 - what the existing workspace-scoped Nitro Realtime route returns and how it derives Situm authority;
 - whether current mobile product needs remote-user/device monitoring, Share Live Location, own-device publishing, or a combination;
 - exact freshness/timestamp/online fields available from Situm;
+- exact fields already exposed by the workspace-scoped Nitro route (`deviceId`/position identity, source time, building, floor, accuracy and coordinates) and whether any later enrichment is actually proven;
 - whether `@situm/react-native` exposes a supported generic remote-position overlay or only Share Live Location session display;
 - whether remote monitoring requires Read-only Situm authority and therefore should remain server-mediated;
 - whether own-device realtime publishing is already inherent in normal Situm positioning or needs an explicit session/action.
 
 Record one frozen v1 Realtime scope. Unsupported semantics remain absent.
+
+The baseline v1 UI semantics should remain device-position oriented unless Phase 0 proves more: show device/position identity, building/floor context, accuracy where useful, and source-time/last-seen information. A timestamp must not be converted into an `online`, `idle` or `offline` presence claim without explicit upstream evidence.
 
 ## Phase 1 — Data boundary
 
@@ -79,7 +84,9 @@ Build the mobile Realtime destination with truthful states:
 - distinguish loading, no positions, stale data, permission/auth failure and upstream failure;
 - refresh/retry behavior bounded and explicit;
 - workspace switch clears old realtime state immediately;
-- no implication that every user/device is online if the upstream contract does not prove that.
+- no implication that every user/device is online if the upstream contract does not prove that;
+- responsive list/detail/map composition follows the approved native reference while preserving the same factual field meanings as the web/backend contract;
+- selecting a record may focus/highlight its mapped position only when the native capability is actually proven; otherwise keep a useful list/detail experience without simulated markers.
 
 The screen must be useful without requiring a map overlay if generic remote markers are not supported by the native MapView contract.
 

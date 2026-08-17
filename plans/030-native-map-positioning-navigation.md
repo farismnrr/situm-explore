@@ -16,6 +16,8 @@ Deliver the native mobile spatial experience: Situm MapView, workspace/building 
 - Keep the Read & Write workspace credential server-only.
 - Positioning permission/sensor failures are normal product states, not generic crashes.
 - Do not fake route metrics, geometry, steps or navigation events that the SDK does not actually expose.
+- Translate the Map experience from `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html`; preserve the same Situm Explore tenant styling and end-user hierarchy while allowing proven platform-native controls where appropriate.
+- The reference does not override Situm capability evidence. If a depicted control/state is unsupported by the installed wrapper, use a truthful fallback and document it rather than simulating it.
 - Physical-device evidence is required for real positioning claims.
 - No PR/merge without explicit user authorization.
 
@@ -49,7 +51,8 @@ Requirements:
 - loading/empty/error states are product-owned;
 - map instance lifecycle is singular and explicit;
 - switching workspace/building tears down stale map state before loading the new context;
-- no hidden fallback to demo/default Situm content.
+- no hidden fallback to demo/default Situm content;
+- surrounding native controls, selected-place detail and responsive layout match the approved native reference closely enough that the same product hierarchy is recognizable across phone, tablet/POS and wide displays.
 
 ## Phase 2 — Permissions and positioning
 
@@ -63,7 +66,9 @@ Requirements:
 - stop/remove updates reliably when leaving the owning flow;
 - surface location/status/error callbacks safely;
 - positioning configuration uses the approved Remote Configuration/profile model unless a local override is explicitly justified;
-- do not log raw sensitive location streams unnecessarily.
+- do not log raw sensitive location streams unnecessarily;
+- permission requests are contextual to a user action that needs location; denied/not-now states keep every still-supported non-positioning Map task usable and explain the limitation without coercive copy;
+- background location is not requested in the initial Map permission flow unless a proven requirement explicitly needs it.
 
 ## Phase 3 — Current position / blue dot
 
@@ -84,7 +89,8 @@ Implement the minimum mobile map interactions needed by the product:
 - POI search/list/selection if the proven MapView/API supports it;
 - focus/select POI;
 - clear selection/state on workspace/building change;
-- accessible mobile controls around the native MapView.
+- accessible mobile controls around the native MapView;
+- end-user wording follows the approved native reference (places/levels/directions rather than exposing internal SDK jargon unnecessarily) while IDs and technical detail remain available only where product troubleshooting actually needs them.
 
 Do not replicate every web administration surface inside mobile.
 
@@ -97,7 +103,8 @@ Implement only navigation contracts proven against the installed React Native SD
 - navigation start/progress/destination/cancel/error callbacks;
 - stop/cancel previous navigation before starting a new one when required by current SDK semantics;
 - optional voice/TTS only when current platform behavior is proven and product-owned;
-- no invented ETA/steps/distance if the SDK does not expose them reliably.
+- no invented ETA/steps/distance if the SDK does not expose them reliably;
+- keep the reference's end-user “Directions”/guidance hierarchy, but omit or relabel any metric/instruction that the proven SDK contract cannot supply truthfully.
 
 Keep static web directions unchanged; this plan adds the mobile navigation owner rather than rewriting the web route model.
 

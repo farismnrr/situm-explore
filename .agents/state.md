@@ -2,9 +2,9 @@
 
 _Last reviewed: 2026-08-17_
 
-## Approved next roadmap — Plans 028–032 native companion
+## Plan 028 — Native Capability, Auth & Distribution Spike (complete; awaiting integration)
 
-The user approved the native companion direction on 2026-08-17. Planning artifacts live on `roadmap/028-032-native-mobile`; implementation has not started. The sequence is Plan 028 capability/auth/distribution spike -> Plan 029 native foundation/workspace session -> Plan 030 native Map/positioning/navigation -> Plan 031 native Realtime -> Plan 032 web/native handoff/distribution/full regression.
+The native roadmap was integrated into `main` via PR #22 (merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`). Plan 028 is complete on `plan/028-native-capability-auth-spike`; Phases 0–6 passed and Plan 029 is ready to begin from an updated/integrated base. No native product Map/Realtime implementation has started. The sequence remains Plan 028 -> Plan 029 -> Plan 030 -> Plan 031 -> Plan 032, with each later plan gated on predecessor integration.
 
 Locked product policy for this roadmap:
 
@@ -12,10 +12,17 @@ Locked product policy for this roadmap:
 - phone web Map becomes a native open/install handoff after the native Map exists;
 - web Realtime becomes a native open/install handoff on desktop/tablet/phone after native Realtime exists;
 - React Native + Expo development builds + `@situm/react-native` is the target stack, subject to Plan 028 exact-version/capability proof;
+- Phase 1 froze Expo 57.0.13 / React Native 0.86.2 / React 19.2.3 / `@situm/react-native` 3.19.2 / `react-native-webview` 13.16.1, Android min/compile/target 24/36/36, JDK 21.0.10, Kotlin 2.1.20 and Gradle 9.3.1. A disposable Expo prebuild plus Android `assembleDebug` passed with New Architecture enabled; iOS compile/runtime remain macOS/device-gated.
+- The future native package will be standalone under `mobile/`; Plan 029 must create it without npm workspaces or a production app in Plan 028.
+- Phase 2 source proof confirms MapView, cartography, positioning, navigation, permission helper, generic realtime data, and Share Live Location APIs. It does not prove generic remote-map overlays/focus, runtime payload semantics, background permission safety, or iOS compile/runtime. Unsupported reference interactions remain truthful fallbacks.
+- Phase 3 froze a dedicated encrypted workspace Positioning API key for the native SDK. The server-only Read & Write key and browser Read-only key remain excluded; native Realtime remains server-mediated. JWT wrapper support is present but unselected until issuer/claims/lifetime/refresh/revocation evidence exists.
+- Phase 4 froze same-user application auth over an opaque sealed h3 session value in `x-nuxt-session`, with a 7-day maximum age and OS secure storage later. Cookie-only native persistence is not proven; this transport keeps the existing Nitro/PostgreSQL identity and ownership boundary.
+- Phase 5 froze `expo-secure-store` `~15.0.x` for bearer-equivalent session/Situm material, identifiers `com.situm.explore`, custom schemes `situm-explore-{dev,staging}` and `situm-explore`, and local Expo development/Gradle Android artifact workflow. HTTPS association, Apple signing, and store delivery remain external gates; EAS is not selected.
+- Phase 6 completed the final matrix and capability-to-reference handoff. Plan 029 is GO for foundation work, with TypeScript package resolution, mobile auth/revocation, device runtime, iOS/macOS, public HTTPS association, and release signing/store delivery retained as explicit gates.
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
-- the server-side Read & Write Situm credential must never be exposed to mobile; Plan 028 must freeze a proven short-lived-token or dedicated Positioning-credential contract before Plan 029 implementation.
+- the server-side Read & Write Situm credential must never be exposed to mobile; the frozen native authority is a dedicated least-privilege Positioning credential issued only after owner authorization, while native Realtime remains server-mediated.
 
-Normal workflow: integrate the roadmap planning branch first, then execute each plan sequentially from updated `origin/main` unless the user explicitly authorizes stacked branches.
+Normal workflow: Plan 029 starts sequentially from updated `origin/main` only after Plan 028 is reviewed and integrated; later plans follow the same predecessor-integration rule unless the user explicitly authorizes stacked branches.
 
 ## Plan 027 (complete/integrated)
 
