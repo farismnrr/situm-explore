@@ -14,7 +14,7 @@ Before executing current plans, read:
 6. `.agents/protocols/git-workflow.md`;
 7. `ARCHITECTURE.md`;
 8. `plans/021-025-prerequisites.md` when historical prerequisite context matters;
-9. `plans/028-032-native-mobile-roadmap.md` when executing Plans 028–032;
+9. `plans/028-033-native-mobile-roadmap.md` when executing Plans 028–033;
 10. `design/data-source-matrix.md` when Situm/product scope matters;
 11. active plan;
 12. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
@@ -55,26 +55,27 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Approved native companion roadmap
 
-Plans 028–030 are integrated into `main`. Plan 031 Native Realtime Operations is active on `plan/031-native-realtime-operations`; Plan 032 remains gated on Plan 031 integration and owns the consolidated terminal physical-device E2E.
+Plans 028–031 are integrated into `main`. Plan 032 owns Web/Native Handoff & Distribution implementation; Plan 033 owns the consolidated full-E2E terminal gate, including every still-unpassed physical-device check from Plans 030–031.
 
 ```text
-roadmap/028-032-native-mobile                       [Plan 031 active; physical E2E consolidated in Plan 032]
+roadmap/032-033-e2e-split                         [Plans 032–033 remaining]
 -> Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
 -> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
--> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 032]
--> Plan 031 — Native Realtime Operations [active]
--> Plan 032 — Web/Native Handoff, Distribution & Full Regression [terminal physical-E2E gate]
+-> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 033]
+-> Plan 031 — Native Realtime Operations [complete/integrated; physical E2E carried to Plan 033]
+-> Plan 032 — Web/Native Handoff & Distribution
+-> Plan 033 — Full E2E Acceptance & Roadmap Closeout [terminal hard gate]
 ```
 
-Roadmap overview: `plans/028-032-native-mobile-roadmap.md`.
+Roadmap overview: `plans/028-033-native-mobile-roadmap.md`.
 
-Plan 031 starts only from updated `main` after Plan 030 is integrated; Plan 032 starts after Plan 031 is integrated unless the user explicitly authorizes stacked execution.
+Plan 032 starts only from updated `main` after Plan 031 is integrated; Plan 033 starts after Plan 032 is integrated unless the user explicitly authorizes stacked execution.
 
 ## Transition direction
 
 The historical pre-refactor baseline used env-defined app auth and process-global Situm account/Viewer/building context; it also produced analytics history before workspace ownership existed.
 
-Plans 021–025 replaced those incrementally. Plans 026–027 completed production containerization plus analytics/security hardening. Plans 028–032 add a native companion client while preserving Nitro as the single application backend.
+Plans 021–025 replaced those incrementally. Plans 026–027 completed production containerization plus analytics/security hardening. Plans 028–033 add and fully accept a native companion client while preserving Nitro as the single application backend.
 
 Do not remove a working old path before its replacement is implemented and accepted.
 

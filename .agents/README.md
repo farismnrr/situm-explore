@@ -36,9 +36,9 @@ Historical files do not regain authority merely because they contain more detail
 
 Plans 017–020 are complete/integrated into `main` by PR #12.
 
-Plans 026–027 are complete and integrated. The approved next roadmap is Plans 028–032 for the native Situm Explore companion app; implementation has not started.
+Plans 026–031 are complete and integrated. The approved native companion roadmap now spans Plans 028–033: Plan 032 owns Web/Native Handoff & Distribution implementation, and Plan 033 owns terminal full-E2E acceptance/roadmap closeout.
 
-Plans 021–027 no longer have an active planning gate; their integrated state is historical context. The Plans 028–032 roadmap planning branch is the planning authority until integrated, after which Plan 028 will be the next executable plan.
+Plans 021–031 are integrated historical execution. Current roadmap authority is `plans/028-033-native-mobile-roadmap.md`; Plan 032 is the next executable plan after the roadmap split is integrated, and Plan 033 starts only after Plan 032 integration.
 
 The roadmap moves the product from the pre-refactor env-defined user/global Situm runtime to DB-backed users, private workspaces, protected workspace configuration, workspace-scoped Situm/analytics context, reused observability, end-to-end correlation, and safe client errors.
 

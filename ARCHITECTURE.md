@@ -19,7 +19,7 @@ A little explicit duplication is better than speculative infrastructure.
 
 ## Runtime model
 
-The integrated web/backend runtime remains one full-stack Nuxt 4 application. Plans 028–032 add a React Native companion client while keeping Nitro as the single application backend.
+The integrated web/backend runtime remains one full-stack Nuxt 4 application. Plans 028–033 add a React Native companion client while keeping Nitro as the single application backend.
 
 ```text
 browser / Vue / Nuxt UI
@@ -268,7 +268,7 @@ Current web runtime may retain verified:
 - browser-safe Viewer settings/actions;
 - workspace-scoped realtime backend reads where needed by server/client contracts.
 
-Plans 028–032 add a **separate native companion client** while keeping Nitro as the single application backend. They do not turn the Nuxt runtime into a native wrapper or introduce a second backend.
+Plans 028–033 add a **separate native companion client** while keeping Nitro as the single application backend. They do not turn the Nuxt runtime into a native wrapper or introduce a second backend.
 
 Plan 031 implements native Realtime as a foreground-only, server-mediated list/detail read from the owner-scoped workspace route. The mobile client receives only sanitized position/device fields and never receives Situm credentials for remote monitoring. The installed SDK's generic realtime and Share Live Location surfaces remain capability evidence only; no remote MapView markers, focus behavior, or background positioning is claimed.
 
@@ -308,7 +308,7 @@ Do not add without a concrete requirement:
 - workspace invite/member hierarchy;
 - password reset/email verification flows.
 
-Native positioning/navigation is no longer deferred generically; it is owned explicitly by Plans 028–032 and must stay within those plan boundaries/evidence gates.
+Native positioning/navigation is no longer deferred generically; it is owned explicitly by Plans 028–033 and must stay within those plan boundaries/evidence gates.
 
 ## Active roadmap execution order
 
@@ -319,17 +319,18 @@ Plan 021 -> 022 -> 023 -> 024 -> 025
 Plan 026 -> 027
 ```
 
-Plans 028–030 are complete and integrated. The React Native foundation and native spatial implementation now exist under `mobile/`; Plan 031 Native Realtime Operations is active. The unpassed supported-device Map/positioning/navigation E2E remains explicitly carried forward to Plan 032's non-deferrable terminal gate:
+Plans 028–031 are complete and integrated. The React Native foundation, native spatial runtime and server-mediated native Realtime now exist under `mobile/`. Plan 032 owns Web/Native Handoff & Distribution implementation; Plan 033 owns the terminal full-E2E acceptance. The still-unpassed supported-device checks from Plans 030–031 are carried to Plan 033, not treated as accepted:
 
 ```text
 Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
 -> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
--> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 032]
--> Plan 031 — Native Realtime Operations [active]
--> Plan 032 — Web/Native Handoff, Distribution & Full Regression [terminal physical-E2E gate]
+-> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 033]
+-> Plan 031 — Native Realtime Operations [complete/integrated; physical E2E carried to Plan 033]
+-> Plan 032 — Web/Native Handoff & Distribution
+-> Plan 033 — Full E2E Acceptance & Roadmap Closeout [terminal hard gate]
 ```
 
-Normal Git workflow requires each dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking. Plan 031 was created from updated `main` after Plan 030 integration.
+Normal Git workflow requires each dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking. Plan 032 starts from updated `main` after Plan 031 integration; Plan 033 starts only after Plan 032 integration.
 
 ## Review checklist
 

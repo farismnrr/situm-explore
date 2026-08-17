@@ -3,7 +3,7 @@
 Branch: `plan/030-native-map-positioning-navigation`
 Base: updated `origin/main` after Plan 029 is integrated
 Depends on: Plan 029 complete/integrated
-Status: complete/integrated via PR #25; physical-device E2E remains explicitly unpassed and carried to Plan 032
+Status: complete/integrated via PR #25; physical-device E2E remains explicitly unpassed and carried to Plan 033
 
 ## Objective
 
@@ -18,7 +18,7 @@ Deliver the native mobile spatial experience: Situm MapView, workspace/building 
 - Do not fake route metrics, geometry, steps or navigation events that the SDK does not actually expose.
 - Translate the Map experience from `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html`; preserve the same Situm Explore tenant styling and end-user hierarchy while allowing proven platform-native controls where appropriate.
 - The reference does not override Situm capability evidence. If a depicted control/state is unsupported by the installed wrapper, use a truthful fallback and document it rather than simulating it.
-- Physical-device evidence is required for real positioning claims. Under the consolidated roadmap acceptance policy, that evidence is carried forward explicitly to Plan 032's hard final E2E gate rather than blocking Plan 030 integration.
+- Physical-device evidence is required for real positioning claims. Under the consolidated roadmap acceptance policy, that evidence is carried forward explicitly to Plan 033's hard final E2E gate rather than blocking Plan 030 integration.
 - No PR/merge without explicit user authorization.
 
 ## Phase checklist
@@ -30,7 +30,7 @@ Deliver the native mobile spatial experience: Situm MapView, workspace/building 
 - [x] Phase 4 — POI discovery/selection and map interaction.
 - [x] Phase 5 — Evidence-backed directions and navigation (runtime device evidence pending).
 - [x] Phase 6 — App lifecycle, failure handling and resource cleanup.
-- [x] Phase 7 — Acceptance disposition and E2E carry-over. Plan 030 implementation is approved; real-device positioning/blue-dot/floor-transition/POI/navigation evidence is explicitly deferred, still unpassed, and transferred to Plan 032's mandatory final physical-device E2E gate.
+- [x] Phase 7 — Acceptance disposition and E2E carry-over. Plan 030 implementation is approved; real-device positioning/blue-dot/floor-transition/POI/navigation evidence is explicitly deferred, still unpassed, and transferred to Plan 033's mandatory final physical-device E2E gate.
 
 ## Phase 0 — Pre-flight
 
@@ -123,9 +123,9 @@ Verify:
 
 Background positioning is not automatically enabled just because the SDK supports it. Enable it only if the frozen mobile product requirements and platform permission policy require it; otherwise record it for Plan 031 if Realtime needs it.
 
-## Phase 7 — Acceptance disposition and Plan 032 carry-over
+## Phase 7 — Acceptance disposition and Plan 033 carry-over
 
-Plan 030 closes on implementation/build/reviewer evidence. Physical-device claims remain deliberately **unpassed**, not waived. Plan 032 inherits these exact mandatory Android-device checks as part of its hard final E2E gate (and iOS where an eligible host/device is available):
+Plan 030 closes on implementation/build/reviewer evidence. Physical-device claims remain deliberately **unpassed**, not waived. Plan 033 inherits these exact mandatory Android-device checks as part of its hard final E2E gate (and iOS where an eligible host/device is available):
 
 - authenticated workspace map loads the correct real building;
 - no demo/foreign building flashes or persists;
@@ -137,6 +137,6 @@ Plan 030 closes on implementation/build/reviewer evidence. Physical-device claim
 - app navigation away/back and restart do not duplicate sessions;
 - no credentials appear in logs/traces/screenshots/repo files.
 
-Until Plan 032 proves them, documentation must not describe those device behaviors as accepted. Plan 030 may be reviewed/integrated after its implementation validation is approved, so Plan 031 can proceed from updated `main`; this deferral does not authorize skipping the carried physical E2E later.
+Until Plan 033 proves them, documentation must not describe those device behaviors as accepted. Plan 030 may be reviewed/integrated after its implementation validation is approved, so Plan 031 can proceed from updated `main`; this deferral does not authorize skipping the carried physical E2E later.
 
 Run repository and mobile validation from Plan 029, update durable architecture/capability evidence, commit/push each completed phase, and stop before PR until user authorization.

@@ -1,4 +1,4 @@
-# Plan 032 — Web/Native Handoff, Distribution & Full Regression
+# Plan 032 — Web/Native Handoff & Distribution
 
 Branch: `plan/032-web-native-handoff-distribution`
 Base: updated `origin/main` after Plan 031 is integrated
@@ -7,7 +7,9 @@ Status: planned
 
 ## Objective
 
-Finish the native-companion product boundary: route phone-web Map users to Situm Explore Mobile while preserving web Map on desktop/tablet; route every web Realtime entry point to the native app; add safe deep-link/install/download fallbacks; establish reproducible distribution configuration without committed signing/store secrets; and run the consolidated full cross-client **plus physical-device** regression carried forward from Plans 030–031.
+Finish the native-companion product boundary without consuming the final full-E2E gate: route phone-web Map users to Situm Explore Mobile while preserving accepted desktop/tablet web Map; route every web Realtime entry point to the native app; add safe deep-link/install/download fallbacks; and establish reproducible distribution configuration without committed signing/store secrets.
+
+Full cross-client and physical-device E2E is owned by Plan 033.
 
 ## Product policy to implement
 
@@ -22,44 +24,44 @@ Finish the native-companion product boundary: route phone-web Map users to Situm
   phone          -> native handoff / install CTA
 ```
 
-This plan changes UX routing only after the native destinations exist and their implementation has been accepted. Final roadmap closeout and production handoff activation still require the consolidated Plan 032 physical-device E2E gate to pass.
-
 ## Rules
 
-- Do not remove a working web Map path before native Map acceptance exists.
+- Do not remove a working web Map path before its replacement policy is implemented truthfully.
 - Realtime native-only is an intentional product policy, not a claim that Situm web APIs cannot read realtime data.
 - Web Map eligibility is based on tested viewport/layout capability, not user-agent sniffing.
 - Platform/OS detection may select App Store/Play Store/direct-download presentation, but must not be the primary Map capability gate.
 - Never put auth/session/Situm credentials in links, QR codes, store URLs or analytics events.
 - Deep links may carry non-secret routing context such as feature/workspace/building identifiers only when authorization is rechecked after app open/login.
 - Store/signing credentials and private keys remain external/ignored.
-- Web/native handoff UI and native destinations must remain visibly one Situm Explore tenant. Use `DESIGN.md` plus both canonical HTML references; do not introduce platform-specific branding or contradictory feature vocabulary during handoff.
-- Plan 032 is the hard terminal physical-E2E gate for the native roadmap. It inherits all explicitly unpassed physical-device acceptance from Plans 030–031; those items may not be deferred again, waived by emulator evidence, or marked accepted without real supported-device proof.
-- No PR/merge without explicit user authorization. Even with authorization, do not merge Plan 032 while its consolidated physical-device E2E gate is incomplete.
+- Web/native handoff UI and native destinations remain visibly one Situm Explore product.
+- Do not claim physical-device Map, positioning, navigation or Realtime acceptance in this plan. Those previously unpassed Plan 030/031 checks move to Plan 033.
+- Plan 032 may close/merge after implementation and truthful non-device validation are reviewer-approved, with all remaining E2E items explicitly handed to Plan 033.
+- No PR/merge without explicit user authorization.
 
 ## Phase checklist
 
-- [ ] Phase 0 — Native release/deep-link readiness and web breakpoint acceptance matrix.
+- [ ] Phase 0 — Native release/deep-link readiness and web breakpoint matrix.
 - [ ] Phase 1 — Native deep-link routing and authenticated context restoration.
 - [ ] Phase 2 — Reusable web Native App Gate component/configuration.
 - [ ] Phase 3 — Map desktop/tablet web vs phone-native policy.
 - [ ] Phase 4 — Realtime all-web native handoff policy.
 - [ ] Phase 5 — Install/open-app, QR and distribution fallback UX.
 - [ ] Phase 6 — Production mobile packaging/distribution documentation.
-- [ ] Phase 7 — Full web/native regression, documentation reconciliation and closeout.
+- [ ] Phase 7 — Implementation validation, documentation reconciliation and Plan 033 handoff.
 
 ## Phase 0 — Readiness and breakpoint matrix
 
 Before changing web routes:
 
-- confirm Plans 029–031 are integrated and the native Map + Realtime implementations are reviewer-accepted, with every still-unpassed physical-device acceptance item from Plans 030–031 enumerated as Plan 032 carry-over;
+- confirm Plans 029–031 are integrated and their implementation reviews are authoritative;
+- confirm the still-unpassed physical-device acceptance from Plans 030–031 is preserved for Plan 033, not silently converted to acceptance;
 - confirm actual Android/iOS application identifiers and deep-link configuration from Plan 028/029;
 - confirm which distribution targets are actually available (Play Store, App Store, direct Android artifact, internal distribution, etc.); do not invent links;
 - test the existing web Situm Viewer at representative phone/tablet/desktop viewport sizes and orientations;
 - freeze one explicit Map web-capability threshold/matrix based on usable Viewer layout, not generic device labels;
 - account for current app-shell breakpoint behavior so Map gating and navigation do not contradict each other.
 
-If tablet acceptance is not actually usable, record that evidence and ask the user before widening the web Map policy beyond proven layouts.
+If tablet acceptance is not actually usable, record that evidence and obtain an explicit product decision before widening the web Map policy beyond proven layouts.
 
 ## Phase 1 — Native deep links
 
@@ -73,7 +75,7 @@ Requirements:
 - after login, re-fetch/re-authorize workspace context from Nitro before navigation;
 - invalid/deleted/unowned workspace context falls back safely;
 - no session token, Situm key, password, bearer token or encrypted credential in URL/query/fragment;
-- duplicate/open-link lifecycle does not create duplicate positioning/realtime listeners.
+- duplicate/open-link lifecycle does not create duplicate positioning/realtime listeners by design and testable state ownership; final full lifecycle E2E remains Plan 033.
 
 ## Phase 2 — Reusable Native App Gate
 
@@ -89,7 +91,7 @@ It should support:
 - runtime configuration for public store/download/deep-link destinations rather than hardcoded release-specific URLs where appropriate;
 - accessibility and keyboard/screen-reader behavior;
 - analytics/telemetry only with non-sensitive event metadata;
-- visual treatment, icon language, spacing and copy hierarchy remain consistent with the canonical Situm Explore web/native references so the handoff feels like a continuation of the same product rather than an advertisement for a separate app.
+- visual treatment consistent with canonical Situm Explore web/native references.
 
 ## Phase 3 — Web Map policy
 
@@ -124,11 +126,11 @@ Implement a deterministic fallback hierarchy appropriate to the frozen distribut
 ```text
 mobile browser
   -> verified app/universal link
-  -> platform store/download fallback when app is not installed or link cannot open
+  -> platform store/download fallback when configured
 
 desktop/tablet web
-  -> QR containing the same non-secret universal/deep link
-  -> explicit platform install links
+  -> QR containing the same non-secret link
+  -> explicit platform install links when configured
 ```
 
 Do not use brittle timer hacks if Universal/App Links provide a safer OS-native path. If an app-scheme fallback is needed, document platform/browser limitations and keep failure UX truthful.
@@ -148,45 +150,28 @@ Requirements:
 - no secrets committed to Git, Expo config, build logs or documentation;
 - document how a new release updates web install/deep-link destinations without code-secret coupling.
 
-Do not add CI/App Store automation unless the user explicitly authorizes it; repository CI remains separately user-gated.
+Do not add CI/App Store automation unless the user explicitly authorizes it.
 
-## Phase 7 — Full regression
+## Phase 7 — Implementation validation and Plan 033 handoff
 
-Web acceptance:
+Plan 032 validation must prove every contract that does **not** require the final real-device/full-E2E environment:
 
-- desktop Map still loads correct workspace/building;
-- accepted tablet layouts still load web Map;
-- phone Map shows native gate and does not initialize Viewer unnecessarily;
-- Realtime shows native gate at desktop/tablet/phone sizes;
-- app shell/navigation responsive behavior remains correct;
-- auth/workspaces/analytics/admin flows regress cleanly;
-- production build/preview security headers remain intact.
+- root tests/lint/typecheck/build and production web preview;
+- mobile lint/typecheck, Expo validation/prebuild and Android build;
+- focused tests for deep-link parsing, auth-context restoration, invalid/unowned context handling and listener ownership where testable;
+- representative desktop/tablet/phone viewport behavior for web Map/Realtime gates;
+- no unnecessary Viewer initialization on phone-native-gated Map;
+- configured/unconfigured open/install/QR states are truthful and contain no secret data;
+- emulator/runtime smoke where safely available, without treating emulator sensor/GPS behavior as physical acceptance;
+- diff and secret checks;
+- documentation/architecture/data-source matrix reconciliation.
 
-Native acceptance:
+Before closeout, create an explicit Plan 033 acceptance inventory containing:
 
-- Map and Realtime deep links reach the correct destination after auth;
-- invalid/unowned workspace link is rejected safely;
-- install/open fallback works on supported Android target and iOS where available;
-- workspace switch, logout and app restart do not retain unauthorized context;
-- positioning/realtime listeners clean up across deep-link navigation;
-- no credentials appear in URLs, QR contents, logs or bundled public configuration;
-- Map/Realtime shell, naming, states and responsive hierarchy remain aligned with `design/reference/situm-explore-native-responsive-prototype.html` except for explicitly documented capability-driven deviations.
+- all Plan 030 physical-device carry-over: real building load, permission helper, positioning start/stop/status, blue dot/current floor, real floor transitions where environment permits, known POI interaction, navigation start/cancel/finish/error, and native lifecycle cleanup;
+- all Plan 031 physical-device carry-over: Realtime with real authorized workspace data, own-device physical positioning/publishing behavior if applicable, sensor/BLE/Wi-Fi/background behavior where applicable, workspace/lifecycle/logout/restart cleanup;
+- Plan 032 full web-to-native E2E: real open/install/deep-link behavior, login restoration, workspace authorization, Map/Realtime destination routing, invalid links, logout/restart, and cross-client secret audit.
 
-Consolidated supported-Android physical-device E2E — **hard gate, no further deferral**:
+These items remain **unpassed** until Plan 033 proves them. Plan 032 may be reviewer-approved and merged once its implementation/non-device evidence passes and this handoff is complete.
 
-- authenticate against the real reachable Situm Explore backend and restore the owner-authorized workspace/session safely;
-- load the correct calibrated real building with no demo/foreign building flash or stale workspace credential reuse;
-- exercise the contextual permission/User Helper flow;
-- start/stop real Situm positioning and receive truthful status/location evidence;
-- prove blue-dot/current-floor behavior and real floor transition behavior where the calibrated environment permits it;
-- select a known real POI and start/cancel/finish/error navigation according to observed SDK behavior;
-- verify navigation away/back, background/resume, workspace switch, logout and restart do not duplicate or retain stale Map/positioning/navigation sessions;
-- exercise the Plan 031 frozen Realtime scope with real authorized workspace data, including any own-device physical positioning/background/publishing behavior that Plan 031 explicitly carried forward;
-- verify Realtime workspace isolation, lifecycle cleanup and truthful freshness on the physical device;
-- confirm no application session, Situm credential, sensitive location stream or other secret appears in URLs, QR contents, screenshots intended as evidence, logs/traces, bundled public config or repository files.
-
-Emulator evidence may supplement this gate but cannot satisfy sensor/BLE/Wi-Fi/physical-positioning claims. If the required physical environment is unavailable, Plan 032 remains incomplete and must not be merged as roadmap closeout.
-
-Run root and mobile validation suites, production web preview, available native production/dev builds, and the consolidated real-device E2E above. Reconcile `ARCHITECTURE.md`, `design/data-source-matrix.md`, `plans/README.md`, `.agents/state.md`, durable decisions/knowledge and final roadmap status to exact runtime truth.
-
-Commit/push every completed phase and stop before PR/merge until explicit user authorization.
+Run the Plan 032 validation suite, update durable authority/evidence, commit/push each completed phase, and stop before PR/merge until explicit user authorization. Do not start Plan 033 before Plan 032 is integrated.

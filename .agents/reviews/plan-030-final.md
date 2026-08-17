@@ -1,10 +1,10 @@
-# Plan 030 Final Review — Implementation Approved / Physical E2E Deferred to Plan 032
+# Plan 030 Final Review — Implementation Approved / Physical E2E Deferred to Plan 033
 
-Status: implementation-approved and integrated via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`. Physical-device E2E remains unpassed and is explicitly transferred to Plan 032's mandatory terminal gate.
+Status: implementation-approved and integrated via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`. Physical-device E2E remains unpassed and, after the roadmap split, is explicitly transferred to Plan 033's mandatory terminal gate.
 
 Reviewed commits: `df7d22b71001e94a4a27a7784a458a2b3fd245be`, `74b9a99a2a991478d6abad58a358eb5ca58a75e1`, `8afb39b56db6c20c44f469df032d6ab0303a371b`.
 
-The findings/closeout sections below preserve review history. All implementation findings are resolved; the current authority is the status above plus the final implementation approval and consolidated Plan 032 carry-over disposition at the end of this file.
+The findings/closeout sections below preserve review history. All implementation findings are resolved; the current authority is the status above plus the final implementation approval and consolidated Plan 033 carry-over disposition at the end of this file.
 
 ## Historical blocking findings
 
@@ -86,4 +86,4 @@ Commit `8afb39b56db6c20c44f469df032d6ab0303a371b` resolves findings 7–8. Out-o
 
 Independent reviewer validation passes: root tests 17/17, root lint/typecheck, mobile lint/typecheck, `git diff --check origin/main...HEAD`, and branch clean/synchronized. The reported Expo prebuild and Android `assembleDebug` evidence remains consistent with the reviewed branch; `expo-doctor` 19/21 is limited to the known Situm New Architecture metadata warning plus frozen Expo patch drift and is not a blocker under current authority.
 
-Plan 030 implementation through Phase 6 is approved and integrated via PR #25. Under the consolidated roadmap acceptance decision recorded on 2026-08-17, the supported-Android physical checks are not waived or accepted; they remain explicit unpassed carry-over to Plan 032's non-deferrable final E2E gate. Plan 031 has started from the updated Plan 030 merge baseline; Plan 032 may not close/merge until it discharges the carried Map/positioning/blue-dot/floor/POI/navigation device acceptance.
+Plan 030 implementation through Phase 6 is approved and integrated via PR #25. The supported-Android physical checks are not waived or accepted. A later 2026-08-17 roadmap split moved the full-E2E gate out of Plan 032, so these Map/positioning/blue-dot/floor/POI/navigation checks now remain explicit unpassed carry-over to Plan 033's non-deferrable terminal E2E gate. Plan 031 subsequently integrated via PR #26; Plan 032 may implement/integrate handoff and distribution without claiming these device checks passed.
