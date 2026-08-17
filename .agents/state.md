@@ -2,7 +2,7 @@
 
 _Last reviewed: 2026-08-17_
 
-## Active Plan 028 — Native Capability, Auth & Distribution Spike
+## Plan 028 — Native Capability, Auth & Distribution Spike (complete; awaiting integration)
 
 The native roadmap was integrated into `main` via PR #22 (merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`). Plan 028 is complete on `plan/028-native-capability-auth-spike`; Phases 0–6 passed and Plan 029 is ready to begin from an updated/integrated base. No native product Map/Realtime implementation has started. The sequence remains Plan 028 -> Plan 029 -> Plan 030 -> Plan 031 -> Plan 032, with each later plan gated on predecessor integration.
 
@@ -22,7 +22,7 @@ Locked product policy for this roadmap:
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
 - the server-side Read & Write Situm credential must never be exposed to mobile; Plan 028 must freeze a proven short-lived-token or dedicated Positioning-credential contract before Plan 029 implementation.
 
-Normal workflow: Plan 028 is executing from integrated `origin/main`; later plans start sequentially from updated `origin/main` only after their predecessor is reviewed and integrated, unless the user explicitly authorizes stacked branches.
+Normal workflow: Plan 029 starts sequentially from updated `origin/main` only after Plan 028 is reviewed and integrated; later plans follow the same predecessor-integration rule unless the user explicitly authorizes stacked branches.
 
 ## Plan 027 (complete/integrated)
 

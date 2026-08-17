@@ -23,6 +23,25 @@ Do not implement the production Map, positioning/navigation, or Realtime feature
 - Capability/security truth from Plan 028 overrides prototype presentation; document any required visual/interaction deviation instead of faking unavailable behavior.
 - No PR/merge without explicit user authorization.
 
+## Frozen Plan 028 inputs
+
+Plan 029 uses these exact contracts without reopening them by assumption:
+
+- Structure: standalone `mobile/` package; no npm workspaces.
+- Stack: Expo 57.0.13, React Native 0.86.2, React 19.2.3, `@situm/react-native` 3.19.2, `react-native-webview` 13.16.1, Android min/compile/target SDK 24/36/36, JDK 21, Kotlin 2.1.20, and Gradle 9.3.1.
+- Application session: the same PostgreSQL-backed application identity as web; mobile login issues the same sealed h3 session value; native sends it through `x-nuxt-session`; maximum age is seven days; possession is bearer-equivalent authentication; `expo-secure-store` `~15.0.x` is the only approved persistent storage boundary. Server-side revocation/version checks are mandatory before production auth acceptance. Logout must clear server and local state according to the frozen contract, while local deletion is not itself server revocation.
+- Situm authority: a dedicated workspace Positioning API key, encrypted at rest server-side and issued only after owner authorization. Never expose the Read & Write primary or reuse the browser Viewer credential. JWT remains unselected. Realtime remains server-mediated.
+- Native identity: Android application ID `com.situm.explore`; iOS bundle ID `com.situm.explore`.
+- UI authority: `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html` remain binding visual/interaction references. Capability and security evidence takes precedence; unavailable interactions require truthful fallbacks.
+
+Required early gates:
+
+- Revalidate the `@situm/react-native` 3.19.2 published `lib/` TypeScript omission before choosing any workaround.
+- Implement the mobile session response and server-side session revocation/version checks.
+- Implement owner-authorized Positioning credential issuance without returning either broader Situm credential.
+- Prove `expo-secure-store` behavior on an actual Android development build.
+- Preserve iOS as MACOS/DEVICE-GATED when macOS/Xcode/device access is unavailable.
+
 ## Phase checklist
 
 - [ ] Phase 0 — Pre-flight and Plan 028 contract verification.
@@ -41,7 +60,7 @@ Do not implement the production Map, positioning/navigation, or Realtime feature
 
 ## Phase 1 — Mobile project
 
-Create the mobile application in the exact repository location selected by Plan 028 (expected `mobile/` unless the spike chose otherwise).
+Create the mobile application in the standalone `mobile/` package selected by Plan 028; do not add npm workspaces.
 
 Requirements:
 
@@ -82,7 +101,7 @@ Acceptance-critical behavior:
 - no password/session token stored in AsyncStorage/plaintext files/logs/traces;
 - rate-limited existing auth endpoints remain respected rather than bypassed with a parallel auth path.
 
-If Plan 028 selected a new mobile session endpoint/token, implement the narrowest version needed and keep all user/workspace authorization in the existing server model.
+Implement the narrow mobile session response required by the frozen sealed h3 session contract and keep all user/workspace authorization in the existing server model. Do not introduce a JWT or second identity system.
 
 ## Phase 4 — Workspace context and mobile Situm authority
 
@@ -96,7 +115,7 @@ Implement:
 - organization/permission validation before mobile authority is issued;
 - no Read & Write credential in mobile responses, storage or bundles.
 
-If the frozen model uses a dedicated Positioning credential, extend workspace configuration/persistence with authenticated encryption and write-only UX metadata following the existing primary/Viewer credential pattern. If it uses short-lived Situm tokens, implement bounded issuance/refresh without persisting broader authority than necessary.
+Extend workspace configuration/persistence with authenticated encryption and write-only UX metadata for the dedicated Positioning credential, following the existing primary/Viewer credential pattern. Issue it only after owner authorization; never return the Read & Write primary or browser Viewer credential. Keep Realtime server-mediated.
 
 ## Phase 5 — Shell and lifecycle
 

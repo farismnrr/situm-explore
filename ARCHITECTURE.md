@@ -278,7 +278,7 @@ Approved target ownership:
 - sensor-generated handset indoor blue dot, positioning permissions/runtime, mobile navigation/rerouting and the native Realtime experience belong to the React Native companion;
 - both clients reuse the same application users/workspaces and server-side ownership boundary.
 
-The workspace Read & Write Situm credential remains server-only. Mobile authority must be least-privilege and frozen by Plan 028 from current evidence before production native implementation.
+The workspace Read & Write Situm credential remains server-only. Plan 028 froze a dedicated least-privilege workspace Positioning credential for native issuance after owner authorization; the browser Viewer credential is not reused, and Realtime remains server-mediated.
 
 ## Data fetching / validation
 
@@ -315,17 +315,17 @@ Plan 021 -> 022 -> 023 -> 024 -> 025
 Plan 026 -> 027
 ```
 
-Approved next roadmap (implementation not started):
+Plan 028 evidence is complete on its branch; production native implementation has not started. The next roadmap step is Plan 029 after Plan 028 integration:
 
 ```text
-Plan 028 — Native Capability, Auth & Distribution Spike
+Plan 028 — Native Capability, Auth & Distribution Spike [complete; pending integration]
 -> Plan 029 — Native App Foundation & Workspace Session
 -> Plan 030 — Native Map, Positioning & Navigation
 -> Plan 031 — Native Realtime Operations
 -> Plan 032 — Web/Native Handoff, Distribution & Full Regression
 ```
 
-Normal Git workflow requires the roadmap planning branch to be integrated before Plan 028 starts and each later dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking.
+Normal Git workflow requires Plan 028 to be integrated before Plan 029 starts and each later dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking.
 
 ## Review checklist
 
