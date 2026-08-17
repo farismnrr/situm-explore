@@ -2,7 +2,7 @@
 
 Branch: `plan/027-analytics-security-hardening`
 Base: `origin/main` at phase start (Plan 026 integrated via PR #20)
-Status: active
+Status: complete
 
 ## Objective
 
@@ -28,7 +28,9 @@ Fix confirmed analytics correctness, workspace data-lifecycle, authentication-ab
 - [x] Phase 5 — Bounded upstream failures and timeouts.
 - [x] Phase 6 — Browser security hardening.
 - [x] Phase 7 — Regression coverage and testing decision.
-- [ ] Phase 8 — Full acceptance and closeout.
+- [x] Phase 8 — Full acceptance and closeout.
+
+Status: complete (all executable phases 0–8 done; PR/merge intentionally not performed, per repo protocol).
 
 ## Confirmed findings (pre-implementation)
 
@@ -119,6 +121,33 @@ Finding 10 confirmed: no security response headers were set anywhere (`nuxt.conf
 - Auth rate-limit-before-hash ordering (Phase 3) and Situm organization-mismatch rejection (Phase 4) are verified by direct code inspection of the committed diffs (the ordering/check is structurally unambiguous — see Phase 3/4 evidence above) rather than a live scripted test: exercising them end-to-end would require either a live scrypt-timing side channel (unreliable as a regression signal) or real Situm credentials from two different organizations (external/credential-gated, consistent with the plan's Phase 4 acceptance note).
 - Every regression evidence category listed in the plan objective is covered by either the `npm test` suite or the manual ClickHouse regression script, except the two items above which are covered by direct code evidence for the stated reasons.
 
-## Acceptance evidence
+## Phase 8 evidence — full acceptance and closeout
 
-Record lint/typecheck/build results, targeted regression evidence per phase (window dedup, date/building/geofence filtering, workspace-deletion row counts, rate-limit-before-hash ordering, org-mismatch rejection, timeout behavior), and any intentionally unresolved items (e.g. CSP limitations, SDK cancellation evidence gaps) in the final phase commit and session log.
+Full validation, run at the end of the branch history (after Phase 7's test additions):
+
+- `git diff --check` — clean (no whitespace errors).
+- `npm run lint` — clean, no errors.
+- `npm run typecheck` — clean, `nuxt typecheck` passes.
+- `npm run build` — succeeds; production `.output/` bundle produced (~10.4 MB, 2.5 MB gzip).
+- `npm test` — 8/8 pass (native `node --test`).
+- Manual ClickHouse regression (`test/regression/analytics-clickhouse.regression.ts`) — 10/10 pass against the real local `shared-clickhouse` instance.
+
+Production-preview runtime regression (per repo guidance, mirroring Plan 026's acceptance pattern): built the app and ran the real `.output/server/index.mjs` production bundle locally (`node --env-file=.env .output/server/index.mjs`, isolated port, separate from the existing healthy staging container `deploy-situm-explore-1`, which was left untouched throughout):
+
+- Root `/` returns `200` and now carries all four Phase 6 security headers (`X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`), confirmed live via `curl -sI`.
+- Unauthenticated `GET /api/workspaces` returns `401` — existing auth protection intact.
+- `POST /api/auth/login` with a nonexistent account: first 10 requests in the window returned `401` (generic invalid-credentials, unchanged), the 11th/12th returned `429` — Phase 3 rate limiting confirmed live and enforced before the generic-error path.
+- `POST /api/auth/register` with distinct emails: first 5 requests returned `200`, the 6th/7th returned `429` — Phase 3 registration rate limiting confirmed live.
+- Synthetic test accounts created during this smoke (`rl-test-1..5@example.com`) were deleted from `situm_explore.users` afterward; no residual test data or secrets were left in the shared Postgres instance.
+
+No secrets were persisted in the plan file, `.agents/` records, commit messages, or test files — all evidence above references behavior/counts/status codes only, never credential values.
+
+## Final summary
+
+All nine phases (0–8) of Plan 027 are complete on `plan/027-analytics-security-hardening`, pushed to origin, synchronized with no divergence. No PR was created and no merge into `main` was performed, per this repo's PR/integration gate — the branch remains available for user-directed review.
+
+Intentionally unresolved items (documented, not silently treated as solved):
+
+1. **`@situm/sdk-js` timeout/cancellation** (Phase 5): the installed SDK (v0.25.0) exposes an undocumented `timeouts?: Record<string, number>` config field with no documented key/unit semantics in its type definitions or README; left unset per "no evidence, no implementation" rather than guessed.
+2. **Content-Security-Policy** (Phase 6): not shipped. No live network trace of the hosted Situm Map Viewer's actual script/frame/connect-src origins exists in this repo, and this repo has already hit one real Viewer-behavior surprise (the wait_for_auth/postMessage building-mismatch investigation); a guessed CSP allowlist risks breaking the map for every user. All other safe headers (nosniff, referrer-policy, frame-options, permissions-policy) were shipped and live-verified.
+3. **Situm cross-organization credential live test** (Phase 4): the organization-match fix itself is implemented and unit-verifiable by inspection (reuses already-verified `authSession` fields), but a live end-to-end test against two real Situm credentials from different organizations is externally credential-gated and was not available in this environment.

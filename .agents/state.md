@@ -2,9 +2,9 @@
 
 _Last reviewed: 2026-08-17_
 
-## Active Plan 027
+## Plan 027 (complete, pending review/integration)
 
-Plan 027 (analytics correctness & security hardening) is active on `plan/027-analytics-security-hardening`, based on latest `origin/main` (which includes Plan 026, merged via PR #20).
+Plan 027 (analytics correctness & security hardening) is complete on `plan/027-analytics-security-hardening`, based on latest `origin/main` (which includes Plan 026, merged via PR #20). All phases 0–8 passed; branch pushed and synchronized with origin; no PR/merge performed.
 
 - Phase 0 complete: dependency confirmed (PR #20 merged into main), branch created from up-to-date main, stale "Plan 026 active" references in `AGENTS.md`/`.agents/state.md` reconciled.
 - Phase 1 complete: `queryWorkspaceAnalytics` now scopes reads by `workspace_id` + exact requested-window `source_window_id` prefix (same pattern as the legacy query path), preventing double-counting across overlapping/re-synced windows and making positioning/geofencing obey the requested date window. `buildingId`/`geofenceId` filters from the UI are now parsed, validated, and applied in `summary.get.ts`. `sync.post.ts` body is now validated with a zod schema instead of a bare TS generic. Lint and typecheck pass.
@@ -14,6 +14,7 @@ Plan 027 (analytics correctness & security hardening) is active on `plan/027-ana
 - Phase 5 complete: added `server/utils/bounded-fetch.ts` (AbortController-based, 10s default) and applied it to the three app-owned raw `fetch` calls (`situm/reports.ts`, `situm/groups-alarms.ts`, `telemetry-logs.ts`), sanitizing timeouts into existing error patterns without leaking credentials. `@situm/sdk-js` 0.25.0 exposes an undocumented `timeouts?: Record<string,number>` SDK config field; left unset per "no evidence, no implementation" since key semantics aren't documented — recorded as an intentionally unresolved item, not a fix. Lint/typecheck pass.
 - Phase 6 complete: added `server/middleware/security-headers.ts` (X-Content-Type-Options, Referrer-Policy, X-Frame-Options DENY, conservative Permissions-Policy), live-verified via local dev server curl. CSP intentionally NOT shipped — no live-verified network trace of the hosted Situm Viewer's actual script/frame/connect origins exists in this repo, and a guessed allowlist risks breaking the map (this repo has already hit one Viewer-behavior surprise; see the building-mismatch investigation above). Recorded as an open, documented limitation.
 - Phase 7 complete: no new test framework installed (used native `node --test` + already-present `tsx`; added `npm test`). `test/pure-logic.test.ts` (8 tests) covers date-range/sync-key/rate-limit/bounded-fetch pure logic. `test/regression/analytics-clickhouse.regression.ts` (manual, requires reachable ClickHouse) exercises the actual production `queryWorkspaceAnalytics`/`deleteWorkspaceAnalytics` against the real local ClickHouse instance — 10/10 checks passed proving no double-counting, correct date/building/geofence filtering, workspace isolation, and zero-row-after-deletion with unrelated workspace intact. Auth ordering and org-mismatch are covered by direct code evidence (credential/timing-gated, not scriptable here).
+- Phase 8 complete: full validation passed (`git diff --check`, `npm run lint`, `npm run typecheck`, `npm run build`, `npm test`, manual ClickHouse regression). Production-preview runtime smoke against the real built `.output/server/index.mjs` bundle (isolated port, existing staging container `deploy-situm-explore-1` left untouched) confirmed: security headers live on root, unauthenticated workspace API still 401s, login rate limit trips 429 after 10/min, registration rate limit trips 429 after 5/min. Synthetic test accounts created during the smoke were deleted from `situm_explore.users` afterward. Plan 027 status set to complete; no PR/merge performed.
 
 ## Plan 026 (integrated)
 
