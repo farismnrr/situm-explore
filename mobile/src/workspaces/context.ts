@@ -1,5 +1,5 @@
 import { ApiError } from '../api/errors'
-import type { PositioningCredentialResponse, Workspace } from '../api/types'
+import type { PositioningCredentialResponse, Workspace, WorkspaceConfigSummary } from '../api/types'
 import type { AuthSession } from '../auth/session'
 
 export type WorkspaceState = 'idle' | 'loading' | 'ready' | 'empty' | 'error'
@@ -10,6 +10,7 @@ export class WorkspaceContext {
   selectedWorkspaceId: string | null = null
   state: WorkspaceState = 'idle'
   error: ApiError | null = null
+  configuration: WorkspaceConfigSummary | null = null
 
   constructor(auth: AuthSession) { this.auth = auth }
 
@@ -33,6 +34,13 @@ export class WorkspaceContext {
   select(workspaceId: string) {
     if (!this.workspaces.some(workspace => workspace.id === workspaceId)) throw new ApiError('That workspace is not available to this account.', { code: 'FORBIDDEN' })
     this.selectedWorkspaceId = workspaceId
+    this.configuration = null
+  }
+
+  async loadConfiguration() {
+    if (!this.selectedWorkspaceId) return null
+    this.configuration = await this.auth.api.get<WorkspaceConfigSummary>(`/api/workspaces/${this.selectedWorkspaceId}/situm-config`)
+    return this.configuration
   }
 
   async getPositioningCredential() {

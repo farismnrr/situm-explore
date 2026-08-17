@@ -14,6 +14,8 @@ Plan 029 Phase 3 is complete: mobile login returns the same opaque sealed h3 ses
 
 Plan 029 Phase 4 is complete: the mobile client has an owner-scoped workspace list/select context and fetches only the selected workspace's dedicated Positioning credential. The key remains in memory for the caller and is never stored in the workspace context, persisted, logged, or returned alongside primary/Viewer credentials. Missing configuration is a typed recoverable error.
 
+Plan 029 Phase 5 is complete: the authenticated shell now follows the native reference hierarchy with responsive phone bottom navigation and tablet/wide rail layouts, workspace switching, loading/offline/error states, lifecycle status, SecureStore session restoration, and truthful Map/Realtime placeholders. No positioning initialization or fabricated capability state is present.
+
 Plan 028 was reviewed and integrated into `main` via PR #23 (merge commit `e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`), and its branch was deleted. `plan/029-native-app-foundation` was created from that exact updated `origin/main`; implementation has not started yet. Execute Plan 029 using `.agents/execution/plan-029.md` plus `plans/029-native-app-foundation.md`. Plans 030–032 remain gated on predecessor integration.
 
 Locked product policy for this roadmap:
