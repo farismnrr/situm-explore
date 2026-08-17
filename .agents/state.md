@@ -4,6 +4,8 @@ _Last reviewed: 2026-08-17_
 
 ## Active Plan 029 — Native App Foundation & Workspace Session
 
+Execution started on `plan/029-native-app-foundation` on 2026-08-17. Phase 0 confirms the branch is based on the integrated Plan 028 merge (`e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`), the frozen versions are still published, and JDK 21.0.10 is available. The next action is the standalone mobile scaffold and in-package `@situm/react-native` typing revalidation.
+
 Plan 028 was reviewed and integrated into `main` via PR #23 (merge commit `e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`), and its branch was deleted. `plan/029-native-app-foundation` was created from that exact updated `origin/main`; implementation has not started yet. Execute Plan 029 using `.agents/execution/plan-029.md` plus `plans/029-native-app-foundation.md`. Plans 030–032 remain gated on predecessor integration.
 
 Locked product policy for this roadmap:

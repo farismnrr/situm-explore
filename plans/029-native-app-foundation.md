@@ -3,7 +3,7 @@
 Branch: `plan/029-native-app-foundation`
 Base: updated `origin/main` after Plan 028 is integrated
 Depends on: Plan 028 complete/integrated
-Status: planned
+Status: in progress
 
 ## Objective
 
@@ -44,7 +44,7 @@ Required early gates:
 
 ## Phase checklist
 
-- [ ] Phase 0 — Pre-flight and Plan 028 contract verification.
+- [x] Phase 0 — Pre-flight and Plan 028 contract verification.
 - [ ] Phase 1 — Production mobile project scaffold and reproducible native configuration.
 - [ ] Phase 2 — Environment, API client, safe error and correlation boundary.
 - [ ] Phase 3 — Native login/session/logout using existing application identity.
