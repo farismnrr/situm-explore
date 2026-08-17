@@ -52,3 +52,13 @@ test('Plan 032 all web Realtime entry copy uses the native product policy', () =
   assert.match(home, /to: '\/app\/realtime'/)
   assert.match(home, /Open native workspace positions/)
 })
+
+test('Plan 032 distribution fallback has no timer-based app detection', () => {
+  const gate = readFileSync(new URL('../app/components/native/NativeAppGate.vue', import.meta.url), 'utf8')
+  const config = readFileSync(new URL('../mobile/app.config.ts', import.meta.url), 'utf8')
+  assert.match(gate, /QRCode\.toDataURL/)
+  assert.doesNotMatch(gate, /setTimeout\([^\n]*location|visibilitychange|blur/i)
+  assert.match(config, /associatedDomains/)
+  assert.match(config, /intentFilters/)
+  assert.match(config, /EXPO_PUBLIC_UNIVERSAL_LINK_HOST/)
+})

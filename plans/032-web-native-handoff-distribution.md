@@ -45,7 +45,7 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 - [x] Phase 2 — Reusable web Native App Gate component/configuration.
 - [x] Phase 3 — Map desktop/tablet web vs phone-native policy.
 - [x] Phase 4 — Realtime all-web native handoff policy.
-- [ ] Phase 5 — Install/open-app, QR and distribution fallback UX.
+- [x] Phase 5 — Install/open-app, QR and distribution fallback UX.
 - [ ] Phase 6 — Production mobile packaging/distribution documentation.
 - [ ] Phase 7 — Implementation validation, documentation reconciliation and Plan 033 handoff.
 
@@ -163,6 +163,13 @@ Requirements:
 - copy describes Realtime as a native product decision, not a web technical impossibility.
 
 ## Phase 5 — Open/install/QR fallback
+
+### Execution evidence — 2026-08-17
+
+- Native config now always exposes the environment-specific app scheme and conditionally emits iOS Associated Domains and Android App Links intent filters when `EXPO_PUBLIC_UNIVERSAL_LINK_HOST` is supplied.
+- Web mobile flow opens the configured HTTPS/app link directly; desktop/tablet flow presents a QR encoding the same non-secret target plus explicit configured install/download links.
+- No timer-based app detection or brittle browser blur/visibility fallback is used. When store/download URLs are absent, the gate explicitly says distribution is not yet published.
+- Added regression coverage for association configuration and fallback behavior.
 
 Implement a deterministic fallback hierarchy appropriate to the frozen distribution contract, for example:
 

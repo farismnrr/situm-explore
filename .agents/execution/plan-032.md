@@ -32,6 +32,11 @@ Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execut
 - Routed `/app/realtime` through the shared gate at every viewport and replaced unavailable/Coming soon wording with the intentional native product policy.
 - Kept all existing web navigation entry points valid and updated the home card copy.
 
+## Phase 5 — complete
+
+- Added optional iOS Associated Domains and Android App Links configuration from the public host environment variable.
+- Kept deterministic direct-link, QR, store/download, and truthful-unavailable fallback behavior without timer hacks.
+
 ## Phase 033 carry-over
 
 The Plan 030/031 physical-device acceptance remains unpassed. Plan 033 must also run real cross-client handoff, install/open, deep-link, login restoration, workspace authorization, invalid-link, logout/restart, and secret-audit acceptance after this plan is integrated.
