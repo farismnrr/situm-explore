@@ -104,6 +104,13 @@ Status: active Plan 028 Phase 4 evidence; implementation and revocation/version 
 
 Status: active Plan 028 Phase 5 evidence; HTTPS association and store distribution remain external gates.
 
+### Plan 029 Expo 57 dependency authority (2026-08-17)
+
+- Superseding decision: the Plan 029 Expo 57 mobile app uses `expo-secure-store` `~57.0.1` as the only approved persistent storage boundary for bearer-equivalent session/Situm material, `expo-status-bar` `~57.0.1`, and TypeScript `~6.0.3`. This is based on the actual Expo 57 package compatibility evidence and validation performed in the real `mobile/` package.
+- The earlier Plan 028 `expo-secure-store` `~15.0.x` decision remains historical evidence for that spike and must not be treated as the current Plan 029 dependency authority.
+
+Status: durable Plan 029 dependency decision; no production credential persistence outside SecureStore.
+
 ### Plan 028 Phase 6 readiness gate (2026-08-17)
 
 - Plan 028 is complete as an evidence spike. Plan 029 implementation is active: the published wrapper TypeScript `lib/` omission was rechecked in the real package and handled through its documented source entry with a narrow mobile TypeScript path; the mobile session response now uses the same sealed h3 value over `x-nuxt-session`, seven-day expiry, and a server-side user session-version revocation check. Device/iOS/release gates remain explicit.

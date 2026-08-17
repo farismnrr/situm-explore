@@ -3,7 +3,7 @@
 Branch: `plan/029-native-app-foundation`
 Base: updated `origin/main` after Plan 028 is integrated
 Depends on: Plan 028 complete/integrated
-Status: complete; pending review/integration
+Status: complete; PR-ready pending user authorization
 
 ## Objective
 
@@ -16,7 +16,7 @@ Do not implement the production Map, positioning/navigation, or Realtime feature
 - Reuse the existing Nitro backend, PostgreSQL users, workspace ownership and safe-error conventions.
 - No second backend, second user database or duplicated business authority.
 - Do not expose the workspace Read & Write Situm credential to mobile.
-- Follow the Plan 028 auth/session and secure-storage decisions exactly; reopen them only with new evidence.
+- Follow the Plan 028 auth/session and secure-storage decisions unless superseded by direct Plan 029 compatibility evidence; reopen them only with new evidence.
 - Keep secrets and signing material external/ignored.
 - Use the repository's npm workflow; do not introduce a second package manager.
 - Treat `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html` as the binding native visual/interaction reference. Reuse the existing Situm Explore tenant identity rather than creating a separate native design system.
@@ -29,7 +29,7 @@ Plan 029 uses these exact contracts without reopening them by assumption:
 
 - Structure: standalone `mobile/` package; no npm workspaces.
 - Stack: Expo 57.0.13, React Native 0.86.2, React 19.2.3, `@situm/react-native` 3.19.2, `react-native-webview` 13.16.1, Android min/compile/target SDK 24/36/36, JDK 21, Kotlin 2.1.20, and Gradle 9.3.1.
-- Application session: the same PostgreSQL-backed application identity as web; mobile login issues the same sealed h3 session value; native sends it through `x-nuxt-session`; maximum age is seven days; possession is bearer-equivalent authentication; `expo-secure-store` `~15.0.x` is the only approved persistent storage boundary. Server-side revocation/version checks are mandatory before production auth acceptance. Logout must clear server and local state according to the frozen contract, while local deletion is not itself server revocation.
+- Application session: the same PostgreSQL-backed application identity as web; mobile login issues the same sealed h3 session value; native sends it through `x-nuxt-session`; maximum age is seven days; possession is bearer-equivalent authentication; `expo-secure-store` `~57.0.1` is the only approved persistent storage boundary for the Expo 57 app. The Plan 028 `~15.0.x` package line was superseded during Plan 029 by direct Expo 57 package compatibility evidence. Server-side revocation/version checks are mandatory before production auth acceptance. Logout must clear server and local state according to the frozen contract, while local deletion is not itself server revocation.
 - Situm authority: a dedicated workspace Positioning API key, encrypted at rest server-side and issued only after owner authorization. Never expose the Read & Write primary or reuse the browser Viewer credential. JWT remains unselected. Realtime remains server-mediated.
 - Native identity: Android application ID `com.situm.explore`; iOS bundle ID `com.situm.explore`.
 - UI authority: `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html` remain binding visual/interaction references. Capability and security evidence takes precedence; unavailable interactions require truthful fallbacks.
