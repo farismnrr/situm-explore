@@ -3,7 +3,7 @@
 Branch: `plan/031-native-realtime-operations`
 Base: updated `origin/main` after Plan 030 is integrated
 Depends on: Plan 030 complete/integrated
-Status: planned
+Status: active
 
 ## Objective
 

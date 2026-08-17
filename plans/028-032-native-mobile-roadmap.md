@@ -1,6 +1,6 @@
 # Native Companion Roadmap — Plans 028–032
 
-Status: **in progress; Plans 028–029 integrated, Plan 030 implementation approved pending integration**
+Status: **in progress; Plans 028–030 integrated, Plan 031 active**
 
 Planning branch: `roadmap/028-032-native-mobile`
 
