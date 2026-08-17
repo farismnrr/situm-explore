@@ -3,7 +3,7 @@
 Branch: `plan/032-web-native-handoff-distribution`
 Base: updated `origin/main` after Plan 031 is integrated
 Depends on: Plan 031 complete/integrated
-Status: planned
+Status: in progress
 
 ## Objective
 
@@ -40,7 +40,7 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 
 ## Phase checklist
 
-- [ ] Phase 0 — Native release/deep-link readiness and web breakpoint matrix.
+- [x] Phase 0 — Native release/deep-link readiness and web breakpoint matrix.
 - [ ] Phase 1 — Native deep-link routing and authenticated context restoration.
 - [ ] Phase 2 — Reusable web Native App Gate component/configuration.
 - [ ] Phase 3 — Map desktop/tablet web vs phone-native policy.
@@ -50,6 +50,16 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 - [ ] Phase 7 — Implementation validation, documentation reconciliation and Plan 033 handoff.
 
 ## Phase 0 — Readiness and breakpoint matrix
+
+### Execution evidence — 2026-08-17
+
+- Plans 029–031 are integrated in `main`; Plan 030/031 physical-device outcomes remain unpassed and are preserved for Plan 033.
+- Existing native identifiers are `com.situm.explore` on Android/iOS. Existing schemes remain `situm-explore-dev`, `situm-explore-staging`, and production `situm-explore`; no signing or store credential is committed.
+- No published Play Store/App Store/direct-download destination is currently available in repository configuration. Public distribution destinations are therefore runtime-configured and render an explicit unavailable state until supplied.
+- The web Map capability matrix is frozen by usable viewport geometry: Viewer renders when width is at least 768px and height is at least 600px. Representative accepted layout classes are tablet portrait (768×1024), tablet landscape (1024×768), and desktop (at least 1024×600). Smaller/shorter layouts use the native handoff. This is a layout capability threshold, not user-agent classification.
+- The app shell's navigation breakpoint remains an independent 801px presentation breakpoint; Map capability does not depend on sidebar visibility.
+
+These observations are non-device readiness evidence only. Real web-to-native opening, install, deep-link, authentication, workspace authorization, and native spatial/realtime outcomes remain Plan 033 acceptance items.
 
 Before changing web routes:
 
