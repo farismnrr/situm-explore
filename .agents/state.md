@@ -18,7 +18,7 @@ Plan 029 Phase 5 implementation also requires remediation: reviewer inspection f
 
 Plan 029 is under reviewer remediation on `plan/029-native-app-foundation`; it is NOT PR-ready yet. Review findings are recorded in `.agents/reviews/plan-029-final.md`. Root baseline checks and mobile lint/typecheck/prebuild passed, and reviewer Android `assembleDebug` passed using `/home/farismnrr/Android/Sdk`; iOS remains macOS/Xcode/device-gated. No PR/merge was created and Plan 030 must not start until every blocking review finding is resolved and revalidated.
 
-Plan 028 was reviewed and integrated into `main` via PR #23 (merge commit `e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`), and its branch was deleted. `plan/029-native-app-foundation` was created from that exact updated `origin/main`; implementation has not started yet. Execute Plan 029 using `.agents/execution/plan-029.md` plus `plans/029-native-app-foundation.md`. Plans 030–032 remain gated on predecessor integration.
+Plan 028 was reviewed and integrated into `main` via PR #23 (merge commit `e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`), and its branch was deleted. `plan/029-native-app-foundation` was created from that exact updated `origin/main`; implementation is now under final reviewer remediation. Execute Plan 029 using `.agents/execution/plan-029.md`, `.agents/reviews/plan-029-final.md`, and `plans/029-native-app-foundation.md`. Plans 030–032 remain gated on predecessor integration.
 
 Locked product policy for this roadmap:
 
