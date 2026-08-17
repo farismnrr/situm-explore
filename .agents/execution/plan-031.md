@@ -26,6 +26,10 @@ Plan 030 is integrated via PR #25 at merge commit `2a751216e752a5da85180925878fa
 - If generic remote MapView overlays/focus remain unproven, ship a useful truthful list/detail Realtime experience rather than simulated markers.
 - Location data is sensitive: no unnecessary persistence, logs, traces, analytics payloads, or public config.
 
+## Review remediation
+
+Final reviewer findings are authoritative for remediation: `/home/farismnrr/Projects/situm-explore/.agents/reviews/plan-031-final.md`. Resolve every implementation blocker there before claiming Plan 031 implementation approval or PR readiness.
+
 ## Validation and closeout
 
 Run repository baseline plus focused Realtime/security/workspace-isolation tests, mobile lint/typecheck, Expo doctor/prebuild, Android `assembleDebug` with `/home/farismnrr/Android/Sdk`, emulator/non-sensor runtime smoke when safely possible, secret checks, and full branch diff review.
