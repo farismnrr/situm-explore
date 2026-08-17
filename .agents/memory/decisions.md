@@ -104,6 +104,13 @@ Status: active Plan 028 Phase 4 evidence; implementation and revocation/version 
 
 Status: active Plan 028 Phase 5 evidence; HTTPS association and store distribution remain external gates.
 
+### Plan 028 Phase 6 readiness gate (2026-08-17)
+
+- Plan 028 is complete as an evidence spike. Plan 029 is GO for standalone foundation work from an updated/integrated base, but must first recheck the published wrapper TypeScript `lib/` omission, implement the mobile session response plus server-side revocation/version checks, and keep device/iOS/release gates explicit.
+- The approved native reference remains authoritative for presentation; capability evidence overrides any depicted interaction. Remote-position map focus is unproven and gets a list/detail fallback. Background location is not default, Realtime identity/status semantics remain backend-truth-bound, and no fake capability is permitted.
+
+Status: complete Plan 028; Plan 029 readiness GO with explicit external/runtime gates.
+
 ## Plans 021–025 identity/workspace model
 
 - Real application users are persisted in PostgreSQL.

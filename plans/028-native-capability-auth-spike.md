@@ -3,7 +3,7 @@
 Branch: `plan/028-native-capability-auth-spike`
 Base: updated `origin/main` after the native roadmap planning branch is integrated
 Depends on: `plans/028-032-native-mobile-roadmap.md`
-Status: active — Phase 5 complete; Phase 6 next
+Status: complete — Phases 0–6 passed; Plan 029 ready with recorded gates
 
 ## Objective
 
@@ -31,7 +31,7 @@ Downstream native UI implementation is visually governed by `DESIGN.md` and `des
 - [x] Phase 3 — Freeze least-privilege Situm mobile authentication contract.
 - [x] Phase 4 — Freeze application login/session transport for native.
 - [x] Phase 5 — Freeze secure-storage, deep-link and distribution contracts.
-- [ ] Phase 6 — Evidence summary, durable decisions and Plan 029 readiness gate.
+- [x] Phase 6 — Evidence summary, durable decisions and Plan 029 readiness gate.
 
 ## Phase 0 — Pre-flight
 
@@ -182,6 +182,32 @@ Build and distribution evidence:
 - Machine-local SDK paths, generated `android/`/`ios/` output, provisioning profiles, certificates, keystores, signing passwords and store credentials remain external or ignored; no generated native artifacts are added by Plan 028.
 
 Phase 5 conclusion: PASS for the secure-storage, identifier, custom-scheme, and locally-owned development/distribution contract. HTTPS association and store delivery are explicit external gates; neither is required to claim a reproducible development build.
+
+### Phase 6 evidence and readiness gate — 2026-08-17
+
+Final frozen contract:
+
+| Area | Frozen decision | Remaining gate |
+| --- | --- | --- |
+| Dependency/version matrix | Expo 57.0.13, React Native 0.86.2, React 19.2.3, `@situm/react-native` 3.19.2, WebView 13.16.1, Android 24/36/36, JDK 21.0.10, Kotlin 2.1.20, Gradle 9.3.1, Situm Android 3.38.0, Situm iOS 3.41.0, iOS 16.4, Xcode 26.4+ | iOS compile/runtime requires macOS/Xcode/device |
+| Mobile structure/build | Standalone `mobile/` package; Expo development build; checked-in app config; generated native projects; local Gradle wrapper for Android | Plan 029 must recheck the published wrapper's missing `lib/` TypeScript entry and choose a minimal evidenced resolution |
+| Situm mobile auth | Dedicated encrypted-at-rest workspace Positioning API key, issued only after owner-authenticated backend authorization; primary Read & Write and browser Read-only credentials excluded; JWT unselected | Authenticated issuance endpoint and credential-backed runtime remain Plan 029/device/backend work |
+| Application session | Same PostgreSQL user/session sealed h3 value via `x-nuxt-session`; seven-day maximum age; web cookie remains supported; no second identity or JWT | Plan 029 must implement mobile login response and server-side revocation/version checks |
+| Secure storage | `expo-secure-store` `~15.0.x` for bearer-equivalent session/Situm material; no plain persistence or URL transport | Device-build and logout/recovery behavior require Plan 029 runtime proof |
+| Identity and links | Android/iOS `com.situm.explore`; custom schemes `situm-explore-dev://`, `situm-explore-staging://`, `situm-explore://`; `/map` and `/realtime` with untrusted `workspace`, `building`, `feature` hints only | Public HTTPS origin, Universal Links/App Links association files are not yet supplied |
+| Distribution | Local Expo development builds; Android debug/direct internal APK via Gradle; iOS Xcode/CocoaPods archive path; no EAS selected | Android release signing, Apple signing, stores/TestFlight require owner credentials and platform access |
+
+Capability-to-reference handoff:
+
+- Root initialization, MapView, building/floor/POI controls, positioning/blue dot, contextual permission helper, directions/navigation, generic Realtime data, and Share Live Location have source-proven API surfaces, subject to the runtime/platform gates recorded in Phase 2.
+- Building switching requires controlled MapView lifecycle/remount because no imperative `selectBuilding` method is exposed. Route metrics/instructions require concrete runtime payload proof before display.
+- Generic Realtime locations are data-proven but have no public remote-marker/focus API; Plan 031 must use a truthful list/detail fallback and must preserve device/position identity, building, floor, accuracy, coordinates where useful, and source time/last seen. It must not invent person names or online states.
+- Selected remote-position focus is unproven and must not be faked. Background positioning is not enabled by default; contextual permission is required. Share Live Location semantics and cross-device behavior remain device/backend-gated.
+- These constraints preserve the approved native HTML visual hierarchy while allowing capability-driven interaction differences. No production native screen or implementation was created in Plan 028.
+
+Readiness decision: GO for Plan 029 foundation work. The exact stack, standalone directory, authentication boundaries, secure-storage boundary, identifiers, deep-link payload, and owned build workflow are frozen. Plan 029 must begin with its contract verification and must not claim production auth acceptance, iOS support, remote-map focus, background positioning, or release distribution until the listed runtime/external gates pass.
+
+Phase 6 conclusion: PASS. Plan 028 is complete as an evidence spike; no production native code, generated native project, signing material, credential, PR or merge was created.
 
 ## Phase 2 — Situm mobile capability proof
 
