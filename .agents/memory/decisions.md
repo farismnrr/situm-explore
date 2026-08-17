@@ -80,6 +80,14 @@ Status: active Plan 028 Phase 1 evidence; later capability/auth phases may super
 
 Status: active Plan 028 Phase 2 evidence; runtime/device proof and auth decisions remain open.
 
+### Plan 028 Phase 3 Situm mobile auth boundary (2026-08-17)
+
+- Native v1 uses a dedicated workspace Situm Positioning API key, encrypted at rest server-side and issued only after the authenticated app session proves workspace ownership. It is separate from the server-only Read & Write primary and browser Read-only Viewer key.
+- Read-only Realtime and broad GET operations remain server-mediated; the Positioning key is not widened for them.
+- JWT support in the wrapper is source-proven but unselected because no complete issuer/claims/lifetime/refresh/revocation contract is proven for Situm Explore. Revisit only with current evidence.
+
+Status: active Plan 028 Phase 3 evidence; transport/storage implementation remains in later phases.
+
 ## Plans 021–025 identity/workspace model
 
 - Real application users are persisted in PostgreSQL.

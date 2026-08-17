@@ -3,7 +3,7 @@
 Branch: `plan/028-native-capability-auth-spike`
 Base: updated `origin/main` after the native roadmap planning branch is integrated
 Depends on: `plans/028-032-native-mobile-roadmap.md`
-Status: active — Phase 2 complete; Phase 3 next
+Status: active — Phase 3 complete; Phase 4 next
 
 ## Objective
 
@@ -28,7 +28,7 @@ Downstream native UI implementation is visually governed by `DESIGN.md` and `des
 - [x] Phase 0 — Pre-flight, dependency and authority reconciliation.
 - [x] Phase 1 — Freeze React Native / Expo / Situm SDK compatibility matrix.
 - [x] Phase 2 — Prove native Map, positioning, permission and navigation surfaces.
-- [ ] Phase 3 — Freeze least-privilege Situm mobile authentication contract.
+- [x] Phase 3 — Freeze least-privilege Situm mobile authentication contract.
 - [ ] Phase 4 — Freeze application login/session transport for native.
 - [ ] Phase 5 — Freeze secure-storage, deep-link and distribution contracts.
 - [ ] Phase 6 — Evidence summary, durable decisions and Plan 029 readiness gate.
@@ -122,6 +122,24 @@ Platform/source constraints:
 - The public npm package declares `lib/typescript` and `lib/module` in `package.json`, but the 3.19.2 published tarball/install has no `lib/` directory. Metro uses its `react-native: src/index` entry and the Android build succeeds, so this is not a native compilation blocker. It is a TypeScript package-resolution issue that Plan 029 must recheck before choosing a local declaration/source-resolution workaround; no patch is introduced in Plan 028.
 
 Phase 2 conclusion: native build integration, MapView, positioning, cartography, navigation, permissions helper, generic realtime data, and Share Live Location API surfaces are source-proven. Generic remote map overlays/focus, runtime payload semantics, system permissions, background behavior, session sharing and iOS compilation remain unproven or gated as classified above. No capability is promoted to production implementation solely from this source proof.
+
+### Phase 3 evidence — 2026-08-17
+
+Auth evidence reviewed:
+
+- Installed `@situm/react-native` 3.19.2 exposes `SitumPlugin.setToken(token)`, `SitumProvider.token`, and native Android/iOS token bridges. The Provider documentation states token renewal is the client's responsibility.
+- Current official React Native changelog evidence recorded in Phase 0 says JWT support was added in wrapper 3.19.0. The current official React Native quickstart does not define a Situm Explore-compatible token issuer, claims, lifetime, refresh endpoint, or revocation contract. The native source accepts an opaque string and returns only a boolean success result.
+- Current official API-key guidance ([Managing API Keys](https://situm.com/docs/managing-api-keys/), updated 2026-03-16) says Positioning keys provide basic cartography/internal location access and are the normal mobile-SDK key; Only Read additionally permits all data reads including Realtime; Read & Write is for internal tasks and must not be available to final users. The REST quickstart corroborates the permission ladder ([REST API Quickstart](https://situm.com/docs/websdk-rest-api-quickstart-guide/)).
+
+Frozen v1 contract:
+
+1. Do not select JWT for Plan 029. Wrapper availability alone is insufficient without a proven issuer, token format/claims, lifetime, refresh, revocation and failure contract.
+2. Each native-enabled workspace must have a dedicated Situm **Positioning** API key, separate from the server-only Read & Write primary and separate from the browser Read-only Viewer credential. It is encrypted at rest with the existing server-side workspace secret boundary and is never bundled, logged, placed in public runtime configuration or put in URLs.
+3. After the authenticated Situm Explore application session and owner/workspace authorization succeed, a future server-owned endpoint may issue the dedicated Positioning key to the native client over the authenticated transport. The native app may keep it in memory for the session; persistence is optional and, if required, must use the Phase 5 OS secure-storage decision. Plan 029 must not return the primary or Viewer credential in this flow.
+4. The Positioning key is for the wrapper’s Map/cartography/positioning/navigation path only. Read-only Realtime and other broad GET operations remain server-mediated through the existing owner-scoped Nitro boundary unless a later evidence change proves a narrower contract.
+5. A missing, revoked, or invalid Positioning key is a recoverable auth/configuration state. Native UI must show a safe unavailable/retry state and must not silently substitute the primary, Viewer, or a guessed token.
+
+Auth decision: PASS for the dedicated Positioning-key contract; JWT is explicitly UNSELECTED/UNPROVEN, not rejected as impossible. No credential value or auth endpoint was implemented in this evidence phase.
 
 ## Phase 2 — Situm mobile capability proof
 
