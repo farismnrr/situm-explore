@@ -36,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–031 are complete/integrated via PRs #20–#26. Plan 032 Web/Native Handoff & Distribution remains in final reviewer remediation on `plan/032-web-native-handoff-distribution`; the two prior blockers are resolved in `ab35054`, but one same-workspace foreground Map deep-link lifecycle blocker remains per `.agents/reviews/plan-032-final.md`. Plan 033 owns the consolidated full E2E acceptance and roadmap closeout, including every still-unpassed physical-device item from Plans 030–031 plus Plan 032 cross-client acceptance. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–031 are complete/integrated via PRs #20–#26. Plan 032 Web/Native Handoff & Distribution remains in final reviewer remediation on `plan/032-web-native-handoff-distribution`; the two prior blockers were resolved in `ab35054`, and the same-workspace foreground Map lifecycle remediation is implemented in `f72697b` with focused sequential-link coverage. Plan 033 owns the consolidated full E2E acceptance and roadmap closeout, including every still-unpassed physical-device item from Plans 030–031 plus Plan 032 cross-client acceptance. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 

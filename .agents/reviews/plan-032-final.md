@@ -1,12 +1,12 @@
 # Plan 032 final implementation review — one final deep-link lifecycle remediation required
 
-Reviewed 2026-08-17 on `plan/032-web-native-handoff-distribution`, implementation through `ab35054`.
+Reviewed 2026-08-17 on `plan/032-web-native-handoff-distribution`, remediation implementation through `f72697b`.
 
 ## Outcome
 
 The two prior Plan 032 review blockers are resolved in `ab35054`: deep-link building hints are cleared after Map consumption and on workspace selection, and install targets are now chosen by OS independently of viewport width with all configured Android/iOS choices exposed on desktop/unknown platforms.
 
-Independent reviewer validation passes 30/30 root tests plus root/mobile lint/typecheck and `git diff --check`.
+Remediation validation passes 31/31 root tests plus root/mobile lint/typecheck and `git diff --check`; production build, Expo config rendering, and Android debug compilation also pass with the configured SDK path.
 
 Plan 032 is **not PR-ready yet** because this remediation still requires final reviewer confirmation; the implementation blocker described below has been resolved on the working branch.
 

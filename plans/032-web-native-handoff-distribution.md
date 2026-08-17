@@ -227,9 +227,10 @@ Plan 032 implementation is complete on this branch pending review/integration. T
 
 ### Final reviewer remediation — 2026-08-17
 
-- Resolved the stale building-context blocker: manual workspace selection clears `requestedBuildingId`, and `NativeMapScreen` snapshots then clears the deep-link hint on Map mount without remounting away the intended initial selection.
+- Resolved the stale building-context blocker: manual workspace selection clears pending `mapRequest` state, and each Map request is consumed exactly once by the mounted screen.
+- Resolved the foreground same-workspace lifecycle blocker: monotonic request IDs and a local runtime key apply a second building link once without changing the parent Explore key or remounting when the request is cleared.
 - Resolved the install-platform blocker: recognized Android/iOS user agents select their OS regardless of viewport width; desktop/unknown clients receive every configured Android/iOS store/download option instead of defaulting to iOS.
-- Added pure install-option tests and source-level cross-workspace/one-shot-hint regressions. The Plan 033 physical-device and full cross-client inventory remains explicitly UNPASSED.
+- Added pure install-option tests plus focused sequential same-workspace request and source-level lifecycle regressions. The Plan 033 physical-device and full cross-client inventory remains explicitly UNPASSED.
 
 Plan 032 validation must prove every contract that does **not** require the final real-device/full-E2E environment:
 
