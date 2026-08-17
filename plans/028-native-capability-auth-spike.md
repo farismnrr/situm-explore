@@ -3,7 +3,7 @@
 Branch: `plan/028-native-capability-auth-spike`
 Base: updated `origin/main` after the native roadmap planning branch is integrated
 Depends on: `plans/028-032-native-mobile-roadmap.md`
-Status: active — Phase 4 complete; Phase 5 next
+Status: active — Phase 5 complete; Phase 6 next
 
 ## Objective
 
@@ -30,7 +30,7 @@ Downstream native UI implementation is visually governed by `DESIGN.md` and `des
 - [x] Phase 2 — Prove native Map, positioning, permission and navigation surfaces.
 - [x] Phase 3 — Freeze least-privilege Situm mobile authentication contract.
 - [x] Phase 4 — Freeze application login/session transport for native.
-- [ ] Phase 5 — Freeze secure-storage, deep-link and distribution contracts.
+- [x] Phase 5 — Freeze secure-storage, deep-link and distribution contracts.
 - [ ] Phase 6 — Evidence summary, durable decisions and Plan 029 readiness gate.
 
 ## Phase 0 — Pre-flight
@@ -159,6 +159,29 @@ Frozen native application-session contract:
 5. CSRF protection remains applicable to cookie-authenticated browser mutations. Header-authenticated native requests use the same authenticated server authorization checks and must carry an explicit mobile request marker only if a later implementation needs it; do not weaken ownership checks or accept a user ID from the client.
 
 Phase 4 conclusion: PASS for a same-user sealed-session header transport contract; unchanged cookie-only native transport is NOT PROVEN. No production auth endpoint or session behavior was changed in this phase.
+
+### Phase 5 evidence — 2026-08-17
+
+Secure storage evidence:
+
+- Expo's SDK 57 documentation recommends `expo-secure-store` for small secrets. The package stores values in Android encrypted `SharedPreferences` protected by Android Keystore and in iOS Keychain Services. The SDK 57-compatible package line is `expo-secure-store` `~15.0.x`; the current registry line inspected was 15.0.8. Source/package runtime proof remains a Plan 029 device-build task because no production mobile project is created in this spike.
+- The application-session sealed value and any future Situm Positioning key are bearer-equivalent authentication secrets: possession of a valid unexpired value authenticates requests. They must use OS-backed secure storage only, never AsyncStorage, plaintext files, URLs, deep links, QR codes, logs, analytics, crash metadata or ordinary persistence. Logout/local deletion is local cleanup and must not be described as server-side revocation.
+- `requireAuthentication` is not selected for the initial session contract because it introduces user-presence behavior and platform-specific recovery semantics that are not required by the frozen least-privilege boundary. Plan 029 may add it only as a separately tested product decision.
+
+Application identifiers and deep links:
+
+- Freeze Android application ID/package name `com.situm.explore` and iOS bundle identifier `com.situm.explore`. These identifiers are shared across environments; environment separation is provided by configuration and signing, not by changing the product identity.
+- Freeze custom URL schemes: development `situm-explore-dev://`, staging `situm-explore-staging://`, and production `situm-explore://`. Supported paths are `/map` and `/realtime`; optional query parameters are `workspace`, `building`, and `feature`, all treated as untrusted routing hints and re-authorized after login. No credential, session value, Situm key, password or bearer-equivalent secret may appear in any URL/query/fragment.
+- HTTPS Universal Links and Android App Links remain an external deployment gate until the real public application origin is supplied and its Apple association and Android asset-link files can be hosted. Plan 032 must not invent store/download domains or association files. Custom schemes are the development and controlled fallback path, with normal OS/browser limitations documented.
+
+Build and distribution evidence:
+
+- The disposable Expo SDK 57 proof already established clean `expo prebuild --clean` and Android `assembleDebug` with New Architecture, using no committed native project or signing material. Plan 029 will own the standalone `mobile/` package and regenerate native projects from its checked-in app configuration.
+- Development uses Expo development builds and local native tooling; Expo Go is insufficient for Situm native code. Android development/acceptance uses the local Gradle wrapper and debug APK. Production Android artifacts use local Gradle release generation initially, with signing files and passwords external/ignored; direct internal APK distribution is the only currently owned artifact path.
+- iOS development and production archive use Xcode/CocoaPods on macOS. iOS native compile, device acceptance, provisioning, App Store/TestFlight delivery and signing are MACOS/Apple-account-gated. No EAS workflow is frozen because this repository has not proven EAS ownership, credentials, or reproducibility. Store distribution remains a later external gate, not a claimed current capability.
+- Machine-local SDK paths, generated `android/`/`ios/` output, provisioning profiles, certificates, keystores, signing passwords and store credentials remain external or ignored; no generated native artifacts are added by Plan 028.
+
+Phase 5 conclusion: PASS for the secure-storage, identifier, custom-scheme, and locally-owned development/distribution contract. HTTPS association and store delivery are explicit external gates; neither is required to claim a reproducible development build.
 
 ## Phase 2 — Situm mobile capability proof
 

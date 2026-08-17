@@ -4,7 +4,7 @@ _Last reviewed: 2026-08-17_
 
 ## Active Plan 028 — Native Capability, Auth & Distribution Spike
 
-The native roadmap was integrated into `main` via PR #22 (merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`). Plan 028 is active on `plan/028-native-capability-auth-spike`, created from that exact updated `origin/main`. Phases 0–4 are complete; Phase 5 secure-storage/deep-link/distribution proof is next. No native product Map/Realtime implementation has started. The sequence remains Plan 028 -> Plan 029 -> Plan 030 -> Plan 031 -> Plan 032, with each later plan gated on predecessor integration.
+The native roadmap was integrated into `main` via PR #22 (merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`). Plan 028 is active on `plan/028-native-capability-auth-spike`, created from that exact updated `origin/main`. Phases 0–5 are complete; Phase 6 readiness gate is next. No native product Map/Realtime implementation has started. The sequence remains Plan 028 -> Plan 029 -> Plan 030 -> Plan 031 -> Plan 032, with each later plan gated on predecessor integration.
 
 Locked product policy for this roadmap:
 
@@ -17,6 +17,7 @@ Locked product policy for this roadmap:
 - Phase 2 source proof confirms MapView, cartography, positioning, navigation, permission helper, generic realtime data, and Share Live Location APIs. It does not prove generic remote-map overlays/focus, runtime payload semantics, background permission safety, or iOS compile/runtime. Unsupported reference interactions remain truthful fallbacks.
 - Phase 3 froze a dedicated encrypted workspace Positioning API key for the native SDK. The server-only Read & Write key and browser Read-only key remain excluded; native Realtime remains server-mediated. JWT wrapper support is present but unselected until issuer/claims/lifetime/refresh/revocation evidence exists.
 - Phase 4 froze same-user application auth over an opaque sealed h3 session value in `x-nuxt-session`, with a 7-day maximum age and OS secure storage later. Cookie-only native persistence is not proven; this transport keeps the existing Nitro/PostgreSQL identity and ownership boundary.
+- Phase 5 froze `expo-secure-store` `~15.0.x` for bearer-equivalent session/Situm material, identifiers `com.situm.explore`, custom schemes `situm-explore-{dev,staging}` and `situm-explore`, and local Expo development/Gradle Android artifact workflow. HTTPS association, Apple signing, and store delivery remain external gates; EAS is not selected.
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
 - the server-side Read & Write Situm credential must never be exposed to mobile; Plan 028 must freeze a proven short-lived-token or dedicated Positioning-credential contract before Plan 029 implementation.
 

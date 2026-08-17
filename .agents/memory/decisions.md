@@ -96,6 +96,14 @@ Status: active Plan 028 Phase 3 evidence; transport/storage implementation remai
 
 Status: active Plan 028 Phase 4 evidence; implementation and revocation/version checks remain gated by later phases.
 
+### Plan 028 Phase 5 secure storage and distribution (2026-08-17)
+
+- Use `expo-secure-store` `~15.0.x` (registry version inspected: 15.0.8) for the sealed application session and any future Situm Positioning material. Treat both as bearer-equivalent authentication secrets; never place them in URLs, deep links, QR codes, logs, analytics, crash metadata, AsyncStorage or plaintext persistence.
+- Freeze Android/iOS identity as `com.situm.explore`; custom schemes are `situm-explore-dev://`, `situm-explore-staging://`, and `situm-explore://`. Deep-link context is limited to untrusted `workspace`, `building`, and `feature` hints for `/map` or `/realtime`, followed by authenticated re-authorization.
+- Own local Expo development builds and Gradle Android debug/direct-internal artifacts. iOS compilation/device/archive and all signing/store delivery are macOS/Apple-account gates. Do not select EAS without new evidence; keep all signing material external/ignored.
+
+Status: active Plan 028 Phase 5 evidence; HTTPS association and store distribution remain external gates.
+
 ## Plans 021–025 identity/workspace model
 
 - Real application users are persisted in PostgreSQL.
