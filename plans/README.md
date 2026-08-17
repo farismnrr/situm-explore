@@ -55,7 +55,7 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Approved native companion roadmap
 
-Plans 028–031 are integrated into `main`. Plan 032 owns Web/Native Handoff & Distribution implementation; Plan 033 owns the consolidated full-E2E terminal gate, including every still-unpassed physical-device check from Plans 030–031.
+Plans 028–031 are integrated into `main`. Plan 032 implementation is complete pending integration; Plan 033 owns the consolidated full-E2E terminal gate, including every still-unpassed physical-device check from Plans 030–031 and every cross-client item introduced by Plan 032.
 
 ```text
 roadmap/032-033-e2e-split                         [Plans 032–033 remaining]

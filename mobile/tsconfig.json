@@ -9,5 +9,5 @@
     "paths": { "@situm/react-native": ["src/types/situm-react-native.d.ts"] },
     "noEmit": true
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "../shared/**/*.ts"]
 }

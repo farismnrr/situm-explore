@@ -36,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–031 are complete/integrated via PRs #20–#26. Plan 032 now owns Web/Native Handoff & Distribution implementation only; Plan 033 owns the consolidated full E2E acceptance and roadmap closeout, including every still-unpassed physical-device item from Plans 030–031. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–031 are complete/integrated via PRs #20–#26. Plan 032 Web/Native Handoff & Distribution is implementation-complete/reviewer-approved and PR-ready on `plan/032-web-native-handoff-distribution` through `f72697b` / `ecd2d51`; integration remains user-gated. Plan 033 owns the consolidated full E2E acceptance and roadmap closeout, including every still-unpassed physical-device item from Plans 030–031 plus Plan 032 cross-client acceptance. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 

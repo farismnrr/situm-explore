@@ -330,7 +330,7 @@ Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
 -> Plan 033 — Full E2E Acceptance & Roadmap Closeout [terminal hard gate]
 ```
 
-Normal Git workflow requires each dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking. Plan 032 starts from updated `main` after Plan 031 integration; Plan 033 starts only after Plan 032 integration.
+Plan 032 implementation is complete on its dedicated branch with non-device validation recorded in `.agents/evidence/plan-032.md`; integration remains a review/user gate. Plan 033 starts only after Plan 032 integration.
 
 ## Review checklist
 

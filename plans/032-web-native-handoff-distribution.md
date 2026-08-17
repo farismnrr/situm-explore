@@ -3,7 +3,7 @@
 Branch: `plan/032-web-native-handoff-distribution`
 Base: updated `origin/main` after Plan 031 is integrated
 Depends on: Plan 031 complete/integrated
-Status: planned
+Status: implementation complete/reviewer-approved; PR-ready pending user authorization
 
 ## Objective
 
@@ -40,16 +40,26 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 
 ## Phase checklist
 
-- [ ] Phase 0 — Native release/deep-link readiness and web breakpoint matrix.
-- [ ] Phase 1 — Native deep-link routing and authenticated context restoration.
-- [ ] Phase 2 — Reusable web Native App Gate component/configuration.
-- [ ] Phase 3 — Map desktop/tablet web vs phone-native policy.
-- [ ] Phase 4 — Realtime all-web native handoff policy.
-- [ ] Phase 5 — Install/open-app, QR and distribution fallback UX.
-- [ ] Phase 6 — Production mobile packaging/distribution documentation.
-- [ ] Phase 7 — Implementation validation, documentation reconciliation and Plan 033 handoff.
+- [x] Phase 0 — Native release/deep-link readiness and web breakpoint matrix.
+- [x] Phase 1 — Native deep-link routing and authenticated context restoration.
+- [x] Phase 2 — Reusable web Native App Gate component/configuration.
+- [x] Phase 3 — Map desktop/tablet web vs phone-native policy.
+- [x] Phase 4 — Realtime all-web native handoff policy.
+- [x] Phase 5 — Install/open-app, QR and distribution fallback UX.
+- [x] Phase 6 — Production mobile packaging/distribution documentation.
+- [x] Phase 7 — Implementation validation, documentation reconciliation and Plan 033 handoff.
 
 ## Phase 0 — Readiness and breakpoint matrix
+
+### Execution evidence — 2026-08-17
+
+- Plans 029–031 are integrated in `main`; Plan 030/031 physical-device outcomes remain unpassed and are preserved for Plan 033.
+- Existing native identifiers are `com.situm.explore` on Android/iOS. Existing schemes remain `situm-explore-dev`, `situm-explore-staging`, and production `situm-explore`; no signing or store credential is committed.
+- No published Play Store/App Store/direct-download destination is currently available in repository configuration. Public distribution destinations are therefore runtime-configured and render an explicit unavailable state until supplied.
+- The web Map capability matrix is frozen by usable viewport geometry: Viewer renders when width is at least 768px and height is at least 600px. Representative accepted layout classes are tablet portrait (768×1024), tablet landscape (1024×768), and desktop (at least 1024×600). Smaller/shorter layouts use the native handoff. This is a layout capability threshold, not user-agent classification.
+- The app shell's navigation breakpoint remains an independent 801px presentation breakpoint; Map capability does not depend on sidebar visibility.
+
+These observations are non-device readiness evidence only. Real web-to-native opening, install, deep-link, authentication, workspace authorization, and native spatial/realtime outcomes remain Plan 033 acceptance items.
 
 Before changing web routes:
 
@@ -65,6 +75,22 @@ If tablet acceptance is not actually usable, record that evidence and obtain an 
 
 ## Phase 1 — Native deep links
 
+### Execution evidence — 2026-08-17
+
+- Added cold-start and foreground URL handling through the platform `Linking` lifecycle with one removable listener owner.
+- Added Map and Realtime parsing for the configured app schemes and HTTPS associated-link shape. Parser output is limited to destination plus validated workspace/building hints; secret-shaped parameters are ignored.
+- Unauthenticated links remain pending through the login screen. After authentication and workspace loading, context is applied only through the authorized workspace list; an unowned/deleted workspace is rejected by the existing `WorkspaceContext.select` boundary.
+- Map building hints are validated against returned workspace cartography before native Map selection; invalid hints fall back to the first available building.
+- Added focused parser/lifecycle regression coverage in `test/mobile-plan-032.test.ts`.
+
+Real device link association/open behavior and login/workspace cross-client E2E remain unpassed for Plan 033.
+
+### Final lifecycle remediation evidence — 2026-08-17
+
+- `WorkspaceContext` now represents each Map deep link as a monotonic `mapRequest` with a request ID and building ID. Consumption is idempotent and manual workspace selection clears pending requests.
+- `NativeMapScreen` consumes each request once and keys only its inner Map runtime by the locally applied request ID. A second foreground link to another building in the same authorized workspace is consequently applied once without stale building context or a request-clearing remount loop.
+- Focused regression coverage proves sequential request IDs/buildings and repeated-consumption safety. Root tests now pass 31/31; all physical-device and full cross-client acceptance remains explicitly unpassed for Plan 033.
+
 Implement the frozen Universal Link / Android App Link / app-scheme contract.
 
 Requirements:
@@ -78,6 +104,14 @@ Requirements:
 - duplicate/open-link lifecycle does not create duplicate positioning/realtime listeners by design and testable state ownership; final full lifecycle E2E remains Plan 033.
 
 ## Phase 2 — Reusable Native App Gate
+
+### Execution evidence — 2026-08-17
+
+- Added `NativeAppGate.vue` as the single Map/Realtime web handoff surface.
+- It supports feature-specific copy, configured Open in app/install/download actions, QR generation, copyable link, keyboard-accessible buttons/links, and explicit unavailable messaging when store/download destinations are absent.
+- Public configuration is read from Nuxt runtime config. The generated target contains only validated `workspaceId` and Map `buildingId` hints; no session, password, Situm credential, bearer token, or encrypted secret is accepted.
+- QR generation uses the root `qrcode` package and is performed client-side after mount.
+- Added source-level gate/security regression coverage.
 
 Build one reusable web component/composable for native handoff rather than separate ad-hoc Map/Realtime modals.
 
@@ -95,6 +129,14 @@ It should support:
 
 ## Phase 3 — Web Map policy
 
+### Execution evidence — 2026-08-17
+
+- Replaced the generic Desktop required branch with the shared native Map gate below the frozen 768×600 geometry threshold.
+- The cartography `useFetch` remains lazy and now refreshes only when an authorized workspace exists and the viewport is Viewer-capable, so phone layouts do not initialize unnecessary Viewer/cartography work.
+- Viewer-capable layouts continue to render the existing `SitumViewer` path and accessibility controls unchanged.
+- Resize/orientation changes are owned by one `matchMedia` listener and switch between gate/Viewer branches through Vue state; branch unmounting prevents duplicate Viewer instances.
+- Removed the now-unused `useDesktopViewport` abstraction.
+
 Replace the current generic "Desktop required" behavior with the approved product contract.
 
 Requirements:
@@ -109,6 +151,13 @@ Requirements:
 
 ## Phase 4 — Web Realtime policy
 
+### Execution evidence — 2026-08-17
+
+- `/app/realtime` now uses the shared Native App Gate at every viewport size and identifies Realtime as an intentional native product experience.
+- Removed the obsolete unavailable/Coming soon Android modal and misleading technical-absence wording.
+- Existing home and app-shell navigation links remain `/app/realtime` entry points and now land on the native handoff page; home copy identifies the native workspace-position experience.
+- No web Realtime overlay or Situm web capability claim was added; native Realtime remains the existing foreground, server-mediated list/detail implementation.
+
 Make every web Realtime entry point a native handoff on desktop, tablet and phone.
 
 Requirements:
@@ -120,6 +169,13 @@ Requirements:
 - copy describes Realtime as a native product decision, not a web technical impossibility.
 
 ## Phase 5 — Open/install/QR fallback
+
+### Execution evidence — 2026-08-17
+
+- Native config now always exposes the environment-specific app scheme and conditionally emits iOS Associated Domains and Android App Links intent filters when `EXPO_PUBLIC_UNIVERSAL_LINK_HOST` is supplied.
+- Web mobile flow opens the configured HTTPS/app link directly; desktop/tablet flow presents a QR encoding the same non-secret target plus explicit configured install/download links.
+- No timer-based app detection or brittle browser blur/visibility fallback is used. When store/download URLs are absent, the gate explicitly says distribution is not yet published.
+- Added regression coverage for association configuration and fallback behavior.
 
 Implement a deterministic fallback hierarchy appropriate to the frozen distribution contract, for example:
 
@@ -137,6 +193,12 @@ Do not use brittle timer hacks if Universal/App Links provide a safer OS-native 
 
 ## Phase 6 — Distribution configuration
 
+### Execution evidence — 2026-08-17
+
+- Added `docs/mobile-distribution.md` with public runtime variables, version/build policy, environment separation, association-file requirements, external signing/store boundaries, artifact/source-map handling, and release destination updates.
+- Added Expo version/build-number inputs with safe Android positive-integer validation. Existing identifiers and frozen SDK/platform versions remain unchanged.
+- Release signing, provisioning, store delivery, EAS/CI, and private download hosting remain explicitly external; no secrets or private URLs were added.
+
 Provide reproducible production packaging/distribution configuration according to Plan 028 decisions.
 
 Requirements:
@@ -153,6 +215,22 @@ Requirements:
 Do not add CI/App Store automation unless the user explicitly authorizes it.
 
 ## Phase 7 — Implementation validation and Plan 033 handoff
+
+### Execution evidence — 2026-08-17
+
+- Full non-device validation passed: root build/lint/typecheck/tests (28), mobile prebuild/lint/typecheck, Expo config rendering, and Android debug compilation.
+- Built production preview returned HTTP 200 from `/` with security headers and non-secret public mobile config.
+- Final acceptance inventory is recorded in `.agents/evidence/plan-032.md` and remains explicitly unpassed for Plan 033. It includes all Plan 030/031 physical carry-over and all Plan 032 cross-client/deep-link/install/auth/workspace/security E2E.
+- Architecture, capability matrix, README/plan router, durable state, execution context, session evidence, and Plan 033 handoff were reconciled. No PR, merge, or Plan 033 execution occurred.
+
+Plan 032 implementation is complete on this branch pending review/integration. The terminal Plan 033 gate may start only after this branch is integrated into updated `main`.
+
+### Final reviewer remediation — 2026-08-17
+
+- Resolved the stale building-context blocker: manual workspace selection clears pending `mapRequest` state, and each Map request is consumed exactly once by the mounted screen.
+- Resolved the foreground same-workspace lifecycle blocker: monotonic request IDs and a local runtime key apply a second building link once without changing the parent Explore key or remounting when the request is cleared.
+- Resolved the install-platform blocker: recognized Android/iOS user agents select their OS regardless of viewport width; desktop/unknown clients receive every configured Android/iOS store/download option instead of defaulting to iOS.
+- Added pure install-option tests plus focused sequential same-workspace request and source-level lifecycle regressions. The Plan 033 physical-device and full cross-client inventory remains explicitly UNPASSED.
 
 Plan 032 validation must prove every contract that does **not** require the final real-device/full-E2E environment:
 
