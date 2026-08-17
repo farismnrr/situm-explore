@@ -11,15 +11,14 @@ This file contains **currently active durable decisions**. Completed execution h
 
 Status: active.
 
-## Viewer authentication smoke decision (2026-08-14)
+## Viewer authentication decision
 
-- The installed `@situm/sdk-js` v0.25.0 exchanges an API key through `/api/v1/auth/access_tokens`; `Viewer.setAuth(jwt)` sends the JWT to the embedded Viewer via `postMessage`.
-- Temporary server-side smoke testing confirmed that a read-only key produces a JWT whose sanitized `api_permission` claim is `read-only`, while a read-write key produces a JWT whose claim is `read-write`. Both tokens had an approximately 24-hour lifetime and passed harmless organization/building reads, including bearer-JWT reads.
-- The read-write-derived JWT is therefore broad authority, not a least-privilege Viewer token. It must never be sent to browser code as the final Viewer model.
-- Keep read-write workspace credentials server-only. A separate encrypted read-only Viewer credential is the approved browser model: the owner-scoped server route exchanges it for a temporary JWT, verifies the JWT permission is `read-only`, and returns only that JWT to the Viewer. Production-preview cartography acceptance has now proven this path.
-- No temporary credential or generated JWT may be persisted in repository files, logs, traces, session evidence, or browser storage. By the user's superseding 2026-08-14 instruction, the two temporary smoke-test keys may remain active for bounded local Plan 025 acceptance and must be revoked/deleted only after final acceptance passes.
+- The final integrated Plan-025 path uses a dual-credential model: the primary Read & Write credential remains server-only.
+- A separate Read-only Viewer API key is owner-scoped, verified READ_ONLY + org match server-side, and then intentionally visible to the browser for Situm's documented direct-api-key Viewer flow.
+- The prior JWT/postMessage flow is historical evidence, not the current model.
+- No temporary credential or generated JWT may be persisted in repository files, logs, traces, session evidence, or browser storage.
 
-Status: active security boundary; Plan 025 Viewer blocker resolved by the proven dual-credential model.
+Status: active security boundary; Viewer authentication is integrated.
 
 ## Temporary Situm smoke-key acceptance policy (2026-08-14)
 
@@ -72,7 +71,7 @@ Status: approved roadmap direction; exact auth/session/distribution contracts re
 - Different application users may independently configure workspaces that refer to the same external Situm account/organization.
 - Situm organization identity is external metadata, not application tenancy.
 
-Status: active roadmap decision.
+Status: active runtime architecture.
 
 ## Plan 026 production containerization
 
@@ -82,25 +81,23 @@ Status: active roadmap decision.
 - Runtime secrets are external only and `.env` is never baked into images. PostgreSQL, ClickHouse, and observability remain external/reused.
 - Staging updates run `pull -> recreate -> health -> smoke`; immutable SHA tags/digests provide rollback. `staging-migrate` is explicit and never runs at startup.
 
-Status: active Plan 026 decision.
+Status: active durable runtime decision.
 
-## Plans 021–025 Situm credential transition
+## Situm credential integration
 
-The previous two-global-env-key model is **pre-refactor runtime only** and is no longer the final target.
-
-Approved target:
+The previous two-global-env-key model is **historical** and replaced by the current dual-credential architecture.
 
 - Situm configuration is owned by an authenticated workspace and persisted server-side;
 - stored long-lived workspace credentials use authenticated encryption at rest;
-- browser code must not receive the stored long-lived workspace API key;
+- browser code must not receive the stored long-lived workspace Read & Write API key;
 - workspace configuration requires a primary credential verified as Situm Read & Write and a separate Viewer credential verified as Situm Read-only; account/organization ID is derived server-side from the primary auth session;
 - verified upstream permission remains authoritative;
 - unsupported/intermediate permission states are handled conservatively;
-- workspace/account/building context must not remain process-global after migration.
+- workspace/account/building context is workspace-scoped, never process-global.
 
-Viewer authentication must be verified against current official Situm contracts and the installed SDK. Prefer a proven short-lived/least-privilege browser auth mechanism. If a write-capable workspace cannot produce a safely scoped Viewer credential, stop that exact path and ask the user instead of exposing broad authority silently.
+Viewer authentication changes remain evidence-gated against current official Situm contracts and the installed SDK. The integrated direct Read-only Viewer API-key flow remains authoritative unless newer evidence proves a safer compatible replacement; never widen browser authority or expose the Read & Write credential silently.
 
-Status: active roadmap decision; migration not yet implemented.
+Status: active durable runtime decision; integration is complete.
 
 ## Evidence-backed Situm integration
 
@@ -117,20 +114,19 @@ Status: active.
 - Reuse the user's existing local ClickHouse instance; do not provision another ClickHouse server or Docker/Compose stack.
 - PostgreSQL/Drizzle remains relational application storage; ClickHouse remains analytics storage.
 - Browser code never connects directly to ClickHouse or receives ClickHouse credentials.
-- Plans 021–025 must make analytics workspace-isolated before multi-workspace product reads are considered complete.
+- Analytics reads are workspace-isolated.
 - Legacy unscoped analytics rows must not be assigned arbitrarily to a user/workspace. Preserve them non-destructively unless attribution is proven or the user supplies a retention/migration policy.
 
 Status: active.
 
 ## Observability and safe errors
 
-- Plan 023 must inspect `docker ps` and existing runtime/repository configuration before selecting telemetry integration.
 - Reuse the user's existing observability stack and supported protocols; do not provision duplicate observability infrastructure by assumption.
 - Propagate request correlation/trace context from browser through Nitro and meaningful downstream boundaries.
 - Do not put secrets or sensitive payloads into headers, baggage, logs, spans, or client errors.
 - Client responses expose sanitized product errors; detailed critical/internal diagnostics remain server-side in observability.
 
-Status: active roadmap decision.
+Status: active durable runtime decision.
 
 ## Static directions boundary
 
@@ -155,14 +151,15 @@ Status: active.
 
 ## Completed roadmap transition
 
-Plans 017–020 and Plans 021–025 are complete/integrated historical execution. Plan 026 is the active production-containerization plan.
+Plans 017–020, Plans 021–025, and Plans 026–027 are complete/integrated historical execution. The approved next roadmap is Plans 028–032 for the native companion app; implementation has not started.
 
-While this roadmap is active, also read:
+The following are historical context only:
 
 - `.agents/memory/roadmap-021-025.md`;
 - `plans/021-025-prerequisites.md`;
-- `design/ROADMAP-021-025-OVERRIDES.md`;
-- the active plan.
+- `design/ROADMAP-021-025-OVERRIDES.md`.
+
+The Plans 028–032 roadmap is the current planning authority. Plan 028 cannot start until the roadmap planning branch is integrated.
 
 Status: active.
 
@@ -173,11 +170,11 @@ Status: active.
 - **Trusted-proxy stance (Plan 027 review remediation):** the limiter derives client identity from the server-observed socket address only (`getRequestIP(event, { xForwardedFor: false })`), never from client-supplied `X-Forwarded-For`. Evidence: `deploy/staging.compose.yml` publishes the Nitro container directly on the host port (`"${STAGING_PORT:-3005}:3000"`) with no reverse proxy in the deployment, so nothing sanitizes that header before it reaches the app — trusting it would let any caller rotate the header to bypass throttling entirely (live-verified: 12 rotated-header login attempts still hit 429 after 10). Revisit only if a trusted reverse proxy is introduced in front of Nitro with a proven, documented forwarding contract; do not flip this back to trusting `X-Forwarded-For` without that evidence.
 - The limiter map self-prunes expired buckets on every `rateLimit()` call (no background timers) so memory stays bounded as more unique client identities are seen.
 
-Status: active.
+Status: active durable runtime decision.
 
 ## Browser security headers (Plan 027)
 
 - Safe, universal response headers (X-Content-Type-Options, Referrer-Policy, X-Frame-Options: DENY, conservative Permissions-Policy) are applied via `server/middleware/security-headers.ts` and are live-verified.
 - A Content-Security-Policy was deliberately NOT added. The Situm Map Viewer's exact script/frame/connect origins are not proven by any live network trace in this repo, and this repo has already hit one real Viewer-behavior surprise (the wait_for_auth/postMessage building-mismatch investigation). A guessed CSP risks silently breaking the map for every user. Revisit only with a live browser network trace against the real hosted Viewer to derive a proven allowlist.
 
-Status: active; CSP is an open, intentionally documented limitation, not solved.
+Status: active durable security decision; CSP is an open, intentionally documented limitation, not solved.

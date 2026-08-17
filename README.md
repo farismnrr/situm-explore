@@ -4,19 +4,19 @@ Situm Explore is a full-stack Nuxt 4 web operations/exploration application usin
 
 ## Current status
 
-Plans 017–020 are complete and integrated into `main` by PR #12.
+Plans 017–027 are complete and integrated into `main`, with Plan 027 integrated via PR #21.
 
-Plans 021–025 are complete and integrated into `main`. Plan 026 is the active production-containerization plan on `plan/026-production-containerization`:
+The approved next roadmap is Plans 028–032 for the native companion app. There is a roadmap integration gate before Plan 028 can begin. The architecture remains the current Nuxt/Nitro web/backend runtime, plus a planned React Native second client; there will be no second backend.
 
 ```text
-Plan 021 — Identity & Auth Foundation
--> Plan 022 — Private Workspaces & Situm Configuration
--> Plan 023 — Observability, Correlation & Safe Error Boundary
--> Plan 024 — Workspace-scoped Situm Backend Migration
--> Plan 025 — Workspace UX & Full Regression
+Plan 028 — Native Capability, Auth & Distribution Spike
+-> Plan 029 — Native App Foundation & Workspace Session
+-> Plan 030 — Native Map, Positioning & Navigation
+-> Plan 031 — Native Realtime Operations
+-> Plan 032 — Web/Native Handoff, Distribution & Full Regression
 ```
 
-Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, and `plans/026-production-containerization.md` before executing current plan work. The Plans 021–025 roadmap and prerequisites are historical context.
+Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, and `plans/028-032-native-mobile-roadmap.md` before executing current plan work. The Plans 021–027 roadmap and prerequisites are historical context.
 
 ## Production container workflow
 

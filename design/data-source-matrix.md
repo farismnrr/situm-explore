@@ -25,6 +25,6 @@ Plans 017–027 are complete/integrated. Plans 028–032 are the approved, not-y
 | Route metrics/steps/geometry/ETA | Unresolved; do not invent |
 | Handset positioning/blue dot/live navigation/rerouting | Native-only; planned for the React Native companion in Plan 030, not the Nuxt web runtime |
 
-The current pre-refactor runtime still contains process-global Situm/Viewer/building context. Plans 022–024 migrate that context; old global configuration is not the final target.
+The current workspace-scoped Situm, Viewer, building, and analytics behavior is fully integrated. Plans 028–032 are additive native-client work, not an unfinished backend migration.
 
 For any new/changed Situm behavior, verify the exact official endpoint/SDK method, installed compatibility, runtime owner, permission semantics, consumed fields/events, and failure behavior. No evidence means unresolved/absent, never fabricated success.
