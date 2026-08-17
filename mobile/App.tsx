@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
-import { AppState, ActivityIndicator, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import { AppState, ActivityIndicator, Linking, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { Circle, Path, Svg } from 'react-native-svg'
 import { ApiError } from './src/api/errors'
 import { AuthSession } from './src/auth/session'
 import { WorkspaceContext } from './src/workspaces/context'
 import { NativeMapScreen } from './src/map/NativeMapScreen'
 import { RealtimeScreen } from './src/realtime/RealtimeScreen'
+import { nativeDestinationFromLink, parseNativeDeepLink, type NativeDeepLink } from './src/navigation/deep-link'
 
 export default function App() {
   const auth = useMemo(() => new AuthSession(), [])
@@ -20,6 +21,7 @@ export default function App() {
   const [workspaceError, setWorkspaceError] = useState('')
   const [activeTab, setActiveTab] = useState<'explore' | 'realtime' | 'recent' | 'settings'>('explore')
   const [lifecycle, setLifecycle] = useState(AppState.currentState)
+  const [pendingLink, setPendingLink] = useState<NativeDeepLink | null>(null)
   const { width } = useWindowDimensions()
   const showRail = width >= 700
   const wide = width >= 1050
@@ -27,10 +29,12 @@ export default function App() {
   useEffect(() => {
     auth.restore().then((ok) => { setAuthenticated(ok); setReady(true) }).catch(() => setReady(true))
     const subscription = AppState.addEventListener('change', setLifecycle)
-    return () => subscription.remove()
+    void Linking.getInitialURL().then((url) => { const link = parseNativeDeepLink(url); if (link) { setPendingLink(link); setActiveTab(nativeDestinationFromLink(link)) } }).catch(() => undefined)
+    const linkSubscription = Linking.addEventListener('url', ({ url }) => { const link = parseNativeDeepLink(url); if (link) { setPendingLink(link); setActiveTab(nativeDestinationFromLink(link)) } })
+    return () => { subscription.remove(); linkSubscription.remove() }
   }, [auth, workspaces])
   if (!ready) return <SafeAreaView style={styles.safeArea}><ActivityIndicator color="#111827" /></SafeAreaView>
-  if (authenticated) return <AuthenticatedShell auth={auth} workspaces={workspaces} activeTab={activeTab} setActiveTab={setActiveTab} lifecycle={lifecycle} showRail={showRail} wide={wide} workspaceError={workspaceError} setWorkspaceError={setWorkspaceError} onLogout={() => auth.logout().then(() => setAuthenticated(false))} />
+  if (authenticated) return <AuthenticatedShell auth={auth} workspaces={workspaces} activeTab={activeTab} setActiveTab={setActiveTab} lifecycle={lifecycle} showRail={showRail} wide={wide} workspaceError={workspaceError} setWorkspaceError={setWorkspaceError} pendingLink={pendingLink} clearPendingLink={() => setPendingLink(null)} onLogout={() => auth.logout().then(() => { setPendingLink(null); setAuthenticated(false) })} />
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
@@ -48,11 +52,15 @@ export default function App() {
   )
 }
 
-function AuthenticatedShell(props: { auth: AuthSession, workspaces: WorkspaceContext, activeTab: 'explore' | 'realtime' | 'recent' | 'settings', setActiveTab: (tab: 'explore' | 'realtime' | 'recent' | 'settings') => void, lifecycle: string, showRail: boolean, wide: boolean, workspaceError: string, setWorkspaceError: (value: string) => void, onLogout: () => void }) {
-  const { workspaces, activeTab, setActiveTab, lifecycle, showRail, wide, workspaceError, setWorkspaceError, onLogout } = props
+function AuthenticatedShell(props: { auth: AuthSession, workspaces: WorkspaceContext, activeTab: 'explore' | 'realtime' | 'recent' | 'settings', setActiveTab: (tab: 'explore' | 'realtime' | 'recent' | 'settings') => void, lifecycle: string, showRail: boolean, wide: boolean, workspaceError: string, setWorkspaceError: (value: string) => void, pendingLink: NativeDeepLink | null, clearPendingLink: () => void, onLogout: () => void }) {
+  const { workspaces, activeTab, setActiveTab, lifecycle, showRail, wide, workspaceError, setWorkspaceError, pendingLink, clearPendingLink, onLogout } = props
   useSyncExternalStore(workspaces.subscribe, workspaces.getSnapshot, workspaces.getSnapshot)
   const [loading, setLoading] = useState(workspaces.state === 'idle')
   useEffect(() => { if (workspaces.state === 'idle') workspaces.load().then(() => workspaces.loadConfiguration()).catch((e: unknown) => setWorkspaceError(e instanceof ApiError ? e.message : 'Workspaces are unavailable.')).finally(() => setLoading(false)) }, [workspaces, setWorkspaceError])
+  useEffect(() => {
+    if (!pendingLink || workspaces.state !== 'ready') return
+    try { workspaces.applyDeepLink(pendingLink); clearPendingLink() } catch (e) { setWorkspaceError(e instanceof ApiError ? e.message : 'That app link is not available to this account.'); clearPendingLink() }
+  }, [clearPendingLink, pendingLink, setWorkspaceError, workspaces, workspaces.state])
   const selected = workspaces.selectedWorkspace
   const select = (id: string) => { try { workspaces.select(id); void workspaces.loadConfiguration().catch(() => undefined) } catch (e) { setWorkspaceError(e instanceof ApiError ? e.message : 'Workspace could not be selected.') } }
   const title = activeTab.charAt(0).toUpperCase() + activeTab.slice(1)
@@ -65,7 +73,7 @@ function AuthenticatedShell(props: { auth: AuthSession, workspaces: WorkspaceCon
           {loading ? <ActivityIndicator color="#111827" /> : workspaces.state === 'error' ? <StateCard title="Workspaces unavailable" body={workspaceError || 'Check your connection and try again.'} action={() => workspaces.load().catch(() => undefined)} /> : workspaces.state === 'empty' ? <StateCard title="No workspaces yet" body="Create your first workspace in Situm Explore web to continue." /> : <>
             <View style={styles.workspacePicker}><Text style={styles.eyebrow}>ACTIVE WORKSPACE</Text><Text style={styles.workspaceName}>{selected?.name || 'Select a workspace'}</Text><View style={styles.workspaceChoices}>{workspaces.workspaces.map(workspace => <TouchableOpacity key={workspace.id} onPress={() => select(workspace.id)} style={[styles.choice, workspace.id === selected?.id && styles.choiceActive]}><Text style={[styles.choiceText, workspace.id === selected?.id && styles.choiceTextActive]}>{workspace.name}</Text></TouchableOpacity>)}</View></View>
             {workspaceError ? <StateCard title="Workspace notice" body={workspaceError} /> : null}
-            {activeTab === 'explore' ? <NativeMapScreen key={workspaces.selectedWorkspaceId || 'no-workspace'} workspaces={workspaces} lifecycle={lifecycle} /> : activeTab === 'realtime' ? <RealtimeScreen key={workspaces.selectedWorkspaceId || 'no-workspace'} workspaces={workspaces} lifecycle={lifecycle} /> : activeTab === 'recent' ? <Placeholder title="Recent is coming in a later plan" body="Recent activity is not enabled in this foundation build." /> : <SettingsCard onLogout={onLogout} />}
+            {activeTab === 'explore' ? <NativeMapScreen key={`${workspaces.selectedWorkspaceId || 'no-workspace'}:${workspaces.requestedBuildingId || 'default'}`} workspaces={workspaces} lifecycle={lifecycle} /> : activeTab === 'realtime' ? <RealtimeScreen key={workspaces.selectedWorkspaceId || 'no-workspace'} workspaces={workspaces} lifecycle={lifecycle} /> : activeTab === 'recent' ? <Placeholder title="Recent is coming in a later plan" body="Recent activity is not enabled in this foundation build." /> : <SettingsCard onLogout={onLogout} />}
           </>}
         </View>
         {!showRail ? <View style={styles.bottom}><NavItems bottom activeTab={activeTab} setActiveTab={setActiveTab} /></View> : null}

@@ -10,6 +10,12 @@ Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execut
 - Confirmed native identifiers/schemes and that store/download destinations are not yet published.
 - Added environment-only public mobile distribution configuration to Nuxt runtime config.
 
+## Phase 1 — complete
+
+- Added native cold-start/foreground deep-link parsing and lifecycle ownership for Map and Realtime.
+- Preserved pending destination through login and re-authorized optional workspace/building context against Nitro-backed workspace state.
+- Added focused parser and secret-shape regression tests.
+
 ## Phase 033 carry-over
 
 The Plan 030/031 physical-device acceptance remains unpassed. Plan 033 must also run real cross-client handoff, install/open, deep-link, login restoration, workspace authorization, invalid-link, logout/restart, and secret-audit acceptance after this plan is integrated.

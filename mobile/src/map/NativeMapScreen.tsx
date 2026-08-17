@@ -32,11 +32,11 @@ export function NativeMapScreen({ workspaces, lifecycle }: { workspaces: Workspa
   if (error) return <StateCard title="Map unavailable" body={error} action={() => setRetryNonce(value => value + 1)} />
   if (!credential || !cartography) return <View style={styles.loading}><ActivityIndicator color="#111827" /><Text style={styles.muted}>Loading workspace cartography…</Text></View>
   if (!cartography.buildings.length) return <StateCard title="No buildings available" body="This workspace has no building available for native exploration." />
-  return <SitumProvider apiKey={credential.apiKey}><NativeMapRuntime key={workspaceId} workspaceId={workspaceId} cartography={cartography} lifecycle={lifecycle} /></SitumProvider>
+  return <SitumProvider apiKey={credential.apiKey}><NativeMapRuntime key={workspaceId} workspaceId={workspaceId} cartography={cartography} lifecycle={lifecycle} initialBuildingId={workspaces.requestedBuildingId} /></SitumProvider>
 }
 
-function NativeMapRuntime({ workspaceId, cartography, lifecycle }: { workspaceId: string, cartography: Cartography, lifecycle: string }) {
-  const [buildingId, setBuildingId] = useState<number | null>(null)
+function NativeMapRuntime({ workspaceId, cartography, lifecycle, initialBuildingId }: { workspaceId: string, cartography: Cartography, lifecycle: string, initialBuildingId: number | null }) {
+  const [buildingId, setBuildingId] = useState<number | null>(() => cartography.buildings.some(building => building.id === initialBuildingId) ? initialBuildingId : null)
   const [selectedPoi, setSelectedPoi] = useState<Poi | null>(null)
   const [poiUnavailable, setPoiUnavailable] = useState(false)
   const [positionSnapshot, setPositionSnapshot] = useState<LocationSnapshot<Location> | null>(null)
@@ -62,6 +62,9 @@ function NativeMapRuntime({ workspaceId, cartography, lifecycle }: { workspaceId
   }, [])
   navigationStateRef.current = navigationState
 
+  useEffect(() => {
+    if (buildingId === null && cartography.buildings[0]) setBuildingId(cartography.buildings[0].id)
+  }, [buildingId, cartography.buildings])
   useEffect(() => {
     let active = true
     try {

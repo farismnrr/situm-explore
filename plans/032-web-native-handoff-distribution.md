@@ -41,7 +41,7 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 ## Phase checklist
 
 - [x] Phase 0 — Native release/deep-link readiness and web breakpoint matrix.
-- [ ] Phase 1 — Native deep-link routing and authenticated context restoration.
+- [x] Phase 1 — Native deep-link routing and authenticated context restoration.
 - [ ] Phase 2 — Reusable web Native App Gate component/configuration.
 - [ ] Phase 3 — Map desktop/tablet web vs phone-native policy.
 - [ ] Phase 4 — Realtime all-web native handoff policy.
@@ -74,6 +74,16 @@ Before changing web routes:
 If tablet acceptance is not actually usable, record that evidence and obtain an explicit product decision before widening the web Map policy beyond proven layouts.
 
 ## Phase 1 — Native deep links
+
+### Execution evidence — 2026-08-17
+
+- Added cold-start and foreground URL handling through the platform `Linking` lifecycle with one removable listener owner.
+- Added Map and Realtime parsing for the configured app schemes and HTTPS associated-link shape. Parser output is limited to destination plus validated workspace/building hints; secret-shaped parameters are ignored.
+- Unauthenticated links remain pending through the login screen. After authentication and workspace loading, context is applied only through the authorized workspace list; an unowned/deleted workspace is rejected by the existing `WorkspaceContext.select` boundary.
+- Map building hints are validated against returned workspace cartography before native Map selection; invalid hints fall back to the first available building.
+- Added focused parser/lifecycle regression coverage in `test/mobile-plan-032.test.ts`.
+
+Real device link association/open behavior and login/workspace cross-client E2E remain unpassed for Plan 033.
 
 Implement the frozen Universal Link / Android App Link / app-scheme contract.
 

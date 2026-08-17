@@ -2,6 +2,7 @@ import { ApiError } from '../api/errors'
 import * as SecureStore from 'expo-secure-store'
 import type { PositioningCredentialResponse, Workspace, WorkspaceConfigSummary } from '../api/types'
 import type { AuthSession } from '../auth/session'
+import type { NativeDeepLink } from '../navigation/deep-link'
 
 export type WorkspaceState = 'idle' | 'loading' | 'ready' | 'empty' | 'error'
 const workspaceStorageKey = 'situm-explore.workspace-id'
@@ -13,6 +14,7 @@ export class WorkspaceContext {
   state: WorkspaceState = 'idle'
   error: ApiError | null = null
   configuration: WorkspaceConfigSummary | null = null
+  requestedBuildingId: number | null = null
   private version = 0
   private readonly listeners = new Set<() => void>()
 
@@ -58,6 +60,17 @@ export class WorkspaceContext {
     this.selectedWorkspaceId = workspaceId
     this.configuration = null
     this.persistSelection(workspaceId)
+    this.notify()
+  }
+
+  applyDeepLink(link: NativeDeepLink) {
+    if (link.workspaceId) this.select(link.workspaceId)
+    this.requestedBuildingId = link.destination === 'map' ? link.buildingId ?? null : null
+    this.notify()
+  }
+
+  clearRequestedBuilding() {
+    this.requestedBuildingId = null
     this.notify()
   }
 
