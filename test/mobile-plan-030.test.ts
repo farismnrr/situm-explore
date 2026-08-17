@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
-import { isCurrentLocationUsable, positionStateForLocationStatus, resolvePoi } from '../mobile/src/map/state'
+import { isCurrentLocationUsable, navigationIsOwned, positionStateForLocationStatus, resolvePoi } from '../mobile/src/map/state'
 
 test('Plan 030 maps USER_NOT_IN_BUILDING to a safe positioning error', () => {
   assert.equal(positionStateForLocationStatus('STOPPED'), 'stopped')
@@ -23,4 +23,12 @@ test('Plan 030 resolves selected POIs only from real active-building cartography
   assert.deepEqual(resolvePoi(pois, 11, 42), pois[0])
   assert.equal(resolvePoi(pois, 12, 42), null)
   assert.equal(resolvePoi(pois, 11, 7), pois[1])
+})
+
+test('Plan 030 owns navigation cancellation only while navigation is active or native-running', () => {
+  assert.equal(navigationIsOwned('idle', false), false)
+  assert.equal(navigationIsOwned('cancelled', false), false)
+  assert.equal(navigationIsOwned('active', false), true)
+  assert.equal(navigationIsOwned('outside-route', false), true)
+  assert.equal(navigationIsOwned('idle', true), true)
 })

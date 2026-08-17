@@ -1,5 +1,6 @@
 export type PositionState = 'stopped' | 'starting' | 'fresh' | 'stale' | 'error'
 export type LocationSnapshot<T> = { state: PositionState, location: T | null, receivedAt: number, workspaceId: string, buildingId: number }
+export type NavigationOwnershipState = 'idle' | 'active' | 'outside-route' | 'arrived' | 'cancelled' | 'error'
 
 export const locationFreshnessWindowMs = 30_000
 
@@ -15,4 +16,8 @@ export function isCurrentLocationUsable<T>(snapshot: LocationSnapshot<T> | null,
 
 export function resolvePoi<T extends { id: number, buildingId: number }>(pois: T[], identifier: number, buildingId: number): T | null {
   return pois.find(poi => poi.id === identifier && poi.buildingId === buildingId) ?? null
+}
+
+export function navigationIsOwned(state: NavigationOwnershipState, nativeNavigationRunning: boolean): boolean {
+  return nativeNavigationRunning || state === 'active' || state === 'outside-route'
 }
