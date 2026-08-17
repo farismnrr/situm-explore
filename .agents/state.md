@@ -8,6 +8,8 @@ Execution started on `plan/029-native-app-foundation` on 2026-08-17. Phase 0 con
 
 Plan 029 Phase 1 is complete: standalone `mobile/` package, Expo 57.0.13 config, frozen identifiers/schemes, SecureStore and build-properties plugins, strict TypeScript, and ignored generated native projects are in place. The published `@situm/react-native` 3.19.2 package has no declared `lib/`; its documented `react-native` source entry is present and is used through a narrow mobile TypeScript path. Prebuild/lint/typecheck pass. Android Gradle reaches configuration with SDK 24/36/36 and Kotlin 2.1.20 but assembleDebug is host-gated because no Android SDK path is available; iOS remains macOS-gated.
 
+Plan 029 Phase 2 is complete: `mobile/src/api` provides an environment-only API base URL, correlation IDs, sealed-session header injection, bounded fetch cancellation, typed response contracts, and normalized safe product errors that retain only status/category/request ID. No direct database/upstream access or raw proxy was added.
+
 Plan 028 was reviewed and integrated into `main` via PR #23 (merge commit `e5e15ee9f7dd58ad2f1c4c7fe217cc1aa8956453`), and its branch was deleted. `plan/029-native-app-foundation` was created from that exact updated `origin/main`; implementation has not started yet. Execute Plan 029 using `.agents/execution/plan-029.md` plus `plans/029-native-app-foundation.md`. Plans 030–032 remain gated on predecessor integration.
 
 Locked product policy for this roadmap:
