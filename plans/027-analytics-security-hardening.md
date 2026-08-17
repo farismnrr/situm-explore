@@ -24,7 +24,7 @@ Fix confirmed analytics correctness, workspace data-lifecycle, authentication-ab
 - [x] Phase 1 — Analytics correctness and filter contract.
 - [x] Phase 2 — Workspace deletion data lifecycle.
 - [x] Phase 3 — Authentication abuse protection.
-- [ ] Phase 4 — Situm credential consistency (org match).
+- [x] Phase 4 — Situm credential consistency (org match).
 - [ ] Phase 5 — Bounded upstream failures and timeouts.
 - [ ] Phase 6 — Browser security hardening.
 - [ ] Phase 7 — Regression coverage and testing decision.
@@ -76,6 +76,15 @@ Findings 6–7 confirmed by inspecting `server/api/auth/{register,login}.post.ts
 - `login.post.ts`: rate limit (10/min/IP) added; login already avoided hashing when no matching user existed (`verifyPassword` was only called when `record[0]?.passwordHash` was truthy), so no reordering was needed there — only the rate limit was added. Generic `401 Invalid credentials.` response is unchanged for both missing-user and wrong-password cases.
 - This is intentionally per-process/in-memory (not distributed), consistent with the KISS requirement; a restart clears counters, which is an acceptable tradeoff for abuse throttling (not a hard security boundary) at this scale. No redesign of the account/email-verification system was made or needed.
 - Validation: `npm run lint` and `npm run typecheck` pass clean.
+
+## Phase 4 evidence
+
+Finding 8 confirmed in `server/api/workspaces/[...workspacePath].ts` PUT handler: `primarySession.apiPermissionLevel` was checked as `READ_WRITE` and `viewerSession.apiPermissionLevel` as `READ_ONLY`, but `viewerSession.organizationId` was never compared to `primarySession.organizationId` before persisting — a Viewer credential from an unrelated Situm organization would pass validation and be saved.
+
+- Added `if (viewerSession.organizationId !== primarySession.organizationId) throw new Error(...)` immediately after the existing permission-level checks, inside the same `try` block that already funnels every failure into the single sanitized `422 Both Situm credentials could not be verified with the required permissions.` response — no organization IDs or internals are exposed to the client on mismatch.
+- The existing READ_WRITE/READ_ONLY invariant is unchanged; the primary credential remains server-only (never returned to the client — only `situmAccountId`, `updatedAt`, and boolean `configured`/`viewerConfigured` flags are returned).
+- Invalid pairs fail before the `encryptWorkspaceApiKey`/DB insert calls, so no persistence occurs on mismatch.
+- Validation: `npm run lint` and `npm run typecheck` pass clean. Live verification against real Situm credentials from two different organizations is externally credential-gated and not available in this environment; the fix is a direct equality check on values already fetched and verified by the existing, previously-accepted `authSession` calls for both credentials, so no new SDK behavior is being relied upon.
 
 ## Acceptance evidence
 
