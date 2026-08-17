@@ -11,7 +11,7 @@ Root `AGENTS.md` is the router. `.agents/state.md` owns current focus/blockers; 
 3. `.agents/state.md`;
 4. relevant protocols;
 5. `.agents/memory/decisions.md`;
-6. while Plans 021–025 are active: `.agents/memory/roadmap-021-025.md` and `plans/021-025-prerequisites.md`;
+6. for completed-roadmap context: `.agents/memory/roadmap-021-025.md` and `plans/021-025-prerequisites.md`;
 7. `ARCHITECTURE.md`;
 8. `plans/README.md`;
 9. `design/data-source-matrix.md` when Situm/product scope matters;
@@ -36,9 +36,9 @@ Historical files do not regain authority merely because they contain more detail
 
 Plans 017–020 are complete/integrated into `main` by PR #12.
 
-Plans 021–025 are the active backend-refactor roadmap on planning branch `roadmap/021-025-backend-refactor`.
+Plans 021–025 are complete and integrated. Plan 026 is the active production-containerization plan on `plan/026-production-containerization`.
 
-Normal workflow requires planning integration into `main` before Plan 021 starts; no stacked implementation authorization currently exists.
+Plans 021–025 no longer have an active planning gate; their integrated state is historical context for the active Plan 026.
 
 The roadmap moves the product from the pre-refactor env-defined user/global Situm runtime to DB-backed users, private workspaces, protected workspace configuration, workspace-scoped Situm/analytics context, reused observability, end-to-end correlation, and safe client errors.
 

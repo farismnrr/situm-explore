@@ -1,0 +1,35 @@
+services:
+  situm-explore:
+    image: ${IMAGE_REPOSITORY:-ghcr.io/farismnrr/situm-explore}:${STAGING_TAG:-staging}
+    ports:
+      - "${STAGING_PORT:-3005}:3000"
+    restart: unless-stopped
+    init: true
+    env_file:
+      - path: staging.env
+        format: raw
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      HOST: 0.0.0.0
+      NITRO_HOST: 0.0.0.0
+      PORT: 3000
+      NITRO_PORT: 3000
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - require('http').get('http://127.0.0.1:3000/api/health/liveness',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    stop_grace_period: 30s
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m

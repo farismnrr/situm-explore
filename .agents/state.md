@@ -2,13 +2,17 @@
 
 _Last reviewed: 2026-08-14_
 
+## Active Plan 026
+
+Plan 026 production containerization is complete on `plan/026-production-containerization`, based on latest `origin/main`. All phases 0–11 passed. GHCR staging points to multi-platform digest `sha256:8702053da46d1f03feffe9fc598a17006de3ebf236cf00f97cd3b28f774fe38b`, with immutable `sha-7a981ed0254e`; the update was pulled/recreated by Make without a build and rollback to `sha-0cf07c08afab` is documented. `make staging-migrate` is an explicit operator action using only `DATABASE_URL` from curated staging env with the repository's Drizzle CLI; web startup never migrates. Local arm64 runtime smoke is unavailable due the host emulation entrypoint issue. Pull-only staging Compose and curated ignored runtime env are present. The candidate image audit is clean: runtime UID 10001, 83.3 MB, no secret/env/log/filesystem matches. Full local staging and final clean-room Make sequence passed health/restart, auth protection, PostgreSQL, ClickHouse, OTEL, external-state, and secret checks; credential-backed Situm account checks remain user-owned/unavailable. The workflow targets local Buildx publication to GHCR for `linux/amd64` and `linux/arm64`, pull-only staging Compose, and Makefile-driven operations; no CI/PR/merge was authorized.
+
 ## Integrated baseline
 
 Plans 017–020 are complete and integrated into `main` by PR #12.
 
 The Plans 021–025 backend-refactor roadmap and reconciled documentation are integrated into `main` by PR #13.
 
-## Active roadmap
+## Completed roadmap
 
 ```text
 Plan 021 — Identity & Auth Foundation                       [complete]
@@ -18,7 +22,7 @@ Plan 024 — Workspace-scoped Situm Backend Migration         [complete]
 Plan 025 — Workspace UX & Full Regression                   [complete; Google OAuth deferred]
 ```
 
-Stacked implementation of Plans 021–025 was explicitly authorized for this branch; no commits or pushes are performed by the worker.
+Plans 021–025 are complete and integrated; their former planning/stacked branches are historical.
 
 The former roadmap planning branch is historical after PR #13 and is not an implementation base.
 
@@ -45,14 +49,14 @@ Detailed prerequisites and potential blockers live in `plans/021-025-prerequisit
 
 ## Current stacked execution
 
-The user explicitly authorized stacked execution of Plans 021–025 without PRs or merges.
+The former stacked execution of Plans 021–025 is complete; its branch-by-branch notes below are historical evidence.
 
 - Completed in this branch: Plan 021 Phases 1–6; identity, registration/login, sessions, conditional Google preparation, UI, and acceptance validation.
 - Completed in Plan 022 branch: Phases 1–5 workspace ownership, CRUD authorization, encrypted Situm config persistence, safe validation, and acceptance.
 - Completed branch: `plan/023-observability-error-boundary`
 - Completed in Plan 023 branch: Phases 1–2 application OTLP lifecycle, request correlation, and nested DB/Situm spans.
 - Completed in Plan 023 branch: Phase 3 safe structured errors and client reference IDs.
-- Current phase: Plan 023 Phase 4 application trace/error-path acceptance.
+- Plan 023 Phase 4 application trace/error-path acceptance completed; the phase note below is historical evidence.
 - Completed branch: `plan/024-workspace-situm-backend-migration`
 - Completed in Plan 024: Phase 1 reusable owner-scoped Situm context plus workspace-scoped config and core read routes. Lint, typecheck, and build pass; upstream status smoke remains externally dependent because the Situm read hung.
 - Completed in Plan 024: Phase 2 explicit workspace routes for paths and realtime; static mutation surface remains read-only. Lint, typecheck, and build pass; upstream route smoke returned sanitized upstream 404s, with no credential exposure.

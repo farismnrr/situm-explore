@@ -1,6 +1,10 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   modules: ['@nuxt/ui', 'nuxt-auth-utils', '@nuxt/eslint', 'nuxt-agentation'],
+  icon: {
+    provider: 'none',
+    clientBundle: { scan: true }
+  },
   css: ['~/assets/css/main.css'],
   colorMode: { preference: 'light', fallback: 'light', classSuffix: '' },
   runtimeConfig: {

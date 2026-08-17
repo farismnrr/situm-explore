@@ -11,10 +11,10 @@ Keep this file short. Current authority lives in `.agents/state.md`.
 3. `.agents/protocols/chat-lifecycle.md`
 4. `.agents/protocols/git-workflow.md`
 5. `.agents/memory/decisions.md`
-6. `.agents/memory/roadmap-021-025.md` while Plans 021–025 are active
+6. `.agents/memory/roadmap-021-025.md` for completed-roadmap context when needed
 7. `ARCHITECTURE.md`
 8. `plans/README.md`
-9. `plans/021-025-prerequisites.md` while the backend-refactor roadmap is active
+9. `plans/021-025-prerequisites.md` when historical prerequisite context is needed
 10. `design/data-source-matrix.md` when Situm/product capability scope matters
 11. the relevant plan
 12. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes
@@ -29,21 +29,17 @@ Completed/integrated:
 Plan 017 -> 018 -> 019 -> 019A -> 020 [complete/integrated]
 ```
 
-Active implementation roadmap:
+Completed implementation roadmap:
 
 ```text
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Planning branch:
-
-`roadmap/021-025-backend-refactor`
-
-Stacked implementation was explicitly authorized for this execution. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plan 026 is the active production-containerization plan on its dedicated branch. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 
-The roadmap introduces DB-backed users, real email/password registration/login, private single-owner workspaces, workspace-managed Situm configuration, permission-aware behavior, reuse of existing observability infrastructure, request correlation/tracing, workspace-isolated analytics, and sanitized client error boundaries.
+The completed roadmap introduced DB-backed users, real email/password registration/login, private single-owner workspaces, workspace-managed Situm configuration, permission-aware behavior, reuse of existing observability infrastructure, request correlation/tracing, workspace-isolated analytics, and sanitized client error boundaries.
 
 Google OAuth is prepared but real runtime acceptance is deferred to the user.
 
