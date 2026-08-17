@@ -33,4 +33,4 @@ The own handset remains a separate Plan 030 native positioning concern. Plan 031
 
 ## Unsupported / carried forward
 
-Generic remote Situm MapView markers/focus remain unproven and absent. Physical-device Realtime lifecycle and own-device positioning/publishing behavior remain unpassed Plan 032 carry-over under the consolidated physical-E2E policy.
+Generic remote Situm MapView markers/focus remain unproven and absent. Physical-device Realtime lifecycle and own-device positioning/publishing behavior remain explicitly unpassed Plan 033 carry-over under the consolidated full-E2E policy.

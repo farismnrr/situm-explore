@@ -2,19 +2,17 @@
 
 _Last reviewed: 2026-08-17_
 
-## Active Plan 031 — Native Realtime Operations
+## Native roadmap — Plans 032–033 remaining
 
-Plan 030 was reviewed and integrated into `main` via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`; its local/remote branch was deleted. `plan/031-native-realtime-operations` was created from that exact updated `origin/main` on 2026-08-17. Execute Plan 031 using `.agents/execution/plan-031.md` plus `plans/031-native-realtime-operations.md`.
+Plan 030 was reviewed and integrated into `main` via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`; its supported-device Map/positioning/blue-dot/floor/POI/navigation E2E remains explicitly **unpassed** because the required physical-device/runtime path was unavailable.
 
-Integrated Plans 029–030 are authoritative for the native foundation and spatial runtime: same Nitro/PostgreSQL identity, sealed `x-nuxt-session`, SecureStore, owner-scoped workspace selection, dedicated Positioning credential, Expo 57 stack, responsive shell, real MapView/cartography integration, truthful positioning freshness, POI/navigation ownership, and lifecycle cleanup. The Plan 030 supported-device Map/positioning/blue-dot/floor/POI/navigation E2E remains explicitly **unpassed** and is carried to Plan 032's terminal gate.
+Plan 031 was reviewed and integrated into `main` via PR #26 at merge commit `655fde0153cd206eedae975bd25693bc48753a0b`; its local/remote branch was deleted. The integrated Realtime implementation is server-mediated, foreground-only, device-position oriented, abortable, fail-closed on malformed payloads, and exposes source time without invented freshness/presence/status semantics. Its supported-device Realtime/native-lifecycle E2E also remains explicitly **unpassed**.
 
-Plan 031 implementation is reviewer-approved and PR-ready pending user authorization after remediation commits `79b6cfb` and `c02a8f3`. Caller cancellation reaches `fetch` without becoming a timeout, unsupported local freshness thresholds are absent, malformed Realtime payloads fail closed, and Realtime rows no longer render unsupported positive/fresh/online status indicators. Independent reviewer checks pass 22/22 tests plus root/mobile lint/typecheck and `git diff --check`. Baseline v1 semantics remain device-position oriented: the existing owner-scoped Nitro Realtime route returns position/device identity, source time, building/floor, accuracy, coordinates, and optional device ID. Do not invent person identities, freshness/presence state, trajectories, remote markers/focus, or treat Share Live Location as Realtime Positions.
+By explicit roadmap decision on 2026-08-17, full E2E is split out of Plan 032. Plan 032 now owns Web/Native Handoff & Distribution implementation plus every truthful non-device validation available from tests, builds, browser viewport checks and emulator/runtime smoke. Plan 032 must record an exact acceptance inventory but may be reviewer-approved/integrated without a physical-device E2E pass.
 
-Remote monitoring should remain server-mediated through the existing authenticated workspace boundary unless exact current evidence proves a safer least-privilege native path. Do not widen the mobile Positioning credential for convenience. Own-device location remains the Plan 030 native positioning boundary; background positioning is added only if Plan 031 Phase 0 proves a real Realtime requirement.
+Plan 033 — Full E2E Acceptance & Roadmap Closeout — is the terminal non-deferrable gate. It inherits every unpassed physical-device item from Plans 030–031 plus the real web-to-native/deep-link/install/auth/session/workspace E2E introduced by Plan 032. If the required supported Android device, reachable backend, owner-authorized Positioning credential or calibrated building/profile is unavailable, Plan 033 remains blocked and the roadmap remains incomplete; those checks may not be deferred again.
 
-Phase 0 evidence is recorded in `.agents/evidence/plan-031-realtime.md`: the installed native generic realtime and Share Live Location APIs do not prove an equivalent application/workspace boundary or Positioning-credential permission, so Plan 031 v1 uses the existing sanitized Nitro route. No remote markers/focus or background positioning are enabled. Final implementation/runtime evidence and explicit Plan 032 physical carry-over are in `.agents/reviews/plan-031-final.md`.
-
-Plan 031 must prove every implementation/server/runtime contract truthfully available without physical sensor evidence. Any physical-device-only Realtime/own-position/background checks remain explicitly unpassed Plan 032 carry-over. Plan 032 is the non-deferrable consolidated native physical-E2E gate.
+Current planning authority is `plans/028-033-native-mobile-roadmap.md`, with `plans/032-web-native-handoff-distribution.md` next and `plans/033-full-e2e-acceptance.md` terminal.
 
 Locked product policy for this roadmap:
 
@@ -77,7 +75,7 @@ The former roadmap planning branch is historical after PR #13 and is not an impl
 
 ## Current authority
 
-Read `.agents/memory/decisions.md`, `ARCHITECTURE.md`, `plans/README.md`, `plans/028-032-native-mobile-roadmap.md` for the approved next roadmap, the capability matrix when relevant, and the active plan. Read `.agents/memory/roadmap-021-025.md` / `plans/021-025-prerequisites.md` only when completed backend-roadmap history is materially relevant.
+Read `.agents/memory/decisions.md`, `ARCHITECTURE.md`, `plans/README.md`, `plans/028-033-native-mobile-roadmap.md` for the approved next roadmap, the capability matrix when relevant, and the active plan. Read `.agents/memory/roadmap-021-025.md` / `plans/021-025-prerequisites.md` only when completed backend-roadmap history is materially relevant.
 
 Historical plans, sessions, and branches remain evidence only.
 

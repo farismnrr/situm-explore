@@ -8,7 +8,7 @@ Keep this file short. Current authority lives in `.agents/state.md`.
 
 1. `.agents/identity.md`
 2. `.agents/state.md`
-3. `.agents/execution/plan-031.md` when Plan 031 is active
+3. the active plan execution brief under `.agents/execution/` when present
 4. `.agents/protocols/chat-lifecycle.md`
 5. `.agents/protocols/git-workflow.md`
 6. `.agents/memory/decisions.md`
@@ -36,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–030 are complete/integrated via PRs #20–#25. Plan 031 Native Realtime Operations is implementation-complete/reviewer-approved and PR-ready pending user authorization on `plan/031-native-realtime-operations`; Plan 032 remains the dependent terminal handoff/distribution/full-regression plan and carries the consolidated native physical-device E2E gate. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–031 are complete/integrated via PRs #20–#26. Plan 032 now owns Web/Native Handoff & Distribution implementation only; Plan 033 owns the consolidated full E2E acceptance and roadmap closeout, including every still-unpassed physical-device item from Plans 030–031. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 

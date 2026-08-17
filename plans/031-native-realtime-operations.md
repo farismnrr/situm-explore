@@ -3,7 +3,7 @@
 Branch: `plan/031-native-realtime-operations`
 Base: updated `origin/main` after Plan 030 is integrated
 Depends on: Plan 030 complete/integrated
-Status: implementation complete/reviewer-approved; PR-ready pending user authorization
+Status: complete/integrated via PR #26; physical-device E2E remains explicitly unpassed and carried to Plan 033
 
 ## Objective
 
@@ -21,7 +21,7 @@ Realtime is intentionally a native product destination in this roadmap even if s
 - Treat `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html` as the visual/interaction reference for Realtime, while keeping the current Situm/backend data contract authoritative.
 - Keep Realtime vocabulary aligned with web/backend semantics. Do not replace device/position records with invented person identities or social-presence language unless a proven identity mapping exists.
 - Treat location data as sensitive operational data: minimize persistence/logging and expose only to authorized workspace users.
-- Plan 031 must still prove every implementation/server/runtime contract that is testable without physical sensor evidence. Physical-device E2E for own-device positioning/background behavior and device-dependent Realtime interactions may be carried forward only to Plan 032's hard final E2E gate, where it becomes mandatory and non-deferrable.
+- Plan 031 must still prove every implementation/server/runtime contract that is testable without physical sensor evidence. Physical-device E2E for own-device positioning/background behavior and device-dependent Realtime interactions may be carried forward only to Plan 033's hard final E2E gate, where it becomes mandatory and non-deferrable.
 - No PR/merge without explicit user authorization.
 
 ## Phase checklist
@@ -138,12 +138,12 @@ Use real workspace/Situm data where safely available without persisting credenti
 - map/live-session integration works only for proven SDK capabilities;
 - no broad credential exposure in app bundle, traffic logs, application logs or repository files.
 
-Any acceptance item that materially depends on a supported physical device—especially own-device positioning/background behavior, sensor-dependent publishing, or physical-device Realtime lifecycle—must be listed explicitly as **unpassed Plan 032 carry-over** rather than guessed or silently dropped. Plan 031 may be reviewed/integrated once its implementation/runtime evidence is approved and every such carry-over is recorded.
+Any acceptance item that materially depends on a supported physical device—especially own-device positioning/background behavior, sensor-dependent publishing, or physical-device Realtime lifecycle—must be listed explicitly as **unpassed Plan 033 carry-over** rather than guessed or silently dropped. Plan 031 may be reviewed/integrated once its implementation/runtime evidence is approved and every such carry-over is recorded.
 
-Plan 032 is the non-deferrable final gate: it must exercise the accumulated Plan 030 and Plan 031 physical-device E2E before roadmap closeout/merge.
+Plan 033 is the non-deferrable final gate: it must exercise the accumulated Plan 030 and Plan 031 physical-device E2E before roadmap closeout/merge.
 
 ## Closeout disposition (2026-08-17)
 
-Plan 031 implementation and non-physical runtime contracts passed on the plan branch after remediation of caller cancellation, unsupported local freshness classification, and malformed-payload handling. Focused regression coverage and the final validation evidence are recorded in the implementation commit and `.agents/evidence/plan-031-realtime.md`. Physical-device Realtime lifecycle, own-device Realtime positioning/publishing, sensor behavior, and accumulated native lifecycle checks remain explicitly unpassed Plan 032 carry-over. No PR or merge was created.
+Plan 031 implementation and non-physical runtime contracts passed after remediation of caller cancellation, unsupported local freshness classification, malformed-payload handling, and visual status overclaim. Final reviewer evidence is recorded in `.agents/reviews/plan-031-final.md`. Plan 031 was integrated via PR #26 at merge commit `655fde0153cd206eedae975bd25693bc48753a0b`. Physical-device Realtime lifecycle, own-device Realtime positioning/publishing, sensor behavior, and accumulated native lifecycle checks remain explicitly unpassed Plan 033 carry-over.
 
 Run repository/mobile validations, update architecture/capability evidence, commit/push each phase, and stop before PR until user authorization.

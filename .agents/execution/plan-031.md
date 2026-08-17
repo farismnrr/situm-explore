@@ -8,13 +8,13 @@ Plan: `/home/farismnrr/Projects/situm-explore/plans/031-native-realtime-operatio
 
 Execute Plan 031 end-to-end on the existing branch. Do not pause between successful phases. After each phase: review evidence/diff, update plan/state/durable evidence as needed, validate, commit, push, verify clean/synced, then continue.
 
-Stop only for a real product/security/architecture/capability blocker. Physical-device-only evidence may be recorded as explicit, unpassed Plan 032 carry-over under the current consolidated E2E policy. Never relabel missing physical evidence as passed. Stop before PR/merge and do not start Plan 032.
+Stop only for a real product/security/architecture/capability blocker. Physical-device-only evidence recorded during Plan 031 remains explicit and unpassed; after the later roadmap split it is carried to Plan 033's consolidated full-E2E gate. Never relabel missing physical evidence as passed. Stop before PR/merge and do not start Plan 032.
 
 ## Authority
 
 Read `AGENTS.md` first, then `.agents/state.md`, `.agents/memory/decisions.md`, `plans/031-native-realtime-operations.md`, the integrated Plan 030 implementation/review evidence, `DESIGN.md`, `design/reference/situm-explore-native-responsive-prototype.html`, and exact current Situm/backend evidence relevant to Realtime.
 
-Plan 030 is integrated via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`. Its physical-device Map/positioning/navigation E2E remains unpassed and is already carried to Plan 032.
+Plan 030 is integrated via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`. Its physical-device Map/positioning/navigation E2E remains unpassed and, after the later roadmap split, is carried to Plan 033.
 
 ## Frozen baseline unless Phase 0 proves otherwise
 
@@ -34,6 +34,6 @@ Final reviewer findings are authoritative for remediation: `/home/farismnrr/Proj
 
 Run repository baseline plus focused Realtime/security/workspace-isolation tests, mobile lint/typecheck, Expo doctor/prebuild, Android `assembleDebug` with `/home/farismnrr/Android/Sdk`, emulator/non-sensor runtime smoke when safely possible, secret checks, and full branch diff review.
 
-Plan 031 may close and become PR-ready after reviewer-approved implementation/runtime evidence. Enumerate every physical-device-only item still unpassed as Plan 032 carry-over. Plan 032 is the non-deferrable terminal physical-E2E gate.
+Plan 031 may close and become PR-ready after reviewer-approved implementation/runtime evidence. Every physical-device-only item remains unpassed; after the later roadmap split these items are carried to Plan 033, which is the non-deferrable terminal full-E2E gate.
 
 Report one consolidated result with commits, frozen v1 Realtime semantics, validation evidence, runtime evidence, physical carry-over, PR readiness, and Plan 032 readiness.
