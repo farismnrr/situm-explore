@@ -27,7 +27,7 @@ Realtime is intentionally a native product destination in this roadmap even if s
 ## Phase checklist
 
 - [x] Phase 0 — Freeze Realtime product semantics and current SDK/backend evidence.
-- [ ] Phase 1 — Native realtime data boundary and typed state model.
+- [x] Phase 1 — Native realtime data boundary and typed state model.
 - [ ] Phase 2 — Realtime operations screen and freshness/error states.
 - [ ] Phase 3 — Map/focus/live-location integration where proven.
 - [ ] Phase 4 — Own-device positioning/background behavior required by Realtime.
