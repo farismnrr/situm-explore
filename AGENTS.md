@@ -36,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–030 are complete/integrated via PRs #20–#25. Plan 031 Native Realtime Operations is active on `plan/031-native-realtime-operations`; Plan 032 remains the dependent terminal handoff/distribution/full-regression plan and carries the consolidated native physical-device E2E gate. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–030 are complete/integrated via PRs #20–#25. Plan 031 Native Realtime Operations is implemented/closed on `plan/031-native-realtime-operations` and awaits separately authorized PR/review/merge; Plan 032 remains the dependent terminal handoff/distribution/full-regression plan and carries the consolidated native physical-device E2E gate. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 
