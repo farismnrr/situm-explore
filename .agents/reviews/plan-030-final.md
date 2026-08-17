@@ -1,8 +1,8 @@
-# Plan 030 Final Review — Second Remediation Required
+# Plan 030 Final Review — Implementation Approved / Physical Acceptance Blocked
 
-Status: NOT PR-ready. The original six implementation blockers are resolved at `74b9a99`, but two navigation-truthfulness/lifecycle blockers remain before implementation approval. Physical-device acceptance remains externally blocked.
+Status: implementation-approved through Phase 6; NOT PR-ready because mandatory physical-device Phase 7 acceptance remains externally blocked. No PR or merge performed.
 
-Reviewed commits: `df7d22b71001e94a4a27a7784a458a2b3fd245be`, `74b9a99a2a991478d6abad58a358eb5ca58a75e1`.
+Reviewed commits: `df7d22b71001e94a4a27a7784a458a2b3fd245be`, `74b9a99a2a991478d6abad58a358eb5ca58a75e1`, `8afb39b56db6c20c44f469df032d6ab0303a371b`.
 
 ## Blocking findings
 
@@ -77,3 +77,11 @@ Two implementation blockers remain:
 `expo-doctor` currently reports 19/21: the known Situm New Architecture metadata warning plus patch-version drift (`expo` 57.0.13 vs expected ~57.0.14 and `expo-build-properties` 57.0.11 vs expected ~57.0.12). These exact versions are frozen by Plan 028/029 authority, so patch drift is not a blocker unless intentionally superseded with new evidence.
 
 After findings 7–8 are fixed, rerun focused/root/mobile validation and diff checks. Physical-device Phase 7 acceptance remains mandatory and blocked until real supported-device/runtime credentials/building evidence exists.
+
+## Final implementation approval — 2026-08-17
+
+Commit `8afb39b56db6c20c44f469df032d6ab0303a371b` resolves findings 7–8. Out-of-route UI now reports only the evidenced outside-route condition. Navigation cancellation is conditional on app-owned or native-running navigation and is invoked on explicit positioning stop, positioning stop/error callbacks, background transition, building switch, and runtime teardown, so stopped location ownership cannot leave active directions behind or manufacture cancellation from an idle state.
+
+Independent reviewer validation passes: root tests 17/17, root lint/typecheck, mobile lint/typecheck, `git diff --check origin/main...HEAD`, and branch clean/synchronized. The reported Expo prebuild and Android `assembleDebug` evidence remains consistent with the reviewed branch; `expo-doctor` 19/21 is limited to the known Situm New Architecture metadata warning plus frozen Expo patch drift and is not a blocker under current authority.
+
+Plan 030 implementation through Phase 6 is approved. Phase 7 remains BLOCKED and unaccepted until a supported physical Android device can exercise the real owner-authorized Positioning credential against a calibrated building/profile and prove real positioning, blue-dot/floor behavior, POI interaction, and navigation lifecycle. Do not create a PR/merge or start Plan 031 while that acceptance gate remains open.
