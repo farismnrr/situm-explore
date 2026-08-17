@@ -9,6 +9,7 @@
     "preview": "nuxt preview",
     "typecheck": "nuxt typecheck",
     "lint": "eslint .",
+    "test": "node --import tsx --test test/**/*.test.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate"
   },

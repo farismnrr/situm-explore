@@ -12,7 +12,10 @@ function upstreamError(status: number, detail = false): never {
 }
 
 async function request<T>(path: string, params: URLSearchParams, apiKey: string, detail = false): Promise<T> {
-  const response = await fetch(`${baseUrl}${path}?${params}`, { headers: { 'X-API-KEY': apiKey } })
+  const response = await boundedFetch(`${baseUrl}${path}?${params}`, { headers: { 'X-API-KEY': apiKey } }).catch((error) => {
+    if (error instanceof UpstreamTimeoutError) throw createError({ statusCode: 504, statusMessage: 'Situm source request timed out.' })
+    throw error
+  })
   if (!response.ok) upstreamError(response.status, detail)
   return await response.json() as T
 }

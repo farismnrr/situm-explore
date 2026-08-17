@@ -45,6 +45,7 @@ export default defineEventHandler(async (event) => {
     const viewerSession = await viewer.authSession
     if (viewerSession.apiPermissionLevel !== SitumApiPermissionLevel.READ_ONLY) throw new Error('Viewer credential is not read-only')
     if (!primarySession.organizationId) throw new Error('Primary credential has no organization')
+    if (viewerSession.organizationId !== primarySession.organizationId) throw new Error('Viewer credential belongs to a different organization')
   } catch {
     throw createError({ statusCode: 422, statusMessage: 'Both Situm credentials could not be verified with the required permissions.' })
   }

@@ -25,5 +25,5 @@ export function emitTelemetryLog(level: LogLevel, body: string, attributes: Reco
     }],
   }
 
-  void fetch(endpointForLogs(endpoint), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) }).catch(() => undefined)
+  void boundedFetch(endpointForLogs(endpoint), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) }, 5_000).catch(() => undefined)
 }

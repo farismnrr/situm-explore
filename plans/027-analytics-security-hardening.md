@@ -1,0 +1,178 @@
+# Plan 027 — Analytics Correctness & Security Hardening
+
+Branch: `plan/027-analytics-security-hardening`
+Base: `origin/main` at phase start (Plan 026 integrated via PR #20)
+Status: complete
+
+## Objective
+
+Fix confirmed analytics correctness, workspace data-lifecycle, authentication-abuse, Situm credential-consistency, upstream reliability, and browser-security gaps while preserving the existing Nuxt architecture and workspace ownership/security boundaries established by Plans 021–026.
+
+## Rules
+
+- No CI, PR, merge, force-push, or implementation on `main`.
+- No Redis, queues, or new infrastructure without a concrete repository requirement.
+- No new unit-test framework merely for ceremony; use Node-native/available tooling for regression evidence, or stop at that decision boundary and report it.
+- No arbitrary deletion/attribution of legacy pre-workspace analytics.
+- No Viewer authentication redesign unless a confirmed bug requires it.
+- Never persist or log credentials, tokens, or secrets.
+- Situm behavior changes: no evidence, no implementation.
+
+## Phase checklist
+
+- [x] Phase 0 — Pre-flight and authority reconciliation.
+- [x] Phase 1 — Analytics correctness and filter contract.
+- [x] Phase 2 — Workspace deletion data lifecycle.
+- [x] Phase 3 — Authentication abuse protection.
+- [x] Phase 4 — Situm credential consistency (org match).
+- [x] Phase 5 — Bounded upstream failures and timeouts.
+- [x] Phase 6 — Browser security hardening.
+- [x] Phase 7 — Regression coverage and testing decision.
+- [x] Phase 8 — Full acceptance and closeout.
+
+Status: complete (all executable phases 0–8 done; PR/merge intentionally not performed, per repo protocol).
+
+## Confirmed findings (pre-implementation)
+
+1. Overlapping analytics sync windows can be double-counted — workspace queries do not properly constrain `source_window_id`.
+2. Workspace positioning analytics reads historical rows without respecting the requested date window.
+3. UI sends `buildingId`/`geofenceId`; workspace analytics summary backend ignores them.
+4. Analytics sync body types rely on TS annotations only, no runtime validation.
+5. Workspace deletion does not remove that workspace's ClickHouse-owned analytics (visitors, positioning time, geofencing stay, sync runs).
+6. No application-level rate limiting on login/registration.
+7. Registration runs expensive scrypt hashing before checking for an existing account.
+8. Workspace Situm config save does not verify the Viewer credential belongs to the same organization as the primary credential.
+9. App-owned outbound fetch calls to Situm/telemetry lack explicit timeout/cancellation.
+10. Browser security headers/CSP have not been audited for the current Nuxt/Nitro + Viewer setup.
+
+Each finding is reconfirmed against current code in Phase 0/at the start of its phase before any change is made; if a finding is stale, that is recorded here rather than forcing a change.
+
+## Phase 1 evidence
+
+Findings 1–4 confirmed exactly as described by inspecting `server/integrations/clickhouse/analytics.ts`, `server/integrations/situm/reports.ts`, `server/integrations/clickhouse/schema.ts`, `server/api/workspaces/[workspaceId]/analytics/{summary.get.ts,sync.post.ts}`, and `app/pages/app/analytics.vue`.
+
+- `queryWorkspaceAnalytics` previously filtered only by `workspace_id`, summing every synced window ever written for that workspace regardless of requested date range — overlapping/re-synced windows were double-counted, and positioning/geofencing ignored the requested window entirely.
+- Fix mirrors the existing legacy (`queryAnalytics`) pattern: `source_window_id` is a deterministic key `${report}:${fromDate}:${toDate}:${workspaceId}:${scope}` written by `syncSitumReport`; workspace queries now match `startsWith(source_window_id, '${report}:${fromDate}:${toDate}:${workspaceId}:')` in addition to `workspace_id = ...`, so only rows from the exact requested window are read, exactly as the legacy path already did for its own scope.
+- `buildingId` filtering restored via the same `endsWith(source_window_id, ':<building_id>')` suffix match used by the legacy visitors/positioning queries (building id is embedded in `scope` at sync time). `geofenceId` filtering restored via the real `matched_fence_id` column on the geofencing table, same as legacy.
+- `summary.get.ts` now parses and validates `buildingId` (positive integer) and `geofenceId` (bounded `[a-zA-Z0-9_-]{1,64}`) from the query string and passes them through; previously these were silently dropped.
+- `sync.post.ts` now validates its body with a zod schema (`report` enum, `fromDate`/`toDate` strings checked by `isValidDateRange`, bounded `buildingId`/`buildingIds`) instead of relying on a TS generic on `readBody`.
+- All identifiers remain parameter-bound; table/database names remain allowlist-validated. No changes to legacy (non-workspace) query paths or legacy row attribution.
+- Validation: `npm run lint` and `npm run typecheck` both pass clean.
+
+## Phase 2 evidence
+
+Finding 5 confirmed: `server/api/workspaces/[id].delete.ts` previously only deleted the Postgres `workspaces` row and never touched ClickHouse-owned analytics (`analytics_workspace_visitors`, `analytics_workspace_positioning_time`, `analytics_workspace_geofencing_stay`, `analytics_workspace_sync_runs`), leaving orphaned rows keyed to a now-deleted `workspace_id`.
+
+- Added `deleteWorkspaceAnalytics(workspaceId)` in `server/integrations/clickhouse/analytics.ts`: issues `ALTER TABLE ... DELETE WHERE workspace_id = {workspace_id:UUID}` (parameter-bound, `mutations_sync: '2'` for deterministic completion) against a hardcoded allowlist of exactly the four `analytics_workspace_*` tables. Legacy/unscoped tables (`analytics_visitors`, `analytics_positioning_time`, `analytics_geofencing_stay`, `analytics_sync_runs`) are never referenced by this function.
+- Reordered the delete route: (1) verify ownership via a `SELECT` (404 if not owned/found) without mutating anything yet; (2) run the bounded ClickHouse cleanup — if it throws, the handler throws a 503 and the Postgres workspace row is left untouched (no partial state, no false "deleted" report); (3) only once ClickHouse cleanup succeeds does the Postgres `DELETE ... RETURNING` run, scoped by both `id` and `ownerId` as before.
+- This ordering means the only inconsistency window is theoretical (ClickHouse cleanup succeeds, then the Postgres delete itself fails) — in that case Postgres still reflects the workspace as existing and the operation can be safely retried; ClickHouse cleanup is idempotent (re-running `DELETE WHERE workspace_id = ...` against already-empty rows is a no-op).
+- Unrelated workspaces/users are unaffected because every mutation is `WHERE workspace_id = {workspace_id:UUID}`, never a blanket delete.
+- Validation: `npm run lint` and `npm run typecheck` pass clean. Live row-count regression evidence (before/after row counts for the deleted workspace and an unrelated control workspace) is captured in Phase 7 against the reachable local ClickHouse instance (`shared-clickhouse` container, port 8124).
+
+## Phase 3 evidence
+
+Findings 6–7 confirmed by inspecting `server/api/auth/{register,login}.post.ts`: no rate limiting existed on either endpoint, and registration called `hashPassword` (scrypt via `nuxt-auth-utils`) before checking whether the email already existed — an unauthenticated caller could trigger repeated expensive scrypt work by POSTing to `/api/auth/register` regardless of outcome, and could always force one scrypt hash per request with no throttling.
+
+- Added `server/utils/rate-limit.ts`: a KISS in-memory fixed-window limiter keyed by `scope:ip` (uses h3's `getRequestIP` with `xForwardedFor: true`). No Redis/queue — this repo runs a single Nitro process (Plan 026 production containerization target), so a shared external store is not justified. `requireRateLimit` throws a `429` before any expensive work runs.
+- `register.post.ts`: rate limit (5/min/IP) is checked first, before body parsing; existing-account check now runs before `hashPassword` (previously reversed), so an unauthenticated caller hitting `/api/auth/register` with an already-registered email no longer triggers a scrypt hash at all, and repeated distinct-email attempts are bounded by the rate limit regardless.
+- `login.post.ts`: rate limit (10/min/IP) added; login already avoided hashing when no matching user existed (`verifyPassword` was only called when `record[0]?.passwordHash` was truthy), so no reordering was needed there — only the rate limit was added. Generic `401 Invalid credentials.` response is unchanged for both missing-user and wrong-password cases.
+- This is intentionally per-process/in-memory (not distributed), consistent with the KISS requirement; a restart clears counters, which is an acceptable tradeoff for abuse throttling (not a hard security boundary) at this scale. No redesign of the account/email-verification system was made or needed.
+- Validation: `npm run lint` and `npm run typecheck` pass clean.
+
+## Phase 4 evidence
+
+Finding 8 confirmed in `server/api/workspaces/[...workspacePath].ts` PUT handler: `primarySession.apiPermissionLevel` was checked as `READ_WRITE` and `viewerSession.apiPermissionLevel` as `READ_ONLY`, but `viewerSession.organizationId` was never compared to `primarySession.organizationId` before persisting — a Viewer credential from an unrelated Situm organization would pass validation and be saved.
+
+- Added `if (viewerSession.organizationId !== primarySession.organizationId) throw new Error(...)` immediately after the existing permission-level checks, inside the same `try` block that already funnels every failure into the single sanitized `422 Both Situm credentials could not be verified with the required permissions.` response — no organization IDs or internals are exposed to the client on mismatch.
+- The existing READ_WRITE/READ_ONLY invariant is unchanged; the primary credential remains server-only (never returned to the client — only `situmAccountId`, `updatedAt`, and boolean `configured`/`viewerConfigured` flags are returned).
+- Invalid pairs fail before the `encryptWorkspaceApiKey`/DB insert calls, so no persistence occurs on mismatch.
+- Validation: `npm run lint` and `npm run typecheck` pass clean. Live verification against real Situm credentials from two different organizations is externally credential-gated and not available in this environment; the fix is a direct equality check on values already fetched and verified by the existing, previously-accepted `authSession` calls for both credentials, so no new SDK behavior is being relied upon.
+
+## Phase 5 evidence
+
+Finding 9 confirmed: three app-owned raw `fetch` calls to Situm/telemetry had no timeout/cancellation (`server/integrations/situm/reports.ts`, `server/integrations/situm/groups-alarms.ts`, `server/utils/telemetry-logs.ts`).
+
+- Added `server/utils/bounded-fetch.ts`: an `AbortController`-based `boundedFetch(url, init, timeoutMs)` (default 10s) that aborts on timeout and throws a distinct `UpstreamTimeoutError` (message contains only the URL pathname, never headers/body/credentials).
+- Wired into `reports.ts` (analytics sync from Situm) and `groups-alarms.ts` (groups/alarms reads), both mapping `UpstreamTimeoutError` to a sanitized `504` product error, consistent with their existing `errorFor`/`upstreamError` sanitization pattern; the `X-API-KEY` header is never included in the thrown error.
+- Wired into `telemetry-logs.ts`'s fire-and-forget OTLP log emission with a 5s bound, so a hung telemetry endpoint can no longer leave an unbounded dangling request.
+- **`@situm/sdk-js` (installed v0.25.0) — evidence and decision:** the installed SDK's `SDKConfiguration` type (`node_modules/@situm/sdk-js/dist/situm-sdk.d.ts`) declares `timeouts?: Record<string, number>`, proving *some* timeout configuration surface exists (axios-based client). However, neither the type definitions nor the README document the record's valid keys, units, per-operation scope, or default/fallback behavior for unspecified keys. Per the repository's "no evidence, no implementation" rule, this SDK-level timeout config was intentionally **not** set anywhere `SitumSDK` is constructed (`server/utils/viewer-auth.ts`, `server/api/workspaces/[workspaceId]/situm-config/validate.post.ts`, `server/api/workspaces/[...workspacePath].ts`), since guessing key names/semantics could silently produce no effect or an incorrectly-scoped timeout. This is recorded as an intentionally unresolved item, not a fix.
+- Validation: `npm run lint` and `npm run typecheck` pass clean.
+
+## Phase 6 evidence
+
+Finding 10 confirmed: no security response headers were set anywhere (`nuxt.config.ts` had no `nitro.routeRules` headers, no `server/middleware` handled this). `SitumViewer.vue` embeds the Situm Map Viewer via `sdk.viewer.create({ domElement, buildingId })` from `@situm/sdk-js`, which owns the iframe's src/lifecycle internally — this repo's code never sets an explicit Viewer origin/domain to allowlist with certainty.
+
+- Added `server/middleware/security-headers.ts` setting `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY` (this app is not meant to be iframed by third parties; does not affect this app embedding the Situm Viewer, which is the reverse direction), and a conservative `Permissions-Policy` denying `camera`/`microphone`/`geolocation`/`payment`/`usb` (none are used; `ARCHITECTURE.md`/decisions confirm no browser geolocation/"My location" feature exists).
+- Live-verified via local dev server: `curl -sI http://localhost:3000/` returned all four headers; app root still returned `200`.
+- **CSP intentionally not shipped.** A Content-Security-Policy strict enough to be meaningful (script-src/frame-src/connect-src allowlists) requires knowing every origin the hosted Situm Viewer release actually loads scripts/frames/XHR from at runtime. This repo's own evidence (`.agents/state.md`'s Viewer building-mismatch investigation) shows the Viewer's exact behavior has previously differed from assumptions in ways that broke the feature; guessing a CSP allowlist risks the same failure mode with a worse blast radius (broken map for every user) and cannot be proven safe without a live browser network trace against the real hosted Viewer, which is out of scope for this non-UI-testing pass. This is recorded as an open, intentionally unresolved limitation, not silently treated as solved.
+
+## Phase 7 evidence — regression coverage and testing decision
+
+**Decision: no new test framework was installed.** Node 24 (the installed runtime) has a native `node --test` runner, and `tsx` (already a project dependency, used elsewhere for TS execution) provides TS transpilation for it — this satisfies "tooling already available or Node-native facilities" without adding Vitest/Jest/etc. Added a `"test": "node --import tsx --test test/**/*.test.ts"` script.
+
+- `test/pure-logic.test.ts` (8 tests, run via `npm test`, all pass): unit coverage for framework-independent pure logic — `isValidDateRange` (valid/invalid/reversed/366-day-boundary ranges), `buildAnalyticsSyncKey` (proves overlapping-but-differently-dated windows produce distinct keys, the mechanism the Phase 1 fix relies on), `rateLimit` (limit enforcement, window reset, per-key isolation — the mechanism the Phase 3 fix relies on), and `boundedFetch`/`UpstreamTimeoutError` (live-proves a hung local HTTP server is aborted within the configured bound, and a fast response still resolves normally — the mechanism the Phase 5 fix relies on).
+- `test/regression/analytics-clickhouse.regression.ts` (manual, not part of `npm test` — requires a reachable ClickHouse; run via `node --import tsx test/regression/analytics-clickhouse.regression.ts`): exercises the **actual production functions** (`queryWorkspaceAnalytics`, `deleteWorkspaceAnalytics`, `ensureClickHouseSchema` — imported directly from `server/integrations/clickhouse/`, not reimplemented) against the real local `shared-clickhouse` instance. 10/10 checks passed:
+  - overlapping/re-synced windows are not double-counted (a month-window sync and a differently-dated sub-window re-sync for the same day each keep their own value; querying the month window returns only that window's value);
+  - date filtering excludes an unrelated prior sync window from positioning results;
+  - workspace isolation: a control workspace's rows never leak into another workspace's query results;
+  - `buildingId` filter returns matching rows and excludes non-matching ones;
+  - `geofenceId` filter returns exactly the matching row and excludes non-matching ones;
+  - workspace deletion leaves zero rows across all three workspace-owned analytics tables for the deleted workspace, while an unrelated control workspace's row count is unchanged.
+- Auth rate-limit-before-hash ordering (Phase 3) and Situm organization-mismatch rejection (Phase 4) are verified by direct code inspection of the committed diffs (the ordering/check is structurally unambiguous — see Phase 3/4 evidence above) rather than a live scripted test: exercising them end-to-end would require either a live scrypt-timing side channel (unreliable as a regression signal) or real Situm credentials from two different organizations (external/credential-gated, consistent with the plan's Phase 4 acceptance note).
+- Every regression evidence category listed in the plan objective is covered by either the `npm test` suite or the manual ClickHouse regression script, except the two items above which are covered by direct code evidence for the stated reasons.
+
+## Phase 8 evidence — full acceptance and closeout
+
+Full validation, run at the end of the branch history (after Phase 7's test additions):
+
+- `git diff --check` — clean (no whitespace errors).
+- `npm run lint` — clean, no errors.
+- `npm run typecheck` — clean, `nuxt typecheck` passes.
+- `npm run build` — succeeds; production `.output/` bundle produced (~10.4 MB, 2.5 MB gzip).
+- `npm test` — 8/8 pass (native `node --test`).
+- Manual ClickHouse regression (`test/regression/analytics-clickhouse.regression.ts`) — 10/10 pass against the real local `shared-clickhouse` instance.
+
+Production-preview runtime regression (per repo guidance, mirroring Plan 026's acceptance pattern): built the app and ran the real `.output/server/index.mjs` production bundle locally (`node --env-file=.env .output/server/index.mjs`, isolated port, separate from the existing healthy staging container `deploy-situm-explore-1`, which was left untouched throughout):
+
+- Root `/` returns `200` and now carries all four Phase 6 security headers (`X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`), confirmed live via `curl -sI`.
+- Unauthenticated `GET /api/workspaces` returns `401` — existing auth protection intact.
+- `POST /api/auth/login` with a nonexistent account: first 10 requests in the window returned `401` (generic invalid-credentials, unchanged), the 11th/12th returned `429` — Phase 3 rate limiting confirmed live and enforced before the generic-error path.
+- `POST /api/auth/register` with distinct emails: first 5 requests returned `200`, the 6th/7th returned `429` — Phase 3 registration rate limiting confirmed live.
+- Synthetic test accounts created during this smoke (`rl-test-1..5@example.com`) were deleted from `situm_explore.users` afterward; no residual test data or secrets were left in the shared Postgres instance.
+
+No secrets were persisted in the plan file, `.agents/` records, commit messages, or test files — all evidence above references behavior/counts/status codes only, never credential values.
+
+## Final summary
+
+All nine phases (0–8) of Plan 027 are complete on `plan/027-analytics-security-hardening`, pushed to origin, synchronized with no divergence. No PR was created and no merge into `main` was performed, per this repo's PR/integration gate — the branch remains available for user-directed review.
+
+Intentionally unresolved items (documented, not silently treated as solved):
+
+1. **`@situm/sdk-js` timeout/cancellation** (Phase 5): the installed SDK (v0.25.0) exposes an undocumented `timeouts?: Record<string, number>` config field with no documented key/unit semantics in its type definitions or README; left unset per "no evidence, no implementation" rather than guessed.
+2. **Content-Security-Policy** (Phase 6): not shipped. No live network trace of the hosted Situm Map Viewer's actual script/frame/connect-src origins exists in this repo, and this repo has already hit one real Viewer-behavior surprise (the wait_for_auth/postMessage building-mismatch investigation); a guessed CSP allowlist risks breaking the map for every user. All other safe headers (nosniff, referrer-policy, frame-options, permissions-policy) were shipped and live-verified.
+3. **Situm cross-organization credential live test** (Phase 4): the organization-match fix itself is implemented and unit-verifiable by inspection (reuses already-verified `authSession` fields), but a live end-to-end test against two real Situm credentials from different organizations is externally credential-gated and was not available in this environment.
+
+## Review remediation (post-Phase-8)
+
+A review of the pushed branch surfaced six issues before PR. All six were reconfirmed against current code first, found valid, and fixed on the same branch (no new plan/branch).
+
+1. **Spoofable rate-limit identity.** `deploy/staging.compose.yml` publishes the Nitro server directly on the host port (`"${STAGING_PORT:-3005}:3000"`) with no reverse proxy in the deployment — confirmed by reading the compose file; there is no trusted-proxy contract sanitizing `X-Forwarded-For`. `server/utils/rate-limit.ts` previously called `getRequestIP(event, { xForwardedFor: true })`, so any unauthenticated caller could rotate that header per request to get a fresh limiter bucket every time. Fixed by switching to `xForwardedFor: false`, deriving the limiter identity from the server-observed socket address only. Live-verified: 12 login attempts against `.output/server/index.mjs` (isolated port, staging container untouched) each carrying a unique spoofed `X-Forwarded-For` value returned `401` ×10 then `429` ×2 — the header no longer resets the bucket.
+2. **Unbounded rate-limiter memory growth.** The module-level `Map` never removed expired buckets. Added `pruneExpired()`, run at the start of every `rateLimit()` call, which deletes any bucket whose window has already elapsed — cleanup piggybacks on normal operation, no timers/background workers. New test `rateLimit prunes expired buckets so memory stays bounded across many unique identities` seeds 50 distinct keys, waits past their window, and proves a previously-seen key becomes usable again (i.e., its bucket was actually collected, not retained forever).
+3. **Rate-limit reset test didn't cross the boundary.** `rateLimit resets after the window elapses` only checked that a second immediate call was blocked; it never awaited past the window or re-checked. Rewritten to `await` past the window and assert the bucket allows a request again, deterministically (30 ms window + 50 ms wait, no production-code changes).
+4. **Trivial workspace-isolation assertion.** The ClickHouse regression asserted `!Object.keys(visitorsByDate).includes('workspaceB')` — `visitorsByDate` is keyed by ISO dates, so this could never be false regardless of isolation. Replaced with a real cross-check: querying workspace B directly must return only its own `42`-visitor row (not workspace A's rows for the same date range), and querying workspace A must never surface workspace B's `42` value for the shared date — both assertions exercise the real `queryWorkspaceAnalytics` production function.
+5. **Missing `analytics_workspace_sync_runs` deletion coverage.** `deleteWorkspaceAnalytics` already deleted all four workspace-owned tables (confirmed by reading `server/integrations/clickhouse/analytics.ts`), but the regression script only checked three. Added a synthetic sync-run row for workspace A and one for control workspace B, then asserted A's row is gone and B's row survives after `deleteWorkspaceAnalytics(workspaceA)`; synthetic rows are cleaned up afterward.
+6. **Undeclared `dotenv` import.** `test/regression/analytics-clickhouse.regression.ts` imported `dotenv`, which is only present in `package-lock.json` as a transitive dependency (confirmed: absent from `package.json`). Removed the import/`config()` call; the manual run command now uses Node's native `--env-file=.env` instead, matching how the rest of the repo already loads env for local runs.
+
+No finding was invalid; all six were reconfirmed against current code before any change.
+
+### Review remediation validation
+
+- `git diff --check` — clean.
+- `npm run lint` — clean.
+- `npm run typecheck` — clean (`nuxt typecheck`).
+- `npm run build` — succeeds (10.4 MB / 2.5 MB gzip `.output/`).
+- `npm test` — 9/9 pass (native `node --test`), including the corrected reset test and the new pruning test.
+- Manual ClickHouse regression (`node --import tsx --env-file=.env test/regression/analytics-clickhouse.regression.ts`) — 17/17 pass, including the corrected isolation assertion and the new `analytics_workspace_sync_runs` deletion coverage.
+- Focused auth-limiter runtime verification against the real production bundle (isolated port 3999, existing staging container `deploy-situm-explore-1` left untouched throughout): 12 `POST /api/auth/login` requests each with a distinct spoofed `X-Forwarded-For` value returned `401` for the first 10 and `429` for the 11th/12th, proving spoofing the header no longer bypasses the limiter in this direct-port deployment model. No accounts were created (all attempts were invalid-credential 401/429s against non-existent emails), so no synthetic data required cleanup.
+
+Only three files changed: `server/utils/rate-limit.ts`, `test/pure-logic.test.ts`, `test/regression/analytics-clickhouse.regression.ts`. No production query/deletion logic changed — findings 4–6 were test-only corrections.

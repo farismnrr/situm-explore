@@ -9,6 +9,8 @@ const loginSchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  requireRateLimit(event, 'auth:login', 10, 60_000)
+
   const parsed = loginSchema.safeParse(await readBody(event))
   if (!parsed.success) throw createError({ statusCode: 400, statusMessage: 'Email and password are required.' })
 

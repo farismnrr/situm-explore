@@ -29,13 +29,30 @@ export async function queryAnalytics(filters: AnalyticsFilters) {
 
 export async function queryWorkspaceAnalytics(workspaceId: string, filters: AnalyticsFilters) {
   const client = getClickHouseClient()
+  const prefixes = ['visitors', 'positioning_time', 'geofencing_stay_time'].map(report => `${report}:${filters.fromDate}:${filters.toDate}:${workspaceId}:`)
   const p = { ...params(filters), workspace_id: workspaceId }
+  const building = filters.buildingId === undefined ? '' : ' AND endsWith(source_window_id, concat(\':\', toString({building_id:UInt64})))'
   const [visitors, positioning, geofencing] = await Promise.all([
-    client.query({ query: `SELECT date, sum(visitors) AS visitors FROM ${table('analytics_workspace_visitors')} WHERE workspace_id = {workspace_id:UUID} AND date BETWEEN {from_date:Date} AND {to_date:Date} GROUP BY date ORDER BY date`, query_params: p, format: 'JSONEachRow' }).then(r => r.json()),
-    client.query({ query: `SELECT sum(total) AS total, avg(avg) AS avg, avg(std) AS std FROM ${table('analytics_workspace_positioning_time')} WHERE workspace_id = {workspace_id:UUID}`, query_params: p, format: 'JSONEachRow' }).then(r => r.json()),
-    client.query({ query: `SELECT sum(seconds_in_fence) AS seconds, sum(sessions_count) AS sessions, count() AS rows FROM ${table('analytics_workspace_geofencing_stay')} WHERE workspace_id = {workspace_id:UUID} AND timestamp >= {from_date:DateTime} AND timestamp < addDays(toDate({to_date:Date}), 1)`, query_params: p, format: 'JSONEachRow' }).then(r => r.json())
+    client.query({ query: `SELECT date, sum(visitors) AS visitors FROM ${table('analytics_workspace_visitors')} WHERE workspace_id = {workspace_id:UUID} AND ${sourceWindow()} AND date BETWEEN {from_date:Date} AND {to_date:Date}${building} GROUP BY date ORDER BY date`, query_params: { ...p, source_prefix: prefixes[0] }, format: 'JSONEachRow' }).then(r => r.json()),
+    client.query({ query: `SELECT sum(total) AS total, avg(avg) AS avg, avg(std) AS std FROM ${table('analytics_workspace_positioning_time')} WHERE workspace_id = {workspace_id:UUID} AND ${sourceWindow()}${building}`, query_params: { ...p, source_prefix: prefixes[1] }, format: 'JSONEachRow' }).then(r => r.json()),
+    client.query({ query: `SELECT sum(seconds_in_fence) AS seconds, sum(sessions_count) AS sessions, count() AS rows FROM ${table('analytics_workspace_geofencing_stay')} WHERE workspace_id = {workspace_id:UUID} AND ${sourceWindow()} AND timestamp >= {from_date:DateTime} AND timestamp < addDays(toDate({to_date:Date}), 1) AND ({building_id:UInt64} = 0 OR building_id = {building_id:UInt64}) AND ({geofence_id:String} = '' OR matched_fence_id = {geofence_id:String})`, query_params: { ...p, source_prefix: prefixes[2] }, format: 'JSONEachRow' }).then(r => r.json())
   ])
   return { visitors, positioning, geofencing }
+}
+
+const workspaceOwnedTables = ['analytics_workspace_visitors', 'analytics_workspace_positioning_time', 'analytics_workspace_geofencing_stay', 'analytics_workspace_sync_runs'] as const
+
+export async function deleteWorkspaceAnalytics(workspaceId: string): Promise<void> {
+  const client = getClickHouseClient()
+  const database = clickHouseDatabaseName()
+  if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(database)) throw new Error('Invalid ClickHouse database configuration')
+  for (const name of workspaceOwnedTables) {
+    await client.command({
+      query: `ALTER TABLE \`${database}\`.${name} DELETE WHERE workspace_id = {workspace_id:UUID}`,
+      query_params: { workspace_id: workspaceId },
+      clickhouse_settings: { mutations_sync: '2' }
+    })
+  }
 }
 
 export async function exportAnalytics(filters: AnalyticsFilters, report: 'visitors' | 'positioning_time' | 'geofencing_stay_time') {
