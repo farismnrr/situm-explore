@@ -3,7 +3,7 @@
 Branch: `plan/032-web-native-handoff-distribution`
 Base: updated `origin/main` after Plan 031 is integrated
 Depends on: Plan 031 complete/integrated
-Status: implementation remediation complete; final reviewer confirmation required before integration
+Status: implementation complete/reviewer-approved; PR-ready pending user authorization
 
 ## Objective
 

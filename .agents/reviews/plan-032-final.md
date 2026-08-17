@@ -1,4 +1,4 @@
-# Plan 032 final implementation review — one final deep-link lifecycle remediation required
+# Plan 032 final implementation review — APPROVED
 
 Reviewed 2026-08-17 on `plan/032-web-native-handoff-distribution`, remediation implementation through `f72697b`.
 
@@ -8,7 +8,7 @@ The two prior Plan 032 review blockers are resolved in `ab35054`: deep-link buil
 
 Remediation validation passes 31/31 root tests plus root/mobile lint/typecheck and `git diff --check`; production build, Expo config rendering, and Android debug compilation also pass with the configured SDK path.
 
-Plan 032 is **not PR-ready yet** because this remediation still requires final reviewer confirmation; the implementation blocker described below has been resolved on the working branch.
+Plan 032 implementation is **approved and PR-ready pending user authorization**. All three reviewer findings are resolved through `f72697b`, with documentation reconciled in `ecd2d51`.
 
 ## Prior blocking findings — resolved in `ab35054`
 
@@ -16,7 +16,7 @@ Plan 032 is **not PR-ready yet** because this remediation still requires final r
 
 2. **Native App Gate defaulted wider/unknown clients to iOS.** Resolved: platform detection is now independent of viewport geometry, Android/iOS clients receive matching configured options, and desktop/unknown clients receive all configured platform options through `getNativeInstallOptions()` with focused regression coverage.
 
-## Remediated finding — validation pending final reviewer confirmation
+## Final lifecycle finding — resolved in `f72697b`
 
 3. **Resolved on the remediation branch:** `WorkspaceContext` now emits monotonic `mapRequest` values, `NativeMapScreen` consumes each request exactly once, and only the local native Map runtime key includes the applied request ID. A second foreground link to another building in the already-selected workspace therefore produces a distinct runtime application without changing the parent Explore key or remounting when the context request is cleared.
 
@@ -26,7 +26,7 @@ This is a Plan 032 implementation lifecycle issue, not a physical-device/full-cr
 
 ## Reviewer validation
 
-Independent checks at `ab35054`:
+Independent final checks at `ecd2d51`:
 
 - root tests: 31/31 pass;
 - root lint and Nuxt typecheck pass;
@@ -42,4 +42,4 @@ All Plan 030/031 physical-device acceptance and Plan 032 real cross-client/open/
 
 ## Handoff
 
-Final reviewer should confirm the request-id lifecycle remediation and its 31-test validation. Stop before PR/merge and do not start Plan 033.
+The request-id lifecycle remediation is confirmed. Plan 032 is PR-ready pending explicit user authorization. Stop before PR/merge and do not start Plan 033 until Plan 032 is integrated.

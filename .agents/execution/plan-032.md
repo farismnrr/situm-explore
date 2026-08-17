@@ -48,12 +48,12 @@ Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execut
 - Reconciled architecture, capability matrix, README/plan router, and Plan 033 handoff evidence.
 - Plan 032 implementation is complete pending review/integration. Plan 033 was not started.
 
-## Final reviewer remediation — lifecycle blocker resolved pending final review
+## Final reviewer remediation — approved
 
 - `ab35054` resolves the two prior findings: stale building hints are cleared after consumption/workspace change, and install options use OS detection independently of viewport with all configured platforms exposed on desktop/unknown clients.
 - Final reviewer authority is `/home/farismnrr/Projects/situm-explore/.agents/reviews/plan-032-final.md`.
 - Resolved the foreground Map lifecycle blocker with monotonic `mapRequest` IDs, idempotent request consumption, and a local runtime key that changes only when a new request is applied. A second link to another building in the selected workspace now remounts the Map runtime once without a request-clearing remount loop.
-- Added focused sequential same-workspace request coverage and revalidated the implementation. Keep all physical-device and full cross-client acceptance explicitly UNPASSED for Plan 033; final reviewer confirmation and branch integration remain outstanding.
+- Added focused sequential same-workspace request coverage and revalidated the implementation. Final reviewer confirmation passed with 31/31 tests plus root/mobile lint/typecheck and diff checks. Keep all physical-device and full cross-client acceptance explicitly UNPASSED for Plan 033; branch integration remains user-gated.
 
 ## Plan 033 carry-over
 
