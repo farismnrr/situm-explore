@@ -8,7 +8,7 @@ Keep this file short. Current authority lives in `.agents/state.md`.
 
 1. `.agents/identity.md`
 2. `.agents/state.md`
-3. `.agents/execution/plan-029.md` when Plan 029 is active
+3. `.agents/execution/plan-030.md` when Plan 030 is active
 4. `.agents/protocols/chat-lifecycle.md`
 5. `.agents/protocols/git-workflow.md`
 6. `.agents/memory/decisions.md`
@@ -36,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–028 are complete/integrated via PRs #20–#23. Plan 029 is the active native foundation plan on `plan/029-native-app-foundation`; production native implementation starts here. Plans 030–032 remain dependent follow-ups. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–029 are complete/integrated via PRs #20–#24. Plan 030 native Map/positioning/navigation implementation is reviewer-approved and PR-ready pending user authorization on `plan/030-native-map-positioning-navigation`; its unpassed physical-device E2E is explicitly carried to Plan 032's terminal gate. Plans 031–032 remain dependent follow-ups. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 

@@ -6,7 +6,7 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "baseUrl": ".",
-    "paths": { "@situm/react-native": ["node_modules/@situm/react-native/src/index.ts"] },
+    "paths": { "@situm/react-native": ["src/types/situm-react-native.d.ts"] },
     "noEmit": true
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

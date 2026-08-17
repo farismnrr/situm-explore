@@ -7,7 +7,7 @@ Status: planned
 
 ## Objective
 
-Finish the native-companion product boundary: route phone-web Map users to Situm Explore Mobile while preserving web Map on desktop/tablet; route every web Realtime entry point to the native app; add safe deep-link/install/download fallbacks; establish reproducible distribution configuration without committed signing/store secrets; and run full cross-client regression.
+Finish the native-companion product boundary: route phone-web Map users to Situm Explore Mobile while preserving web Map on desktop/tablet; route every web Realtime entry point to the native app; add safe deep-link/install/download fallbacks; establish reproducible distribution configuration without committed signing/store secrets; and run the consolidated full cross-client **plus physical-device** regression carried forward from Plans 030–031.
 
 ## Product policy to implement
 
@@ -22,7 +22,7 @@ Finish the native-companion product boundary: route phone-web Map users to Situm
   phone          -> native handoff / install CTA
 ```
 
-This plan changes UX routing only after the native destinations exist and are accepted.
+This plan changes UX routing only after the native destinations exist and their implementation has been accepted. Final roadmap closeout and production handoff activation still require the consolidated Plan 032 physical-device E2E gate to pass.
 
 ## Rules
 
@@ -34,7 +34,8 @@ This plan changes UX routing only after the native destinations exist and are ac
 - Deep links may carry non-secret routing context such as feature/workspace/building identifiers only when authorization is rechecked after app open/login.
 - Store/signing credentials and private keys remain external/ignored.
 - Web/native handoff UI and native destinations must remain visibly one Situm Explore tenant. Use `DESIGN.md` plus both canonical HTML references; do not introduce platform-specific branding or contradictory feature vocabulary during handoff.
-- No PR/merge without explicit user authorization.
+- Plan 032 is the hard terminal physical-E2E gate for the native roadmap. It inherits all explicitly unpassed physical-device acceptance from Plans 030–031; those items may not be deferred again, waived by emulator evidence, or marked accepted without real supported-device proof.
+- No PR/merge without explicit user authorization. Even with authorization, do not merge Plan 032 while its consolidated physical-device E2E gate is incomplete.
 
 ## Phase checklist
 
@@ -51,7 +52,7 @@ This plan changes UX routing only after the native destinations exist and are ac
 
 Before changing web routes:
 
-- confirm Plans 029–031 are integrated and native Map + Realtime destinations work;
+- confirm Plans 029–031 are integrated and the native Map + Realtime implementations are reviewer-accepted, with every still-unpassed physical-device acceptance item from Plans 030–031 enumerated as Plan 032 carry-over;
 - confirm actual Android/iOS application identifiers and deep-link configuration from Plan 028/029;
 - confirm which distribution targets are actually available (Play Store, App Store, direct Android artifact, internal distribution, etc.); do not invent links;
 - test the existing web Situm Viewer at representative phone/tablet/desktop viewport sizes and orientations;
@@ -171,6 +172,21 @@ Native acceptance:
 - no credentials appear in URLs, QR contents, logs or bundled public configuration;
 - Map/Realtime shell, naming, states and responsive hierarchy remain aligned with `design/reference/situm-explore-native-responsive-prototype.html` except for explicitly documented capability-driven deviations.
 
-Run root and mobile validation suites, production web preview, available native production/dev builds, and real-device smoke. Reconcile `ARCHITECTURE.md`, `design/data-source-matrix.md`, `plans/README.md`, `.agents/state.md`, durable decisions/knowledge and final roadmap status to exact runtime truth.
+Consolidated supported-Android physical-device E2E — **hard gate, no further deferral**:
+
+- authenticate against the real reachable Situm Explore backend and restore the owner-authorized workspace/session safely;
+- load the correct calibrated real building with no demo/foreign building flash or stale workspace credential reuse;
+- exercise the contextual permission/User Helper flow;
+- start/stop real Situm positioning and receive truthful status/location evidence;
+- prove blue-dot/current-floor behavior and real floor transition behavior where the calibrated environment permits it;
+- select a known real POI and start/cancel/finish/error navigation according to observed SDK behavior;
+- verify navigation away/back, background/resume, workspace switch, logout and restart do not duplicate or retain stale Map/positioning/navigation sessions;
+- exercise the Plan 031 frozen Realtime scope with real authorized workspace data, including any own-device physical positioning/background/publishing behavior that Plan 031 explicitly carried forward;
+- verify Realtime workspace isolation, lifecycle cleanup and truthful freshness on the physical device;
+- confirm no application session, Situm credential, sensitive location stream or other secret appears in URLs, QR contents, screenshots intended as evidence, logs/traces, bundled public config or repository files.
+
+Emulator evidence may supplement this gate but cannot satisfy sensor/BLE/Wi-Fi/physical-positioning claims. If the required physical environment is unavailable, Plan 032 remains incomplete and must not be merged as roadmap closeout.
+
+Run root and mobile validation suites, production web preview, available native production/dev builds, and the consolidated real-device E2E above. Reconcile `ARCHITECTURE.md`, `design/data-source-matrix.md`, `plans/README.md`, `.agents/state.md`, durable decisions/knowledge and final roadmap status to exact runtime truth.
 
 Commit/push every completed phase and stop before PR/merge until explicit user authorization.

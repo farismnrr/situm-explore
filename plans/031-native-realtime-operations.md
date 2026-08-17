@@ -21,6 +21,7 @@ Realtime is intentionally a native product destination in this roadmap even if s
 - Treat `DESIGN.md` and `design/reference/situm-explore-native-responsive-prototype.html` as the visual/interaction reference for Realtime, while keeping the current Situm/backend data contract authoritative.
 - Keep Realtime vocabulary aligned with web/backend semantics. Do not replace device/position records with invented person identities or social-presence language unless a proven identity mapping exists.
 - Treat location data as sensitive operational data: minimize persistence/logging and expose only to authorized workspace users.
+- Plan 031 must still prove every implementation/server/runtime contract that is testable without physical sensor evidence. Physical-device E2E for own-device positioning/background behavior and device-dependent Realtime interactions may be carried forward only to Plan 032's hard final E2E gate, where it becomes mandatory and non-deferrable.
 - No PR/merge without explicit user authorization.
 
 ## Phase checklist
@@ -31,7 +32,7 @@ Realtime is intentionally a native product destination in this roadmap even if s
 - [ ] Phase 3 — Map/focus/live-location integration where proven.
 - [ ] Phase 4 — Own-device positioning/background behavior required by Realtime.
 - [ ] Phase 5 — Privacy, lifecycle, performance and failure handling.
-- [ ] Phase 6 — Real-device/runtime acceptance and closeout.
+- [ ] Phase 6 — Implementation/runtime acceptance, explicit physical-E2E carry-over, and closeout.
 
 ## Phase 0 — Realtime contract
 
@@ -126,18 +127,19 @@ Verify:
 - workspace isolation remains intact;
 - session expiry does not leave Realtime data visible to an unauthenticated user.
 
-## Phase 6 — Acceptance
+## Phase 6 — Implementation/runtime acceptance and E2E carry-over
 
-Use real workspace/Situm data where available without persisting credentials.
-
-Acceptance must prove the frozen v1 semantics end-to-end:
+Use real workspace/Situm data where safely available without persisting credentials. Before Plan 031 can close, prove every non-physical contract that the available backend/emulator/runtime can truthfully exercise:
 
 - correct workspace positions only;
 - no cross-workspace leakage;
 - truthful freshness/empty/error states;
 - native navigation away/back and workspace switching cleanly stop/restart data flow;
-- own-device positioning/background behavior works where included;
 - map/live-session integration works only for proven SDK capabilities;
 - no broad credential exposure in app bundle, traffic logs, application logs or repository files.
+
+Any acceptance item that materially depends on a supported physical device—especially own-device positioning/background behavior, sensor-dependent publishing, or physical-device Realtime lifecycle—must be listed explicitly as **unpassed Plan 032 carry-over** rather than guessed or silently dropped. Plan 031 may be reviewed/integrated once its implementation/runtime evidence is approved and every such carry-over is recorded.
+
+Plan 032 is the non-deferrable final gate: it must exercise the accumulated Plan 030 and Plan 031 physical-device E2E before roadmap closeout/merge.
 
 Run repository/mobile validations, update architecture/capability evidence, commit/push each phase, and stop before PR until user authorization.

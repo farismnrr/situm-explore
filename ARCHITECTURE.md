@@ -317,17 +317,17 @@ Plan 021 -> 022 -> 023 -> 024 -> 025
 Plan 026 -> 027
 ```
 
-Plan 028 evidence is complete on its branch; production native implementation has not started. The next roadmap step is Plan 029 after Plan 028 integration:
+Plans 028–029 are complete and integrated. The React Native foundation now exists under `mobile/`; Plan 030 spatial implementation is reviewer-approved and PR-ready pending user authorization. Its unpassed supported-device Map/positioning/navigation E2E is explicitly carried forward to Plan 032's non-deferrable terminal gate:
 
 ```text
-Plan 028 — Native Capability, Auth & Distribution Spike [complete; pending integration]
--> Plan 029 — Native App Foundation & Workspace Session
--> Plan 030 — Native Map, Positioning & Navigation
+Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
+-> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
+-> Plan 030 — Native Map, Positioning & Navigation [implementation approved; PR-ready]
 -> Plan 031 — Native Realtime Operations
--> Plan 032 — Web/Native Handoff, Distribution & Full Regression
+-> Plan 032 — Web/Native Handoff, Distribution & Full Regression [terminal physical-E2E gate]
 ```
 
-Normal Git workflow requires Plan 028 to be integrated before Plan 029 starts and each later dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking.
+Normal Git workflow requires each dependency to be integrated into updated `main` before the next dependent plan starts, unless the user explicitly authorizes stacking. Plan 030 was created from updated `main` after Plan 029 integration.
 
 ## Review checklist
 
