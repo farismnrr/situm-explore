@@ -3,17 +3,21 @@ import type { ExpoConfig } from 'expo/config'
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT || 'dev'
 const scheme = environment === 'production' ? 'situm-explore' : `situm-explore-${environment}`
 const universalLinkHost = process.env.EXPO_PUBLIC_UNIVERSAL_LINK_HOST?.trim()
+const version = process.env.EXPO_PUBLIC_APP_VERSION || '1.0.0'
+const androidVersionCode = Number(process.env.EXPO_PUBLIC_ANDROID_VERSION_CODE || '1')
+const iosBuildNumber = process.env.EXPO_PUBLIC_IOS_BUILD_NUMBER || '1'
+if (!Number.isSafeInteger(androidVersionCode) || androidVersionCode < 1) throw new Error('EXPO_PUBLIC_ANDROID_VERSION_CODE must be a positive integer.')
 
 const config = {
   name: 'Situm Explore',
   slug: 'situm-explore',
-  version: '1.0.0',
+  version,
   orientation: 'default',
   scheme,
   userInterfaceStyle: 'light',
   newArchEnabled: true,
-  ios: { bundleIdentifier: 'com.situm.explore', supportsTablet: true, deploymentTarget: '16.4', ...(universalLinkHost ? { associatedDomains: [`applinks:${universalLinkHost}`] } : {}) },
-  android: { package: 'com.situm.explore', adaptiveIcon: { backgroundColor: '#111827' }, ...(universalLinkHost ? { intentFilters: [{ action: 'VIEW', autoVerify: true, category: ['BROWSABLE', 'DEFAULT'], data: [{ scheme: 'https', host: universalLinkHost, pathPrefix: '/' }] }] } : {}) },
+  ios: { bundleIdentifier: 'com.situm.explore', supportsTablet: true, deploymentTarget: '16.4', buildNumber: iosBuildNumber, ...(universalLinkHost ? { associatedDomains: [`applinks:${universalLinkHost}`] } : {}) },
+  android: { package: 'com.situm.explore', versionCode: androidVersionCode, adaptiveIcon: { backgroundColor: '#111827' }, ...(universalLinkHost ? { intentFilters: [{ action: 'VIEW', autoVerify: true, category: ['BROWSABLE', 'DEFAULT'], data: [{ scheme: 'https', host: universalLinkHost, pathPrefix: '/' }] }] } : {}) },
   plugins: [
     'expo-secure-store',
     ['expo-build-properties', { android: { minSdkVersion: 24, compileSdkVersion: 36, targetSdkVersion: 36, kotlinVersion: '2.1.20' }, ios: { deploymentTarget: '16.4' } }],

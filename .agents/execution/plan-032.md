@@ -37,6 +37,11 @@ Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execut
 - Added optional iOS Associated Domains and Android App Links configuration from the public host environment variable.
 - Kept deterministic direct-link, QR, store/download, and truthful-unavailable fallback behavior without timer hacks.
 
+## Phase 6 — complete
+
+- Added reproducible version/build-number inputs and the mobile distribution runbook.
+- Documented external signing/store/artifact boundaries and environment-specific backend/public-link configuration without committing secrets.
+
 ## Phase 033 carry-over
 
 The Plan 030/031 physical-device acceptance remains unpassed. Plan 033 must also run real cross-client handoff, install/open, deep-link, login restoration, workspace authorization, invalid-link, logout/restart, and secret-audit acceptance after this plan is integrated.

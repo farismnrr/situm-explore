@@ -46,7 +46,7 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 - [x] Phase 3 — Map desktop/tablet web vs phone-native policy.
 - [x] Phase 4 — Realtime all-web native handoff policy.
 - [x] Phase 5 — Install/open-app, QR and distribution fallback UX.
-- [ ] Phase 6 — Production mobile packaging/distribution documentation.
+- [x] Phase 6 — Production mobile packaging/distribution documentation.
 - [ ] Phase 7 — Implementation validation, documentation reconciliation and Plan 033 handoff.
 
 ## Phase 0 — Readiness and breakpoint matrix
@@ -186,6 +186,12 @@ desktop/tablet web
 Do not use brittle timer hacks if Universal/App Links provide a safer OS-native path. If an app-scheme fallback is needed, document platform/browser limitations and keep failure UX truthful.
 
 ## Phase 6 — Distribution configuration
+
+### Execution evidence — 2026-08-17
+
+- Added `docs/mobile-distribution.md` with public runtime variables, version/build policy, environment separation, association-file requirements, external signing/store boundaries, artifact/source-map handling, and release destination updates.
+- Added Expo version/build-number inputs with safe Android positive-integer validation. Existing identifiers and frozen SDK/platform versions remain unchanged.
+- Release signing, provisioning, store delivery, EAS/CI, and private download hosting remain explicitly external; no secrets or private URLs were added.
 
 Provide reproducible production packaging/distribution configuration according to Plan 028 decisions.
 
