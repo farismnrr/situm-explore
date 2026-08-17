@@ -35,7 +35,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plan 026 production containerization is complete/integrated via PR #20. Plan 027 (analytics correctness & security hardening) is the active plan on its dedicated branch. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–027 are complete/integrated via PRs #20–#21. The approved next roadmap is Plans 028–032 for the native Situm Explore companion app; implementation has not started. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 
@@ -43,7 +43,7 @@ The completed roadmap introduced DB-backed users, real email/password registrati
 
 Google OAuth is prepared but real runtime acceptance is deferred to the user.
 
-The current integrated runtime still contains legacy env-defined auth/global Situm context until the owning plans replace it. That runtime state is migration input, not the final architecture.
+The legacy env-defined auth/global Situm context is historical migration evidence from before Plans 021–025. The current integrated source/runtime and completed-plan outcomes are authoritative; do not resurrect the legacy global model.
 
 ## External integration rule
 

@@ -10,13 +10,14 @@ Before executing current plans, read:
 2. `.agents/README.md`;
 3. `.agents/state.md`;
 4. `.agents/memory/decisions.md`;
-5. `.agents/memory/roadmap-021-025.md`;
+5. `.agents/memory/roadmap-021-025.md` when completed backend-roadmap context matters;
 6. `.agents/protocols/git-workflow.md`;
 7. `ARCHITECTURE.md`;
-8. `plans/021-025-prerequisites.md`;
-9. `design/data-source-matrix.md` when Situm/product scope matters;
-10. active plan;
-11. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
+8. `plans/021-025-prerequisites.md` when historical prerequisite context matters;
+9. `plans/028-032-native-mobile-roadmap.md` when executing Plans 028–032;
+10. `design/data-source-matrix.md` when Situm/product scope matters;
+11. active plan;
+12. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
 
 Historical plans/sessions/branches are evidence only. Current state, durable decisions, architecture, and the active plan are current authority.
 
@@ -47,11 +48,33 @@ roadmap/021-025-backend-refactor              [complete/integrated]
 Roadmap overview: `plans/021-025-backend-refactor-roadmap.md`.
 Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
+## Completed Plans 026–027
+
+- Plan 026 — Production Containerization: complete/integrated via PR #20.
+- Plan 027 — Analytics Correctness & Security Hardening: complete/integrated via PR #21.
+
+## Approved native companion roadmap
+
+Implementation has not started.
+
+```text
+roadmap/028-032-native-mobile                       [planning]
+-> Plan 028 — Native Capability, Auth & Distribution Spike
+-> Plan 029 — Native App Foundation & Workspace Session
+-> Plan 030 — Native Map, Positioning & Navigation
+-> Plan 031 — Native Realtime Operations
+-> Plan 032 — Web/Native Handoff, Distribution & Full Regression
+```
+
+Roadmap overview: `plans/028-032-native-mobile-roadmap.md`.
+
+Normal sequential execution starts Plan 028 only after this planning branch is integrated into updated `main`; each dependent plan starts after its predecessor is integrated unless the user explicitly authorizes stacked execution.
+
 ## Transition direction
 
 The historical pre-refactor baseline used env-defined app auth and process-global Situm account/Viewer/building context; it also produced analytics history before workspace ownership existed.
 
-Plans 021–024 replaced those incrementally. Plan 025 completed final UX/regression and documentation reconciliation. Plan 026 owns production containerization.
+Plans 021–025 replaced those incrementally. Plans 026–027 completed production containerization plus analytics/security hardening. Plans 028–032 add a native companion client while preserving Nitro as the single application backend.
 
 Do not remove a working old path before its replacement is implemented and accepted.
 

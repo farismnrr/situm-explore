@@ -36,9 +36,9 @@ Historical files do not regain authority merely because they contain more detail
 
 Plans 017–020 are complete/integrated into `main` by PR #12.
 
-Plans 021–025 are complete and integrated. Plan 026 is the active production-containerization plan on `plan/026-production-containerization`.
+Plans 026–027 are complete and integrated. The approved next roadmap is Plans 028–032 for the native Situm Explore companion app; implementation has not started.
 
-Plans 021–025 no longer have an active planning gate; their integrated state is historical context for the active Plan 026.
+Plans 021–027 no longer have an active planning gate; their integrated state is historical context. The Plans 028–032 roadmap planning branch is the planning authority until integrated, after which Plan 028 will be the next executable plan.
 
 The roadmap moves the product from the pre-refactor env-defined user/global Situm runtime to DB-backed users, private workspaces, protected workspace configuration, workspace-scoped Situm/analytics context, reused observability, end-to-end correlation, and safe client errors.
 
