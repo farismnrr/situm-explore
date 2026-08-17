@@ -3,7 +3,7 @@
 Branch: `plan/028-native-capability-auth-spike`
 Base: updated `origin/main` after the native roadmap planning branch is integrated
 Depends on: `plans/028-032-native-mobile-roadmap.md`
-Status: active — Phase 3 complete; Phase 4 next
+Status: active — Phase 4 complete; Phase 5 next
 
 ## Objective
 
@@ -29,7 +29,7 @@ Downstream native UI implementation is visually governed by `DESIGN.md` and `des
 - [x] Phase 1 — Freeze React Native / Expo / Situm SDK compatibility matrix.
 - [x] Phase 2 — Prove native Map, positioning, permission and navigation surfaces.
 - [x] Phase 3 — Freeze least-privilege Situm mobile authentication contract.
-- [ ] Phase 4 — Freeze application login/session transport for native.
+- [x] Phase 4 — Freeze application login/session transport for native.
 - [ ] Phase 5 — Freeze secure-storage, deep-link and distribution contracts.
 - [ ] Phase 6 — Evidence summary, durable decisions and Plan 029 readiness gate.
 
@@ -140,6 +140,25 @@ Frozen v1 contract:
 5. A missing, revoked, or invalid Positioning key is a recoverable auth/configuration state. Native UI must show a safe unavailable/retry state and must not silently substitute the primary, Viewer, or a guessed token.
 
 Auth decision: PASS for the dedicated Positioning-key contract; JWT is explicitly UNSELECTED/UNPROVEN, not rejected as impossible. No credential value or auth endpoint was implemented in this evidence phase.
+
+### Phase 4 evidence — 2026-08-17
+
+Current application session evidence:
+
+- `nuxt-auth-utils` 0.5.30 wraps h3 sealed sessions. The current web login/register endpoints call `setUserSession(event, { user: { id, email } })`; logout calls `clearUserSession`; protected APIs call `requireUserSession`. The session contains the existing PostgreSQL user ID and does not create a second identity system.
+- Current `nuxt.config.ts` sets `runtimeConfig.session.password` from `NUXT_SESSION_PASSWORD` and only overrides the cookie `secure` flag. The package defaults are session name `nuxt-session` and `SameSite=Lax`; h3's default cookie is secure/httpOnly/path `/`. The repository does not currently freeze an explicit max age.
+- h3's installed `useSession` implementation accepts the sealed session from either the `nuxt-session` cookie or the default `x-nuxt-session` header. This is a same-session transport path, not a new bearer-token identity model.
+- The current login response is `{ok: true}` and only sets a cookie. No React Native runtime/cookie-jar proof exists here for reliable persistence and clearing on both Android and iOS. Treating platform `fetch` cookie behavior as equivalent to browser cookie behavior would be an unsupported assumption.
+
+Frozen native application-session contract:
+
+1. Plan 029 must add a mobile-specific login/session response that returns an opaque sealed h3 session value for the same PostgreSQL user/session data, and native requests must send it as `x-nuxt-session`. The server must continue accepting the normal cookie for web and the header for native through the same `requireUserSession` boundary.
+2. This value is not a JWT, Situm token, credential, or second identity. It must be issued only after the existing email/password (or later proven OAuth) authentication succeeds, over the configured HTTPS application origin. The response must never include the workspace Read & Write key, Viewer key, or Positioning key.
+3. Freeze a 7-day maximum age for the mobile sealed session in the implementation contract, with server-side expiry validation. Logout must call the server logout endpoint, clear the native secure-storage value and in-memory header, and prevent subsequent requests from reusing the local token. Password/account/session revocation behavior must be handled by a later server-side revocation/version check before production acceptance; a stolen sealed token must not be described as instantly revocable until that check exists.
+4. The native client must store the session value only in the OS-backed secure-storage mechanism selected in Phase 5, never AsyncStorage, URLs, QR codes, logs, analytics, or ordinary app state persistence. In-memory use is allowed after secure retrieval.
+5. CSRF protection remains applicable to cookie-authenticated browser mutations. Header-authenticated native requests use the same authenticated server authorization checks and must carry an explicit mobile request marker only if a later implementation needs it; do not weaken ownership checks or accept a user ID from the client.
+
+Phase 4 conclusion: PASS for a same-user sealed-session header transport contract; unchanged cookie-only native transport is NOT PROVEN. No production auth endpoint or session behavior was changed in this phase.
 
 ## Phase 2 — Situm mobile capability proof
 

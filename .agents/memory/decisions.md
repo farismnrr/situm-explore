@@ -88,6 +88,14 @@ Status: active Plan 028 Phase 2 evidence; runtime/device proof and auth decision
 
 Status: active Plan 028 Phase 3 evidence; transport/storage implementation remains in later phases.
 
+### Plan 028 Phase 4 application session boundary (2026-08-17)
+
+- Native uses the same `nuxt-auth-utils` sealed PostgreSQL-user session through an `x-nuxt-session` header. Plan 029 must add a mobile login response that issues this opaque sealed value; it is not a second identity or JWT system.
+- Freeze a 7-day mobile session maximum age, OS secure storage later selected by Phase 5, explicit server logout, and no credential/token values in URLs or logs. Cookie-only React Native persistence is not proven.
+- Existing `requireUserSession` ownership checks remain authoritative for every native request; client-provided user/workspace identity is never trusted.
+
+Status: active Plan 028 Phase 4 evidence; implementation and revocation/version checks remain gated by later phases.
+
 ## Plans 021–025 identity/workspace model
 
 - Real application users are persisted in PostgreSQL.
