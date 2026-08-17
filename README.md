@@ -6,7 +6,7 @@ Situm Explore is a full-stack Nuxt 4 web operations/exploration application usin
 
 Plans 017–027 are complete and integrated into `main`, with Plan 027 integrated via PR #21.
 
-The Plans 028–032 native companion roadmap is active. Plans 028–029 are complete and integrated; Plan 030 is the active native Map, positioning and navigation implementation plan. The architecture remains the current Nuxt/Nitro web/backend runtime plus the React Native second client under `mobile/`; there is no second backend.
+The Plans 028–032 native companion roadmap is active. Plans 028–029 are complete and integrated; Plan 030 Map/positioning/navigation implementation is reviewer-approved and PR-ready pending user authorization, with physical-device E2E explicitly consolidated into Plan 032's terminal gate. The architecture remains the current Nuxt/Nitro web/backend runtime plus the React Native second client under `mobile/`; there is no second backend.
 
 ```text
 Plan 028 — Native Capability, Auth & Distribution Spike

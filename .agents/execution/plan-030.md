@@ -8,7 +8,7 @@ Plan: `/home/farismnrr/Projects/situm-explore/plans/030-native-map-positioning-n
 
 Execute Plan 030 end-to-end. Do not pause between successful phases. After each phase: review evidence/diff, update plan/state/durable evidence as needed, run phase validation, commit, push, verify clean/synced, then continue.
 
-Stop only for a real product/security/architecture/capability blocker or when truthful physical-device acceptance cannot proceed. Do not fabricate device/runtime evidence. Stop before PR/merge and do not start Plan 031.
+Stop only for a real product/security/architecture/capability blocker. Do not fabricate device/runtime evidence. Under the current roadmap policy, unavailable physical-device acceptance is recorded as explicit Plan 032 carry-over rather than blocking Plan 030 integration. Stop before PR/merge and do not start Plan 031 until Plan 030 is integrated.
 
 ## Authority
 
@@ -37,6 +37,6 @@ Final reviewer findings are authoritative for remediation: `/home/farismnrr/Proj
 
 Run repository baseline plus mobile lint/typecheck, Expo doctor/prebuild, Android `assembleDebug` with `/home/farismnrr/Android/Sdk`, focused tests, secret checks, and full branch diff review.
 
-Physical-device evidence is mandatory before claiming real positioning/blue-dot/navigation acceptance. If no suitable calibrated building/profile, credential, or physical supported device is available, complete every truthfully testable phase first, record the exact gate, and stop Plan 030 as BLOCKED rather than inventing acceptance.
+Physical-device evidence is mandatory before claiming real positioning/blue-dot/navigation acceptance. If no suitable calibrated building/profile, credential, or physical supported device is available, complete every truthfully testable phase first and record each missing device claim as explicit, unpassed Plan 032 carry-over. Plan 030 may close and become PR-ready after reviewer-approved implementation validation; missing physical evidence must never be relabeled as passed.
 
 At completion report one consolidated Plan 030 result, commits, validation, device evidence/external gates, Plan 031 readiness, and PR readiness.

@@ -55,15 +55,15 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Approved native companion roadmap
 
-Plans 028–029 are integrated into `main`. Plan 030 native Map/positioning/navigation implementation is active on `plan/030-native-map-positioning-navigation`; Plans 031–032 remain gated on Plan 030 integration.
+Plans 028–029 are integrated into `main`. Plan 030 native Map/positioning/navigation implementation is reviewer-approved and PR-ready pending user authorization on `plan/030-native-map-positioning-navigation`; its unpassed physical-device E2E is explicitly carried to Plan 032's terminal gate. Plans 031–032 remain gated on Plan 030 integration.
 
 ```text
-roadmap/028-032-native-mobile                       [Plan 030 active]
+roadmap/028-032-native-mobile                       [Plan 030 PR-ready; physical E2E consolidated in Plan 032]
 -> Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
 -> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
--> Plan 030 — Native Map, Positioning & Navigation [active]
+-> Plan 030 — Native Map, Positioning & Navigation [implementation approved; PR-ready]
 -> Plan 031 — Native Realtime Operations
--> Plan 032 — Web/Native Handoff, Distribution & Full Regression
+-> Plan 032 — Web/Native Handoff, Distribution & Full Regression [terminal physical-E2E gate]
 ```
 
 Roadmap overview: `plans/028-032-native-mobile-roadmap.md`.

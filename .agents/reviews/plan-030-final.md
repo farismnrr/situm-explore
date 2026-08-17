@@ -1,10 +1,12 @@
-# Plan 030 Final Review — Implementation Approved / Physical Acceptance Blocked
+# Plan 030 Final Review — Implementation Approved / Physical E2E Deferred to Plan 032
 
-Status: implementation-approved through Phase 6; NOT PR-ready because mandatory physical-device Phase 7 acceptance remains externally blocked. No PR or merge performed.
+Status: implementation-approved and PR-ready pending user authorization. Physical-device E2E remains unpassed and is explicitly transferred to Plan 032's mandatory terminal gate. No PR or merge performed.
 
 Reviewed commits: `df7d22b71001e94a4a27a7784a458a2b3fd245be`, `74b9a99a2a991478d6abad58a358eb5ca58a75e1`, `8afb39b56db6c20c44f469df032d6ab0303a371b`.
 
-## Blocking findings
+The findings/closeout sections below preserve review history. All implementation findings are resolved; the current authority is the status above plus the final implementation approval and consolidated Plan 032 carry-over disposition at the end of this file.
+
+## Historical blocking findings
 
 1. **`SitumProvider` auth deadlock.**
    - `mobile/App.tsx` renders `<SitumProvider>` without `apiKey` or `token`.
@@ -84,4 +86,4 @@ Commit `8afb39b56db6c20c44f469df032d6ab0303a371b` resolves findings 7–8. Out-o
 
 Independent reviewer validation passes: root tests 17/17, root lint/typecheck, mobile lint/typecheck, `git diff --check origin/main...HEAD`, and branch clean/synchronized. The reported Expo prebuild and Android `assembleDebug` evidence remains consistent with the reviewed branch; `expo-doctor` 19/21 is limited to the known Situm New Architecture metadata warning plus frozen Expo patch drift and is not a blocker under current authority.
 
-Plan 030 implementation through Phase 6 is approved. Phase 7 remains BLOCKED and unaccepted until a supported physical Android device can exercise the real owner-authorized Positioning credential against a calibrated building/profile and prove real positioning, blue-dot/floor behavior, POI interaction, and navigation lifecycle. Do not create a PR/merge or start Plan 031 while that acceptance gate remains open.
+Plan 030 implementation through Phase 6 is approved. Under the consolidated roadmap acceptance decision recorded on 2026-08-17, the supported-Android physical checks are not waived or accepted; they are transferred as explicit unpassed carry-over to Plan 032's non-deferrable final E2E gate. This authority change makes Plan 030 PR-ready pending user authorization. Plan 031 may start only after Plan 030 is integrated into updated `main`; Plan 032 may not close/merge until it discharges the carried Map/positioning/blue-dot/floor/POI/navigation device acceptance.

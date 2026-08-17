@@ -208,7 +208,7 @@ Status: active.
 
 ## Completed roadmap transition
 
-Plans 017–020, Plans 021–025, and Plans 026–029 are complete/integrated historical execution. Plan 030 is the active native implementation branch; Plans 031–032 remain gated.
+Plans 017–020, Plans 021–025, and Plans 026–029 are complete/integrated historical execution. Plan 030 implementation is reviewer-approved and PR-ready pending integration; Plans 031–032 remain gated by predecessor integration, with consolidated physical-device E2E reserved for Plan 032.
 
 The following are historical context only:
 
@@ -249,6 +249,15 @@ Status: active durable runtime/security decision.
 - Native MapView is owned by the authenticated workspace context and must remount when workspace/building changes; it receives only the dedicated owner-authorized Positioning credential. The Read & Write primary and browser Viewer credentials remain server-side/mobile-inaccessible.
 - The installed `@situm/react-native` 3.19.2 surface is consumed through a narrow local TypeScript declaration boundary because the published package omits its referenced `lib/` files; Metro/Android use the installed package source/native module. This workaround mirrors only the proven MapView, positioning, user-helper, floor/POI, and navigation surface and is not evidence of iOS runtime support.
 - Positioning uses Situm User Helper plus Remote Configuration and starts only from the explicit foreground Map action. No background location or Realtime/Share Live Location is enabled in Plan 030.
-- Real-device positioning, blue-dot, floor transition, POI, and navigation claims require physical supported-device evidence. Current Plan 030 validation has no connected Android device, no `mobile/.env`, and no supplied calibrated building/profile/credential runtime path; the plan is blocked at acceptance rather than claiming those outcomes.
+- Real-device positioning, blue-dot, floor transition, POI, and navigation claims require physical supported-device evidence. Plan 030 implementation is approved without claiming those outcomes; the unpassed device checks are explicitly transferred to Plan 032's consolidated hard final E2E gate.
 
 Status: active durable native product/security boundary.
+
+## Consolidated native physical-E2E gate (2026-08-17)
+
+- Plans 030 and 031 may be reviewed/integrated after their implementation/build/test/runtime contracts are approved, even when physical-device-only evidence is unavailable.
+- Any device-dependent item remains explicitly unpassed and must be enumerated as Plan 032 carry-over; deferral never converts missing evidence into acceptance.
+- Plan 032 is the terminal non-deferrable gate. It must run the accumulated supported-Android physical E2E for Map/positioning/navigation and the frozen Realtime scope before roadmap closeout/merge.
+- Android Studio emulator evidence may supplement launch/UI/WebView/non-sensor regression, but it cannot prove real indoor positioning, BLE/Wi-Fi/sensor behavior, blue-dot/floor transitions, or equivalent physical-device semantics.
+
+Status: active durable roadmap acceptance decision.

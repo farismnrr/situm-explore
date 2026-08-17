@@ -1,6 +1,6 @@
 # Native Companion Roadmap — Plans 028–032
 
-Status: **planned; implementation not started**
+Status: **in progress; Plans 028–029 integrated, Plan 030 implementation approved pending integration**
 
 Planning branch: `roadmap/028-032-native-mobile`
 
@@ -49,6 +49,12 @@ Plan 028 — Native Capability, Auth & Distribution Spike
 
 Normal workflow requires this planning branch to be integrated into `main` before Plan 028 starts. Each later plan starts from updated `origin/main` only after its predecessor is integrated, unless the user explicitly authorizes stacked execution.
 
+### Consolidated native physical-E2E policy
+
+Plans 030 and 031 close on approved implementation/build/test/runtime evidence that is truthfully available without fabricating physical sensor behavior. Any acceptance item that materially requires a supported physical device remains explicitly **unpassed** and is carried forward to Plan 032. This permits predecessor integration and keeps the roadmap moving without pretending device acceptance occurred.
+
+Plan 032 is the terminal hard gate. It inherits every physical-device carry-over from Plans 030–031 and may not close or merge as roadmap completion until the consolidated supported-Android E2E is actually performed. Emulator evidence is useful supplemental regression evidence but cannot satisfy real indoor-positioning, BLE/Wi-Fi/sensor, blue-dot/floor-transition, or equivalent physical-device claims.
+
 ## Cross-plan architecture rules
 
 - Keep one application backend: the existing Nitro server.
@@ -81,7 +87,7 @@ Target Android and iOS from one React Native codebase. Android physical-device a
 
 ## Roadmap completion condition
 
-The roadmap is complete only when:
+The roadmap is complete only when the Plan 032 consolidated final gate has also discharged every physical-device carry-over from Plans 030–031 and:
 
 - native login/session and workspace selection use the existing application identity model;
 - mobile Situm authentication is least-privilege and evidence-backed;

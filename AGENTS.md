@@ -36,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–029 are complete/integrated via PRs #20–#24. Plan 030 is the active native Map/positioning/navigation plan on `plan/030-native-map-positioning-navigation`. Plans 031–032 remain dependent follow-ups. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–029 are complete/integrated via PRs #20–#24. Plan 030 native Map/positioning/navigation implementation is reviewer-approved and PR-ready pending user authorization on `plan/030-native-map-positioning-navigation`; its unpassed physical-device E2E is explicitly carried to Plan 032's terminal gate. Plans 031–032 remain dependent follow-ups. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 
