@@ -22,6 +22,13 @@ The own handset remains a separate Plan 030 native positioning concern. Plan 031
 - Polling and in-flight requests stop when the destination unmounts, the app backgrounds, the workspace changes, or the user logs out through the existing authenticated shell lifecycle.
 - A five-minute local display threshold labels a source record as older/stale for operator attention. This is not an upstream presence claim.
 - Empty, loading, stale-record, timeout/auth, and upstream-error states remain explicit and retryable.
+- An unauthenticated/forbidden refresh clears the previously displayed records before showing the auth error, so expired sessions do not leave location data visible in the native shell.
+
+## Validation notes
+
+- Root tests, lint, typecheck, and production build pass.
+- Mobile typecheck and lint pass; Expo prebuild is clean and Android `assembleDebug` passes with the frozen Expo 57.0.13 / SDK 36 toolchain.
+- `npx expo-doctor` reports the repository's already-frozen Expo patch versions (`expo` 57.0.13 vs advisory 57.0.14 and `expo-build-properties` 57.0.11 vs advisory 57.0.12) and that `@situm/react-native` is not marked New Architecture-tested. These are recorded baseline/tooling findings, not silently upgraded during Plan 031.
 
 ## Unsupported / carried forward
 

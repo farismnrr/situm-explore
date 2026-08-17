@@ -24,6 +24,7 @@ export function RealtimeScreen({ workspaces, lifecycle }: { workspaces: Workspac
       setPositions(nextPositions); setSelectedId(current => nextPositions.some(position => position.id === current) ? current : nextPositions[0]?.id ?? null); setState(nextPositions.length ? 'ready' : 'empty')
     } catch (cause: unknown) {
       if (signal.aborted) return
+      if (cause instanceof ApiError && (cause.code === 'UNAUTHENTICATED' || cause.code === 'FORBIDDEN')) { setPositions([]); setSelectedId(null) }
       setState('error'); setError(cause instanceof ApiError ? cause.message : 'Realtime positions are unavailable.')
     }
   }, [lifecycle, workspaceId, workspaces])
