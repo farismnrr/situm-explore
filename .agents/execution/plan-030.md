@@ -29,6 +29,10 @@ For Situm behavior: no evidence, no implementation. Recheck the exact installed 
 - Preserve the approved Situm Explore native visual hierarchy across phone, tablet/POS, and wide layouts.
 - Generated/build/signing/credential artifacts remain ignored/external.
 
+## Review
+
+Final reviewer findings are authoritative for remediation: `/home/farismnrr/Projects/situm-explore/.agents/reviews/plan-030-final.md`. Resolve every implementation blocker before claiming Plan 030 is blocked only by physical acceptance or PR-ready.
+
 ## Acceptance
 
 Run repository baseline plus mobile lint/typecheck, Expo doctor/prebuild, Android `assembleDebug` with `/home/farismnrr/Android/Sdk`, focused tests, secret checks, and full branch diff review.
