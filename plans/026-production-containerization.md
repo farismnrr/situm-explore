@@ -1,7 +1,7 @@
 # Plan 026 — Production Containerization
 
-Branch: `plan/026-production-containerization`  
-Base: `origin/main` at phase start  
+Branch: `plan/026-production-containerization`
+Base: `origin/main` at phase start
 Status: active
 
 ## Objective
