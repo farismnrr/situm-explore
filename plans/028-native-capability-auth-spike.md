@@ -3,7 +3,7 @@
 Branch: `plan/028-native-capability-auth-spike`
 Base: updated `origin/main` after the native roadmap planning branch is integrated
 Depends on: `plans/028-032-native-mobile-roadmap.md`
-Status: active — Phase 0 complete; Phase 1 next
+Status: active — Phase 1 complete; Phase 2 next
 
 ## Objective
 
@@ -26,7 +26,7 @@ Downstream native UI implementation is visually governed by `DESIGN.md` and `des
 ## Phase checklist
 
 - [x] Phase 0 — Pre-flight, dependency and authority reconciliation.
-- [ ] Phase 1 — Freeze React Native / Expo / Situm SDK compatibility matrix.
+- [x] Phase 1 — Freeze React Native / Expo / Situm SDK compatibility matrix.
 - [ ] Phase 2 — Prove native Map, positioning, permission and navigation surfaces.
 - [ ] Phase 3 — Freeze least-privilege Situm mobile authentication contract.
 - [ ] Phase 4 — Freeze application login/session transport for native.
@@ -67,6 +67,33 @@ Determine and record the exact supported combination for the repository:
 - whether the repository should keep the mobile package standalone under `mobile/` or use npm workspaces. Prefer the smallest repository change that preserves reproducibility.
 
 A fresh bounded proof project may be created outside tracked production source or in a clearly disposable/ignored location. Do not accidentally commit generated credentials or machine-local SDK paths.
+
+### Phase 1 evidence — 2026-08-17
+
+Selected matrix, proven by package metadata, Expo prebuild, Expo Doctor, and a disposable Android development build:
+
+| Component | Frozen value / evidence |
+| --- | --- |
+| Node / npm | Node 24.15.0 / npm 11.16.0 on the proof host; Expo 57 requires Node >=22.13. |
+| Expo / React Native / React | Expo SDK 57.0.13 / React Native 0.86.2 / React 19.2.3. Expo SDK 57 is New Architecture-only. |
+| Situm wrapper / WebView | `@situm/react-native` 3.19.2 / `react-native-webview` 13.16.1. Wrapper peers are React >=17, React Native *, React DOM >=17 and WebView >=11. |
+| Situm native SDKs | Android 3.38.0 (`3.38.0@aar`) / iOS 3.41.0. |
+| Android | min SDK 24 / compile SDK 36 / target SDK 36 / build tools 36.0.0. |
+| Android toolchain | JDK 21.0.10 / Kotlin 2.1.20 / Gradle wrapper 9.3.1. |
+| iOS | Effective app minimum 16.4 (Expo matrix); Xcode 26.4+; CocoaPods integration through the wrapper podspec; SPM is not used by this package. |
+
+Proof details:
+
+- A disposable proof at `/tmp/situm-explore-plan028-proof` installed the exact matrix, including `react-dom` 19.2.3 for the wrapper peer contract. `npx expo-doctor` reported 20/21 checks passed; the sole warning was React Native Directory metadata stating `@situm/react-native` is “Untested on New Architecture.” This is a directory warning, not a compile failure.
+- `npx expo prebuild --clean` completed on Linux and generated Android/iOS native projects. CocoaPods installation was skipped because the host is not macOS. Generated Android `gradle.properties` had `newArchEnabled=true`.
+- With Android SDK `/home/farismnrr/Android/Sdk`, `ANDROID_HOME=... ANDROID_SDK_ROOT=... ./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a --max-workers=2 --console=plain` completed `BUILD SUCCESSFUL in 50s` and produced `android/app/build/outputs/apk/debug/app-debug.apk`. The log shows Expo/RN Gradle plugin configuration, Situm Java compilation, React Native WebView codegen/CMake, and APK packaging.
+- The wrapper's own `android/build.gradle` declares `https://repo.situm.es/artifactory/libs-release-local`; the clean prebuild/build required no application-owned Maven edit and resolved the Situm Android AAR. No custom Expo config plugin or local patch is warranted by this proof.
+- Android compilation under Expo SDK 57 / React Native 0.86 New Architecture is proven. This does not prove that `@situm/react-native` is fully compatible with New Architecture, nor does it prove runtime Map/positioning/navigation behavior.
+- The wrapper `ReactNativeSitumPlugin.podspec` declares `SitumSDK` 3.41.0 and uses CocoaPods for the iOS native dependency. The effective Expo/iOS baseline is 16.4, which is the selected intersection for the app. iOS native compilation is MACOS-GATED on this Linux host; iOS runtime is DEVICE/MACOS-GATED. Package/podspec compatibility is evidence-proven at source/package level only, not an iOS compile PASS.
+
+Repository structure decision: Plan 029 should use a standalone `mobile/` package, not npm workspaces. The existing root is a single Nuxt package with no workspace arrangement; keeping the future native package isolated preserves the smallest reproducible change and avoids coupling native dependency resolution to the web lockfile. Plan 029 must create that package; this phase creates no production mobile project.
+
+Phase 1 capability/UI constraint handoff: this proof establishes native build integration only. It does not authorize the approved reference's Map, blue-dot, floor, POI, directions, route-metric, remote-position, background, or Share Live Location interactions. Those remain Phase 2 evidence questions; unsupported reference states must use documented truthful fallbacks.
 
 ## Phase 2 — Situm mobile capability proof
 

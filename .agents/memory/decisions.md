@@ -61,6 +61,16 @@ Status: active; implementation of the native companion has not started.
 
 Status: approved roadmap direction; exact auth/session/distribution contracts remain Plan 028 gates.
 
+### Plan 028 Phase 1 native build matrix (2026-08-17)
+
+- Freeze Expo 57.0.13, React Native 0.86.2, React 19.2.3, `@situm/react-native` 3.19.2, and `react-native-webview` 13.16.1 for the evidence track.
+- Freeze Android min/compile/target SDK 24/36/36, JDK 21.0.10, Kotlin 2.1.20, and Gradle wrapper 9.3.1. Android compilation under Expo SDK 57 / React Native 0.86 New Architecture is proven by a disposable `assembleDebug`; this is not a claim of full wrapper New Architecture compatibility.
+- The Situm package's Android Gradle module supplies its own Situm Maven repository sufficiently for the clean proof; do not add an app-owned config plugin or patch unless later evidence requires it.
+- Use a standalone future `mobile/` package rather than npm workspaces. Plan 029 owns production project creation.
+- Effective iOS app baseline is 16.4 with Xcode 26.4+; wrapper iOS dependency is SitumSDK 3.41.0 through CocoaPods. Linux source/package evidence is available, but iOS compile/runtime remain macOS/device-gated.
+
+Status: active Plan 028 Phase 1 evidence; later capability/auth phases may supersede exact selections only with new proof.
+
 ## Plans 021–025 identity/workspace model
 
 - Real application users are persisted in PostgreSQL.
