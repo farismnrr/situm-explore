@@ -157,3 +157,10 @@ Status: active.
 - Registration checks for an existing account before running the expensive scrypt password hash, to avoid unauthenticated CPU/memory amplification. Login already avoided hashing for unknown emails and was left as-is; only rate limiting was added there. Generic invalid-credentials responses are unchanged.
 
 Status: active.
+
+## Browser security headers (Plan 027)
+
+- Safe, universal response headers (X-Content-Type-Options, Referrer-Policy, X-Frame-Options: DENY, conservative Permissions-Policy) are applied via `server/middleware/security-headers.ts` and are live-verified.
+- A Content-Security-Policy was deliberately NOT added. The Situm Map Viewer's exact script/frame/connect origins are not proven by any live network trace in this repo, and this repo has already hit one real Viewer-behavior surprise (the wait_for_auth/postMessage building-mismatch investigation). A guessed CSP risks silently breaking the map for every user. Revisit only with a live browser network trace against the real hosted Viewer to derive a proven allowlist.
+
+Status: active; CSP is an open, intentionally documented limitation, not solved.

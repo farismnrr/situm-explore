@@ -26,7 +26,7 @@ Fix confirmed analytics correctness, workspace data-lifecycle, authentication-ab
 - [x] Phase 3 — Authentication abuse protection.
 - [x] Phase 4 — Situm credential consistency (org match).
 - [x] Phase 5 — Bounded upstream failures and timeouts.
-- [ ] Phase 6 — Browser security hardening.
+- [x] Phase 6 — Browser security hardening.
 - [ ] Phase 7 — Regression coverage and testing decision.
 - [ ] Phase 8 — Full acceptance and closeout.
 
@@ -95,6 +95,14 @@ Finding 9 confirmed: three app-owned raw `fetch` calls to Situm/telemetry had no
 - Wired into `telemetry-logs.ts`'s fire-and-forget OTLP log emission with a 5s bound, so a hung telemetry endpoint can no longer leave an unbounded dangling request.
 - **`@situm/sdk-js` (installed v0.25.0) — evidence and decision:** the installed SDK's `SDKConfiguration` type (`node_modules/@situm/sdk-js/dist/situm-sdk.d.ts`) declares `timeouts?: Record<string, number>`, proving *some* timeout configuration surface exists (axios-based client). However, neither the type definitions nor the README document the record's valid keys, units, per-operation scope, or default/fallback behavior for unspecified keys. Per the repository's "no evidence, no implementation" rule, this SDK-level timeout config was intentionally **not** set anywhere `SitumSDK` is constructed (`server/utils/viewer-auth.ts`, `server/api/workspaces/[workspaceId]/situm-config/validate.post.ts`, `server/api/workspaces/[...workspacePath].ts`), since guessing key names/semantics could silently produce no effect or an incorrectly-scoped timeout. This is recorded as an intentionally unresolved item, not a fix.
 - Validation: `npm run lint` and `npm run typecheck` pass clean.
+
+## Phase 6 evidence
+
+Finding 10 confirmed: no security response headers were set anywhere (`nuxt.config.ts` had no `nitro.routeRules` headers, no `server/middleware` handled this). `SitumViewer.vue` embeds the Situm Map Viewer via `sdk.viewer.create({ domElement, buildingId })` from `@situm/sdk-js`, which owns the iframe's src/lifecycle internally — this repo's code never sets an explicit Viewer origin/domain to allowlist with certainty.
+
+- Added `server/middleware/security-headers.ts` setting `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY` (this app is not meant to be iframed by third parties; does not affect this app embedding the Situm Viewer, which is the reverse direction), and a conservative `Permissions-Policy` denying `camera`/`microphone`/`geolocation`/`payment`/`usb` (none are used; `ARCHITECTURE.md`/decisions confirm no browser geolocation/"My location" feature exists).
+- Live-verified via local dev server: `curl -sI http://localhost:3000/` returned all four headers; app root still returned `200`.
+- **CSP intentionally not shipped.** A Content-Security-Policy strict enough to be meaningful (script-src/frame-src/connect-src allowlists) requires knowing every origin the hosted Situm Viewer release actually loads scripts/frames/XHR from at runtime. This repo's own evidence (`.agents/state.md`'s Viewer building-mismatch investigation) shows the Viewer's exact behavior has previously differed from assumptions in ways that broke the feature; guessing a CSP allowlist risks the same failure mode with a worse blast radius (broken map for every user) and cannot be proven safe without a live browser network trace against the real hosted Viewer, which is out of scope for this non-UI-testing pass. This is recorded as an open, intentionally unresolved limitation, not silently treated as solved.
 
 ## Acceptance evidence
 
