@@ -1,8 +1,10 @@
 import { ApiError } from '../api/errors'
+import * as SecureStore from 'expo-secure-store'
 import type { PositioningCredentialResponse, Workspace, WorkspaceConfigSummary } from '../api/types'
 import type { AuthSession } from '../auth/session'
 
 export type WorkspaceState = 'idle' | 'loading' | 'ready' | 'empty' | 'error'
+const workspaceStorageKey = 'situm-explore.workspace-id'
 
 export class WorkspaceContext {
   readonly auth: AuthSession
@@ -11,22 +13,42 @@ export class WorkspaceContext {
   state: WorkspaceState = 'idle'
   error: ApiError | null = null
   configuration: WorkspaceConfigSummary | null = null
+  private version = 0
+  private readonly listeners = new Set<() => void>()
 
   constructor(auth: AuthSession) { this.auth = auth }
 
   get selectedWorkspace() { return this.workspaces.find(workspace => workspace.id === this.selectedWorkspaceId) ?? null }
+  getSnapshot = () => this.version
+  subscribe = (listener: () => void) => { this.listeners.add(listener); return () => this.listeners.delete(listener) }
+
+  private notify() { this.version++; this.listeners.forEach(listener => listener()) }
+
+  private async restoreSelection() {
+    try { return await SecureStore.getItemAsync(workspaceStorageKey) } catch { return null }
+  }
+
+  private persistSelection(workspaceId: string | null) {
+    if (!workspaceId) return
+    void SecureStore.setItemAsync(workspaceStorageKey, workspaceId).catch(() => undefined)
+  }
 
   async load() {
     this.state = 'loading'
     this.error = null
+    this.notify()
     try {
+      const persistedWorkspaceId = await this.restoreSelection()
       this.workspaces = await this.auth.api.get<Workspace[]>('/api/workspaces')
-      if (!this.workspaces.some(workspace => workspace.id === this.selectedWorkspaceId)) this.selectedWorkspaceId = this.workspaces[0]?.id ?? null
+      this.selectedWorkspaceId = this.workspaces.find(workspace => workspace.id === persistedWorkspaceId)?.id ?? this.workspaces[0]?.id ?? null
+      this.persistSelection(this.selectedWorkspaceId)
       this.state = this.workspaces.length ? 'ready' : 'empty'
+      this.notify()
       return this.workspaces
     } catch (error) {
       this.state = 'error'
       this.error = error instanceof ApiError ? error : new ApiError('Workspaces are unavailable.', { code: 'NETWORK_ERROR' })
+      this.notify()
       throw this.error
     }
   }
@@ -35,11 +57,14 @@ export class WorkspaceContext {
     if (!this.workspaces.some(workspace => workspace.id === workspaceId)) throw new ApiError('That workspace is not available to this account.', { code: 'FORBIDDEN' })
     this.selectedWorkspaceId = workspaceId
     this.configuration = null
+    this.persistSelection(workspaceId)
+    this.notify()
   }
 
   async loadConfiguration() {
     if (!this.selectedWorkspaceId) return null
     this.configuration = await this.auth.api.get<WorkspaceConfigSummary>(`/api/workspaces/${this.selectedWorkspaceId}/situm-config`)
+    this.notify()
     return this.configuration
   }
 

@@ -160,8 +160,9 @@ Update the plan, `.agents/state.md`, durable decisions/knowledge when warranted,
 
 ### Phase 6 evidence — 2026-08-17
 
-- Root `npm run lint`, `npm run typecheck`, `npm run build`, and `npm test` pass (9 tests).
+- Root `npm run lint`, `npm run typecheck`, `npm run build`, and `npm test` pass (13 tests, including the Plan 029 security regressions).
 - Mobile lint, typecheck, and `expo prebuild --clean --no-install` pass. Generated Gradle configuration confirms Android min/compile/target 24/36/36 and Kotlin 2.1.20.
-- Android `assembleDebug` was attempted against generated native output and is explicitly host-gated: this Linux host has no Android SDK path (`ANDROID_HOME`/`ANDROID_SDK_ROOT` unset). iOS compile/device acceptance is macOS/Xcode/device-gated.
+- Android `assembleDebug` passes with the known SDK at `/home/farismnrr/Android/Sdk` using `ANDROID_HOME=/home/farismnrr/Android/Sdk ANDROID_SDK_ROOT=/home/farismnrr/Android/Sdk ./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a --max-workers=2 --console=plain`. The debug APK is `mobile/android/app/build/outputs/apk/debug/app-debug.apk`. iOS compile/device acceptance remains macOS/Xcode/device-gated.
 - Tracked-source and generated-output inspection found no production secrets. Runtime login/logout, restart, workspace isolation, Positioning issuance, and backend-unavailability checks remain external database/credential/device acceptance gates; the server-side contracts and safe fallbacks are implemented.
-- Plan 029 is complete on this branch. No PR, merge, branch deletion, or Plan 030 work was performed.
+- Reviewer remediation is complete: the named `nuxt-session` bucket is sealed and exercised through `x-nuxt-session`; session versions fail closed; workspace selection is reactive and ID-only persisted; the shell follows the phone/tablet/wide responsive reference with SVG brand/icons and truthful lifecycle labels.
+- Plan 029 is complete and remediation-verified on this branch, PR-ready pending user authorization. No PR, merge, branch deletion, or Plan 030 work was performed.

@@ -8,7 +8,11 @@ export async function revokeUserSessions(userId: string) {
 
 export async function assertCurrentSessionVersion(userId: string, version: unknown) {
   const [user] = await getDb().select({ sessionVersion: users.sessionVersion }).from(users).where(eq(users.id, userId)).limit(1)
-  if (!user || (typeof version === 'number' && version !== user.sessionVersion)) {
+  if (!user || !isCurrentSessionVersion(version, user.sessionVersion)) {
     throw createError({ statusCode: 401, statusMessage: 'Authentication is required.' })
   }
+}
+
+export function isCurrentSessionVersion(version: unknown, currentVersion: number) {
+  return typeof version === 'number' && Number.isInteger(version) && version === currentVersion
 }

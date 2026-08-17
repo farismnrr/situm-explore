@@ -1,6 +1,6 @@
-# Plan 029 Final Review — Remediation Required
+# Plan 029 Final Review — Remediation Complete
 
-Status: NOT PR-ready yet.
+Status: PR-ready pending user authorization; no PR or merge performed.
 
 Reviewer verified the implementation branch at `696bb32` and reran Android build evidence on 2026-08-17.
 
@@ -55,3 +55,16 @@ After fixes:
 - stop before PR/merge and report PR readiness.
 
 Do not start Plan 030.
+
+## Remediation verification — 2026-08-17
+
+All blocking findings are resolved:
+
+1. `mobileSessionConfig()` now preserves the explicit `nuxt-session` name, and a native `node:test` regression seals and authenticates the returned token through `x-nuxt-session`.
+2. Session-version validation now fails closed for missing, invalid, mismatched, and revoked versions; matching versions remain accepted and are covered by regression tests.
+3. `test/plan-029-security.test.ts` adds focused Plan 029 coverage without a new test framework: named mobile session authentication, seven-day/default session configuration, version enforcement, and the least-privilege Positioning response boundary.
+4. Workspace selection now notifies React subscribers and restores only the selected workspace ID through `expo-secure-store`; credentials are not persisted.
+5. The shell now has horizontal phone navigation, distinct compact tablet/POS and wide rails, SVG brand/Lucide-style icons, and truthful Foreground/Background lifecycle labels.
+6. The Android evidence is corrected: `assembleDebug` passed with `/home/farismnrr/Android/Sdk`; the APK was generated at `mobile/android/app/build/outputs/apk/debug/app-debug.apk`. iOS remains correctly macOS/Xcode/device-gated.
+
+Validation passed: root lint, typecheck, build, and 13 tests; mobile lint/typecheck; Expo prebuild; Android assembleDebug; bounded secret checks; and final branch diff review. The `@situm/react-native` TypeScript-path claim remains bounded: tracked Plan 029 code does not directly import the package.
