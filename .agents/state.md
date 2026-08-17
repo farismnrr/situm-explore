@@ -1,10 +1,17 @@
 # Current State
 
-_Last reviewed: 2026-08-14_
+_Last reviewed: 2026-08-17_
 
-## Active Plan 026
+## Active Plan 027
 
-Plan 026 production containerization is complete on `plan/026-production-containerization`, based on latest `origin/main`. All phases 0–11 passed. GHCR staging points to multi-platform digest `sha256:8702053da46d1f03feffe9fc598a17006de3ebf236cf00f97cd3b28f774fe38b`, with immutable `sha-7a981ed0254e`; the update was pulled/recreated by Make without a build and rollback to `sha-0cf07c08afab` is documented. `make staging-migrate` is an explicit operator action using only `DATABASE_URL` from curated staging env with the repository's Drizzle CLI; web startup never migrates. Local arm64 runtime smoke is unavailable due the host emulation entrypoint issue. Pull-only staging Compose and curated ignored runtime env are present. The candidate image audit is clean: runtime UID 10001, 83.3 MB, no secret/env/log/filesystem matches. Full local staging and final clean-room Make sequence passed health/restart, auth protection, PostgreSQL, ClickHouse, OTEL, external-state, and secret checks; credential-backed Situm account checks remain user-owned/unavailable. The workflow targets local Buildx publication to GHCR for `linux/amd64` and `linux/arm64`, pull-only staging Compose, and Makefile-driven operations; no CI/PR/merge was authorized.
+Plan 027 (analytics correctness & security hardening) is active on `plan/027-analytics-security-hardening`, based on latest `origin/main` (which includes Plan 026, merged via PR #20).
+
+- Phase 0 complete: dependency confirmed (PR #20 merged into main), branch created from up-to-date main, stale "Plan 026 active" references in `AGENTS.md`/`.agents/state.md` reconciled.
+- Phase 1 complete: `queryWorkspaceAnalytics` now scopes reads by `workspace_id` + exact requested-window `source_window_id` prefix (same pattern as the legacy query path), preventing double-counting across overlapping/re-synced windows and making positioning/geofencing obey the requested date window. `buildingId`/`geofenceId` filters from the UI are now parsed, validated, and applied in `summary.get.ts`. `sync.post.ts` body is now validated with a zod schema instead of a bare TS generic. Lint and typecheck pass.
+
+## Plan 026 (integrated)
+
+Plan 026 production containerization is complete and integrated into `main` via PR #20. All phases 0–11 passed. GHCR staging points to multi-platform digest `sha256:8702053da46d1f03feffe9fc598a17006de3ebf236cf00f97cd3b28f774fe38b`, with immutable `sha-7a981ed0254e`; the update was pulled/recreated by Make without a build and rollback to `sha-0cf07c08afab` is documented. `make staging-migrate` is an explicit operator action using only `DATABASE_URL` from curated staging env with the repository's Drizzle CLI; web startup never migrates. Local arm64 runtime smoke is unavailable due the host emulation entrypoint issue. Pull-only staging Compose and curated ignored runtime env are present. The candidate image audit is clean: runtime UID 10001, 83.3 MB, no secret/env/log/filesystem matches. Full local staging and final clean-room Make sequence passed health/restart, auth protection, PostgreSQL, ClickHouse, OTEL, external-state, and secret checks; credential-backed Situm account checks remain user-owned/unavailable. The workflow targets local Buildx publication to GHCR for `linux/amd64` and `linux/arm64`, pull-only staging Compose, and Makefile-driven operations; no CI/PR/merge was authorized.
 
 ## Integrated baseline
 
