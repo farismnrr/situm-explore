@@ -1,14 +1,16 @@
-# Plan 031 final implementation review — remediation required
+# Plan 031 final implementation review — final visual-truthfulness remediation required
 
-Reviewed 2026-08-17 on `plan/031-native-realtime-operations`, implementation commits through `42bf3f1`.
+Reviewed 2026-08-17 on `plan/031-native-realtime-operations`, implementation commits through `79b6cfb`.
 
 ## Outcome
 
-Plan 031 is **not PR-ready yet**. The server-mediated Realtime product direction is correct and the branch validates cleanly, but final reviewer inspection found three non-device implementation blockers that must be fixed before implementation approval.
+The three prior implementation/runtime-integrity blockers are resolved in `79b6cfb`: caller cancellation now reaches the underlying fetch without being converted into a timeout, unsupported local freshness thresholds/labels are removed, and malformed Realtime payloads fail closed. Independent reviewer checks pass 21/21 tests plus root/mobile lint/typecheck and `git diff --check`.
+
+Plan 031 is **not PR-ready yet** because one final visual-truthfulness blocker remains in the Realtime row presentation.
 
 The frozen v1 scope does not include person identity, online/idle/offline presence, trajectories, generic remote MapView markers/focus, Share Live Location, background positioning, or own-device publishing beyond the existing Plan 030 foreground positioning boundary.
 
-## Blocking findings
+## Prior blocking findings — resolved in `79b6cfb`
 
 1. **Realtime cancellation does not reach the HTTP request.** `RealtimeScreen` passes an `AbortSignal` to `MobileApiClient.get()`, but `mobile/src/api/client.ts` creates its own `AbortController` and overwrites `options.signal` in `fetch()`. Workspace switch, background, unmount, and logout therefore stop state application but do not actually cancel the in-flight network request as required by Plan 031. Compose/forward the caller signal into the request timeout controller (or an equivalent proven cancellation path), clean listeners, and add focused regression coverage that proves caller cancellation aborts the underlying fetch without being misreported to UI as a timeout/error.
 
@@ -16,7 +18,13 @@ The frozen v1 scope does not include person identity, online/idle/offline presen
 
 3. **Malformed payloads can masquerade as an empty/partial Realtime result.** `normalizeRealtimeResponse()` returns `[]` for a malformed response and silently filters invalid records. That can turn schema/upstream corruption into the product state “No positions reported,” which is not truthful failure handling. Fail closed on an invalid response shape (and preferably on invalid records unless partial acceptance is explicitly justified), surface a safe Realtime error, preserve last successful data only under the existing refresh-failure policy, and add regression coverage for malformed payload behavior.
 
-These are implementation/runtime-integrity findings, not Plan 032 physical-device carry-over.
+The three findings above are resolved in `79b6cfb` and are no longer blocking.
+
+## Remaining blocking finding
+
+4. **Green row dot still implies unsupported positive/fresh/online state.** After removing the local freshness classifier, every Realtime position row still renders `styles.dot` with success green `#168754`. The Realtime contract has no authoritative per-record online/fresh/healthy boolean, and Plan 031 explicitly forbids implying every device is online. A success-colored status indicator without a proven meaning is still semantic overclaim even when nearby copy says presence is not inferred. Remove the status dot or make it visually neutral/non-status in a way that cannot reasonably encode freshness/presence. Add a focused presentation/source assertion if practical so unsupported green/amber/red status semantics do not regress.
+
+This is a non-device visual-truthfulness finding, not Plan 032 physical-device carry-over.
 
 ## Evidence and validation
 

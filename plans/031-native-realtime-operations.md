@@ -3,7 +3,7 @@
 Branch: `plan/031-native-realtime-operations`
 Base: updated `origin/main` after Plan 030 is integrated
 Depends on: Plan 030 complete/integrated
-Status: implementation complete after final reviewer remediation; PR-ready pending user-gated PR/merge
+Status: final visual-truthfulness remediation required after reviewer pass; not PR-ready
 
 ## Objective
 
