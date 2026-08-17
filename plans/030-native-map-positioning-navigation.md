@@ -3,7 +3,7 @@
 Branch: `plan/030-native-map-positioning-navigation`
 Base: updated `origin/main` after Plan 029 is integrated
 Depends on: Plan 029 complete/integrated
-Status: active
+Status: blocked at mandatory real-device acceptance gate
 
 ## Objective
 
@@ -23,14 +23,14 @@ Deliver the native mobile spatial experience: Situm MapView, workspace/building 
 
 ## Phase checklist
 
-- [ ] Phase 0 — Dependency, SDK and real-device pre-flight.
-- [ ] Phase 1 — Workspace-bound native MapView and cartography readiness.
-- [ ] Phase 2 — Permission/user-helper and positioning lifecycle.
-- [ ] Phase 3 — Blue-dot/current-position and building/floor lifecycle.
-- [ ] Phase 4 — POI discovery/selection and map interaction.
-- [ ] Phase 5 — Evidence-backed directions and navigation.
-- [ ] Phase 6 — App lifecycle, failure handling and resource cleanup.
-- [ ] Phase 7 — Real-device acceptance and closeout.
+- [x] Phase 0 — Dependency, SDK and real-device pre-flight. Implementation/build path is verified; physical acceptance has no connected device or configured mobile environment.
+- [x] Phase 1 — Workspace-bound native MapView and cartography readiness.
+- [x] Phase 2 — Permission/user-helper and positioning lifecycle.
+- [x] Phase 3 — Blue-dot/current-position and building/floor lifecycle (runtime device evidence pending).
+- [x] Phase 4 — POI discovery/selection and map interaction.
+- [x] Phase 5 — Evidence-backed directions and navigation (runtime device evidence pending).
+- [x] Phase 6 — App lifecycle, failure handling and resource cleanup.
+- [ ] Phase 7 — Real-device acceptance and closeout — BLOCKED: no supported physical Android device is connected (`adb devices` empty), and no `mobile/.env` with an owner-authorized Positioning credential, calibrated building/profile, and reachable API has been supplied. No real positioning, blue-dot, floor-transition, POI, or navigation evidence is claimed.
 
 ## Phase 0 — Pre-flight
 

@@ -5,6 +5,8 @@ import { Circle, Path, Svg } from 'react-native-svg'
 import { ApiError } from './src/api/errors'
 import { AuthSession } from './src/auth/session'
 import { WorkspaceContext } from './src/workspaces/context'
+import { SitumProvider } from '@situm/react-native'
+import { NativeMapScreen } from './src/map/NativeMapScreen'
 
 export default function App() {
   const auth = useMemo(() => new AuthSession(), [])
@@ -28,7 +30,7 @@ export default function App() {
     return () => subscription.remove()
   }, [auth, workspaces])
   if (!ready) return <SafeAreaView style={styles.safeArea}><ActivityIndicator color="#111827" /></SafeAreaView>
-  if (authenticated) return <AuthenticatedShell auth={auth} workspaces={workspaces} activeTab={activeTab} setActiveTab={setActiveTab} lifecycle={lifecycle} showRail={showRail} wide={wide} workspaceError={workspaceError} setWorkspaceError={setWorkspaceError} onLogout={() => auth.logout().then(() => setAuthenticated(false))} />
+  if (authenticated) return <SitumProvider><AuthenticatedShell auth={auth} workspaces={workspaces} activeTab={activeTab} setActiveTab={setActiveTab} lifecycle={lifecycle} showRail={showRail} wide={wide} workspaceError={workspaceError} setWorkspaceError={setWorkspaceError} onLogout={() => auth.logout().then(() => setAuthenticated(false))} /></SitumProvider>
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
@@ -63,7 +65,7 @@ function AuthenticatedShell(props: { auth: AuthSession, workspaces: WorkspaceCon
           {loading ? <ActivityIndicator color="#111827" /> : workspaces.state === 'error' ? <StateCard title="Workspaces unavailable" body={workspaceError || 'Check your connection and try again.'} action={() => workspaces.load().catch(() => undefined)} /> : workspaces.state === 'empty' ? <StateCard title="No workspaces yet" body="Create your first workspace in Situm Explore web to continue." /> : <>
             <View style={styles.workspacePicker}><Text style={styles.eyebrow}>ACTIVE WORKSPACE</Text><Text style={styles.workspaceName}>{selected?.name || 'Select a workspace'}</Text><View style={styles.workspaceChoices}>{workspaces.workspaces.map(workspace => <TouchableOpacity key={workspace.id} onPress={() => select(workspace.id)} style={[styles.choice, workspace.id === selected?.id && styles.choiceActive]}><Text style={[styles.choiceText, workspace.id === selected?.id && styles.choiceTextActive]}>{workspace.name}</Text></TouchableOpacity>)}</View></View>
             {workspaceError ? <StateCard title="Workspace notice" body={workspaceError} /> : null}
-            {activeTab === 'explore' ? <HomeCard configuration={workspaces.configuration} /> : activeTab === 'realtime' ? <Placeholder title="Realtime is coming in Plan 031" body="Reported device positions will appear here after the server-mediated Realtime phase." /> : activeTab === 'recent' ? <Placeholder title="Recent is coming in a later plan" body="Recent activity is not enabled in this foundation build." /> : <SettingsCard onLogout={onLogout} />}
+            {activeTab === 'explore' ? <NativeMapScreen workspaces={workspaces} lifecycle={lifecycle} /> : activeTab === 'realtime' ? <Placeholder title="Realtime is coming in Plan 031" body="Reported device positions will appear here after the server-mediated Realtime phase." /> : activeTab === 'recent' ? <Placeholder title="Recent is coming in a later plan" body="Recent activity is not enabled in this foundation build." /> : <SettingsCard onLogout={onLogout} />}
           </>}
         </View>
         {!showRail ? <View style={styles.bottom}><NavItems bottom activeTab={activeTab} setActiveTab={setActiveTab} /></View> : null}

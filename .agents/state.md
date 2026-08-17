@@ -4,6 +4,8 @@ _Last reviewed: 2026-08-17_
 
 ## Active Plan 030 — Native Map, Positioning & Navigation
 
+Plan 030 implementation phases 0–6 are complete on `plan/030-native-map-positioning-navigation`: the native MapView uses workspace cartography plus the dedicated Positioning credential, foreground positioning uses the proven user-helper/Remote Configuration flow, floor/POI selection and MapView navigation callbacks are wired, and lifecycle/workspace teardown is implemented. Root and mobile validation pass, Expo prebuild passes, and Android `assembleDebug` passes with `/home/farismnrr/Android/Sdk`. Plan 030 is blocked only at mandatory physical acceptance: `adb devices` reports no connected device, `mobile/.env` is absent, and no owner-authorized calibrated building/profile runtime evidence is available. Do not claim real blue-dot, floor-transition, POI, or navigation acceptance; do not start Plan 031.
+
 Plan 029 was reviewed and integrated into `main` via PR #24 (merge commit `b81970e76aa20dfe22d7456d8e422cff79e83969`); its branch was deleted local/remote. `plan/030-native-map-positioning-navigation` was created from that exact updated `origin/main` on 2026-08-17. Execute Plan 030 using `.agents/execution/plan-030.md` plus `plans/030-native-map-positioning-navigation.md`.
 
 Integrated Plan 029 foundation is authoritative: standalone Expo 57 `mobile/`, same PostgreSQL/Nitro identity, sealed `x-nuxt-session` transport with seven-day expiry and server-side session-version revocation, Expo SecureStore persistence, owner-scoped workspace selection, encrypted dedicated Positioning credential issuance, responsive native shell, and no second backend. Android `assembleDebug` passes with `/home/farismnrr/Android/Sdk`; iOS compile/runtime remains macOS/Xcode/device-gated.

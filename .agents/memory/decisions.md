@@ -47,7 +47,7 @@ Status: active.
 - Web Realtime will intentionally hand off to native on desktop/tablet/phone after native Realtime is accepted. This is a product policy, not a claim that Situm web APIs are technically incapable of realtime reads.
 - Situm-domain UI without a truthful owner is removed or left unresolved rather than faked.
 
-Status: active; implementation of the native companion has not started.
+Status: active; Plan 030 implementation is in progress/blocked at physical acceptance.
 
 ## Native companion technology and credential direction (Plans 028–032)
 
@@ -59,7 +59,7 @@ Status: active; implementation of the native companion has not started.
 - Read-only Realtime authority should remain server-mediated unless the native product requirement and current SDK contract prove a narrower safe direct path.
 - Deep links may carry only non-secret navigation context. Application sessions, Situm credentials and tokens must never be placed in URLs/QR codes.
 
-Status: approved roadmap direction; exact auth/session/distribution contracts remain Plan 028 gates.
+Status: approved roadmap direction; Plans 028–029 are integrated and their exact auth/session/distribution contracts are authoritative.
 
 ### Plan 028 Phase 1 native build matrix (2026-08-17)
 
@@ -208,7 +208,7 @@ Status: active.
 
 ## Completed roadmap transition
 
-Plans 017–020, Plans 021–025, and Plans 026–027 are complete/integrated historical execution. The approved next roadmap is Plans 028–032 for the native companion app; implementation has not started.
+Plans 017–020, Plans 021–025, and Plans 026–029 are complete/integrated historical execution. Plan 030 is the active native implementation branch; Plans 031–032 remain gated.
 
 The following are historical context only:
 
@@ -216,7 +216,7 @@ The following are historical context only:
 - `plans/021-025-prerequisites.md`;
 - `design/ROADMAP-021-025-OVERRIDES.md`.
 
-The Plans 028–032 roadmap is the current planning authority. Plan 028 cannot start until the roadmap planning branch is integrated.
+The Plans 028–032 roadmap is the current planning authority. Plans 028–029 are integrated; Plan 030 is active and Plans 031–032 remain gated.
 
 Status: active.
 
@@ -243,3 +243,12 @@ Status: active durable security decision; CSP is an open, intentionally document
 - The native shell uses horizontal phone navigation, compact tablet/POS and wide rails, SVG brand/Lucide-style icons, and Foreground/Background lifecycle labels that do not imply network connectivity.
 
 Status: active durable runtime/security decision.
+
+## Plan 030 native Map/positioning/navigation (2026-08-17)
+
+- Native MapView is owned by the authenticated workspace context and must remount when workspace/building changes; it receives only the dedicated owner-authorized Positioning credential. The Read & Write primary and browser Viewer credentials remain server-side/mobile-inaccessible.
+- The installed `@situm/react-native` 3.19.2 surface is consumed through a narrow local TypeScript declaration boundary because the published package omits its referenced `lib/` files; Metro/Android use the installed package source/native module. This workaround mirrors only the proven MapView, positioning, user-helper, floor/POI, and navigation surface and is not evidence of iOS runtime support.
+- Positioning uses Situm User Helper plus Remote Configuration and starts only from the explicit foreground Map action. No background location or Realtime/Share Live Location is enabled in Plan 030.
+- Real-device positioning, blue-dot, floor transition, POI, and navigation claims require physical supported-device evidence. Current Plan 030 validation has no connected Android device, no `mobile/.env`, and no supplied calibrated building/profile/credential runtime path; the plan is blocked at acceptance rather than claiming those outcomes.
+
+Status: active durable native product/security boundary.
