@@ -22,8 +22,8 @@ export class AuthSession {
     if (!stored) return false
     this.value = stored
     try {
-      const user = await this.api.get<User>('/api/me')
-      this.userValue = user
+      const response = await this.api.get<{ user: User }>('/api/me')
+      this.userValue = response.user
       return true
     } catch {
       await this.clearLocal()

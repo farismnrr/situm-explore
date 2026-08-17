@@ -3,7 +3,7 @@
 Branch: `plan/029-native-app-foundation`
 Base: updated `origin/main` after Plan 028 is integrated
 Depends on: Plan 028 complete/integrated
-Status: in progress
+Status: complete; pending review/integration
 
 ## Objective
 
@@ -50,7 +50,7 @@ Required early gates:
 - [x] Phase 3 — Native login/session/logout using existing application identity.
 - [x] Phase 4 — Workspace list/select and mobile Situm credential readiness.
 - [x] Phase 5 — Mobile shell, lifecycle and secure persistence.
-- [ ] Phase 6 — Foundation acceptance and persistence closeout.
+- [x] Phase 6 — Foundation acceptance and persistence closeout.
 
 ## Phase 0 — Contract verification
 
@@ -157,3 +157,11 @@ Do not claim iOS runtime acceptance if no iOS-capable host/device is available; 
 ## Closeout
 
 Update the plan, `.agents/state.md`, durable decisions/knowledge when warranted, architecture/capability docs if runtime truth changed, and session evidence before every phase commit. Commit/push each completed phase according to repository protocol; stop before PR until user authorization.
+
+### Phase 6 evidence — 2026-08-17
+
+- Root `npm run lint`, `npm run typecheck`, `npm run build`, and `npm test` pass (9 tests).
+- Mobile lint, typecheck, and `expo prebuild --clean --no-install` pass. Generated Gradle configuration confirms Android min/compile/target 24/36/36 and Kotlin 2.1.20.
+- Android `assembleDebug` was attempted against generated native output and is explicitly host-gated: this Linux host has no Android SDK path (`ANDROID_HOME`/`ANDROID_SDK_ROOT` unset). iOS compile/device acceptance is macOS/Xcode/device-gated.
+- Tracked-source and generated-output inspection found no production secrets. Runtime login/logout, restart, workspace isolation, Positioning issuance, and backend-unavailability checks remain external database/credential/device acceptance gates; the server-side contracts and safe fallbacks are implemented.
+- Plan 029 is complete on this branch. No PR, merge, branch deletion, or Plan 030 work was performed.

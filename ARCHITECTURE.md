@@ -280,6 +280,8 @@ Approved target ownership:
 
 The workspace Read & Write Situm credential remains server-only. Plan 028 froze a dedicated least-privilege workspace Positioning credential for native issuance after owner authorization; the browser Viewer credential is not reused, and Realtime remains server-mediated.
 
+Plan 029 now provides the standalone `mobile/` Expo foundation, the same PostgreSQL identity through a sealed h3 session over `x-nuxt-session`, seven-day expiry plus server-side session-version revocation, SecureStore-only native session persistence, owner-scoped workspace context, and encrypted dedicated Positioning-key issuance. Native Map, positioning, navigation, Realtime UI, and Share Live Location remain deferred to Plans 030–031.
+
 ## Data fetching / validation
 
 Use Nuxt-native `useFetch` / `useAsyncData` for render-time reads and `$fetch` for explicit actions.
