@@ -2,9 +2,9 @@
 
 _Last reviewed: 2026-08-17_
 
-## Approved next roadmap — Plans 028–032 native companion
+## Active Plan 028 — Native Capability, Auth & Distribution Spike
 
-The user approved the native companion direction on 2026-08-17. Planning artifacts live on `roadmap/028-032-native-mobile`; implementation has not started. The sequence is Plan 028 capability/auth/distribution spike -> Plan 029 native foundation/workspace session -> Plan 030 native Map/positioning/navigation -> Plan 031 native Realtime -> Plan 032 web/native handoff/distribution/full regression.
+The native roadmap was integrated into `main` via PR #22 (merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`). Plan 028 is now active on `plan/028-native-capability-auth-spike`, created from that exact updated `origin/main`. Phase 0 pre-flight is complete; Phase 1 compatibility-matrix evidence is next. No native product Map/Realtime implementation has started. The sequence remains Plan 028 -> Plan 029 -> Plan 030 -> Plan 031 -> Plan 032, with each later plan gated on predecessor integration.
 
 Locked product policy for this roadmap:
 
@@ -15,7 +15,7 @@ Locked product policy for this roadmap:
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
 - the server-side Read & Write Situm credential must never be exposed to mobile; Plan 028 must freeze a proven short-lived-token or dedicated Positioning-credential contract before Plan 029 implementation.
 
-Normal workflow: integrate the roadmap planning branch first, then execute each plan sequentially from updated `origin/main` unless the user explicitly authorizes stacked branches.
+Normal workflow: Plan 028 is executing from integrated `origin/main`; later plans start sequentially from updated `origin/main` only after their predecessor is reviewed and integrated, unless the user explicitly authorizes stacked branches.
 
 ## Plan 027 (complete/integrated)
 

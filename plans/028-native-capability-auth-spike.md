@@ -3,7 +3,7 @@
 Branch: `plan/028-native-capability-auth-spike`
 Base: updated `origin/main` after the native roadmap planning branch is integrated
 Depends on: `plans/028-032-native-mobile-roadmap.md`
-Status: planned
+Status: active — Phase 0 complete; Phase 1 next
 
 ## Objective
 
@@ -23,7 +23,7 @@ This is an evidence plan. Do not implement product Map/Realtime screens here.
 
 ## Phase checklist
 
-- [ ] Phase 0 — Pre-flight, dependency and authority reconciliation.
+- [x] Phase 0 — Pre-flight, dependency and authority reconciliation.
 - [ ] Phase 1 — Freeze React Native / Expo / Situm SDK compatibility matrix.
 - [ ] Phase 2 — Prove native Map, positioning, permission and navigation surfaces.
 - [ ] Phase 3 — Freeze least-privilege Situm mobile authentication contract.
@@ -37,6 +37,18 @@ This is an evidence plan. Do not implement product Map/Realtime screens here.
 - Start from clean, updated `origin/main` on the dedicated Plan 028 branch.
 - Read current official Situm React Native quickstart, reference, changelog, mobile positioning docs, API-key guidance, and native Android/iOS auth changelogs.
 - Record exact evidence dates/versions; do not rely on earlier chat summaries as authority.
+
+### Phase 0 evidence — 2026-08-17
+
+- Dependency/base: roadmap PR #22 is integrated into `main` at merge commit `e9091107f6676e15a0a5887629bb62e84aede0aa`; Plan 027 remains integrated via PR #21. `plan/028-native-capability-auth-spike` was created cleanly from that exact `origin/main` commit.
+- Official React Native quickstart: `https://situm.com/docs/a-basic-react-native-app/`, updated 2026-04-17. It explicitly supports an Expo workflow, requires a development build because Situm contains native code, requires `npx expo prebuild`, states Expo Go is insufficient, and currently requires re-applying the Situm Maven repository after prebuild regeneration unless the project automates that safely.
+- Official React Native changelog: `https://situm.com/docs/react-native-sdk-changelog/`, updated 2026-08-13. Current top release is 3.19.2 (2026-08-13); 3.19.0 (2026-07-29) added JWT token authentication through `SitumPlugin.setToken()` and optional `SitumProvider.token`, made `SitumProvider.apiKey` optional, and updated the example to React Native 0.83.10 / Android target SDK 37. The current stable marker remains 3.18.27 (2026-07-27). Exact version selection is Phase 1; exact token contract is Phase 3.
+- Official React Native TypeDoc: `https://developers.situm.com/sdk_documentation/react-native/typedoc/` is the public wrapper reference used for later exact-surface proof.
+- Official positioning guide: `https://situm.com/docs/mobile-sdks-positioning/`, updated 2026-08-05. It documents React Native positioning start/stop and location/status/error concepts and recommends Remote Configuration where possible. Exact callable wrapper surfaces remain Phase 2.
+- Official API-key guidance: `https://situm.com/docs/managing-api-keys/`, updated 2026-03-16. Positioning permission is the normal mobile-SDK key level; Read-only is for broader read APIs such as Reporting/Realtime; Read & Write is for internal tasks and should not be available to final users.
+- Native auth evidence is distinct from wrapper evidence: Android changelog `https://situm.com/docs/android-sdk-changelog/` (updated 2026-08-03) added `Configuration.setToken()` in 3.37.0 and currently lists 3.38.0; iOS changelog `https://situm.com/docs/ios-sdk-changelog/` (updated 2026-08-14) added `SITServices.setToken()` in 3.40.0 and currently lists 3.41.0. The React Native changelog now separately proves wrapper token support from 3.19.0, but Phase 3 must still freeze token format/lifetime/refresh semantics before implementation.
+- Parent review rejected the worker's generic “dual JWT/API-key authentication schema” wording because it did not distinguish native SDK evidence from the React Native wrapper. The current official 3.19.0 changelog resolves wrapper availability, but no Phase 3 auth design is inferred yet.
+- Phase 0 blocker result: none. The roadmap assumptions remain compatible with current official evidence and Phase 1 may proceed.
 
 ## Phase 1 — Compatibility matrix
 
