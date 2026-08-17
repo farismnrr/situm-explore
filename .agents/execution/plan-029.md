@@ -43,6 +43,9 @@ Do NOT implement production positioning, blue dot, POI flows, directions/navigat
 [ACCEPTANCE]
 Run the exact validation required by Plan 029 plus repository baseline checks. Android build/runtime claims require real evidence. Keep iOS explicitly macOS/device-gated when unavailable. Never persist or print real secrets.
 
+[REVIEW]
+Final reviewer findings are authoritative for remediation: `.agents/reviews/plan-029-final.md`. Resolve every blocking finding before claiming Plan 029 complete or PR-ready.
+
 [DONE]
 When Phase 0–6 are complete, committed, pushed, and the branch is clean/synced, stop and provide one consolidated Plan 029 report with validation, commits, unresolved gates, Plan 030 readiness, and PR readiness.
 
