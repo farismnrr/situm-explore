@@ -1,6 +1,8 @@
 import { StatusBar } from 'expo-status-bar'
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import * as Application from 'expo-application'
+import * as FileSystem from 'expo-file-system/legacy'
+import * as IntentLauncher from 'expo-intent-launcher'
 import { ActivityIndicator, AppState, Keyboard, KeyboardAvoidingView, Linking, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { Circle, Path, Svg } from 'react-native-svg'
@@ -13,7 +15,8 @@ import { nativeDestinationFromLink, parseNativeDeepLink, type NativeDeepLink } f
 import { colors, radii } from './src/ui/theme'
 import { layoutForWidth, navigationDestinations, shouldRenderTopbarBrand } from './src/ui/layout'
 import { ForegroundPositioningSession } from './src/positioning/session'
-import { fetchAndroidReleaseManifest, isAndroidUpdateAvailable, type AndroidReleaseManifest } from './src/update/androidUpdate'
+import { fetchAndroidReleaseManifest, isAndroidUpdateAvailable, isSafeAndroidUpdateUrl, type AndroidReleaseManifest } from './src/update/androidUpdate'
+import { loginKeyboardAvoidingBehavior, shouldUseCompactLoginLayout } from './src/loginKeyboardStrategy'
 
 type Tab = 'explore' | 'realtime' | 'recent' | 'settings'
 
@@ -41,7 +44,8 @@ function AppContent() {
       // Update discovery must never block access when the public release endpoint is unavailable.
     }
   }, [])
-  useEffect(() => { auth.restore().then(ok => { setAuthenticated(ok); setReady(true) }).catch(() => setReady(true)); void checkForUpdate(); const app = AppState.addEventListener('change', setLifecycle); void Linking.getInitialURL().then(url => { const link = parseNativeDeepLink(url); if (link) { setPendingLink(link); setActiveTab(nativeDestinationFromLink(link)) } }).catch(() => undefined); const linkSubscription = Linking.addEventListener('url', ({ url }) => { const link = parseNativeDeepLink(url); if (link) { setPendingLink(link); setActiveTab(nativeDestinationFromLink(link)) } }); return () => { app.remove(); linkSubscription.remove() } }, [auth, checkForUpdate])
+  useEffect(() => { auth.restore().then(ok => { setAuthenticated(ok); setReady(true) }).catch(() => setReady(true)); const app = AppState.addEventListener('change', setLifecycle); void Linking.getInitialURL().then(url => { const link = parseNativeDeepLink(url); if (link) { setPendingLink(link); setActiveTab(nativeDestinationFromLink(link)) } }).catch(() => undefined); const linkSubscription = Linking.addEventListener('url', ({ url }) => { const link = parseNativeDeepLink(url); if (link) { setPendingLink(link); setActiveTab(nativeDestinationFromLink(link)) } }); return () => { app.remove(); linkSubscription.remove() } }, [auth])
+  useEffect(() => { if (lifecycle === 'active') void checkForUpdate() }, [checkForUpdate, lifecycle])
   const onLogin = () => { setBusy(true); setError(''); auth.login(email, password).then(() => { setAuthenticated(true); void checkForUpdate() }).catch((e: unknown) => setError(e instanceof ApiError ? e.message : 'Sign in could not be completed.')).finally(() => setBusy(false)) }
   const content = !ready
     ? <SafeAreaView style={styles.safe}><ActivityIndicator color={colors.action} /></SafeAreaView>
@@ -59,7 +63,8 @@ function Login({ email, password, busy, error, setEmail, setPassword, onSubmit }
     const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false))
     return () => { show.remove(); hide.remove() }
   }, [])
-  return <SafeAreaView style={styles.safe}><StatusBar style="dark" /><KeyboardAvoidingView style={styles.loginWrap} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}><ScrollView contentContainerStyle={[styles.login, keyboardVisible && styles.loginKeyboard]} keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled"><View style={[styles.loginMark, keyboardVisible && styles.loginMarkKeyboard]}><BrandIcon /></View><Text style={styles.eyebrow}>SITUM EXPLORE</Text><Text style={[styles.loginTitle, keyboardVisible && styles.loginTitleKeyboard]}>Sign in to Explore</Text>{keyboardVisible ? null : <Text style={styles.loginBody}>Use your existing Situm Explore account. Your session is stored only in the device secure store.</Text>}<Text style={styles.fieldLabel}>Email</Text><TextInput accessibilityLabel="Email" autoCapitalize="none" autoComplete="email" keyboardType="email-address" placeholder="you@example.com" placeholderTextColor={colors.muted} returnKeyType="next" style={styles.input} value={email} onChangeText={setEmail} /><Text style={styles.fieldLabel}>Password</Text><View style={styles.passwordField}><TextInput accessibilityLabel="Password" autoComplete="password" placeholder="Your password" placeholderTextColor={colors.muted} secureTextEntry={!passwordVisible} style={[styles.input, styles.passwordInput]} value={password} onChangeText={setPassword} onSubmitEditing={onSubmit} returnKeyType="done" /><TouchableOpacity accessibilityRole="button" accessibilityLabel={passwordVisible ? 'Hide password' : 'Show password'} accessibilityState={{ selected: passwordVisible }} hitSlop={10} style={styles.passwordToggle} onPress={() => setPasswordVisible(value => !value)}><EyeIcon hidden={passwordVisible} /></TouchableOpacity></View>{error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}<TouchableOpacity accessibilityRole="button" accessibilityLabel="Sign in" accessibilityState={{ disabled: busy }} disabled={busy} style={[styles.primaryButton, busy && styles.disabled]} onPress={onSubmit}><Text style={styles.primaryText}>{busy ? 'Signing in…' : 'Sign in'}</Text></TouchableOpacity></ScrollView></KeyboardAvoidingView></SafeAreaView>
+  const compact = shouldUseCompactLoginLayout(keyboardVisible)
+  return <SafeAreaView style={styles.safe}><StatusBar style="dark" /><KeyboardAvoidingView style={styles.loginWrap} behavior={loginKeyboardAvoidingBehavior(Platform.OS)}><ScrollView contentContainerStyle={[styles.login, compact && styles.loginKeyboard]} keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled"><View style={[styles.loginMark, compact && styles.loginMarkKeyboard]}><BrandIcon /></View><Text style={styles.eyebrow}>SITUM EXPLORE</Text><Text style={[styles.loginTitle, compact && styles.loginTitleKeyboard]}>Sign in to Explore</Text>{compact ? null : <Text style={styles.loginBody}>Use your existing Situm Explore account. Your session is stored only in the device secure store.</Text>}<Text style={styles.fieldLabel}>Email</Text><TextInput accessibilityLabel="Email" autoCapitalize="none" autoComplete="email" keyboardType="email-address" placeholder="you@example.com" placeholderTextColor={colors.muted} returnKeyType="next" style={styles.input} value={email} onChangeText={setEmail} /><Text style={styles.fieldLabel}>Password</Text><View style={styles.passwordField}><TextInput accessibilityLabel="Password" autoComplete="password" placeholder="Your password" placeholderTextColor={colors.muted} secureTextEntry={!passwordVisible} style={[styles.input, styles.passwordInput]} value={password} onChangeText={setPassword} onSubmitEditing={onSubmit} returnKeyType="done" /><TouchableOpacity accessibilityRole="button" accessibilityLabel={passwordVisible ? 'Hide password' : 'Show password'} accessibilityState={{ selected: passwordVisible }} hitSlop={10} style={styles.passwordToggle} onPress={() => setPasswordVisible(value => !value)}><EyeIcon hidden={passwordVisible} /></TouchableOpacity></View>{error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}<TouchableOpacity accessibilityRole="button" accessibilityLabel="Sign in" accessibilityState={{ disabled: busy }} disabled={busy} style={[styles.primaryButton, busy && styles.disabled]} onPress={onSubmit}><Text style={styles.primaryText}>{busy ? 'Signing in…' : 'Sign in'}</Text></TouchableOpacity></ScrollView></KeyboardAvoidingView></SafeAreaView>
 }
 
 function EyeIcon({ hidden }: { hidden: boolean }) {
@@ -70,7 +75,22 @@ function EyeIcon({ hidden }: { hidden: boolean }) {
 function AndroidUpdateModal({ release, dismissed, onLater }: { release: AndroidReleaseManifest | null, dismissed: boolean, onLater: () => void }) {
   if (!release) return null
   const installedVersion = Application.nativeApplicationVersion || 'current version'
-  return <Modal animationType="fade" transparent visible={!dismissed} onRequestClose={onLater}><View style={styles.updateBackdrop}><View accessibilityViewIsModal style={styles.updateCard}><View style={styles.updateIcon}><Text style={styles.updateIconText}>↑</Text></View><Text style={styles.updateEyebrow}>APP UPDATE</Text><Text style={styles.updateTitle}>A newer Situm Explore is ready</Text><Text style={styles.updateBody}>Version {release.version} is available. You have {installedVersion}. Update now to stay on the latest Android build.</Text><TouchableOpacity accessibilityRole="button" style={styles.primaryButton} onPress={() => void Linking.openURL(release.downloadUrl)}><Text style={styles.primaryText}>Download update</Text></TouchableOpacity><TouchableOpacity accessibilityRole="button" style={styles.updateLaterButton} onPress={onLater}><Text style={styles.updateLaterText}>Later</Text></TouchableOpacity></View></View></Modal>
+  const downloadAndInstall = async () => {
+    if (!isSafeAndroidUpdateUrl(release.downloadUrl) || !FileSystem.cacheDirectory) return
+    try {
+      const target = `${FileSystem.cacheDirectory}situm-explore-v${release.version}-android-arm64.apk`
+      const { uri } = await FileSystem.downloadAsync(release.downloadUrl, target)
+      const contentUri = await FileSystem.getContentUriAsync(uri)
+      await IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+        data: contentUri,
+        flags: 1,
+        type: 'application/vnd.android.package-archive',
+      })
+    } catch {
+      // A failed download or installer handoff must leave the app usable.
+    }
+  }
+  return <Modal animationType="fade" transparent visible={!dismissed} onRequestClose={onLater}><View style={styles.updateBackdrop}><View accessibilityViewIsModal style={styles.updateCard}><View style={styles.updateIcon}><Text style={styles.updateIconText}>↑</Text></View><Text style={styles.updateEyebrow}>APP UPDATE</Text><Text style={styles.updateTitle}>A newer Situm Explore is ready</Text><Text style={styles.updateBody}>Version {release.version} is available. You have {installedVersion}. Update now to stay on the latest Android build.</Text><TouchableOpacity accessibilityRole="button" accessibilityLabel="Download update" style={styles.primaryButton} onPress={() => void downloadAndInstall()}><Text style={styles.primaryText}>Download update</Text></TouchableOpacity><TouchableOpacity accessibilityRole="button" style={styles.updateLaterButton} onPress={onLater}><Text style={styles.updateLaterText}>Later</Text></TouchableOpacity></View></View></Modal>
 }
 
 function AuthenticatedShell({ auth, workspaces, activeTab, setActiveTab, lifecycle, pendingLink, clearPendingLink, onLogout }: { auth: AuthSession, workspaces: WorkspaceContext, activeTab: Tab, setActiveTab: (tab: Tab) => void, lifecycle: string, pendingLink: NativeDeepLink | null, clearPendingLink: () => void, onLogout: () => void }) {

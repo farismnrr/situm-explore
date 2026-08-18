@@ -22,6 +22,7 @@ Each release has two Android version values:
 
 - `EXPO_PUBLIC_APP_VERSION`: user-visible semantic version, for example `1.2.0`.
 - `EXPO_PUBLIC_ANDROID_VERSION_CODE`: positive integer that must increase for every Android release, for example `12`.
+- `EXPO_PUBLIC_ANDROID_UPDATE_MANIFEST_URL`: optional HTTPS override for the Android update feed. When omitted, the app uses the canonical MinIO `situm-explore-latest-android.json` URL. This is intended for staging/lab validation; non-HTTPS overrides are rejected.
 
 Example release environment:
 
@@ -32,7 +33,7 @@ EXPO_PUBLIC_ENVIRONMENT=staging
 EXPO_PUBLIC_API_BASE_URL=https://situm.farismunir.my.id
 ```
 
-Do not reuse an Android version code for a different published build.
+Do not reuse an Android version code for a different published build. The dedicated release script requires both version variables explicitly; it will not silently fall back to `1.0.0 (1)`.
 
 ## Canonical Android artifact names
 
@@ -102,6 +103,10 @@ Before publishing an APK, verify all of the following:
 cd mobile
 npm run lint
 npm run typecheck
+EXPO_PUBLIC_APP_VERSION=1.2.0 \
+EXPO_PUBLIC_ANDROID_VERSION_CODE=12 \
+EXPO_PUBLIC_ENVIRONMENT=staging \
+EXPO_PUBLIC_API_BASE_URL=https://situm.farismunir.my.id \
 npm run build:android:release
 ```
 

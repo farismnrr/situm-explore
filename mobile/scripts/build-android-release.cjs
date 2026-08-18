@@ -7,8 +7,10 @@ const { resolve } = require('node:path')
 const { homedir } = require('node:os')
 
 const root = resolve(__dirname, '..')
-const version = process.env.EXPO_PUBLIC_APP_VERSION || '1.0.0'
-const versionCode = process.env.EXPO_PUBLIC_ANDROID_VERSION_CODE || '1'
+const version = process.env.EXPO_PUBLIC_APP_VERSION?.trim()
+const versionCode = process.env.EXPO_PUBLIC_ANDROID_VERSION_CODE?.trim()
+if (!version) throw new Error('EXPO_PUBLIC_APP_VERSION is required for release builds.')
+if (!versionCode) throw new Error('EXPO_PUBLIC_ANDROID_VERSION_CODE is required for release builds.')
 const apiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL?.trim()
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT?.trim() || 'staging'
 const releaseBaseUrl = (process.env.EXPO_PUBLIC_ANDROID_RELEASE_BASE_URL || 'https://minio.farismunir.my.id/situm-explore/android').trim().replace(/\/$/, '')
