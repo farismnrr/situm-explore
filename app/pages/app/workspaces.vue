@@ -13,6 +13,7 @@ const newName = ref('')
 const renameName = ref('')
 const apiKey = ref('')
 const viewerApiKey = ref('')
+const positioningApiKey = ref('')
 const config = ref<WorkspaceSitumConfig | null>(null)
 
 async function loadConfig() {
@@ -77,9 +78,10 @@ async function saveConfig() {
   if (!selectedWorkspaceId.value || !apiKey.value || !viewerApiKey.value) return
   saving.value = true; errorMessage.value = ''; message.value = ''
   try {
-    config.value = await $fetch<WorkspaceSitumConfig & { configured: boolean }>(`/api/workspaces/${selectedWorkspaceId.value}/situm-config`, { method: 'PUT', body: { apiKey: apiKey.value, viewerApiKey: viewerApiKey.value } })
+    config.value = await $fetch<WorkspaceSitumConfig & { configured: boolean }>(`/api/workspaces/${selectedWorkspaceId.value}/situm-config`, { method: 'PUT', body: { apiKey: apiKey.value, viewerApiKey: viewerApiKey.value, ...(positioningApiKey.value ? { positioningApiKey: positioningApiKey.value } : {}) } })
     apiKey.value = ''
     viewerApiKey.value = ''
+    positioningApiKey.value = ''
     message.value = 'Situm configuration saved. The credential will not be shown again.'
   } catch (error: unknown) { errorMessage.value = getSafeErrorMessage(error, 'Situm configuration could not be saved.') } finally { saving.value = false }
 }
@@ -131,10 +133,11 @@ onMounted(refresh)
         </UCard>
         <UCard :ui="{ body: 'space-y-4' }">
           <div><h2 class="font-semibold text-highlighted">Situm configuration</h2><p class="mt-1 text-xs leading-5 text-muted">Credentials are encrypted on the server. The stored API key is never returned or shown again.</p></div>
-          <div v-if="config" class="grid gap-3 rounded-lg border border-default bg-elevated p-3 text-xs sm:grid-cols-3"><div><span class="block text-muted">Status</span><strong class="text-highlighted">Configured</strong></div><div><span class="block text-muted">Account</span><strong class="break-all text-highlighted">{{ config.situmAccountId }}</strong></div><div><span class="block text-muted">Viewer credential</span><strong class="text-highlighted">{{ config.viewerConfigured ? 'Configured' : 'Not configured' }}</strong></div></div>
+          <div v-if="config" class="grid gap-3 rounded-lg border border-default bg-elevated p-3 text-xs sm:grid-cols-4"><div><span class="block text-muted">Status</span><strong class="text-highlighted">Configured</strong></div><div><span class="block text-muted">Account</span><strong class="break-all text-highlighted">{{ config.situmAccountId }}</strong></div><div><span class="block text-muted">Viewer credential</span><strong class="text-highlighted">{{ config.viewerConfigured ? 'Configured' : 'Not configured' }}</strong></div><div><span class="block text-muted">Positioning</span><strong class="text-highlighted">{{ config.positioningConfigured ? 'Configured' : 'Not configured' }}</strong></div></div>
           <UAlert v-else color="neutral" variant="subtle" title="Not configured" description="Add a primary Situm Read & Write API key and a separate read-only Viewer API key to connect this workspace." />
           <UFormField label="Primary Read & Write API key" hint="Required to add or replace the stored credentials"><UInput v-model="apiKey" type="password" autocomplete="new-password" placeholder="Enter a new key" class="w-full" /></UFormField>
           <UFormField label="Read-only Viewer API key" hint="Required for the browser Viewer; write-only and never returned"><UInput v-model="viewerApiKey" type="password" autocomplete="new-password" placeholder="Enter a read-only key" class="w-full" /></UFormField>
+          <UFormField label="Positioning API key" hint="Dedicated mobile indoor positioning credential; optional when updating existing settings"><UInput v-model="positioningApiKey" type="password" autocomplete="new-password" placeholder="Enter a positioning key" class="w-full" /></UFormField>
           <div class="flex flex-wrap gap-2">
             <UButton label="Save configuration" :loading="saving" :disabled="saving || !apiKey || !viewerApiKey" @click="saveConfig" />
             <UButton v-if="config" label="Validate configuration" color="neutral" variant="outline" :loading="validating" :disabled="saving || validating" @click="validateConfig" />

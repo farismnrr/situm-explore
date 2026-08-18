@@ -3,7 +3,22 @@
 Branch: `plan/034-full-e2e-acceptance`
 Base: updated `origin/main` after Plan 033 is integrated
 Depends on: Plan 033 complete/integrated
-Status: planned
+Status: closed by user decision on 2026-08-18 — implemented/verified scope accepted with documented physical blockers; no claim of full physical E2E PASS
+
+## Closure decision — 2026-08-18
+
+The user explicitly requested Plan 034 be closed before addressing a newly observed Realtime issue in a separate plan. This decision supersedes the earlier "terminal non-deferrable gate" wording for roadmap administration only.
+
+Closure means:
+
+- completed remediation and physical checks retain their recorded PASS evidence;
+- the Explore/navigation major refactor is accepted up to the genuine vendor positioning blocker;
+- Situm `LOCATION 8002` / vendor `network provider enabled=false` remains a documented physical blocker, not a PASS;
+- staging deep-link native-shell mismatch and any other unexercised physical/cross-client paths remain unpassed unless later evidence proves them;
+- the newly observed Realtime issue is intentionally out of Plan 034 and moves to Plan 035;
+- no PR, merge, or production change is implied by closing this execution plan.
+
+Evidence remains authoritative in `.agents/evidence/plan-034-*.md`.
 
 ## Objective
 
@@ -52,6 +67,26 @@ If these mandatory prerequisites are unavailable, record the exact missing item 
 ## Phase 0 — Acceptance inventory and readiness
 
 Before testing, reconcile exact carry-over from Plans 030–033.
+
+Acceptance-discovered positioning remediation authority: `/home/farismnrr/Projects/situm-explore/.agents/execution/plan-034-positioning-provisioning-remediation.md`. Phase 0 physical readiness found that the backend/schema/native issuance path already supports a dedicated encrypted Positioning credential, but the web Workspace Settings UI did not expose the existing `positioningApiKey` provisioning field. This is a bounded Plan 034 correctness remediation, not a new roadmap plan. Complete it, validate it, provision through the product UI, then resume physical acceptance; do not bypass the product boundary with direct DB secret writes.
+
+Physical login-keyboard remediation authority: `/home/farismnrr/Projects/situm-explore/.agents/execution/plan-034-login-keyboard-ux-remediation.md`. The physical landscape POS vendor IME initially occluded the login fields despite `adjustResize`/Expo resize configuration and an initial `KeyboardAvoidingView` workaround. The bounded geometry-driven remediation now has physical POS evidence at `.agents/evidence/plan-034-login-keyboard-2026-08-18.md`; native auth/session acceptance may proceed, while the ADB reinstall runtime limitation remains documented there.
+
+### Acceptance remediation checkpoint — 2026-08-18
+
+- [x] Confirmed the gap was the product provisioning surface, not the backend schema, encryption, owner/session gate, or native retrieval path.
+- [x] Added the dedicated write-only Positioning API key field and conditional save request; omitted positioning input preserves the existing encrypted value.
+- [x] Exposed only `positioningConfigured`; no stored credential value is returned or rendered.
+- [x] Added focused Plan 034 regression coverage and passed root tests/lint/typecheck/build, mobile security/lint/typecheck, `git diff --check`, and production-preview smoke (root 200, protected workspace API 401, security headers present, no credential-bearing logs).
+- [ ] Real product-UI provisioning, authenticated native retrieval, and physical positioning/navigation acceptance remain unpassed pending the user-owned Situm credentials and supported runtime path. No physical PASS is claimed here.
+
+### Explore navigation refactor checkpoint — 2026-08-18
+
+- [x] Explore was refactored to a map-first authenticated surface; permanent custom `Select a place`, `PLACES`, `LEVELS`, welcome/search stack, Explore/instance chrome, and verbose location card were removed. Situm SDK owns those controls.
+- [x] Guidance now uses the frozen SDK's real `followUser`/`unfollowUser`, `navigateToPoi`, `cancelNavigation`, navigation callbacks, `distanceToGoal`, and `closestLocationInRoute` data with explicit pure state coverage.
+- [x] POS hot-reload inspection at `1366×720` confirmed real workspace cartography and a dominant map; the location action was refined after objective bounds showed vendor navigation-inset clipping.
+- [ ] Positioning-dependent guidance/follow/progress acceptance remains BLOCKED: the physical POS reproduced Situm `LOCATION` error code `8002` (`Location must be enabled to scan Bluetooth, Wi-Fi and GPS`) and reported `network provider enabled=false`. No fake location or navigation evidence was used.
+- [ ] Automatic free-pan detection remains unsupported by the frozen SDK because no public map gesture callback exists; the implementation documents this limitation through behavior (no gesture heuristic) and provides follow/recenter handling only from supported state transitions.
 
 ### Plan 030 carry-over — currently unpassed
 
@@ -230,4 +265,4 @@ Closeout requires:
 - `ARCHITECTURE.md`, `design/data-source-matrix.md`, `plans/README.md`, `.agents/state.md`, durable decisions/evidence and roadmap status reconciled to exact runtime truth;
 - no remaining deferred native-roadmap E2E item.
 
-Plan 034 is PR-ready only when all mandatory Android/full-E2E checks pass. If any required physical acceptance is still unavailable, keep the plan blocked and the roadmap incomplete.
+Plan 034 was originally defined as a terminal hard gate. On 2026-08-18 the user explicitly superseded that closure rule and requested this plan be closed so subsequent Realtime remediation can proceed as a new plan. Closure is administrative and evidence-based: unresolved physical positioning/guidance/deep-link/Realtime acceptance remains documented as UNPASSED/BLOCKED and is not rewritten as PASS. Any follow-up work must preserve those truthful limitations.

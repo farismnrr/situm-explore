@@ -5,6 +5,7 @@ import { workspaceSitumConfigs, workspaces } from '../../db/schema'
 import { encryptWorkspaceApiKey } from '../../utils/workspace-credentials'
 import { assertWorkspaceId } from '../../utils/workspace-owner'
 import { issueWorkspaceViewerApiKey } from '../../utils/viewer-auth'
+import { resolveMobilePositioningCredential } from '../../utils/mobile-positioning'
 import SitumSDK, { SitumApiPermissionLevel } from '@situm/sdk-js'
 
 const schema = z.object({ apiKey: z.string().min(1).max(4096), viewerApiKey: z.string().min(1).max(4096), positioningApiKey: z.string().min(1).max(4096).optional() }).strict()
@@ -14,6 +15,19 @@ export default defineEventHandler(async (event) => {
   if (parts.length === 2 && parts[1] === 'viewer-auth') {
     if (getMethod(event) !== 'GET') throw createError({ statusCode: 405, statusMessage: 'Method not allowed.' })
     return issueWorkspaceViewerApiKey(event, parts[0] || '')
+  }
+  if (parts.length === 2 && parts[1] === 'mobile-positioning') {
+    if (getMethod(event) !== 'GET') throw createError({ statusCode: 405, statusMessage: 'Method not allowed.' })
+    const workspaceId = assertWorkspaceId(parts[0] || '')
+    const session = await requireUserSession(event)
+    return resolveMobilePositioningCredential({
+      workspaceId,
+      userId: session.user.id,
+      findOwnedConfig: async (ownedWorkspaceId, ownerId) => {
+        const [config] = await getDb().select({ encryptedPositioningApiKey: workspaceSitumConfigs.encryptedPositioningApiKey, situmAccountId: workspaceSitumConfigs.situmAccountId }).from(workspaceSitumConfigs).innerJoin(workspaces, eq(workspaces.id, workspaceSitumConfigs.workspaceId)).where(and(eq(workspaceSitumConfigs.workspaceId, ownedWorkspaceId), eq(workspaces.ownerId, ownerId))).limit(1)
+        return config
+      },
+    })
   }
   if (parts.length !== 2 || parts[1] !== 'situm-config') throw createError({ statusCode: 404, statusMessage: 'The requested resource was not found.' })
   const workspaceId = assertWorkspaceId(parts[0] || '')
@@ -52,7 +66,7 @@ export default defineEventHandler(async (event) => {
       if (positioningSession.apiPermissionLevel !== SitumApiPermissionLevel.POSITIONING || positioningSession.organizationId !== primarySession.organizationId) throw new Error('Positioning credential is invalid')
     }
   } catch {
-    throw createError({ statusCode: 422, statusMessage: 'Both Situm credentials could not be verified with the required permissions.' })
+    throw createError({ statusCode: 422, statusMessage: 'The Situm credentials could not be verified with the required permissions.' })
   }
   const encryptedApiKey = encryptWorkspaceApiKey(parsed.data.apiKey)
   const encryptedViewerApiKey = encryptWorkspaceApiKey(parsed.data.viewerApiKey)

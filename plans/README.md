@@ -55,22 +55,23 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 
 ## Approved native companion roadmap
 
-Plans 028–032 are integrated into `main`. Plan 033 owns the final native UI/UX reference reconciliation across shell, Explore/Map, Realtime, Recent, Settings and authentication; Plan 034 owns the consolidated full-E2E terminal gate, including every still-unpassed physical-device check from Plans 030–031, every cross-client item introduced by Plan 032, and real-device confirmation of Plan 033 presentation behavior.
+Plans 028–032 are integrated into `main`. Plan 033 completed the native UI/UX reconciliation. Plan 034 is closed by explicit user decision with truthful documented physical blockers rather than a fabricated full-E2E PASS. A newly observed Realtime issue is intentionally separated into Plan 035.
 
 ```text
-roadmap/033-034-native-ui-reconciliation          [Plans 033–034 remaining]
+roadmap/033-034-native-ui-reconciliation          [closed; Plan 034 accepted with documented blockers]
 -> Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
 -> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
 -> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 034]
 -> Plan 031 — Native Realtime Operations [complete/integrated; physical E2E carried to Plan 034]
 -> Plan 032 — Web/Native Handoff & Distribution [complete/integrated]
--> Plan 033 — Native UI/UX Reference Reconciliation
--> Plan 034 — Full E2E Acceptance & Roadmap Closeout [terminal hard gate]
+-> Plan 033 — Native UI/UX Reference Reconciliation [complete]
+-> Plan 034 — Full E2E Acceptance & Roadmap Closeout [closed by user decision; documented blockers retained]
+-> Plan 035 — Realtime Remediation [next; separate scope]
 ```
 
 Roadmap overview: `plans/028-034-native-mobile-roadmap.md`.
 
-Plan 033 starts from updated `main` after Plan 032 integration. Plan 034 starts only after Plan 033 is integrated unless the user explicitly authorizes stacked execution.
+Plan 034 is now closed. Plan 035 is the next bounded work item for the newly observed Realtime issue; normal git workflow still prefers starting it from the integrated Plan 034 result unless the user explicitly authorizes stacked execution.
 
 ## Transition direction
 

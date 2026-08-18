@@ -11,6 +11,7 @@ export interface WorkspaceSitumConfig {
   situmAccountId: string
   configured: boolean
   viewerConfigured: boolean
+  positioningConfigured: boolean
   updatedAt: string
 }
 

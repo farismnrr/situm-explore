@@ -1,6 +1,6 @@
 # Native Companion Roadmap — Plans 028–034
 
-Status: **in progress; Plans 028–032 integrated, Plans 033–034 remaining**
+Status: **closed by user decision on 2026-08-18; Plan 034 retains documented unpassed physical blockers rather than claiming full E2E PASS**
 
 Original planning branch: `roadmap/028-032-native-mobile`
 Acceptance split branch: `roadmap/032-033-e2e-split`
@@ -51,7 +51,7 @@ Plan 032 is integrated. It owns web/native routing, deep-link behavior, install/
 
 Plan 033 is the final native presentation implementation pass before physical/full E2E. It reconciles shell, Explore/Map, Realtime, Recent, Settings and authentication with the canonical native responsive reference across phone, tablet/POS and wide layouts while preserving all backend/SDK/security truth from Plans 028–032. It may close on reviewer-approved implementation plus truthful non-device/emulator visual validation, but it may not convert physical-device or cross-client acceptance to PASS.
 
-Plan 034 is the terminal, non-deferrable full E2E gate. It inherits:
+Plan 034 was originally defined as the terminal, non-deferrable full E2E gate. On 2026-08-18 the user explicitly superseded that roadmap-administration rule and closed Plan 034 with truthful documented blockers. It inherited:
 
 - every unpassed supported-device Map/positioning/navigation check from Plan 030;
 - every unpassed supported-device Realtime/native lifecycle check from Plan 031;
@@ -106,3 +106,8 @@ The roadmap is complete only when Plan 034 has discharged every accumulated E2E 
 - distribution/signing configuration is documented without committed secrets;
 - final web/native/full-device regression evidence is recorded;
 - architecture, capability matrix, plans and durable agent context match final runtime truth.
+
+
+## 2026-08-18 closure override
+
+By explicit user decision, this roadmap is administratively closed without converting unresolved physical acceptance to PASS. The vendor POS positioning blocker (`LOCATION 8002`, `network provider enabled=false`) and other unexercised physical/cross-client gates remain truthful limitations in Plan 034 evidence. A newly observed Realtime issue is separated into Plan 035 rather than reopening or indefinitely expanding Plan 034.

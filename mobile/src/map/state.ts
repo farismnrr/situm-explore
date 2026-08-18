@@ -1,6 +1,7 @@
 export type PositionState = 'stopped' | 'starting' | 'fresh' | 'stale' | 'error'
 export type LocationSnapshot<T> = { state: PositionState, location: T | null, receivedAt: number, workspaceId: string, buildingId: number }
 export type NavigationOwnershipState = 'idle' | 'active' | 'outside-route' | 'arrived' | 'cancelled' | 'error'
+export type GuidanceState = 'browse' | 'positioning-starting' | 'positioning-active' | 'guidance-following' | 'guidance-free-pan' | 'outside-route' | 'arrived' | 'cancelled' | 'error'
 
 export type FilterablePoi = { buildingId: number, name: string, categoryName?: string | null }
 export type FloorDisplay = { id: number, buildingId: number, level: number, name?: string | null }
@@ -38,4 +39,17 @@ export function navigationIsOwned(state: NavigationOwnershipState, nativeNavigat
 
 export function canStopGuidance(state: NavigationOwnershipState, nativeNavigationRunning = false): boolean {
   return navigationIsOwned(state, nativeNavigationRunning)
+}
+
+export function guidanceStateForNavigation(state: NavigationOwnershipState): GuidanceState {
+  if (state === 'active') return 'guidance-following'
+  if (state === 'outside-route') return 'outside-route'
+  if (state === 'arrived') return 'arrived'
+  if (state === 'cancelled') return 'cancelled'
+  if (state === 'error') return 'error'
+  return 'browse'
+}
+
+export function guidanceStateAfterRecenter(state: GuidanceState): GuidanceState {
+  return state === 'guidance-free-pan' ? 'guidance-following' : state
 }

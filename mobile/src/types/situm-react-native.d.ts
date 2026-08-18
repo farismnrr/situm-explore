@@ -6,11 +6,11 @@ declare module '@situm/react-native' {
   export type LocationStatus = { statusName: string }
   export type Error = { code?: string, message?: string }
   export type Route = { poiTo?: unknown }
-  export type NavigationProgress = { distanceToGoal: number }
+  export type NavigationProgress = { distanceToGoal: number, closestLocationInRoute: Location }
   export type OnPoiSelectedResult = { identifier: string, buildingIdentifier: string }
   export type OnPoiDeselectedResult = { identifier: string, buildingIdentifier: string }
   export type OnFloorChangedResult = { toFloorName: string }
-  export type MapViewRef = { selectPoi: (id: number) => void, deselectPoi: () => void, selectFloor: (id: number) => void, navigateToPoi: (params: { identifier: number }) => void, cancelNavigation: () => void }
+  export type MapViewRef = { selectPoi: (id: number) => void, deselectPoi: () => void, selectFloor: (id: number) => void, navigateToPoi: (params: { identifier: number }) => void, cancelNavigation: () => void, followUser: () => void, unfollowUser: () => void }
   export type MapViewProps = {
     configuration: { buildingIdentifier: string, situmApiKey?: string, profile?: string, language?: string }
     style?: StyleProp<ViewStyle>
