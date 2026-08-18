@@ -76,17 +76,20 @@ npm run build:android:release
 
 The script performs these steps:
 
-1. validates semver and Android version code;
+1. validates semver, Android version code, API URL, and public Android release base URL;
 2. runs Expo Android prebuild so app metadata, launcher icon, adaptive icon, splash, and native resources are current;
 3. builds a release APK for `arm64-v8a` only;
 4. copies the APK into `mobile/dist/` using the canonical release name;
-5. generates a matching SHA-256 file.
+5. generates a matching SHA-256 file;
+6. generates a versioned update manifest plus the stable `situm-explore-latest-android.json` manifest used by installed Android apps.
 
 Expected output:
 
 ```text
 mobile/dist/situm-explore-v1.2.0-android-arm64.apk
 mobile/dist/situm-explore-v1.2.0-android-arm64.apk.sha256
+mobile/dist/situm-explore-v1.2.0-android-arm64.json
+mobile/dist/situm-explore-latest-android.json
 ```
 
 `mobile/dist/` is intentionally ignored by Git.
@@ -133,16 +136,20 @@ For release `1.2.0`, publish:
 ```text
 situm-explore/android/situm-explore-v1.2.0-android-arm64.apk
 situm-explore/android/situm-explore-v1.2.0-android-arm64.apk.sha256
+situm-explore/android/situm-explore-v1.2.0-android-arm64.json
 ```
 
-After the versioned objects have been uploaded and verified, update the stable aliases from the exact same bytes:
+After the versioned objects have been uploaded and verified, update the stable aliases from the exact same release:
 
 ```text
 situm-explore/android/situm-explore-latest-android-arm64.apk
 situm-explore/android/situm-explore-latest-android-arm64.apk.sha256
+situm-explore/android/situm-explore-latest-android.json
 ```
 
-The stable alias is updated only after the versioned artifact is available and its checksum has been verified. This prevents the website from ever pointing at a partial or missing release.
+Publish the stable JSON manifest **last**. The installed app checks that manifest on startup and again after a successful login, compares its native Android `versionCode` with the manifest `versionCode`, and shows an update modal only when the published build is newer. The manifest points at the immutable versioned APK, not the mutable `latest.apk` alias. Update discovery is fail-open: an unavailable or malformed manifest must never prevent login or normal app use.
+
+The stable aliases are updated only after the versioned artifact is available and its checksum has been verified. This prevents the website or installed app from ever pointing at a partial or missing release.
 
 The bucket policy is anonymous read/download only. Upload, overwrite, policy changes, and object management require authenticated operator credentials and must never be exposed to the browser or committed to the repository.
 
@@ -178,13 +185,14 @@ Use this order for every Android release:
 3. run `npm run build:android:release` from `mobile/`;
 4. verify ABI, checksum, embedded production/staging URL, app label, launcher icon, and cold-start splash;
 5. install and smoke the APK on a physical Android target;
-6. upload the versioned APK and checksum to MinIO;
-7. verify the public versioned object returns HTTP 200 and the downloaded SHA-256 matches locally;
+6. upload the versioned APK, checksum, and versioned JSON manifest to MinIO;
+7. verify the public versioned APK returns HTTP 200 and the downloaded SHA-256 matches locally;
 8. update the `situm-explore-latest-android-arm64.apk` aliases from the verified versioned release;
-9. verify the stable public alias returns HTTP 200 with the same checksum;
-10. rebuild/recreate staging web only when its runtime configuration or web UI changed;
-11. smoke the public landing download without login and the authenticated mobile-install action;
-12. record release evidence and commit source/docs changes.
+9. upload `situm-explore-latest-android.json` **last**, then verify it returns HTTP 200 and its `downloadUrl`, `versionCode`, and SHA-256 match the versioned APK;
+10. install the previous APK and smoke the in-app update modal against the newly published manifest, both before login and immediately after login;
+11. rebuild/recreate staging web only when its runtime configuration or web UI changed;
+12. smoke the public landing download without login and the authenticated mobile-install action;
+13. record release evidence and commit source/docs changes.
 
 Never claim a release is published before both the versioned object and stable alias pass public checksum verification.
 

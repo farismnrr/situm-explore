@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
 const workspacePage = readFileSync(new URL('../app/pages/app/workspaces.vue', import.meta.url), 'utf8')
+const passwordInput = readFileSync(new URL('../app/components/form/PasswordInput.vue', import.meta.url), 'utf8')
 const workspaceConfigRoute = readFileSync(new URL('../server/api/workspaces/[...workspacePath].ts', import.meta.url), 'utf8')
 const mobilePositioningRoute = readFileSync(new URL('../server/api/workspaces/[workspaceId]/mobile-positioning.get.ts', import.meta.url), 'utf8')
 const mobilePositioning = readFileSync(new URL('../server/utils/mobile-positioning.ts', import.meta.url), 'utf8')
@@ -10,7 +11,9 @@ const mobilePositioning = readFileSync(new URL('../server/utils/mobile-positioni
 test('Plan 034 Workspace Settings provisions a distinct write-only positioning credential', () => {
   assert.match(workspacePage, /const positioningApiKey = ref\(''\)/)
   assert.match(workspacePage, /label="Positioning API key"/)
-  assert.match(workspacePage, /v-model="positioningApiKey" type="password"/)
+  assert.match(workspacePage, /<PasswordInput v-model="positioningApiKey"/)
+  assert.match(passwordInput, /:type="visible \? 'text' : 'password'"/)
+  assert.match(passwordInput, /i-lucide-eye/)
   assert.match(workspacePage, /positioningApiKey: positioningApiKey\.value/)
   assert.match(workspacePage, /positioningApiKey\.value = ''/)
   assert.match(workspacePage, /config\.positioningConfigured \? 'Configured' : 'Not configured'/)
