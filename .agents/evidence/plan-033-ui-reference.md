@@ -169,3 +169,10 @@ All of those remain Plan 034 acceptance items.
 - Rows and details expose only device/position identity, building/floor, accuracy, coordinates and source time. Selection is neutral/accent-soft and does not imply presence or freshness.
 - The reference's remote-marker map remains a truthful list/detail fallback because installed `@situm/react-native` 3.19.2 evidence does not prove generic remote marker/focus support.
 - Abortable foreground polling, workspace authorization, malformed-payload rejection and lifecycle cleanup are unchanged.
+
+## Phase 4 execution evidence — 2026-08-18
+
+- Settings is now a final reference-shaped destination with real workspace switching, authenticated account email, knowable location-access guidance, truthful `Background location — Not requested`, and sign out.
+- Recent is a polished truthful empty state because no existing user-scoped history source was proven; no audit/event backend or fabricated activity was added.
+- Login now uses visible labels, accessible controls, keyboard-safe scrolling, generic safe errors and the existing secure session/auth flow.
+- No permission success, background location, Recent history, or unsupported session detail is implied.
