@@ -2,6 +2,8 @@
 
 _Last reviewed: 2026-08-18_
 
+Plan 033 remediation closeout is complete on `plan/033-native-ui-ux-reference-reconciliation`: stale evidence claims were corrected in source/docs, focused deterministic coverage was added, and all available validation gates passed. Plan 034 remains unstarted and all physical/cross-client acceptance remains explicitly UNPASSED; the branch awaits the user-gated PR/review/integration step.
+
 ## Native roadmap — Plans 033–034 remaining
 
 Plan 030 was reviewed and integrated into `main` via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`; its supported-device Map/positioning/blue-dot/floor/POI/navigation E2E remains explicitly **unpassed** because the required physical-device/runtime path was unavailable.
@@ -16,7 +18,7 @@ Plan 033 — Native UI/UX Reference Reconciliation — is therefore the next imp
 
 Plan 034 — Full E2E Acceptance & Roadmap Closeout — remains the terminal non-deferrable gate. It inherits every unpassed physical-device item from Plans 030–031, the real web-to-native/deep-link/install/auth/session/workspace E2E introduced by Plan 032, and real-device confirmation of the reconciled Plan 033 UI under actual permission/location/navigation/Realtime states. If the required supported Android device, reachable backend, owner-authorized Positioning credential or calibrated building/profile is unavailable, Plan 034 remains blocked and the roadmap remains incomplete; those checks may not be deferred again.
 
-Current planning authority is `plans/028-034-native-mobile-roadmap.md`. Plan 033 has not started. Plan 034 must not start before Plan 033 is integrated unless the user explicitly authorizes stacking.
+Current planning authority is `plans/028-034-native-mobile-roadmap.md`. Plan 033 implementation is complete on `plan/033-native-ui-ux-reference-reconciliation` and awaits user-gated PR/review/integration. Plan 034 must not start before Plan 033 is integrated unless the user explicitly authorizes stacking.
 
 Locked product policy for this roadmap:
 

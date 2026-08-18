@@ -1,6 +1,6 @@
 # Plan 033 — Native UI/UX reference evidence
 
-Status: initial planning/review evidence; implementation not started.
+Status: Plan 033 complete on `plan/033-native-ui-ux-reference-reconciliation`; PR/merge intentionally not started.
 
 Canonical visual authority:
 
@@ -137,3 +137,85 @@ This UI review does not prove or reclassify:
 - real-device visual interaction under the final reconciled Plan 033 UI.
 
 All of those remain Plan 034 acceptance items.
+
+## Phase 0 execution evidence — 2026-08-18
+
+- Integrated `roadmap/033-034-native-ui-reconciliation` into `main` and created the dedicated Plan 033 branch.
+- Rechecked the native baseline in `mobile/App.tsx`, `mobile/src/map/NativeMapScreen.tsx`, and `mobile/src/realtime/RealtimeScreen.tsx`.
+- Confirmed the reference/capability matrix above remains authoritative: real cartography and positioning may drive presentation; Realtime remains factual server-mediated device-position list/detail; Recent has no proven history source; remote Realtime map markers, presence, fabricated freshness classes, route metrics and background location remain absent.
+- Exact installed `@situm/react-native` version remains 3.19.2. No optional remote-marker or camera-follow helper is being assumed without installed-package proof.
+- Baseline visual gaps frozen for implementation: single shared layout mode, phone scroll ownership, removal of the global workspace card, adaptive Map/Realtime compositions, truthful final Recent/Settings surfaces, and auth accessibility labels.
+
+## Phase 1 execution evidence — 2026-08-18
+
+- Added `mobile/src/ui/theme.ts` semantic light/cool-neutral tokens and `mobile/src/ui/layout.ts` deterministic phone/tablet/wide/very-wide contract.
+- Reconciled `mobile/App.tsx` with the reference shell: floating phone bottom navigation with bottom inset, 72 dp tablet rail, expanded 208/228 dp wide rail, no duplicated rail brand in the topbar, truthful workspace-ready state, and authenticated account footer.
+- Removed the always-on workspace picker from destination content; workspace switching now lives in Settings while the selected workspace remains topbar context.
+- Added destination scroll owners and keyboard-safe login behavior, visible auth field labels, selected navigation semantics, and large-font-friendly controls.
+- No backend, session, Situm credential, positioning, Realtime, or lifecycle ownership changed.
+
+## Phase 2 execution evidence — 2026-08-18
+
+- Explore now follows the reference welcome/search hierarchy with `Where do you want to go?`, real cartography-backed place search, real quick-place chips, compact real building context, and explicit no-match/empty behavior.
+- Map composition is 555 dp on phone and 650 dp on tablet/wide, with a responsive Map/detail split at tablet and above.
+- Floor controls use real floor IDs and expose selected state from the installed MapView callback; selected-place details use real POI/building/category context.
+- Location copy is intent-led (`Your location is off`, `Find my location`) while Situm User Helper, current-fix freshness, navigation guards, cancellation, deep-link building ownership and listener cleanup remain unchanged.
+- Deliberate deviations: no fabricated distance, route metrics, instructions, camera-follow behavior, permission success, or sample POIs.
+
+## Phase 3 execution evidence — 2026-08-18
+
+- Realtime now matches the reference operations hierarchy with factual intro notice, explicit real-building filters, in-memory device/position/floor search, Refresh, and responsive list/detail layout.
+- Phone uses a scroll-owned stacked list/detail surface; tablet/POS/wide uses a flexible two-column composition with a bounded list pane.
+- Rows and details expose only device/position identity, building/floor, accuracy, coordinates and source time. Selection is neutral/accent-soft and does not imply presence or freshness.
+- The reference's remote-marker map remains a truthful list/detail fallback because installed `@situm/react-native` 3.19.2 evidence does not prove generic remote marker/focus support.
+- Abortable foreground polling, workspace authorization, malformed-payload rejection and lifecycle cleanup are unchanged.
+
+## Phase 4 execution evidence — 2026-08-18
+
+- Settings is now a final reference-shaped destination with real workspace switching, authenticated account email, knowable location-access guidance, truthful `Background location — Not requested`, and sign out.
+- Recent is a polished truthful empty state because no existing user-scoped history source was proven; no audit/event backend or fabricated activity was added.
+- Login now uses visible labels, accessible controls, keyboard-safe scrolling, generic safe errors and the existing secure session/auth flow.
+- No permission success, background location, Recent history, or unsupported session detail is implied.
+
+## Phase 5 execution evidence — 2026-08-18
+
+- Added deterministic breakpoint coverage in `test/native-plan-033.test.ts`.
+- Root test suite passes: 32/32 tests. Mobile lint and typecheck pass.
+- Root lint passes with generated `.nuxt`/`.output` and clean-prebuild native directories excluded from the direct ESLint traversal; these are generated artifacts, not source inputs.
+- Root Nuxt typecheck and production build complete successfully; `.output/server/index.mjs` is present.
+- Expo config resolves `com.situm.explore` and `situm-explore-dev`.
+- Clean Expo prebuild completed. Android `assembleDebug` passes with `/home/farismnrr/Android/Sdk`; generated native directories remain ignored.
+- `expo-doctor` reports the frozen Expo patch versions (`57.0.13` / `57.0.11`) and the known untested New Architecture Situm package; no dependency changes were made because the roadmap explicitly freezes those versions.
+- No physical emulator/device visual capture was obtained in this environment; Plan 034 retains real-device visual and behavior acceptance.
+
+## Phase 6 execution evidence and handoff — 2026-08-18
+
+- Full branch diff reviewed against updated `origin/main`; `git diff --check origin/main...HEAD` passes.
+- Bounded source scan found no new credential-bearing UI/logging path, no fabricated Realtime presence/freshness classes, no fake POI/activity fixtures, no background-location request, and no route metric/instruction additions.
+- Deliberate reference deviations remain: Realtime remote markers become list/detail, Recent remains truthful empty, location permission/sensor recovery stays with Situm User Helper/OS, and camera follow is not claimed.
+- Plan 034 carry-over remains explicitly unpassed: supported-device Map/permission/blue-dot/floor/navigation E2E; supported-device Realtime lifecycle/own-device behavior; web-to-native open/install/deep-link/auth/workspace cross-client E2E; and real-device confirmation of the reconciled Plan 033 UI.
+
+## Post-validation remediation and adversarial closeout — 2026-08-18
+
+The preceding Phase 1–6 notes were stale where they implied the initial implementation was already fully closed. A fresh source review found and resolved these deterministic gaps:
+
+1. Rail/topbar brand ownership: `mobile/App.tsx` now renders the topbar brand only when `layout.isRail` is false; rail layouts retain the single rail-owned brand. `shouldRenderTopbarBrand` and a focused test protect this contract.
+2. Stop guidance: `mobile/src/map/NativeMapScreen.tsx` now renders `Stop guidance` only for `active`/`outside-route` owned navigation, calls the existing `cancelNavigation`, and leaves positioning running. The ownership helper and source contract are tested.
+3. Location vocabulary: all production-native `Start positioning` copy was replaced with `Find my location` intent language and factual recovery guidance. No internal freshness/stopped wording is used as primary copy.
+4. Accessibility: quick-place chips and the main POI list expose selected state for the selected POI; Realtime rows expose selected state; existing role/disabled semantics remain in place.
+5. Selected-place floor context: `resolveFloorDisplay` resolves the selected POI's real `floorId` within the active building, uses the real floor name or `Level <real level>`, and omits context when unresolved. Display text is never used as a MapView identifier.
+6. Regression coverage: `test/native-plan-033.test.ts` now covers POI filtering (scope/name/category/case/trim/no-match), Realtime filtering (building/device/position/building/floor/combinations), floor context, shell ownership, guidance ownership, approved destinations, and structural selected/accessibility/Recent-vocabulary contracts.
+
+### Final deterministic validation
+
+Final command results are recorded here after the remediation validation pass:
+
+- Root tests: PASS, 39/39 tests.
+- Root lint/typecheck/build: PASS.
+- Mobile lint/typecheck: PASS.
+- Expo config: PASS (`com.situm.explore`, `situm-explore-dev`, SDK 57, New Architecture enabled). Frozen-policy `expo-doctor`: 19/21 checks pass; the two known non-blocking findings are Expo `57.0.13` vs recommended `57.0.14`, `expo-build-properties` `57.0.11` vs recommended `57.0.12`, and the installed Situm package's New Architecture metadata status. Clean prebuild: PASS. Android `assembleDebug`: PASS in 1m33s with `/home/farismnrr/Android/Sdk`.
+- Production preview smoke: PASS on isolated port 3199; `/` returned 200, unauthenticated `/api/me` returned 401, and security headers were present. The temporary preview was stopped afterward.
+- Secret/truthfulness/source scans and updated `origin/main` full-diff review: PASS.
+- Emulator/runtime visual attempt: a bounded Pixel_10_Pro_XL software-rendered launch initialized with Lavapipe and was terminated after 20 seconds before app/UI capture; no emulator screenshots or visual acceptance are claimed. No physical device was used.
+
+Plan 034 remains explicitly UNPASSED for supported-device Map/permission/blue-dot/floor/navigation, supported-device Realtime lifecycle/own-device behavior, web/native open/install/deep-link/auth/workspace cross-client acceptance, and real-device confirmation of the reconciled Plan 033 UI. The attached physical `Pos_System` device was not modified. No PR was opened, no merge was performed, and Plan 034 was not started.

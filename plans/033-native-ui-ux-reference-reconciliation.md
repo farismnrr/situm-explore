@@ -3,7 +3,7 @@
 Branch: `plan/033-native-ui-ux-reference-reconciliation`
 Base: updated `origin/main` after Plan 032 is integrated
 Depends on: Plan 032 complete/integrated
-Status: planned
+Status: complete on `plan/033-native-ui-ux-reference-reconciliation`; PR/merge intentionally not started.
 
 ## Objective
 
@@ -14,6 +14,10 @@ This plan is an implementation/UI reconciliation plan, not a redesign and not a 
 The target is **as close to the canonical reference as the real backend and proven installed SDK allow**. When reference presentation conflicts with current capability/data/security truth, preserve the hierarchy and visual intent but use the truthful supported fallback. Never fake product data or SDK behavior merely to match the HTML.
 
 Plan 034 remains the terminal physical-device/full-cross-client E2E and roadmap-closeout gate.
+
+## Remediation closeout — 2026-08-18
+
+The post-validation remediation was completed on the existing Plan 033 branch. It corrected six deterministic acceptance gaps that the initial Phase 6 evidence had overstated: rail-owned brand rendering, explicit owned-navigation `Stop guidance`, SDK-centric location copy, selected POI/Realtime accessibility state, real selected-place floor context, and focused Plan 033 regression coverage. The final adversarial review found no additional deterministic Plan 033 defect requiring new authority. Physical/runtime and cross-client acceptance remain explicitly UNPASSED and belong to Plan 034.
 
 ## Why this plan exists
 
@@ -88,13 +92,13 @@ The exact React Native thresholds may reuse the reference values when they remai
 
 ## Phase checklist
 
-- [ ] Phase 0 — Freeze reference-to-capability matrix and current UI baseline.
-- [ ] Phase 1 — Shared native visual tokens, responsive shell, scroll/safe-area and accessibility foundation.
-- [ ] Phase 2 — Explore/Map reference reconciliation with real cartography, positioning and navigation state.
-- [ ] Phase 3 — Realtime reference reconciliation with truthful list/detail fallback.
-- [ ] Phase 4 — Settings, Recent and authentication final-product surfaces.
-- [ ] Phase 5 — Responsive/accessibility/interaction regression and emulator visual acceptance.
-- [ ] Phase 6 — Final validation, documentation reconciliation and Plan 034 handoff.
+- [x] Phase 0 — Freeze reference-to-capability matrix and current UI baseline.
+- [x] Phase 1 — Shared native visual tokens, responsive shell, scroll/safe-area and accessibility foundation.
+- [x] Phase 2 — Explore/Map reference reconciliation with real cartography, positioning and navigation state.
+- [x] Phase 3 — Realtime reference reconciliation with truthful list/detail fallback.
+- [x] Phase 4 — Settings, Recent and authentication final-product surfaces.
+- [x] Phase 5 — Responsive/accessibility/interaction regression and emulator visual acceptance.
+- [x] Phase 6 — Final validation, documentation reconciliation and Plan 034 handoff.
 
 ## Phase 0 — Reference/capability matrix
 
