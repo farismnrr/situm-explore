@@ -153,3 +153,11 @@ All of those remain Plan 034 acceptance items.
 - Removed the always-on workspace picker from destination content; workspace switching now lives in Settings while the selected workspace remains topbar context.
 - Added destination scroll owners and keyboard-safe login behavior, visible auth field labels, selected navigation semantics, and large-font-friendly controls.
 - No backend, session, Situm credential, positioning, Realtime, or lifecycle ownership changed.
+
+## Phase 2 execution evidence — 2026-08-18
+
+- Explore now follows the reference welcome/search hierarchy with `Where do you want to go?`, real cartography-backed place search, real quick-place chips, compact real building context, and explicit no-match/empty behavior.
+- Map composition is 555 dp on phone and 650 dp on tablet/wide, with a responsive Map/detail split at tablet and above.
+- Floor controls use real floor IDs and expose selected state from the installed MapView callback; selected-place details use real POI/building/category context.
+- Location copy is intent-led (`Your location is off`, `Find my location`) while Situm User Helper, current-fix freshness, navigation guards, cancellation, deep-link building ownership and listener cleanup remain unchanged.
+- Deliberate deviations: no fabricated distance, route metrics, instructions, camera-follow behavior, permission success, or sample POIs.
