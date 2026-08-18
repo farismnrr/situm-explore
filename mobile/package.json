@@ -8,9 +8,16 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "prebuild": "expo prebuild",
+    "postinstall": "patch-package",
+    "security:test": "node scripts/security/mobile-dependency-regression.cjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "build:android": "cd android && ./gradlew assembleDebug"
+  },
+  "overrides": {
+    "xcode": {
+      "uuid": "11.1.1"
+    }
   },
   "dependencies": {
     "@situm/react-native": "3.19.2",
@@ -27,6 +34,7 @@
   "devDependencies": {
     "@types/react": "~19.2.2",
     "eslint": "^10.8.1",
+    "patch-package": "8.0.1",
     "typescript": "~6.0.3"
   }
 }

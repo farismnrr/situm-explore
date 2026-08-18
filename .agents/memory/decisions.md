@@ -293,3 +293,11 @@ Status: active Plan 031 execution baseline; Phase 0 may narrow or supersede only
 - Background positioning and own-device Realtime publishing are not required by the frozen v1 scope and remain outside Plan 031.
 
 Status: active Plan 031 implementation decision.
+
+## Security dependency remediation boundary (2026-08-18)
+
+- Preserve the frozen Expo 57 / React Native 0.86 / Situm 3.19.2 compatibility boundary during security maintenance.
+- Remediate `xcode`'s UUID path with the minimum compatible released `uuid@11.1.1` npm override; do not add a direct app dependency.
+- When an upstream advisory has no patched `image-size` release, a small maintainer-aligned parser patch may be carried with `patch-package` only when its exact behavior, clean-install reproducibility, and regression evidence are recorded. npm/GitHub scanner residuals must remain visible and must not be dismissed or hidden.
+
+Status: active security-maintenance decision; revisit when `image-size` publishes an advisory-patched release.
