@@ -3,14 +3,24 @@ import type { default as SitumPlugin, Error as SitumError, Location, LocationSta
 export type PositioningState = 'stopped' | 'starting' | 'active' | 'error'
 export type PositioningSnapshot = { state: PositioningState, location: Location | null, receivedAt: number | null, workspaceId: string | null, buildingId: number | null, message: string }
 type NativePositioning = Pick<typeof SitumPlugin, 'setApiKey' | 'requestLocationUpdates' | 'removeLocationUpdates' | 'positioningIsRunning' | 'onLocationUpdate' | 'onLocationStatus' | 'onLocationError' | 'onLocationStopped'>
+type PermissionGate = () => Promise<boolean>
 const stoppedSnapshot = (): PositioningSnapshot => ({ state: 'stopped', location: null, receivedAt: null, workspaceId: null, buildingId: null, message: 'Location is off.' })
 function defaultNative(): NativePositioning {
-  // Keep the native-only module out of deterministic Node tests; the app resolves it when constructing its default session.
+  // Keep native-only modules out of deterministic Node tests; the app resolves them at runtime.
   return require('@situm/react-native').default as NativePositioning
+}
+async function defaultPermissionGate(): Promise<boolean> {
+  const { PermissionsAndroid, Platform } = require('react-native') as typeof import('react-native')
+  if (Platform.OS !== 'android') return true
+  const required: import('react-native').Permission[] = [PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION, PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION]
+  if (Number(Platform.Version) >= 31) required.push(PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN, PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT)
+  const result = await PermissionsAndroid.requestMultiple(required)
+  return required.every(permission => result[permission] === PermissionsAndroid.RESULTS.GRANTED)
 }
 
 export class ForegroundPositioningSession {
   private readonly native: NativePositioning
+  private readonly requestPermissions: PermissionGate
   private snapshot: PositioningSnapshot = stoppedSnapshot()
   private workspaceId: string | null = null
   private lifecycle = 'active'
@@ -21,8 +31,9 @@ export class ForegroundPositioningSession {
   private readonly errorCallback = (error: SitumError) => this.onError(error)
   private readonly stoppedCallback = () => this.stopFromNative('Location is stopped.')
 
-  constructor(native: NativePositioning = defaultNative()) {
+  constructor(native: NativePositioning = defaultNative(), requestPermissions: PermissionGate = defaultPermissionGate) {
     this.native = native
+    this.requestPermissions = requestPermissions
     this.installNativeListeners()
   }
 
@@ -42,6 +53,9 @@ export class ForegroundPositioningSession {
     const generation = ++this.generation
     this.update({ state: 'starting', location: null, receivedAt: null, workspaceId, buildingId, message: 'Requesting the permissions needed for indoor positioning…' })
     try {
+      const permissionsGranted = await this.requestPermissions()
+      if (generation !== this.generation || this.lifecycle !== 'active' || this.workspaceId !== workspaceId) return
+      if (!permissionsGranted) { this.update({ state: 'error', location: null, receivedAt: null, workspaceId, buildingId, message: 'Location and nearby-device permissions are required for indoor positioning.' }); return }
       const credential = await getCredential()
       if (generation !== this.generation || this.lifecycle !== 'active' || this.workspaceId !== workspaceId) return
       this.installNativeListeners()

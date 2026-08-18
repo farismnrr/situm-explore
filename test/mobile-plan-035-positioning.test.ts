@@ -17,14 +17,37 @@ function fakeNative() {
   }
 }
 
+const permittedSession = (native: ReturnType<typeof fakeNative>) => new ForegroundPositioningSession(native, async () => true)
+
 test('Plan 035 does not start positioning without explicit user action', () => {
-  const native = fakeNative(); const session = new ForegroundPositioningSession(native)
+  const native = fakeNative(); const session = permittedSession(native)
   session.setWorkspace('workspace-a')
   assert.equal(native.startCount, 0); assert.equal(session.getSnapshot().state, 'stopped')
 })
 
+
+test('Plan 035 requests runtime permissions before starting native positioning', async () => {
+  const native = fakeNative(); let permissionRequests = 0; const session = new ForegroundPositioningSession(native, async () => { permissionRequests++; return true })
+  await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' }))
+  assert.equal(permissionRequests, 1); assert.equal(native.startCount, 1)
+})
+
+test('Plan 035 requests permission before fetching the positioning credential', async () => {
+  const native = fakeNative(); const order: string[] = []
+  const session = new ForegroundPositioningSession(native, async () => { order.push('permission'); return true })
+  await session.start('workspace-a', 10, async () => { order.push('credential'); return { apiKey: 'positioning-only-test-fixture' } })
+  assert.deepEqual(order, ['permission', 'credential']); assert.equal(native.startCount, 1)
+})
+
+test('Plan 035 fails closed when runtime positioning permissions are denied', async () => {
+  const native = fakeNative(); const session = new ForegroundPositioningSession(native, async () => false)
+  await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' }))
+  assert.equal(native.startCount, 0); assert.equal(native.running, false); assert.equal(session.getSnapshot().state, 'error')
+  assert.match(session.getSnapshot().message, /permissions are required/i)
+})
+
 test('Plan 035 keeps one active session across tab consumers and repeated starts', async () => {
-  const native = fakeNative(); const session = new ForegroundPositioningSession(native)
+  const native = fakeNative(); const session = permittedSession(native)
   await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' }))
   await session.start('workspace-a', 10, async () => ({ apiKey: 'unused' }))
   assert.equal(native.startCount, 1); assert.equal(native.stopCount, 0)
@@ -32,40 +55,40 @@ test('Plan 035 keeps one active session across tab consumers and repeated starts
 })
 
 test('Plan 035 explicit stop is idempotent and clears protected location state', async () => {
-  const native = fakeNative(); const session = new ForegroundPositioningSession(native)
+  const native = fakeNative(); const session = permittedSession(native)
   await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' }))
   native.emitLocation({ position: { buildingIdentifier: '10' } }); session.stop('explicit'); session.stop('explicit')
   assert.equal(native.stopCount, 1); assert.equal(session.getSnapshot().state, 'stopped'); assert.equal(session.getSnapshot().location, null)
 })
 
 test('Plan 035 logout stops the shared session before auth teardown', async () => {
-  const native = fakeNative(); const session = new ForegroundPositioningSession(native)
+  const native = fakeNative(); const session = permittedSession(native)
   await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' })); session.stop('logout')
   assert.equal(native.stopCount, 1); assert.equal(session.getSnapshot().location, null); assert.equal(session.getSnapshot().state, 'stopped')
 })
 
 test('Plan 035 workspace switch invalidates the old session and stale callbacks', async () => {
-  const native = fakeNative(); const session = new ForegroundPositioningSession(native)
+  const native = fakeNative(); const session = permittedSession(native)
   await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' })); session.setWorkspace('workspace-b')
   native.emitLocation({ position: { buildingIdentifier: '10' } })
   assert.equal(native.stopCount, 1); assert.equal(session.getSnapshot().workspaceId, 'workspace-b'); assert.equal(session.getSnapshot().location, null)
 })
 
 test('Plan 035 background stops foreground-only positioning without auto-restart', async () => {
-  const native = fakeNative(); const session = new ForegroundPositioningSession(native)
+  const native = fakeNative(); const session = permittedSession(native)
   await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' })); session.setLifecycle('background'); session.setLifecycle('active')
   assert.equal(native.stopCount, 1); assert.equal(native.startCount, 1); assert.equal(session.getSnapshot().state, 'stopped')
 })
 
 test('Plan 035 native stopped and fatal callbacks fail closed and stop the native producer', async () => {
-  const native = fakeNative(); const session = new ForegroundPositioningSession(native)
+  const native = fakeNative(); const session = permittedSession(native)
   await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' })); native.emitError({ code: '8002' })
   assert.equal(native.stopCount, 1); assert.equal(native.running, false); assert.equal(session.getSnapshot().state, 'error'); assert.equal(session.getSnapshot().location, null)
   native.emitStopped(); assert.equal(native.stopCount, 1); assert.equal(session.getSnapshot().state, 'stopped'); assert.equal(session.getSnapshot().location, null)
 })
 
 test('Plan 035 USER_NOT_IN_BUILDING is fatal and stops the native producer', async () => {
-  const native = fakeNative(); const session = new ForegroundPositioningSession(native)
+  const native = fakeNative(); const session = permittedSession(native)
   await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' })); native.emitStatus({ statusName: 'USER_NOT_IN_BUILDING' })
   assert.equal(native.stopCount, 1); assert.equal(native.running, false); assert.equal(session.getSnapshot().state, 'error'); assert.equal(session.getSnapshot().location, null)
 })

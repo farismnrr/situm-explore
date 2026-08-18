@@ -81,3 +81,14 @@ No secrets, raw credentials, fabricated positions, invented freshness/presence, 
 - Focused Plan 035 tests: 9/9 PASS.
 - Full root suite: 56/56 PASS; root/mobile lint and typecheck plus `git diff --check` PASS.
 - Physical POS rerun: authenticated Explore and Realtime navigation PASS; no crash/redbox. Location/Bluetooth/network provider are now enabled, but the device still has no last location and Situm immediately transitions `CALCULATING → STOPPED`, so own-device Realtime publishing remains honestly BLOCKED.
+
+## Runtime permission remediation — 2026-08-18
+
+A follow-up source audit found that the app declared Android location/Bluetooth permissions through the merged Situm manifest but did not explicitly request Android runtime permissions before `requestLocationUpdates()`. The installed `@situm/react-native@3.19.2` wrapper delegates directly to `SitumSdk.locationManager().requestLocationUpdates(...)` and does not perform a React Native runtime permission request on this path.
+
+`ForegroundPositioningSession` now runs an explicit permission gate before fetching the dedicated POSITIONING credential or starting native positioning. On Android it requests coarse + fine location, and on API 31+ also Bluetooth scan/connect. Permission denial fails closed and never starts the native producer. Deterministic tests cover granted, denied, and permission-before-credential ordering.
+
+Physical POS verification on Android 11/API 30 used package-level permission revocation followed by the app permission path. Android PermissionController logs recorded a real LOCATION permission grant for `com.situm.explore`, and `dumpsys package` confirmed fine/coarse became granted. Expo's debug warning overlay overlaps the Locate-me hit area, so automated visual-dialog capture was unreliable and no fabricated visual-dialog PASS is claimed.
+
+Validation after the remediation: focused Plan 035 tests 12/12 PASS; full root tests 59/59 PASS; root lint/typecheck PASS; mobile lint/typecheck PASS; `git diff --check` PASS.
+
