@@ -2,6 +2,8 @@
 
 _Last reviewed: 2026-08-18_
 
+Security dependency remediation is in progress on `chore/security-dependency-remediation` from `origin/main`. UUID is remediated through the compatible `xcode -> uuid@11.1.1` override. The two `image-size` advisories remain present in npm/GitHub published-version scanning with no upstream patched release; a narrowly scoped, reproducible `patch-package` ICNS loop fix is committed for validation, and evidence truthfully records the scanner residual. Plan 034 remains unstarted.
+
 Plan 033 remediation closeout is complete on `plan/033-native-ui-ux-reference-reconciliation`: stale evidence claims were corrected in source/docs, focused deterministic coverage was added, and all available validation gates passed. Plan 034 remains unstarted and all physical/cross-client acceptance remains explicitly UNPASSED; the branch awaits the user-gated PR/review/integration step.
 
 ## Native roadmap — Plans 033–034 remaining
