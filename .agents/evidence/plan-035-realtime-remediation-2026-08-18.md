@@ -124,3 +124,15 @@ Validation for this remediation: root tests 61/61 PASS; root lint/typecheck PASS
 | Landscape control containment | PASS for observed location/guidance ownership | app control moved left; duplicate large guidance HUD removed |
 
 The earlier sections documenting LOCATION 8002/provider/no-fix behavior are retained as historical diagnostic evidence, but they are no longer the final acceptance state after the runtime permission remediation and successful physical rerun.
+## Standalone Android distribution + UI polish — 2026-08-18
+
+- Settings navigation icon replaced with an explicit gear glyph and Settings sign-out action restyled as a danger control.
+- Added 1024×1024 launcher/adaptive icon assets and a 512×512 splash asset, wired through Expo config.
+- Added the staging runtime download URL `https://minio.farismunir.my.id/situm-explore/android/latest.apk`; no APK is bundled into the Nuxt/Docker image.
+- Generated Android native project from Expo config and built `assembleRelease` with `reactNativeArchitectures=arm64-v8a`, `EXPO_PUBLIC_ENVIRONMENT=staging`, and `EXPO_PUBLIC_API_BASE_URL=https://situm.farismunir.my.id`. Build PASS.
+- Release artifact size is approximately 36 MB. SHA256: `3dad7c4d41c42c9a5820567ba50fa97f452a05c5d412f3a38dd9d776fda776e7`.
+- APK inspection confirmed only `arm64-v8a`, an embedded `assets/index.android.bundle`, the public Situm API hostname, and no `127.0.0.1:3000` marker.
+- Installed release APK on physical POS `100.113.52.76:35911`; launch PASS with `com.situm.explore/.MainActivity` focused and no fatal/Metro/RNCSafeAreaProvider errors. Existing authenticated session loaded Explore. UI hierarchy confirmed the gear-backed Settings destination, Settings screen, Sign out control, and Realtime screen.
+- Full validation after distribution polish: root tests 61/61 PASS; root lint PASS; root typecheck PASS; mobile lint PASS; mobile typecheck PASS; release Android build PASS; `git diff --check` PASS.
+- MinIO upload and staging container recreate are intentionally not claimed here until authenticated MinIO write access is explicitly approved and the public object download is verified.
+
