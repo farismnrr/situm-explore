@@ -92,3 +92,35 @@ Physical POS verification on Android 11/API 30 used package-level permission rev
 
 Validation after the remediation: focused Plan 035 tests 12/12 PASS; full root tests 59/59 PASS; root lint/typecheck PASS; mobile lint/typecheck PASS; `git diff --check` PASS.
 
+
+## Full physical Realtime remediation — 2026-08-18
+
+After the runtime-permission remediation, the physical POS produced real indoor Situm locations. Logcat recorded `SITUM_PROVIDER` updates for building `19866`, floor `69905`, around `-6.150659, 106.896613`, with HIGH quality and approximately 1.3 m accuracy. This supersedes the earlier physical BLOCKED classification; no synthetic position was injected.
+
+The first successful published position exposed a server mapping defect that could not occur while `features` was empty: the workspace Realtime route assumed `feature.properties.time` was a JavaScript `Date` and called `.toISOString()`. The actual SDK/runtime value was transport-shaped, producing `TypeError: feature.properties.time.toISOString is not a function` and the physical `Realtime unavailable` screen. A shared server normalizer now accepts valid Date/string/number timestamps, validates the minimal coordinate payload, keeps `features` as the sole position source, and drops malformed upstream features instead of throwing an unhandled 500. Regression fixtures cover the actual string timestamp shape plus Date/malformed inputs.
+
+Physical E2E on `100.113.52.76:35911` after rebuilding the local amd64 staging image and force-recreating only the staging container:
+
+- Realtime loaded without the previous 500 and initially showed `Live location is off` plus `Enable live location`.
+- Starting live location directly from Realtime entered Situm STARTING/PREPARING/WIFI_SCAN_THROTTLED/STARTING_POSITIONING/CALCULATING and then emitted repeated real location updates.
+- The own-device card changed to `Live location active`.
+- After the server poll cycle, Realtime rendered `1 position`, Building `19866`, Floor `69905`, and approximately `1.3 m` reported accuracy.
+- Switching Realtime → Explore preserved the active positioning producer and continued receiving HIGH-quality `onLocationChanged` callbacks.
+- Explore's app-owned location control is now in the lower-left control zone (observed bounds `[234,659][332,698]` on the 1366×720 POS) rather than competing with Situm's right-side controls. The large custom guidance HUD was removed so Situm's built-in navigation UI owns guidance presentation; the app retains only a compact owned `Stop guidance` affordance.
+- Explicit Stop location returned the Explore control to `Locate me` and native positioning reached STOPPED.
+
+Validation for this remediation: root tests 61/61 PASS; root lint/typecheck PASS; mobile lint/typecheck PASS; `git diff --check` PASS. The local staging image was rebuilt as linux/amd64 and used only to recreate `deploy-situm-explore-1`; no registry push or production change was performed.
+
+### Updated physical acceptance
+
+| Item | Result | Evidence |
+|---|---|---|
+| Android runtime permission gate | PASS | PermissionController/package grant evidence + deterministic tests |
+| Sensor-backed Situm positioning | PASS | repeated real `SITUM_PROVIDER` location callbacks, HIGH quality |
+| Own-device start from Realtime | PASS | `Enable live location` → active shared session |
+| Situm Cloud/server-mediated Realtime path | PASS | backend poll returned and UI rendered one real reported position |
+| Realtime timestamp normalization | PASS | physical 500 reproduced, defensive normalizer + regression tests, physical rerun |
+| Explore ↔ Realtime positioning continuity | PASS | location callbacks continued after tab transition |
+| Landscape control containment | PASS for observed location/guidance ownership | app control moved left; duplicate large guidance HUD removed |
+
+The earlier sections documenting LOCATION 8002/provider/no-fix behavior are retained as historical diagnostic evidence, but they are no longer the final acceptance state after the runtime permission remediation and successful physical rerun.

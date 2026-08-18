@@ -99,6 +99,6 @@ test('Plan 035 screen ownership does not stop positioning on Explore unmount and
   const route = readFileSync(new URL('../server/api/workspaces/[workspaceId]/situm/realtime.get.ts', import.meta.url), 'utf8')
   assert.match(map, /positioning\.start\(workspaceId, buildingId/); assert.match(map, /positioning\.stop\('explicit'\)/)
   assert.doesNotMatch(map, /positioningIsRunning\(\)\) SitumPlugin\.removeLocationUpdates\(\)/)
-  assert.doesNotMatch(realtime, /getPositioningCredential|mobile-positioning|SitumPlugin/)
-  assert.match(route, /result\.features\.map/); assert.doesNotMatch(route, /devicesInfo/)
+  assert.doesNotMatch(realtime, /mobile-positioning|SitumPlugin/); assert.match(realtime, /positioning\.start/)
+  assert.match(route, /normalizeSitumRealtimeFeatures\(result\.features\)/); assert.doesNotMatch(route, /devicesInfo/)
 })
