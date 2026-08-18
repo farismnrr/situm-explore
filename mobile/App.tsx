@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ElementRef } from 'react'
-import { ActivityIndicator, AppState, Dimensions, Keyboard, KeyboardAvoidingView, Linking, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import { ActivityIndicator, AppState, Dimensions, Keyboard, KeyboardAvoidingView, Linking, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { Circle, Path, Svg } from 'react-native-svg'
 import { ApiError } from './src/api/errors'
 import { AuthSession } from './src/auth/session'
@@ -16,6 +17,10 @@ import { ForegroundPositioningSession } from './src/positioning/session'
 type Tab = 'explore' | 'realtime' | 'recent' | 'settings'
 
 export default function App() {
+  return <SafeAreaProvider><AppContent /></SafeAreaProvider>
+}
+
+function AppContent() {
   const auth = useMemo(() => new AuthSession(), [])
   const workspaces = useMemo(() => new WorkspaceContext(auth), [auth])
   const [ready, setReady] = useState(false); const [authenticated, setAuthenticated] = useState(false)
