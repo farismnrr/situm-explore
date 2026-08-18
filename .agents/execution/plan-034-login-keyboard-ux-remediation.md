@@ -1,5 +1,8 @@
 # Plan 034 Remediation — Native Login Keyboard & Small-Viewport UX
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 Branch: `plan/034-full-e2e-acceptance`
 Parent authority: `plans/034-full-e2e-acceptance.md`
 Discovered by: Plan 034 physical Android acceptance

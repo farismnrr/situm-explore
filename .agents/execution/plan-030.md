@@ -1,5 +1,8 @@
 # Plan 030 Execution Brief
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 Repository: `/home/farismnrr/Projects/situm-explore`
 Branch: `plan/030-native-map-positioning-navigation`
 Plan: `/home/farismnrr/Projects/situm-explore/plans/030-native-map-positioning-navigation.md`

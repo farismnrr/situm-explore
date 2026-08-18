@@ -1,9 +1,12 @@
 # Plan 028 — Native Capability, Auth & Distribution Spike
 
+> **Historical document.** Retained for implementation/evidence history. It is not current execution authority.
+
+
 Branch: `plan/028-native-capability-auth-spike`
 Base: updated `origin/main` after the native roadmap planning branch is integrated
 Depends on: `plans/028-034-native-mobile-roadmap.md`
-Status: complete — Phases 0–6 passed; Plan 029 ready with recorded gates
+Status: **complete/integrated via PR #23 at merge commit `e5e15ee`; Plan 029 readiness wording below is historical.**
 
 ## Objective
 

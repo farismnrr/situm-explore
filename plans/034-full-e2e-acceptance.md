@@ -1,5 +1,8 @@
 # Plan 034 — Full E2E Acceptance & Roadmap Closeout
 
+> **Historical closed plan.** Closed by explicit user decision on 2026-08-18 with truthful limitations. Plan 035 later verified the specific physical positioning/own-device Realtime path, but unrelated unexercised criteria below remain historical limitations rather than retroactive PASS.
+
+
 Branch: `plan/034-full-e2e-acceptance`
 Base: updated `origin/main` after Plan 033 is integrated
 Depends on: Plan 033 complete/integrated
@@ -16,7 +19,7 @@ Closure means:
 - Situm `LOCATION 8002` / vendor `network provider enabled=false` remains a documented physical blocker, not a PASS;
 - staging deep-link native-shell mismatch and any other unexercised physical/cross-client paths remain unpassed unless later evidence proves them;
 - the newly observed Realtime issue is intentionally out of Plan 034 and moves to Plan 035;
-- no PR, merge, or production change is implied by closing this execution plan.
+- at the time of closure, no PR/merge was implied by the administrative decision; subsequent authorized work proceeded through Plan 035 and PR #32.
 
 Evidence remains authoritative in `.agents/evidence/plan-034-*.md`.
 
@@ -24,7 +27,7 @@ Evidence remains authoritative in `.agents/evidence/plan-034-*.md`.
 
 Run the complete cross-client and supported-Android physical-device acceptance for the native companion roadmap, including every E2E item previously deferred from Plans 030–031 because no supported physical device/runtime path was available, the web/native handoff and distribution flows implemented in Plan 032, and real-device confirmation of the final native presentation/interaction behavior reconciled in Plan 033.
 
-This is the terminal roadmap gate. No E2E item may be deferred again.
+Historical rule: this was originally defined as the terminal roadmap gate. The explicit 2026-08-18 closure decision above superseded that rule for roadmap administration; the checklist below remains historical acceptance evidence.
 
 Plan 032's inherited unpassed inventory is recorded at `.agents/evidence/plan-032.md`; those items remain unpassed until the corresponding Plan 034 phases produce real evidence.
 
@@ -37,7 +40,7 @@ Plan 034 is acceptance-first, not a new feature plan.
 - Do not weaken acceptance criteria to make tests pass.
 - Do not fabricate physical-device, sensor, positioning, store/install or deep-link evidence.
 - Emulator evidence is supplemental only where physical semantics matter.
-- No PR/merge without explicit user authorization, and do not merge Plan 034 while any mandatory Android physical-E2E gate remains incomplete.
+- Historical execution rule: PR/merge required explicit user authorization. Plan 034 was closed administratively with truthful limitations instead of being merged as a fabricated full-E2E PASS.
 
 ## Required environment
 

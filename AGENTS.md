@@ -8,7 +8,7 @@ Keep this file short. Current authority lives in `.agents/state.md`.
 
 1. `.agents/identity.md`
 2. `.agents/state.md`
-3. the active plan execution brief under `.agents/execution/` when present
+3. the active plan execution brief under `.agents/execution/` when a new plan is explicitly active
 4. `.agents/protocols/chat-lifecycle.md`
 5. `.agents/protocols/git-workflow.md`
 6. `.agents/memory/decisions.md`
@@ -20,7 +20,7 @@ Keep this file short. Current authority lives in `.agents/state.md`.
 12. the relevant plan
 13. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes
 
-Historical plans/sessions/branches are evidence only and do not override current state, durable decisions, architecture, or the active plan.
+Historical plans/sessions/branches are evidence only and do not override current state, durable decisions, architecture, or a future explicitly activated plan.
 
 ## Current roadmap
 
@@ -36,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–032 are complete/integrated via PRs #20–#28. Plan 033 — Native UI/UX Reference Reconciliation — is the next implementation plan on `plan/033-native-ui-ux-reference-reconciliation`; it must reconcile the React Native shell, Explore/Map, Realtime, Recent, Settings and authentication with `design/reference/situm-explore-native-responsive-prototype.html` as closely as real backend/SDK authority allows across phone, tablet/POS and wide layouts. Plan 034 remains the terminal full E2E acceptance/roadmap-closeout gate carrying every still-unpassed physical-device item from Plans 030–031, Plan 032 cross-client acceptance, and real-device confirmation of the reconciled Plan 033 UI. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–035 are closed/integrated. Plans 028–034 delivered and closed the native companion roadmap, with Plan 034 retaining truthful documented limitations rather than fabricating full-E2E PASS. Plan 035 then remediated the Realtime/foreground-positioning lifecycle and was integrated with the Android release/distribution polish through PR #32 at merge commit `840c0f9`; the former Plan 035 branch was deleted. There is currently **no active implementation plan**. New product work must start from updated `main` on a new dedicated plan branch. Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 
@@ -57,7 +57,7 @@ For Situm behavior: **no evidence, no implementation**. Verify current official 
 - avoid destructive history rewriting;
 - PR creation and merge are user-gated;
 - dependent plans normally start after the preceding plan is integrated into updated `main`;
-- implementation/fixes for active plan phases go to the configured `worker` subagent;
+- implementation/fixes for an explicitly active plan go to the configured `worker` subagent;
 - parent owns orchestration, review, state/plan persistence, commits, pushes, and transitions.
 
 ## Mandatory closeout

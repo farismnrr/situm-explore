@@ -1,5 +1,8 @@
 # Execution Prompt — Plan 034 Explore Map-First & Guidance Major Refactor
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 Work inside exactly:
 
 `/home/farismnrr/Projects/situm-explore`

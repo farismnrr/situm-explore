@@ -22,7 +22,7 @@ Use the shared reference for:
 - shared tenant brand/tokens;
 - web interaction presentation.
 
-Use the native reference for Plans 029–033 when implementing native-facing UI/UX, with Plan 033 as the final reference-reconciliation pass before full E2E:
+Use the native reference for native-facing UI/UX. Plans 029–033 established and reconciled this visual contract; future native changes should preserve it unless the user explicitly supersedes it:
 
 - mobile-first information hierarchy and end-user wording;
 - Map and Realtime screen composition;
@@ -33,7 +33,7 @@ Use the native reference for Plans 029–033 when implementing native-facing UI/
 
 The native app is still the same Situm Explore tenant/product. Do not invent a parallel native design system, unrelated color palette, typography, spacing scale, icon family, or product vocabulary merely because the runtime is React Native.
 
-The native reference is visual/interaction authority, **not capability or data-contract evidence**. If a reference interaction cannot be supported truthfully by the installed Situm SDK/current backend contract, keep the visual intent where possible but implement only the evidenced capability and record the deviation in the active plan. Never fake SDK behavior, identity, online/offline state, position freshness, route data or permissions to match the prototype.
+The native reference is visual/interaction authority, **not capability or data-contract evidence**. If a reference interaction cannot be supported truthfully by the installed Situm SDK/current backend contract, keep the visual intent where possible but implement only the evidenced capability and record the deviation in the current work/plan when one exists. Never fake SDK behavior, identity, online/offline state, position freshness, route data or permissions to match the prototype.
 
 Do not copy either reference HTML/CSS/JS wholesale into production.
 
@@ -43,7 +43,7 @@ Do not copy either reference HTML/CSS/JS wholesale into production.
 
 1. user's latest explicit visual direction;
 2. applicable canonical HTML reference (shared web/product, then native for native-facing UI);
-3. active plan;
+3. current explicit work/plan, when one exists;
 4. `design/IMPLEMENTATION.md`;
 5. agent judgment only for uncovered gaps.
 
@@ -51,7 +51,7 @@ Do not copy either reference HTML/CSS/JS wholesale into production.
 
 1. user's latest explicit product direction;
 2. `.agents/state.md` + active durable decisions;
-3. active roadmap/plan;
+3. current explicit roadmap/plan, when one exists;
 4. `ARCHITECTURE.md`;
 5. `design/data-source-matrix.md`;
 6. verified official Situm contract + installed SDK behavior;
@@ -191,4 +191,4 @@ Translation order:
 
 Do not build a parallel design system or broad generic component factory.
 
-Read `design/IMPLEMENTATION.md`, `design/data-source-matrix.md`, and the active plan before UI changes.
+Read `design/IMPLEMENTATION.md`, `design/data-source-matrix.md`, and any explicitly active plan before UI changes.

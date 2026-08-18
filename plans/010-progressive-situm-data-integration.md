@@ -1,6 +1,9 @@
 # Plan 010 — Web Capability Pruning & Situm Integration Contract
 
-Status: **planned-ready**
+> **Historical document.** Retained for execution/evidence history. It is not current plan authority; consult `.agents/state.md` and `plans/README.md`.
+
+
+Status: **historical/superseded** — later Situm integration plans and the integrated workspace/native architecture replaced this planned execution authority.
 Branch: `plan/010-progressive-situm-data-integration`
 Depends on: accepted cumulative UI integrated into `main`
 

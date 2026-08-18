@@ -1,5 +1,8 @@
 # Plan 034 Remediation — Explore Map-First & Guidance UX Major Refactor
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 Repo: `/home/farismnrr/Projects/situm-explore`
 Branch: `plan/034-full-e2e-acceptance`
 Parent authority: `/home/farismnrr/Projects/situm-explore/plans/034-full-e2e-acceptance.md`

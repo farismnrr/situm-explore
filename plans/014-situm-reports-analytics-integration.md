@@ -1,6 +1,9 @@
 # Plan 014 — Situm Reports & Analytics Integration
 
-Status: **skipped-unresolved**
+> **Historical document.** Retained for execution/evidence history. It is not current plan authority; consult `.agents/state.md` and `plans/README.md`.
+
+
+Status: **historical/skipped-unresolved** — retained as evidence only; later analytics work is governed by the integrated Plans 017/027 architecture.
 Branch: `plan/014-situm-reports-analytics-integration`
 Base: Plan 013 final HEAD `3c3c0af` (explicit stacked execution; not integrated into `main`)
 Depends on: Plan 013 complete and available as the stacked parent branch

@@ -19,7 +19,7 @@ A little explicit duplication is better than speculative infrastructure.
 
 ## Runtime model
 
-The integrated web/backend runtime remains one full-stack Nuxt 4 application. Plans 028–034 add a React Native companion client while keeping Nitro as the single application backend.
+The integrated web/backend runtime remains one full-stack Nuxt 4 application. Plans 028–035 added, reconciled, accepted, and remediated a React Native companion client while keeping Nitro as the single application backend. The native roadmap is now closed; future changes must preserve this boundary unless explicitly re-planned.
 
 ```text
 browser / Vue / Nuxt UI
@@ -268,7 +268,7 @@ Current web runtime may retain verified:
 - browser-safe Viewer settings/actions;
 - workspace-scoped realtime backend reads where needed by server/client contracts.
 
-Plans 028–034 add a **separate native companion client** while keeping Nitro as the single application backend. They do not turn the Nuxt runtime into a native wrapper or introduce a second backend.
+Plans 028–035 established a **separate native companion client** while keeping Nitro as the single application backend. They did not turn the Nuxt runtime into a native wrapper or introduce a second backend.
 
 Plan 031 implements native Realtime as a foreground-only, server-mediated list/detail read from the owner-scoped workspace route. The mobile client receives only sanitized position/device fields and never receives Situm credentials for remote monitoring. The installed SDK's generic realtime and Share Live Location surfaces remain capability evidence only; no remote MapView markers, focus behavior, or background positioning is claimed.
 
@@ -282,7 +282,7 @@ Approved target ownership:
 
 The workspace Read & Write Situm credential remains server-only. Plan 028 froze a dedicated least-privilege workspace Positioning credential for native issuance after owner authorization; the browser Viewer credential is not reused, and Realtime remains server-mediated.
 
-Plan 029 now provides the standalone `mobile/` Expo foundation, the same PostgreSQL identity through a sealed h3 session over `x-nuxt-session`, seven-day expiry plus server-side session-version revocation, SecureStore-only native session persistence, owner-scoped workspace context, and encrypted dedicated Positioning-key issuance. Native Map, positioning, navigation, Realtime UI, and Share Live Location remain deferred to Plans 030–031.
+Plan 029 established the standalone `mobile/` Expo foundation, the same PostgreSQL identity through a sealed h3 session over `x-nuxt-session`, seven-day expiry plus server-side session-version revocation, SecureStore-only native session persistence, owner-scoped workspace context, and encrypted dedicated Positioning-key issuance. Plans 030–035 subsequently implemented and reconciled native Map/positioning/navigation, server-mediated Realtime, handoff/distribution, UI/UX, acceptance, and the final foreground-positioning/Realtime remediation. Share Live Location remains unused for the product Realtime contract.
 
 ## Data fetching / validation
 
@@ -308,9 +308,9 @@ Do not add without a concrete requirement:
 - workspace invite/member hierarchy;
 - password reset/email verification flows.
 
-Native positioning/navigation is no longer deferred generically; it is owned explicitly by Plans 028–034 and must stay within those plan boundaries/evidence gates.
+Native positioning/navigation is implemented under the closed Plans 028–035 evidence. Future changes remain subject to the same capability/security evidence gates and require new explicit scope.
 
-## Active roadmap execution order
+## Native roadmap status
 
 Completed/integrated baseline:
 
@@ -319,19 +319,22 @@ Plan 021 -> 022 -> 023 -> 024 -> 025
 Plan 026 -> 027
 ```
 
-Plans 028–032 are complete and integrated. The React Native foundation, native spatial runtime, server-mediated native Realtime, and web/native handoff now exist under the current single-backend architecture. Plan 033 owns final native UI/UX reference reconciliation; Plan 034 owns terminal full-E2E acceptance. The still-unpassed supported-device checks from Plans 030–031 and cross-client checks from Plan 032 remain carried to Plan 034, not treated as accepted:
+The native companion roadmap is closed. Plans 028–035 established the React Native foundation, native spatial runtime, server-mediated native Realtime, web/native handoff, final UI/UX reconciliation, acceptance disposition, foreground-positioning lifecycle remediation, and Android release/distribution flow. PR #32 integrated the final Plan 035 work at merge commit `840c0f9`.
 
 ```text
 Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
 -> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
--> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 034]
--> Plan 031 — Native Realtime Operations [complete/integrated; physical E2E carried to Plan 034]
+-> Plan 030 — Native Map, Positioning & Navigation [complete/integrated]
+-> Plan 031 — Native Realtime Operations [complete/integrated]
 -> Plan 032 — Web/Native Handoff & Distribution [complete/integrated]
--> Plan 033 — Native UI/UX Reference Reconciliation
--> Plan 034 — Full E2E Acceptance & Roadmap Closeout [terminal hard gate]
+-> Plan 033 — Native UI/UX Reference Reconciliation [complete/integrated]
+-> Plan 034 — Full E2E Acceptance & Roadmap Closeout [closed with documented limitations]
+-> Plan 035 — Realtime Remediation [complete/integrated via PR #32]
 ```
 
-Plan 033 must preserve the existing auth/workspace/credential/Map/positioning/navigation/Realtime/deep-link ownership contracts while translating the final presentation to `design/reference/situm-explore-native-responsive-prototype.html` across phone, tablet/POS and wide layouts. Unsupported reference interactions remain truthful fallbacks. Plan 034 starts only after Plan 033 integration unless the user explicitly authorizes stacking.
+Plan 034 historical evidence intentionally retains acceptance criteria that were not all exercised before administrative closure. Plan 035 later proved real sensor-backed positioning and own-device server-mediated Realtime on the physical POS for its bounded scope. Do not retroactively mark unrelated Plan 034 criteria as PASS, and do not treat them as active work unless a future plan explicitly reopens them.
+
+There is currently no active implementation plan.
 
 ## Review checklist
 

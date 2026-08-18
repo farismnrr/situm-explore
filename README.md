@@ -4,21 +4,22 @@ Situm Explore is a full-stack Nuxt 4 web operations/exploration application usin
 
 ## Current status
 
-Plans 017–027 are complete and integrated into `main`, with Plan 027 integrated via PR #21.
+Plans 017–035 are closed/integrated into `main`. The native companion closeout, Realtime lifecycle remediation, Android release/distribution polish, public MinIO download, and release-artifact standardization were integrated through PR #32 at merge commit `840c0f9`. There is currently **no active implementation plan**.
 
-The Plans 028–034 native companion roadmap is active. Plans 028–032 are complete and integrated. Plan 033 is the final native UI/UX reference-reconciliation implementation pass across shell, Explore/Map, Realtime, Recent, Settings and authentication; Plan 034 is the terminal full-E2E acceptance/roadmap-closeout gate carrying all still-unpassed physical-device, cross-client and real-device presentation checks. The architecture remains the current Nuxt/Nitro web/backend runtime plus the React Native second client under `mobile/`; there is no second backend.
+The shipped architecture remains one Nuxt/Nitro web/backend runtime plus the React Native companion under `mobile/`; there is no second backend. The native roadmap history is retained in `plans/028-034-native-mobile-roadmap.md`, Plan 035 records the final bounded Realtime remediation, and unresolved items from earlier acceptance plans remain historical limitations unless a future plan explicitly reopens them.
 
 ```text
-Plan 028 — Native Capability, Auth & Distribution Spike
--> Plan 029 — Native App Foundation & Workspace Session
--> Plan 030 — Native Map, Positioning & Navigation
--> Plan 031 — Native Realtime Operations
--> Plan 032 — Web/Native Handoff & Distribution
--> Plan 033 — Native UI/UX Reference Reconciliation
--> Plan 034 — Full E2E Acceptance & Roadmap Closeout
+Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
+-> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
+-> Plan 030 — Native Map, Positioning & Navigation [complete/integrated]
+-> Plan 031 — Native Realtime Operations [complete/integrated]
+-> Plan 032 — Web/Native Handoff & Distribution [complete/integrated]
+-> Plan 033 — Native UI/UX Reference Reconciliation [complete/integrated]
+-> Plan 034 — Full E2E Acceptance & Roadmap Closeout [closed with documented limitations]
+-> Plan 035 — Realtime Remediation [complete/integrated via PR #32]
 ```
 
-Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, and `plans/028-034-native-mobile-roadmap.md` before executing current plan work. The Plans 021–027 roadmap and prerequisites are historical context.
+Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, and `plans/README.md` before starting new work. Historical roadmap/prerequisite files are evidence and context, not active execution authority.
 
 ## Production container workflow
 
@@ -54,7 +55,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Current runtime configuration is documented in `.env.example`. New roadmap prerequisites are introduced by their owning plan and summarized in `plans/021-025-prerequisites.md`.
+Current runtime configuration is documented in `.env.example`. `plans/021-025-prerequisites.md` is historical support material; future work must revalidate prerequisites in its own scope.
 
 Never commit local environment files, credentials, session material, encryption material, or credential-bearing output.
 

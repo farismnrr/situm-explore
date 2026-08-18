@@ -1,9 +1,12 @@
 # Plan 033 — Native UI/UX Reference Reconciliation
 
+> **Historical plan.** Complete/integrated. Later Plans 034–035 superseded its sequencing/handoff instructions; its detailed checklist remains design and implementation evidence.
+
+
 Branch: `plan/033-native-ui-ux-reference-reconciliation`
 Base: updated `origin/main` after Plan 032 is integrated
 Depends on: Plan 032 complete/integrated
-Status: complete on `plan/033-native-ui-ux-reference-reconciliation`; PR/merge intentionally not started.
+Status: **complete/integrated.** This branch/PR sequencing text is historical; the native roadmap later proceeded through Plans 034–035 and PR #32.
 
 ## Objective
 
@@ -13,7 +16,7 @@ This plan is an implementation/UI reconciliation plan, not a redesign and not a 
 
 The target is **as close to the canonical reference as the real backend and proven installed SDK allow**. When reference presentation conflicts with current capability/data/security truth, preserve the hierarchy and visual intent but use the truthful supported fallback. Never fake product data or SDK behavior merely to match the HTML.
 
-Plan 034 remains the terminal physical-device/full-cross-client E2E and roadmap-closeout gate.
+Historical handoff: Plan 034 became the acceptance/roadmap-closeout work package and was later closed by explicit user decision with documented limitations.
 
 ## Remediation closeout — 2026-08-18
 

@@ -1,9 +1,12 @@
 # Plan 029 — Native App Foundation & Workspace Session
 
+> **Historical document.** Retained for execution/evidence history. It is not current plan authority; consult `.agents/state.md` and `plans/README.md`.
+
+
 Branch: `plan/029-native-app-foundation`
 Base: updated `origin/main` after Plan 028 is integrated
 Depends on: Plan 028 complete/integrated
-Status: complete; PR-ready pending user authorization
+Status: **complete/integrated via PR #24 at merge commit `b81970e`; this plan is historical evidence.**
 
 ## Objective
 
@@ -165,4 +168,4 @@ Update the plan, `.agents/state.md`, durable decisions/knowledge when warranted,
 - Android `assembleDebug` passes with the known SDK at `/home/farismnrr/Android/Sdk` using `ANDROID_HOME=/home/farismnrr/Android/Sdk ANDROID_SDK_ROOT=/home/farismnrr/Android/Sdk ./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a --max-workers=2 --console=plain`. The debug APK is `mobile/android/app/build/outputs/apk/debug/app-debug.apk`. iOS compile/device acceptance remains macOS/Xcode/device-gated.
 - Tracked-source and generated-output inspection found no production secrets. Runtime login/logout, restart, workspace isolation, Positioning issuance, and backend-unavailability checks remain external database/credential/device acceptance gates; the server-side contracts and safe fallbacks are implemented.
 - Reviewer remediation is complete: the named `nuxt-session` bucket is sealed and exercised through `x-nuxt-session`; session versions fail closed; workspace selection is reactive and ID-only persisted; the shell follows the phone/tablet/wide responsive reference with SVG brand/icons and truthful lifecycle labels.
-- Plan 029 is complete and remediation-verified on this branch, PR-ready pending user authorization. No PR, merge, branch deletion, or Plan 030 work was performed.
+- Historical closeout at the time: Plan 029 was complete and remediation-verified before PR authorization. It was subsequently integrated via PR #24 at merge commit `b81970e`; later Plans 030–035 are also closed.

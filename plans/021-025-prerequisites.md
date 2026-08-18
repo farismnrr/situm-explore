@@ -1,6 +1,9 @@
 # Plans 021–025 — Prerequisites & Blocker Matrix
 
-Status: active roadmap support document.
+> **Historical document.** Retained for execution/evidence history. It is not current plan authority; consult `.agents/state.md` and `plans/README.md`.
+
+
+Status: historical roadmap support document; Plans 021–025 are complete/integrated. Revalidate any prerequisite before future reuse.
 
 Never persist real secret values here.
 

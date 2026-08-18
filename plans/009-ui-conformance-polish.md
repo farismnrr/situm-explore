@@ -1,6 +1,9 @@
 # Plan 009 — UI Conformance, Responsive & Polish
 
-Status: planned
+> **Historical document.** Retained for execution/evidence history. It is not current plan authority; consult `.agents/state.md` and `plans/README.md`.
+
+
+Status: historical/superseded — later Plans 009A/009B and subsequent roadmaps replaced this execution plan; do not execute it.
 Branch: `plan/009-ui-conformance-polish`
 Depends on: Plan 008 complete, reviewed, and integrated into `main` (therefore Plans 004–007 are already integrated too)
 

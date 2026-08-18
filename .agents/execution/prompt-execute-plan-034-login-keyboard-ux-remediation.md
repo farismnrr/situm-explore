@@ -1,5 +1,8 @@
 # Execution Prompt — Plan 034 Login Keyboard UX Remediation
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 You are executing a bounded remediation inside the existing Situm Explore repository.
 
 ## Workspace and branch

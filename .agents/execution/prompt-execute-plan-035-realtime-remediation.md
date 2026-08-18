@@ -1,5 +1,8 @@
 # Execute Plan 035 — Realtime Remediation
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 Repository root:
 `/home/farismnrr/Projects/situm-explore`
 

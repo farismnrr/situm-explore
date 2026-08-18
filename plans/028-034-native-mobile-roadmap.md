@@ -4,7 +4,7 @@ Status: **closed by user decision on 2026-08-18; Plan 034 retains documented unp
 
 Original planning branch: `roadmap/028-032-native-mobile`
 Acceptance split branch: `roadmap/032-033-e2e-split`
-Current UI/E2E reconciliation branch: `roadmap/033-034-native-ui-reconciliation`
+Historical UI/E2E reconciliation branch: `roadmap/033-034-native-ui-reconciliation`
 
 ## Product decision
 
@@ -37,11 +37,12 @@ Plan 028 — Native Capability, Auth & Distribution Spike [integrated]
 -> Plan 030 — Native Map, Positioning & Navigation [integrated; physical E2E unpassed]
 -> Plan 031 — Native Realtime Operations [integrated; physical E2E unpassed]
 -> Plan 032 — Web/Native Handoff & Distribution [integrated]
--> Plan 033 — Native UI/UX Reference Reconciliation
--> Plan 034 — Full E2E Acceptance & Roadmap Closeout
+-> Plan 033 — Native UI/UX Reference Reconciliation [complete/integrated]
+-> Plan 034 — Full E2E Acceptance & Roadmap Closeout [closed by user decision; limitations retained]
+-> Plan 035 — Realtime Remediation [complete/integrated via PR #32]
 ```
 
-Each dependent plan starts from updated `origin/main` only after its predecessor is integrated, unless the user explicitly authorizes stacked execution.
+Historical sequencing rule: each dependent plan started from updated `origin/main` after its predecessor unless the user explicitly authorized stacking. The roadmap is now closed.
 
 ## Consolidated E2E policy
 
@@ -59,7 +60,7 @@ Plan 034 was originally defined as the terminal, non-deferrable full E2E gate. O
 - real-device presentation/interaction confirmation for the reconciled Plan 033 native UI;
 - final security/secret/logging and lifecycle regression across the completed native roadmap.
 
-Emulator evidence may supplement Plan 034 but cannot satisfy real indoor-positioning, BLE/Wi-Fi/sensor, blue-dot/floor-transition, or equivalent physical-device claims. If the required supported physical Android device/runtime environment is unavailable, Plan 034 remains blocked and the roadmap remains incomplete. There is no further deferral after Plan 034.
+Historical acceptance rule: emulator evidence could not satisfy physical sensor/device claims. Plan 034 was later closed administratively with those limitations preserved. Plan 035 subsequently verified real POS sensor-backed positioning plus server-mediated own-device Realtime for its narrower remediation scope; that does not retroactively convert every unexercised Plan 034 item to PASS.
 
 ## Cross-plan architecture rules
 
@@ -93,7 +94,7 @@ Target Android and iOS from one React Native codebase. Supported Android physica
 
 ## Roadmap completion condition
 
-The roadmap is complete only when Plan 034 has discharged every accumulated E2E carry-over and:
+Original completion criteria were defined as follows. The later explicit closure override remains authoritative and preserves any unmet item as historical limitation rather than silently converting it to PASS:
 
 - native login/session and workspace selection use the existing application identity model;
 - mobile Situm authentication is least-privilege and evidence-backed;
@@ -110,4 +111,4 @@ The roadmap is complete only when Plan 034 has discharged every accumulated E2E 
 
 ## 2026-08-18 closure override
 
-By explicit user decision, this roadmap is administratively closed without converting unresolved physical acceptance to PASS. The vendor POS positioning blocker (`LOCATION 8002`, `network provider enabled=false`) and other unexercised physical/cross-client gates remain truthful limitations in Plan 034 evidence. A newly observed Realtime issue is separated into Plan 035 rather than reopening or indefinitely expanding Plan 034.
+By explicit user decision, this roadmap was administratively closed without converting unresolved physical acceptance to PASS. The then-observed vendor POS positioning blocker (`LOCATION 8002`, `network provider enabled=false`) and other unexercised physical/cross-client gates remain truthful historical limitations in Plan 034 evidence. Plan 035 was then executed as a separate bounded remediation, physically verified real Situm indoor fixes and own-device server-mediated Realtime, and was integrated through PR #32 at merge commit `840c0f9`. No active native-roadmap plan remains.

@@ -1,9 +1,12 @@
 # Plan 030 — Native Map, Positioning & Navigation
 
+> **Historical plan.** Integrated via PR #25. Later Plan 035 evidence physically verified the positioning/Realtime path on the POS; this file preserves the acceptance state as it existed when Plan 030 closed.
+
+
 Branch: `plan/030-native-map-positioning-navigation`
 Base: updated `origin/main` after Plan 029 is integrated
 Depends on: Plan 029 complete/integrated
-Status: complete/integrated via PR #25; physical-device E2E remains explicitly unpassed and carried to Plan 033
+Status: complete/integrated via PR #25 at merge commit `2a75121`; Plan 030-era physical E2E carry-over is historical evidence, with the later Plan 035 bounded positioning/Realtime path physically verified.
 
 ## Objective
 
