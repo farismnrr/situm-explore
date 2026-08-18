@@ -194,3 +194,28 @@ All of those remain Plan 034 acceptance items.
 - Bounded source scan found no new credential-bearing UI/logging path, no fabricated Realtime presence/freshness classes, no fake POI/activity fixtures, no background-location request, and no route metric/instruction additions.
 - Deliberate reference deviations remain: Realtime remote markers become list/detail, Recent remains truthful empty, location permission/sensor recovery stays with Situm User Helper/OS, and camera follow is not claimed.
 - Plan 034 carry-over remains explicitly unpassed: supported-device Map/permission/blue-dot/floor/navigation E2E; supported-device Realtime lifecycle/own-device behavior; web-to-native open/install/deep-link/auth/workspace cross-client E2E; and real-device confirmation of the reconciled Plan 033 UI.
+
+## Post-validation remediation and adversarial closeout — 2026-08-18
+
+The preceding Phase 1–6 notes were stale where they implied the initial implementation was already fully closed. A fresh source review found and resolved these deterministic gaps:
+
+1. Rail/topbar brand ownership: `mobile/App.tsx` now renders the topbar brand only when `layout.isRail` is false; rail layouts retain the single rail-owned brand. `shouldRenderTopbarBrand` and a focused test protect this contract.
+2. Stop guidance: `mobile/src/map/NativeMapScreen.tsx` now renders `Stop guidance` only for `active`/`outside-route` owned navigation, calls the existing `cancelNavigation`, and leaves positioning running. The ownership helper and source contract are tested.
+3. Location vocabulary: all production-native `Start positioning` copy was replaced with `Find my location` intent language and factual recovery guidance. No internal freshness/stopped wording is used as primary copy.
+4. Accessibility: quick-place chips and the main POI list expose selected state for the selected POI; Realtime rows expose selected state; existing role/disabled semantics remain in place.
+5. Selected-place floor context: `resolveFloorDisplay` resolves the selected POI's real `floorId` within the active building, uses the real floor name or `Level <real level>`, and omits context when unresolved. Display text is never used as a MapView identifier.
+6. Regression coverage: `test/native-plan-033.test.ts` now covers POI filtering (scope/name/category/case/trim/no-match), Realtime filtering (building/device/position/building/floor/combinations), floor context, shell ownership, guidance ownership, approved destinations, and structural selected/accessibility/Recent-vocabulary contracts.
+
+### Final deterministic validation
+
+Final command results are recorded here after the remediation validation pass:
+
+- Root tests: PASS, 39/39 tests.
+- Root lint/typecheck/build: PASS.
+- Mobile lint/typecheck: PASS.
+- Expo config: PASS (`com.situm.explore`, `situm-explore-dev`, SDK 57, New Architecture enabled). Frozen-policy `expo-doctor`: 19/21 checks pass; the two known non-blocking findings are Expo `57.0.13` vs recommended `57.0.14`, `expo-build-properties` `57.0.11` vs recommended `57.0.12`, and the installed Situm package's New Architecture metadata status. Clean prebuild: PASS. Android `assembleDebug`: PASS in 1m33s with `/home/farismnrr/Android/Sdk`.
+- Production preview smoke: PASS on isolated port 3199; `/` returned 200, unauthenticated `/api/me` returned 401, and security headers were present. The temporary preview was stopped afterward.
+- Secret/truthfulness/source scans and updated `origin/main` full-diff review: PASS.
+- Emulator/runtime visual attempt: a bounded Pixel_10_Pro_XL software-rendered launch initialized with Lavapipe and was terminated after 20 seconds before app/UI capture; no emulator screenshots or visual acceptance are claimed. No physical device was used.
+
+Plan 034 remains explicitly UNPASSED for supported-device Map/permission/blue-dot/floor/navigation, supported-device Realtime lifecycle/own-device behavior, web/native open/install/deep-link/auth/workspace cross-client acceptance, and real-device confirmation of the reconciled Plan 033 UI. The attached physical `Pos_System` device was not modified. No PR was opened, no merge was performed, and Plan 034 was not started.

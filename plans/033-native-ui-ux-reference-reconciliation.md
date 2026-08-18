@@ -15,6 +15,10 @@ The target is **as close to the canonical reference as the real backend and prov
 
 Plan 034 remains the terminal physical-device/full-cross-client E2E and roadmap-closeout gate.
 
+## Remediation closeout — 2026-08-18
+
+The post-validation remediation was completed on the existing Plan 033 branch. It corrected six deterministic acceptance gaps that the initial Phase 6 evidence had overstated: rail-owned brand rendering, explicit owned-navigation `Stop guidance`, SDK-centric location copy, selected POI/Realtime accessibility state, real selected-place floor context, and focused Plan 033 regression coverage. The final adversarial review found no additional deterministic Plan 033 defect requiring new authority. Physical/runtime and cross-client acceptance remain explicitly UNPASSED and belong to Plan 034.
+
 ## Why this plan exists
 
 A post-Plan-032 deep review found that the current native implementation matches the reference's broad visual family and shell vocabulary, but still diverges materially in end-user hierarchy and responsive composition:

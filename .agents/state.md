@@ -2,6 +2,8 @@
 
 _Last reviewed: 2026-08-18_
 
+Plan 033 remediation closeout is complete on `plan/033-native-ui-ux-reference-reconciliation`: stale evidence claims were corrected in source/docs, focused deterministic coverage was added, and all available validation gates passed. Plan 034 remains unstarted and all physical/cross-client acceptance remains explicitly UNPASSED; the branch awaits the user-gated PR/review/integration step.
+
 ## Native roadmap — Plans 033–034 remaining
 
 Plan 030 was reviewed and integrated into `main` via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`; its supported-device Map/positioning/blue-dot/floor/POI/navigation E2E remains explicitly **unpassed** because the required physical-device/runtime path was unavailable.

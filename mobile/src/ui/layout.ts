@@ -1,5 +1,11 @@
 export type LayoutMode = 'phone' | 'tablet' | 'wide' | 'veryWide'
 
+export const navigationDestinations = ['Explore', 'Realtime', 'Recent', 'Settings'] as const
+
+export function shouldRenderTopbarBrand(isRail: boolean): boolean {
+  return !isRail
+}
+
 export function layoutModeForWidth(width: number): LayoutMode {
   if (width >= 1800) return 'veryWide'
   if (width >= 1050) return 'wide'

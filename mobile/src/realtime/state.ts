@@ -3,6 +3,7 @@ import type { SitumRealtimePosition, SitumRealtimeResponse } from '../../../shar
 export const realtimePollIntervalMs = 10_000
 
 export type RealtimeLoadState = 'idle' | 'loading' | 'ready' | 'empty' | 'error'
+export type RealtimeFilterablePosition = { id: string, deviceId?: string, buildingId: number, floorId: number }
 
 export class RealtimePayloadError extends Error {
   constructor() {
@@ -22,6 +23,11 @@ export function normalizeRealtimeResponse(value: unknown): SitumRealtimePosition
   const positions = (value as SitumRealtimeResponse).positions
   if (!positions.every(isRealtimePosition)) throw new RealtimePayloadError()
   return positions
+}
+
+export function filterRealtimePositions<T extends RealtimeFilterablePosition>(positions: T[], buildingId: number | null, query: string): T[] {
+  const normalized = query.trim().toLowerCase()
+  return positions.filter(position => (buildingId === null || position.buildingId === buildingId) && (!normalized || `${position.deviceId || ''} ${position.id} ${position.buildingId} ${position.floorId}`.toLowerCase().includes(normalized)))
 }
 
 export function formatSourceTime(time: string, locale = 'en-US') {

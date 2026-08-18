@@ -3,7 +3,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOp
 import { ApiError } from '../api/errors'
 import type { SitumRealtimePosition } from '../../../shared/situm-realtime'
 import type { WorkspaceContext } from '../workspaces/context'
-import { formatSourceTime, normalizeRealtimeResponse, realtimePollIntervalMs, type RealtimeLoadState } from './state'
+import { filterRealtimePositions, formatSourceTime, normalizeRealtimeResponse, realtimePollIntervalMs, type RealtimeLoadState } from './state'
 import { colors, radii } from '../ui/theme'
 import type { LayoutMode } from '../ui/layout'
 
@@ -16,7 +16,7 @@ export function RealtimeScreen({ workspaces, lifecycle, layout = 'phone' }: { wo
   const [refreshNonce, setRefreshNonce] = useState(0)
   const [search, setSearch] = useState(''); const [buildingFilter, setBuildingFilter] = useState<number | null>(null)
   const buildings = useMemo(() => [...new Set(positions.map(position => position.buildingId))], [positions])
-  const filteredPositions = useMemo(() => positions.filter(position => (buildingFilter === null || position.buildingId === buildingFilter) && `${position.deviceId || position.id} ${position.buildingId} ${position.floorId}`.toLowerCase().includes(search.trim().toLowerCase())), [positions, buildingFilter, search])
+  const filteredPositions = useMemo(() => filterRealtimePositions(positions, buildingFilter, search), [positions, buildingFilter, search])
   const selected = useMemo(() => filteredPositions.find(position => position.id === selectedId) ?? filteredPositions[0] ?? null, [filteredPositions, selectedId])
 
   const load = useCallback(async (signal: AbortSignal) => {
@@ -59,7 +59,7 @@ export function RealtimeScreen({ workspaces, lifecycle, layout = 'phone' }: { wo
 }
 
 function PositionRow({ position, selected, onPress }: { position: SitumRealtimePosition, selected: boolean, onPress: () => void }) {
-  return <TouchableOpacity accessibilityRole="button" accessibilityLabel={`Position ${position.deviceId || position.id}`} onPress={onPress} style={[styles.row, selected && styles.rowSelected]}><View style={styles.rowBody}><Text style={styles.rowTitle}>{position.deviceId || `Position ${position.id}`}</Text><Text style={styles.rowMeta}>Building {position.buildingId} · Floor {position.floorId}</Text><Text style={styles.rowMeta}>Accuracy {position.accuracy.toFixed(1)} m · Source {formatSourceTime(position.time)}</Text></View></TouchableOpacity>
+  return <TouchableOpacity accessibilityRole="button" accessibilityLabel={`Position ${position.deviceId || position.id}`} accessibilityState={{ selected }} onPress={onPress} style={[styles.row, selected && styles.rowSelected]}><View style={styles.rowBody}><Text style={styles.rowTitle}>{position.deviceId || `Position ${position.id}`}</Text><Text style={styles.rowMeta}>Building {position.buildingId} · Floor {position.floorId}</Text><Text style={styles.rowMeta}>Accuracy {position.accuracy.toFixed(1)} m · Source {formatSourceTime(position.time)}</Text></View></TouchableOpacity>
 }
 
 function PositionDetail({ position }: { position: SitumRealtimePosition }) {
