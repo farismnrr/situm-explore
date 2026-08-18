@@ -1,8 +1,11 @@
 # Plan 026 — Production Containerization
 
+> **Historical document.** Retained for execution/evidence history. It is not current plan authority; consult `.agents/state.md` and `plans/README.md`.
+
+
 Branch: `plan/026-production-containerization`
 Base: `origin/main` at phase start
-Status: active
+Status: **complete/integrated via PR #20 at merge commit `f62831b`; this plan is historical evidence.**
 
 ## Objective
 

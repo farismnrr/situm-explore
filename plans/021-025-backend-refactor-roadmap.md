@@ -1,6 +1,9 @@
 # Backend Refactor Roadmap — Plans 021–025
 
-Status: **implementation complete through Plan 025, with explicit Viewer security blocker and separately deferred Google OAuth runtime acceptance**
+> **Historical roadmap.** Plans 021–025 are complete/integrated; this file is retained for architecture and sequencing history, not current execution.
+
+
+Status: **complete/integrated through Plan 025; the former Viewer security blocker was resolved in Plan 025. Google OAuth runtime acceptance remains separately deferred.**
 
 Planning branch: `roadmap/021-025-backend-refactor`
 
@@ -14,9 +17,9 @@ Plan 021 — Identity & Auth Foundation
 -> Plan 025 — Workspace UX & Full Regression
 ```
 
-The current integrated runtime is the migration baseline; the items above are approved future plan ownership, not claims that the refactor is already implemented.
+Historical note: this file originally described future ownership. Plans 021–025 are now complete/integrated; the sequence below is retained as roadmap history.
 
-Normal workflow requires this planning branch to be integrated into `main` before Plan 021 starts unless stacked execution is explicitly authorized.
+Historical sequencing rule: the planning branch was integrated before execution proceeded.
 
 Read these before execution:
 
@@ -25,7 +28,7 @@ Read these before execution:
 - `.agents/memory/roadmap-021-025.md`
 - `ARCHITECTURE.md`
 - `plans/021-025-prerequisites.md`
-- the active plan
+- the relevant historical plan
 
 Plans 021–025 retain the existing web/native and Situm evidence boundaries. New or changed Situm behavior still requires exact current evidence.
 

@@ -4,7 +4,7 @@ Plans are executable implementation checklists for Codex.
 
 ## Mandatory execution workflow
 
-Before executing current plans, read:
+Before executing a future active plan, read:
 
 1. `AGENTS.md`;
 2. `.agents/README.md`;
@@ -14,12 +14,12 @@ Before executing current plans, read:
 6. `.agents/protocols/git-workflow.md`;
 7. `ARCHITECTURE.md`;
 8. `plans/021-025-prerequisites.md` when historical prerequisite context matters;
-9. `plans/028-034-native-mobile-roadmap.md` when executing Plans 028–034;
+9. `plans/028-034-native-mobile-roadmap.md` when historical native-roadmap context matters;
 10. `design/data-source-matrix.md` when Situm/product scope matters;
-11. active plan;
+11. explicitly active plan, when one exists;
 12. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
 
-Historical plans/sessions/branches are evidence only. Current state, durable decisions, architecture, and the active plan are current authority.
+Historical plans/sessions/branches are evidence only. Current state, durable decisions, architecture, and any explicitly active future plan are current authority.
 
 ## Git workflow
 
@@ -53,31 +53,29 @@ Prerequisites/blockers: `plans/021-025-prerequisites.md`.
 - Plan 026 — Production Containerization: complete/integrated via PR #20.
 - Plan 027 — Analytics Correctness & Security Hardening: complete/integrated via PR #21.
 
-## Approved native companion roadmap
+## Completed native companion roadmap
 
-Plans 028–032 are integrated into `main`. Plan 033 completed the native UI/UX reconciliation. Plan 034 is closed by explicit user decision with truthful documented physical blockers rather than a fabricated full-E2E PASS. A newly observed Realtime issue is intentionally separated into Plan 035.
+Plans 028–035 are closed/integrated. Plan 034 was administratively closed by explicit user decision with truthful documented limitations rather than a fabricated full-E2E PASS. Plan 035 then remediated the Realtime/foreground-positioning lifecycle, physically verified own-device positioning plus server-mediated Realtime on the POS, and was integrated together with Android release/distribution polish through PR #32 at merge commit `840c0f9`.
 
 ```text
-roadmap/033-034-native-ui-reconciliation          [closed; Plan 034 accepted with documented blockers]
+roadmap/033-034-native-ui-reconciliation          [historical/closed]
 -> Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
 -> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
--> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 034]
--> Plan 031 — Native Realtime Operations [complete/integrated; physical E2E carried to Plan 034]
+-> Plan 030 — Native Map, Positioning & Navigation [complete/integrated]
+-> Plan 031 — Native Realtime Operations [complete/integrated]
 -> Plan 032 — Web/Native Handoff & Distribution [complete/integrated]
--> Plan 033 — Native UI/UX Reference Reconciliation [complete]
--> Plan 034 — Full E2E Acceptance & Roadmap Closeout [closed by user decision; documented blockers retained]
--> Plan 035 — Realtime Remediation [next; separate scope]
+-> Plan 033 — Native UI/UX Reference Reconciliation [complete/integrated]
+-> Plan 034 — Full E2E Acceptance & Roadmap Closeout [closed; documented limitations retained]
+-> Plan 035 — Realtime Remediation [complete/integrated via PR #32]
 ```
 
-Roadmap overview: `plans/028-034-native-mobile-roadmap.md`.
-
-Plan 034 is now closed. Plan 035 is the next bounded work item for the newly observed Realtime issue; normal git workflow still prefers starting it from the integrated Plan 034 result unless the user explicitly authorizes stacked execution.
+Roadmap history: `plans/028-034-native-mobile-roadmap.md`. There is currently **no active implementation plan**. A future feature/remediation must create a new plan from updated `main`; historical Plan 034 limitations remain evidence unless that future plan explicitly reopens them.
 
 ## Transition direction
 
 The historical pre-refactor baseline used env-defined app auth and process-global Situm account/Viewer/building context; it also produced analytics history before workspace ownership existed.
 
-Plans 021–025 replaced those incrementally. Plans 026–027 completed production containerization plus analytics/security hardening. Plans 028–034 add and fully accept a native companion client while preserving Nitro as the single application backend.
+Plans 021–025 replaced those incrementally. Plans 026–027 completed production containerization plus analytics/security hardening. Plans 028–035 established and closed the native companion work while preserving Nitro as the single application backend.
 
 Do not remove a working old path before its replacement is implemented and accepted.
 

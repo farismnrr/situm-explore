@@ -1,9 +1,12 @@
 # Plan 031 — Native Realtime Operations
 
+> **Historical plan.** Integrated via PR #26. Later Plan 035 physically verified own-device positioning plus server-mediated Realtime for its bounded remediation scope; this file preserves Plan 031-era carry-over wording as historical evidence.
+
+
 Branch: `plan/031-native-realtime-operations`
 Base: updated `origin/main` after Plan 030 is integrated
 Depends on: Plan 030 complete/integrated
-Status: complete/integrated via PR #26; physical-device E2E remains explicitly unpassed and carried to Plan 033
+Status: complete/integrated via PR #26 at merge commit `655fde0`; Plan 031-era physical E2E carry-over is historical evidence, with own-device positioning/server-mediated Realtime later physically verified in Plan 035.
 
 ## Objective
 

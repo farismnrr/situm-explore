@@ -1,9 +1,12 @@
 # Plan 032 — Web/Native Handoff & Distribution
 
+> **Historical plan.** Integrated via PR #28. Distribution was later extended with public MinIO APK delivery and standardized Android release naming in PR #32; Plan 034 carry-over wording below remains historical evidence.
+
+
 Branch: `plan/032-web-native-handoff-distribution`
 Base: updated `origin/main` after Plan 031 is integrated
 Depends on: Plan 031 complete/integrated
-Status: complete/integrated via PR #28 at merge commit `f4f729d8bbd10e0bd257423682489c928c74c95b`; cross-client/full-device E2E remains unpassed for Plan 034
+Status: complete/integrated via PR #28 at merge commit `f4f729d8bbd10e0bd257423682489c928c74c95b`; its Plan 034 carry-over wording is historical, and Android public APK distribution was later extended in PR #32.
 
 ## Objective
 

@@ -1,127 +1,137 @@
 # Situm Explore Implementation Contract
 
-This document defines current production implementation rules while Plans 021–025 execute. Historical UI plans are evidence only.
+This document defines the current production implementation boundaries for Situm Explore.
 
 ## Stack
 
-Production remains Nuxt 4, Vue, Nuxt UI, Nitro, `nuxt-auth-utils`, PostgreSQL/Drizzle, the existing ClickHouse analytics integration, `@situm/sdk-js` for verified browser Viewer behavior, and authenticated Nitro REST for verified server-side Situm capabilities.
+Web/backend:
 
-Do not add a second backend, parallel UI framework, duplicate observability stack, or speculative infrastructure.
+- Nuxt 4 + Vue + Nuxt UI;
+- Nitro server routes;
+- `nuxt-auth-utils` session infrastructure;
+- PostgreSQL + Drizzle for application relational state;
+- ClickHouse for workspace-isolated analytics;
+- `@situm/sdk-js` for verified browser Viewer behavior;
+- authenticated Nitro integrations for server-side Situm capabilities.
 
-## Roadmap sequence
+Native:
 
-```text
-Plan 021 — Identity & Auth Foundation
--> Plan 022 — Private Workspaces & Situm Configuration
--> Plan 023 — Observability, Correlation & Safe Error Boundary
--> Plan 024 — Workspace-scoped Situm Backend Migration
--> Plan 025 — Workspace UX & Full Regression
-```
+- React Native 0.86.2 + React 19.2.3;
+- Expo 57.0.13;
+- `@situm/react-native` 3.19.2;
+- `expo-secure-store` for bearer-equivalent mobile session material;
+- standalone package under `mobile/`.
 
-Dependent plans start after the preceding plan is integrated into updated `main` unless stacking is explicitly authorized.
+Nitro remains the single application backend. Do not add a second auth database/backend, parallel UI framework, duplicate observability stack, or speculative infrastructure.
 
-## Authentication
+## Authentication and sessions
 
-Plan 021 replaces env-defined owner login with DB-backed users.
+Application users are PostgreSQL-backed. Email/password registration, login, logout, session expiry, and protected-route enforcement are real product behavior.
 
-Required behavior: real registration, email/password login, logout/session clearing, safe `/api/me`, authenticated `/app/**`, and independent server-side API guards.
+Web uses the existing sealed session mechanism. Native uses the same application identity through the sealed session transported in `x-nuxt-session`; mobile persists session material only through SecureStore.
 
-Rules:
+Client-provided user/workspace identity is never authorization proof. Do not add dev-login or auth-bypass paths.
 
-- normalize/validate email identity;
-- store password material only as secure hashes;
-- session identity uses stable app user ID;
-- no dev-login/auth bypass or env fallback after DB auth is accepted;
-- Google OAuth plumbing is prepared, but real provider acceptance remains manual/user-owned;
-- provider tokens are not persisted without a concrete need;
-- account linking requires verified evidence, not guessed email equivalence.
+Google OAuth wiring exists, but runtime provider acceptance must be treated separately from the verified email/password path.
 
 ## Workspaces
 
-Plan 022 introduces private single-owner workspaces.
+- one user may own multiple private workspaces;
+- each workspace has one application owner in the current model;
+- every workspace API verifies ownership server-side;
+- workspace ID is context, not proof of authority;
+- no invite/member/team tenancy is implemented.
 
-- one user may own many workspaces;
-- every workspace request verifies ownership server-side;
-- no invite/member/team hierarchy;
-- different app users may independently reference the same external Situm account;
-- client-provided workspace ID is context, not authorization proof.
+## Workspace Situm credentials
 
-## Workspace Situm configuration
+Workspace Situm configuration is secret write input plus safe metadata/status output.
 
-Workspace Situm configuration is write-only secret input plus safe metadata/status output.
+- primary Read & Write credential: encrypted server-side, server-only;
+- Viewer Read-only credential: encrypted server-side and returned only through the authenticated owner-scoped Viewer-auth boundary after permission/org validation;
+- Positioning credential: encrypted server-side and returned only through the authenticated owner-scoped mobile positioning boundary;
+- account/organization ID: derived and stored as metadata.
 
-The stored long-lived credential is encrypted server-side using authenticated encryption, never returned after storage, never placed in public runtime config, and never logged/traced/rendered. Missing encryption configuration fails closed.
+Stored secret values are never returned by normal configuration reads and must not enter logs, traces, docs, public runtime config, or client errors.
 
-Workspace configuration requires a primary credential verified as Situm Read & Write and a separate Viewer credential verified as Situm Read-only. The account/organization ID is derived from the authenticated primary credential. Write capability is derived from verified primary permission metadata; upstream Situm permission remains authoritative. Do not run a write mutation merely to discover capability.
+## Browser Viewer
 
-## Viewer
+`app/components/situm/SitumViewer.vue` is the single browser Viewer lifecycle owner.
 
-`SitumViewer.vue` remains the single Viewer owner. Keep truthful initialization/readiness/failure/cleanup state and expose only small typed verified commands.
+The current flow uses the separate verified Read-only Viewer API key with Situm's direct API-key Viewer initialization. The primary Read & Write key must never be exposed to the browser.
 
-The historical public API-key setup is migration input only. Plan 022 must verify the installed SDK/current official auth contract before workspace-derived Viewer auth changes.
+Keep a small typed Viewer command surface. Do not expose raw Viewer access or a generic invoke escape hatch.
 
-Prefer a proven short-lived/least-privilege browser credential. If a write-capable workspace cannot produce a safely understood Viewer credential, stop that path and ask the user rather than exposing the stored long-lived workspace credential.
+## Native positioning and Map
+
+The native app receives only the dedicated Positioning credential after application-session and workspace-owner authorization.
+
+`ForegroundPositioningSession` owns the process-global Situm positioning callbacks/running state. Explore and Realtime consume that shared foreground session instead of independently starting/stopping global callbacks.
+
+Positioning starts only after explicit user action and runtime permission success. Stop/workspace switch/logout/background/native failure/teardown must clear protected location state according to the established lifecycle.
+
+Map/cartography/POI/floor/navigation UI must consume real Situm state. Do not invent route metrics or product data.
+
+## Native Realtime
+
+Remote Realtime remains server-mediated through the authenticated workspace route. The mobile Positioning credential is not widened for remote monitoring.
+
+The client model is intentionally minimal: device/position identity, source time, building/floor, accuracy, coordinates, and supported IDs. Do not add presence, unsupported freshness classification, or fabricated remote-map semantics.
 
 ## Workspace-scoped backend
 
-By Plan 024, protected Situm behavior resolves:
+Protected Situm behavior resolves:
 
 ```text
 session user -> owned workspace -> workspace configuration/capability -> Situm integration
 ```
 
-Do not keep a process-global Situm account/client/building as authority.
-
-Migrate existing verified capabilities rather than inventing new ones: cartography, geofences/paths, organization/users/groups/alarms reads, realtime, analytics sync/reports, and Viewer/static-directions supporting context.
-
-## Permission-aware actions
-
-For view-only workspaces, supported reads remain available; known mutations are guarded with clear product guidance; server enforcement remains authoritative; upstream forbidden results become safe product feedback.
-
-For write-capable workspaces, retain only mutations already proven by exact contract/runtime evidence.
+Do not use a process-global Situm account/client/building as authority.
 
 ## ClickHouse
 
-ClickHouse stays analytics-only and server-side. Analytics storage/query identity must become workspace-isolated before multi-workspace reads are accepted.
+ClickHouse is analytics-only and server-side. Reads/writes are workspace-isolated. Legacy pre-workspace rows remain unscoped historical data unless attribution is proven; never assign them arbitrarily.
 
-Legacy unscoped rows remain non-destructive historical data, are excluded from workspace-owned reads unless attribution is proven, and are never silently assigned to a workspace.
+Do not provision another ClickHouse server for this application.
 
-Do not provision another ClickHouse server.
+## Observability and safe errors
 
-## Observability / correlation
+Reuse the existing observability stack. Correlation/trace context may cross meaningful request boundaries, but credentials, cookies, passwords, tokens, sensitive bodies, and location streams must not be dumped into normal telemetry.
 
-Plan 023 starts with `docker ps` plus repository/runtime discovery and reuses the existing observability stack.
+Normalize validation, unauthenticated, forbidden, not-found, conflict, upstream, and internal failures into safe product responses. Detailed diagnostics remain server-side.
 
-Frontend requests carry standard correlation/trace context supported by that stack. Instrument meaningful Nitro/downstream boundaries only.
+## Web/native product boundary
 
-Never put secrets, cookies, passwords, credential input, tokens, or sensitive bodies into trace headers, baggage, logs, or spans.
+Web owns administration, analytics, capable-layout Viewer exploration, and static web operations. Native owns sensor-backed indoor positioning, native Map/navigation, and the native Realtime experience.
 
-## Safe errors
+Web Map on phone and web Realtime use the integrated native handoff policy. This is a product decision, not a claim that the web SDK is technically incapable of all related APIs.
 
-Normalize validation, unauthenticated, forbidden, not-found, conflict, upstream, and internal failures into safe product responses. A correlation/reference ID may be returned when useful.
+## Android release
 
-Do not expose stack traces, DB/crypto internals, raw Situm bodies, SDK internals, or critical diagnostics to the client. Detailed diagnostics remain server-side with redaction.
-
-## UI rules
-
-Use Nuxt UI primitives first, reuse semantic components/composables where responsibility matches, keep pages route-focused, and add narrow CSS only for real gaps.
-
-Real roadmap UI includes `/register`, workspace create/rename/delete/switch/configuration, permission guidance, safe forbidden feedback, and support/reference ID display when appropriate.
-
-No workspace invite/member UI in this roadmap.
+Current standalone Android release is arm64-only and uses the build/publish contract in `docs/mobile-distribution.md`. Release builds must embed an intended HTTPS API base URL and must not depend on Metro or localhost.
 
 ## Situm evidence gate
 
-Before any Situm behavior changes, verify exact endpoint/SDK method, installed compatibility, browser/server owner, permission semantics, consumed request/response/event fields, and relevant failure behavior.
+Before changing Situm behavior, verify exact installed/current capability, auth/permission, runtime owner, consumed inputs/fields/events, and failure semantics.
 
 No evidence means unresolved/absent, never fake success.
 
-## Web/native boundary
-
-Do not implement handset indoor positioning, sensor-generated blue dot, live current-position navigation, or movement-aware rerouting as web product behavior.
-
-Realtime monitoring of positioned devices and verified static directions remain valid web capabilities.
-
 ## Validation
 
-Code-changing phases run at least `git diff --check`, `npm run lint`, `npm run typecheck`, `npm run build`, and production acceptance with `npm run preview`. Nuxt dev mode is not acceptance evidence.
+Web/backend baseline:
+
+```text
+git diff --check
+npm test
+npm run lint
+npm run typecheck
+npm run build
+```
+
+Mobile baseline:
+
+```text
+npm run lint
+npm run typecheck
+```
+
+Use production preview/runtime checks for behavior claims and physical Android evidence for sensor-backed positioning claims.

@@ -1,5 +1,8 @@
 # Plan 031 Execution Brief
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 Repository: `/home/farismnrr/Projects/situm-explore`
 Branch: `plan/031-native-realtime-operations`
 Plan: `/home/farismnrr/Projects/situm-explore/plans/031-native-realtime-operations.md`

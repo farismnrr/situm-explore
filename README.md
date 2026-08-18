@@ -1,50 +1,49 @@
 # Situm Explore
 
-Situm Explore is a full-stack Nuxt 4 web operations/exploration application using Nuxt UI, Nitro, PostgreSQL/Drizzle, Situm web integrations, and ClickHouse analytics.
+Situm Explore is an indoor-operations and exploration product built around Situm. It has two clients that share one application backend:
 
-## Current status
+- a Nuxt 4 web application for workspace administration, browser map exploration, organization/operations views, analytics, and installation handoff;
+- a React Native + Expo companion application for Android/iOS-oriented indoor positioning, native map/navigation, and Realtime positions.
 
-Plans 017–027 are complete and integrated into `main`, with Plan 027 integrated via PR #21.
+Nitro is the single application backend for both clients. PostgreSQL stores application identity/workspace state, ClickHouse stores workspace-isolated analytics, and Situm provides cartography, positioning, navigation, Viewer, and operational data within the capability boundaries documented in this repository.
 
-The Plans 028–034 native companion roadmap is active. Plans 028–032 are complete and integrated. Plan 033 is the final native UI/UX reference-reconciliation implementation pass across shell, Explore/Map, Realtime, Recent, Settings and authentication; Plan 034 is the terminal full-E2E acceptance/roadmap-closeout gate carrying all still-unpassed physical-device, cross-client and real-device presentation checks. The architecture remains the current Nuxt/Nitro web/backend runtime plus the React Native second client under `mobile/`; there is no second backend.
+## Product capabilities
+
+Current product behavior includes:
+
+- database-backed email/password authentication;
+- private single-owner workspaces;
+- workspace-managed Situm credentials with separate Read & Write, browser Viewer, and native Positioning authority;
+- workspace-scoped Situm cartography and operational data;
+- web Situm Viewer exploration on capable desktop/tablet layouts;
+- native indoor positioning, map exploration, POI navigation, and foreground positioning lifecycle;
+- server-mediated native Realtime position monitoring;
+- ClickHouse-backed workspace analytics;
+- web-to-native Map/Realtime handoff;
+- public direct Android APK download without requiring application login.
+
+Google OAuth plumbing exists but provider runtime acceptance is not part of the currently verified product path. iOS build/device delivery and store distribution require the corresponding Apple environment and release setup.
+
+## Repository layout
 
 ```text
-Plan 028 — Native Capability, Auth & Distribution Spike
--> Plan 029 — Native App Foundation & Workspace Session
--> Plan 030 — Native Map, Positioning & Navigation
--> Plan 031 — Native Realtime Operations
--> Plan 032 — Web/Native Handoff & Distribution
--> Plan 033 — Native UI/UX Reference Reconciliation
--> Plan 034 — Full E2E Acceptance & Roadmap Closeout
+app/                  Nuxt/Vue web client
+server/               Nitro API, application services, integrations, persistence
+shared/               runtime-neutral shared contracts/helpers
+mobile/               React Native + Expo companion app
+design/               product UI/UX implementation references
+docs/                 operator/developer documentation
+deploy/               staging deployment configuration
+scripts/              repository operational helpers
+plans/                historical and future scoped implementation plans
+.agents/               agent work state, decisions, evidence, sessions, protocols
 ```
 
-Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, and `plans/028-034-native-mobile-roadmap.md` before executing current plan work. The Plans 021–027 roadmap and prerequisites are historical context.
+## Architecture
 
-## Production container workflow
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the current runtime and security boundaries, [DESIGN.md](DESIGN.md) for product design rules, and [design/data-source-matrix.md](design/data-source-matrix.md) for the current Situm capability matrix.
 
-The Makefile is the canonical interface for routine Docker, Buildx, release, and staging operations. Raw Docker/Buildx/Compose commands are diagnosis-only. Local laptop builds and pushes publish GHCR images for `linux/amd64` and `linux/arm64`; no CI is used. The approved filtered local context helper is used for builds, never routine root-dot context.
-
-Staging Compose is pull-only: it contains neither `build:` nor `context:`. It reuses external PostgreSQL, ClickHouse, and observability services. Runtime secrets are external only; `.env` is never baked into an image. A 64-bit Orange Pi consumes `linux/arm64`.
-
-Staging updates are `pull -> recreate -> health -> smoke`. Immutable SHA tags/digests support rollback. `staging-migrate` is explicit and never runs at startup.
-
-## Historical pre-refactor baseline
-
-The previous PoC used env-defined app login and global Situm account/Viewer/building context. That pre-refactor baseline is retained here as migration history, not as the current runtime architecture.
-
-Plans 021–025 moved the product to:
-
-- database-backed users with real email/password registration and login;
-- Google OAuth plumbing prepared for later manual acceptance;
-- many private single-owner workspaces per user;
-- protected server-side Situm configuration per workspace;
-- workspace configuration requires a verified Situm Read & Write primary credential plus a separate verified Situm Read-only Viewer credential; the account ID is derived server-side;
-- workspace-scoped Situm, Viewer/building, and ClickHouse analytics context;
-- reuse of the user's existing observability stack;
-- end-to-end request correlation/tracing;
-- sanitized client errors while detailed diagnostics remain server-side.
-
-Current architecture/design documents are already reconciled for this roadmap. Historical plans/sessions remain evidence only and should not be read as current execution authority.
+The important invariant is that mobile is a second client, **not a second backend**. User identity, workspace authorization, server-side Situm authority, analytics ownership, and safe error handling remain centralized in Nitro.
 
 ## Setup
 
@@ -54,25 +53,46 @@ cp .env.example .env
 npm run dev
 ```
 
-Current runtime configuration is documented in `.env.example`. New roadmap prerequisites are introduced by their owning plan and summarized in `plans/021-025-prerequisites.md`.
+The standalone mobile package lives under `mobile/`:
 
-Never commit local environment files, credentials, session material, encryption material, or credential-bearing output.
+```sh
+cd mobile
+npm install
+npm run typecheck
+```
+
+Runtime configuration is documented through `.env.example` and the relevant deployment/release documents. Never commit credentials, sessions, encryption keys, signing material, or local environment files.
 
 ## Validation
 
-Code-changing plans use at least:
+For web/backend changes, the normal baseline is:
 
 ```sh
 git diff --check
+npm test
 npm run lint
 npm run typecheck
 npm run build
 ```
 
-Runtime acceptance uses a production build plus `npm run preview`; Nuxt dev mode is not acceptance evidence.
+For mobile changes, also run:
 
-## Product boundary
+```sh
+cd mobile
+npm run lint
+npm run typecheck
+```
 
-The Nuxt web app remains an operations/admin/exploration product. Device indoor positioning, sensor-generated blue dot, handset live navigation, and movement-aware rerouting remain outside this web roadmap.
+Runtime acceptance should use a production build/preview for the web application. Android release verification is documented in [docs/mobile-distribution.md](docs/mobile-distribution.md).
 
-For Situm behavior: **no evidence, no implementation**. Verify exact official/current contracts and installed SDK compatibility instead of inferring behavior from historical UI, old plans, or model memory.
+## Deployment and Android distribution
+
+The Makefile is the routine interface for image publication and staging operations. Staging Compose is pull-only and reuses external PostgreSQL, ClickHouse, and observability services; runtime secrets remain external to images and source control.
+
+Android standalone releases are arm64 artifacts with deterministic semantic-version filenames and a stable public download alias. Build, verification, MinIO publishing, branding, and download behavior are documented in [docs/mobile-distribution.md](docs/mobile-distribution.md).
+
+## Product and integration rules
+
+For Situm behavior, do not infer capabilities from UI prototypes or old implementation history. New or changed behavior must be supported by the installed SDK/current integration contract and must preserve least privilege.
+
+The primary Read & Write Situm credential remains server-only. Browser Viewer and native Positioning use separate bounded credentials, while native Realtime remote reads remain server-mediated.

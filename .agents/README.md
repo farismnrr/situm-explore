@@ -2,7 +2,21 @@
 
 `.agents/` is the persistent context layer for Situm Explore.
 
-Root `AGENTS.md` is the router. `.agents/state.md` owns current focus/blockers; durable decisions own current project decisions; sessions/completed plans are chronological evidence and may become stale.
+Root `AGENTS.md` is the router. `.agents/state.md` owns current focus/blockers; durable decisions own current project decisions; sessions/completed plans are chronological evidence and may become stale. With no active plan, new implementation work must first create explicit scope from updated `main`.
+
+
+## Boundary with project documentation
+
+`.agents/` documents **the work**, not the product manual. Keep branch/plan state, execution decisions, evidence, reviews, sessions, protocols, and handoff context here.
+
+Current product/runtime documentation belongs outside `.agents/`:
+
+- `README.md` — project overview, setup, capabilities, and entry points;
+- `ARCHITECTURE.md` — current runtime/security architecture;
+- `DESIGN.md` + `design/` — current product UI/UX and implementation contracts;
+- `docs/` — developer/operator procedures such as mobile release/distribution.
+
+Agent files may link to those documents and record why/when they changed, but should not become duplicate product documentation.
 
 ## Mandatory implementation reads
 
@@ -15,7 +29,7 @@ Root `AGENTS.md` is the router. `.agents/state.md` owns current focus/blockers; 
 7. `ARCHITECTURE.md`;
 8. `plans/README.md`;
 9. `design/data-source-matrix.md` when Situm/product scope matters;
-10. active plan;
+10. explicitly active plan, when one exists;
 11. `DESIGN.md` / `design/IMPLEMENTATION.md` for presentation changes.
 
 ## Truth hierarchy
@@ -25,7 +39,7 @@ When guidance conflicts, prefer:
 1. user's latest explicit instruction;
 2. current `.agents/state.md` and active durable decisions;
 3. current architecture/design contracts;
-4. active plan + current capability matrix;
+4. explicitly active plan, when one exists, plus current capability matrix;
 5. current source/runtime behavior;
 6. historical plans/session notes;
 7. agent inference.
@@ -36,9 +50,9 @@ Historical files do not regain authority merely because they contain more detail
 
 Plans 017–020 are complete/integrated into `main` by PR #12.
 
-Plans 026–032 are complete and integrated. The approved native companion roadmap now spans Plans 028–034: Plan 033 owns final native UI/UX reference reconciliation, and Plan 034 owns terminal full-E2E acceptance/roadmap closeout.
+Plans 026–035 are closed/integrated. Plans 028–034 delivered and closed the native companion roadmap; Plan 035 separately remediated Realtime/foreground-positioning lifecycle and was integrated through PR #32 at merge commit `840c0f9`.
 
-Plans 021–032 are integrated historical execution. Current roadmap authority is `plans/028-034-native-mobile-roadmap.md`; Plan 033 is the next executable plan from updated `main`, and Plan 034 starts only after Plan 033 integration unless the user explicitly authorizes stacking.
+Plans 021–035 are historical execution. There is currently **no active implementation plan**. `plans/028-034-native-mobile-roadmap.md`, Plans 033–035, and their evidence remain historical authority for why the current runtime looks the way it does, but new work must begin from updated `main` with an explicitly created plan.
 
 The roadmap moves the product from the pre-refactor env-defined user/global Situm runtime to DB-backed users, private workspaces, protected workspace configuration, workspace-scoped Situm/analytics context, reused observability, end-to-end correlation, and safe client errors.
 
@@ -52,6 +66,6 @@ Historical plan/session files are intentionally preserved as evidence. Do not re
 
 For external Situm behavior, verify exact official/current contracts and installed SDK compatibility. Missing material evidence stays unresolved.
 
-Before each implementation-phase commit, update plan/state/session evidence and required durable decisions, run validation, review the diff, commit, and push.
+For future implementation phases, update plan/state/session evidence and required durable decisions, run validation, review the diff, commit, and push.
 
 Never persist real credentials, API keys, JWTs, passwords, session cookies, encryption-key values, or sensitive payloads in repository context.

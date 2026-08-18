@@ -1,5 +1,8 @@
 # Plan 032 Execution Context
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 Branch: `plan/032-web-native-handoff-distribution`
 Base: integrated `main` at `2913e3c`, containing prerequisite `ee23bdc`
 Scope: Web/Native Handoff & Distribution implementation only; no Plan 033 execution.

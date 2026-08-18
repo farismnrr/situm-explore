@@ -1,5 +1,8 @@
 # Plan 029 — Execution Brief
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 [PLAN]
 Execute `plans/029-native-app-foundation.md` completely, Phase 0 through Phase 6.
 

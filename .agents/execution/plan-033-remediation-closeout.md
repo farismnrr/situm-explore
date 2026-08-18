@@ -1,5 +1,8 @@
 # Plan 033 Remediation + Final Closeout — 10/10 Industry-Grade Acceptance
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 You are the implementation agent responsible for remediating and **truthfully closing Plan 033** on the existing dedicated branch.
 
 ## Absolute workspace and branch

@@ -1,5 +1,8 @@
 # Plan 034 acceptance-discovered remediation — Positioning credential provisioning UI
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 Workspace:
 
 `/home/farismnrr/Projects/situm-explore`

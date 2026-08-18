@@ -1,5 +1,8 @@
 # Security Dependency Remediation — Pre-Plan-034 Gate
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 You are the implementation agent responsible for eliminating or truthfully resolving the repository's current dependency-security findings **before Plan 034 starts**.
 
 This is a dedicated security-maintenance task. It is not Plan 034 and must not broaden product scope.

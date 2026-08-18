@@ -1,8 +1,11 @@
 # Plan 035 — Realtime Remediation
 
-Status: implementation complete; physical own-device positioning and server-mediated Realtime E2E verified
+> **Historical completed plan.** Integrated via PR #32 at merge commit `840c0f9`; the former plan branch was deleted. This file is evidence, not current execution authority.
 
-Depends on: Plan 034 closed; normal branch workflow should start from the integrated Plan 034 result unless the user explicitly authorizes stacked execution.
+
+Status: **complete/integrated via PR #32 at merge commit `840c0f9`; former branch deleted.** Physical own-device positioning and server-mediated Realtime E2E were verified for this bounded scope.
+
+Historical dependency: Plan 034 was closed before this remediation began. This plan is no longer active execution authority.
 
 ## Objective
 
@@ -15,7 +18,7 @@ Diagnose and fix the newly observed native Realtime issue without reopening Plan
 - Do not invent online/offline presence, freshness, map markers, or device semantics unsupported by the backend/Situm contract.
 - Preserve session/workspace authorization and fail-closed behavior.
 - Do not treat the Plan 034 vendor positioning blocker as a Realtime defect unless evidence directly links them.
-- No PR/merge/production change without user authorization.
+- Historical execution rule: PR/merge/production changes required user authorization; the authorized PR #32 is now merged.
 
 ## Phase 0 — Reproduce and classify
 

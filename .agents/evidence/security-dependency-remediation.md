@@ -62,3 +62,22 @@ Dependabot was queried without changing alert state. Alerts #4 and #5 for `image
 ## Gate conclusion
 
 UUID has a released, compatible remediation. `image-size` has a minimal, auditable, reproducible local remediation for the exact reachable parser behavior, but GitHub/npm continue to report the upstream advisory residual truthfully. This evidence does not claim zero vulnerabilities. Plan 034 was not started, and no PR was opened or merged.
+
+## Pre-PR revalidation and parser hardening — 2026-08-18
+
+Before opening the documentation closeout PR, the dependency state was re-audited from the current branch rather than relying on the earlier remediation snapshot.
+
+- Root `npm audit`: 0 findings.
+- Mobile `npm audit`: 11 high aggregate findings, all propagating from exactly two open `image-size` advisories (`GHSA-w3rx-r6r6-pgpr` and `GHSA-5p2g-fcmc-qvqq`).
+- GitHub Dependabot alerts #4/#5 were queried read-only and each still reports `first_patched_version: null`, vulnerable range `<=2.0.2`. No alert was dismissed or altered.
+- npm registry latest remains `image-size@2.0.2`; the upstream GitHub repository is archived, so no released dependency upgrade exists that both preserves the frozen Expo/RN compatibility line and clears the advisory range.
+
+The local `patch-package` remediation was strengthened to cover both advisory families explicitly:
+
+1. ICNS entries now fail closed when their declared entry length is smaller than the 8-byte entry header, exceeds the remaining input, or the containing ICNS file length is invalid. This removes attacker-controlled zero/tiny entry progress rather than merely forcing an arbitrary increment.
+2. The shared ISO-BMFF box reader used by JXL/HEIF now requires a complete 8-byte header, treats a declared size of zero according to BMFF semantics as extending to EOF, and rejects tiny or oversized boxes. Traversal therefore always terminates or fails closed.
+3. `mobile/scripts/security/mobile-dependency-regression.cjs` now asserts ICNS zero-length rejection, BMFF zero-size-to-EOF normalization, and rejection of tiny/oversized BMFF boxes, in addition to the UUID/xcode compatibility checks.
+
+A fresh `mobile/npm ci` successfully reapplied the strengthened patch through `postinstall`, and `npm run security:test`, mobile lint, and mobile typecheck passed afterward. Scanner output remains version-range based and therefore continues to report the two upstream advisories despite the patched bytes; this residual remains visible and is not represented as a released-upstream fix.
+
+Final pre-PR validation after the strengthened patch: root tests 64/64, root lint/typecheck/production build, mobile security regression, mobile lint/typecheck, and Android `assembleDebug` all pass. The Android rerun completed with `BUILD SUCCESSFUL`; dependency deprecation warnings remain non-blocking and unrelated to these advisories.

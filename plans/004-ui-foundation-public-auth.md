@@ -1,6 +1,9 @@
 # Plan 004 — UI Foundation, Landing, Login & Register
 
-Status: planned
+> **Historical document.** Retained for execution/evidence history. It is not current plan authority; consult `.agents/state.md` and `plans/README.md`.
+
+
+Status: historical/superseded — its UI-foundation scope was absorbed into the later cumulative UI roadmap and current product; do not execute this plan.
 Branch: `plan/004-ui-foundation-public-auth`
 Depends on: merged foundation; populated `design/reference/situm-explore-interactive-prototype.html` required before visual Phase 1+
 

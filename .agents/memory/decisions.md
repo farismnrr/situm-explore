@@ -5,7 +5,7 @@ This file contains **currently active durable decisions**. Completed execution h
 ## Repository-native agent context
 
 - Root `AGENTS.md` stays concise and routes persistent context into `.agents/`.
-- `.agents/state.md` owns current focus, blockers, branch, and next action.
+- `.agents/state.md` owns current focus, blockers, branch, and next action; it may explicitly state that no implementation plan is active.
 - Session logs and completed plans are historical evidence and may become stale.
 - Never persist credentials, API keys, passwords, tokens, session cookies, encryption-key values, or unnecessary sensitive payloads.
 
@@ -26,12 +26,12 @@ Status: active security boundary; Viewer authentication is integrated.
 - They may be reused only for bounded local acceptance, must remain hidden, and must never be persisted in repository files, session evidence, logs, traces, browser storage, or Git history.
 - Do not remind the user to revoke them while remediation/retest remains incomplete. After final Plan 025 PASS, remind the user to revoke/delete both keys.
 
-Status: active user policy.
+Status: historical acceptance policy. Plan 025 is complete; do not reuse any temporary smoke credential in future work without fresh explicit authorization, and never persist its value.
 
 ## Full-stack Nuxt backend/web architecture
 
 - The existing Nuxt 4 application with Nitro server routes remains the single web application and application backend for Situm Explore.
-- Plans 028–034 may add a React Native companion **client**, but not a second backend/service or separate application authority.
+- Plans 028–035 established a React Native companion **client**, not a second backend/service or separate application authority.
 - Use Nuxt UI, `nuxt-auth-utils`, PostgreSQL/Drizzle in the application-owned `situm_explore` schema, and the existing ClickHouse analytics integration for the web/backend runtime.
 - Keep `app/`, `server/`, and genuinely shared `shared/` boundaries Nuxt-native; share contracts with mobile only when they are genuinely runtime-neutral.
 - KISS is the default tie-breaker. Do not add generic repositories/services, DI, global stores, event buses, caches, workers, or a second backend without concrete need.
@@ -41,15 +41,15 @@ Status: active.
 ## Web vs native Situm boundary
 
 - The Nuxt web product remains the operations/admin/exploration/analytics client; Nitro remains the single application backend.
-- Plans 028–034 add a separate React Native companion client rather than turning the Nuxt application into a hybrid/mobile wrapper.
+- Plans 028–035 established a separate React Native companion client rather than turning the Nuxt application into a hybrid/mobile wrapper.
 - Device indoor positioning, sensor/permission handling, handset blue-dot positioning, mobile navigation/rerouting, and the product's mobile Realtime experience belong to the native companion roadmap.
-- Web Map remains the product path for desktop/tablet layouts that pass explicit Viewer usability acceptance; phone web Map will hand off to native only after the native Map is accepted.
-- Web Realtime will intentionally hand off to native on desktop/tablet/phone after native Realtime is accepted. This is a product policy, not a claim that Situm web APIs are technically incapable of realtime reads.
+- Web Map remains the product path for capable desktop/tablet Viewer layouts; phone web Map hands off to native under the integrated product policy.
+- Web Realtime intentionally hands off to native on desktop/tablet/phone. This is a product policy, not a claim that Situm web APIs are technically incapable of realtime reads.
 - Situm-domain UI without a truthful owner is removed or left unresolved rather than faked.
 
-Status: active; Plans 030–032 are integrated, Plan 033 owns final native UI/UX reference reconciliation, and Plan 034 owns the still-unpassed full-E2E acceptance.
+Status: active product boundary. Plans 028–035 are closed/integrated; no native roadmap plan is currently active.
 
-## Native companion technology and credential direction (Plans 028–034)
+## Native companion technology and credential direction (Plans 028–035)
 
 - Target stack: React Native + Expo development builds + `@situm/react-native`, subject to Plan 028 freezing the exact supported dependency/platform matrix from current evidence.
 - Expo Go is not the runtime target for Situm native code; native development builds are required by the current official integration model.
@@ -59,7 +59,7 @@ Status: active; Plans 030–032 are integrated, Plan 033 owns final native UI/UX
 - Read-only Realtime authority should remain server-mediated unless the native product requirement and current SDK contract prove a narrower safe direct path.
 - Deep links may carry only non-secret navigation context. Application sessions, Situm credentials and tokens must never be placed in URLs/QR codes.
 
-Status: approved roadmap direction; Plans 028–032 are integrated, Plan 033 is the remaining presentation implementation plan, and Plan 034 is the terminal full-E2E gate.
+Status: active durable native technology/security direction. The roadmap execution is closed through Plan 035/PR #32.
 
 ### Plan 028 Phase 1 native build matrix (2026-08-17)
 
@@ -69,7 +69,7 @@ Status: approved roadmap direction; Plans 028–032 are integrated, Plan 033 is 
 - Use a standalone future `mobile/` package rather than npm workspaces. Plan 029 owns production project creation.
 - Effective iOS app baseline is 16.4 with Xcode 26.4+; wrapper iOS dependency is SitumSDK 3.41.0 through CocoaPods. Linux source/package evidence is available, but iOS compile/runtime remain macOS/device-gated.
 
-Status: active Plan 028 Phase 1 evidence; later capability/auth phases may supersede exact selections only with new proof.
+Status: historical Plan 028 evidence; the frozen compatibility selections remain the current baseline unless future proof explicitly supersedes them.
 
 ### Plan 028 Phase 2 wrapper capability boundary (2026-08-17)
 
@@ -78,7 +78,7 @@ Status: active Plan 028 Phase 1 evidence; later capability/auth phases may super
 - Building selection has no public imperative selector; downstream code must own MapView lifecycle/remount and stale-state clearing. Background location is not requested by default; Android foreground service and iOS authorization differences require later device proof.
 - The 3.19.2 npm tarball omits the `lib/` files referenced by its package `types`/`module` fields. Android/Metro source integration works, but Plan 029 must recheck TypeScript package resolution before selecting a non-speculative workaround.
 
-Status: active Plan 028 Phase 2 evidence; runtime/device proof and auth decisions remain open.
+Status: historical Plan 028 capability evidence; later Plans 029–035 supplied the implemented/runtime decisions recorded below.
 
 ### Plan 028 Phase 3 Situm mobile auth boundary (2026-08-17)
 
@@ -86,7 +86,7 @@ Status: active Plan 028 Phase 2 evidence; runtime/device proof and auth decision
 - Read-only Realtime and broad GET operations remain server-mediated; the Positioning key is not widened for them.
 - JWT support in the wrapper is source-proven but unselected because no complete issuer/claims/lifetime/refresh/revocation contract is proven for Situm Explore. Revisit only with current evidence.
 
-Status: active Plan 028 Phase 3 evidence; transport/storage implementation remains in later phases.
+Status: historical Plan 028 auth evidence; the least-privilege Positioning/server-mediated Realtime boundary remains active.
 
 ### Plan 028 Phase 4 application session boundary (2026-08-17)
 
@@ -94,7 +94,7 @@ Status: active Plan 028 Phase 3 evidence; transport/storage implementation remai
 - Freeze a 7-day mobile session maximum age, OS secure storage later selected by Phase 5, explicit server logout, and no credential/token values in URLs or logs. Cookie-only React Native persistence is not proven.
 - Existing `requireUserSession` ownership checks remain authoritative for every native request; client-provided user/workspace identity is never trusted.
 
-Status: active Plan 028 Phase 4 evidence; implementation and revocation/version checks remain gated by later phases.
+Status: historical Plan 028 session evidence; the later Plan 029 implementation is the active runtime contract.
 
 ### Plan 028 Phase 5 secure storage and distribution (2026-08-17)
 
@@ -102,7 +102,7 @@ Status: active Plan 028 Phase 4 evidence; implementation and revocation/version 
 - Freeze Android/iOS identity as `com.situm.explore`; custom schemes are `situm-explore-dev://`, `situm-explore-staging://`, and `situm-explore://`. Deep-link context is limited to untrusted `workspace`, `building`, and `feature` hints for `/map` or `/realtime`, followed by authenticated re-authorization.
 - Own local Expo development builds and Gradle Android debug/direct-internal artifacts. iOS compilation/device/archive and all signing/store delivery are macOS/Apple-account gates. Do not select EAS without new evidence; keep all signing material external/ignored.
 
-Status: active Plan 028 Phase 5 evidence; HTTPS association and store distribution remain external gates.
+Status: historical Plan 028 distribution evidence; later PR #32 added the current direct Android APK distribution path. HTTPS association/store delivery remain external gates.
 
 ### Plan 029 Expo 57 dependency authority (2026-08-17)
 
@@ -116,7 +116,7 @@ Status: durable Plan 029 dependency decision; no production credential persisten
 - Plan 028 is complete as an evidence spike. Plan 029 implementation is active: the published wrapper TypeScript `lib/` omission was rechecked in the real package and handled through its documented source entry with a narrow mobile TypeScript path; the mobile session response now uses the same sealed h3 value over `x-nuxt-session`, seven-day expiry, and a server-side user session-version revocation check. Device/iOS/release gates remain explicit.
 - The approved native reference remains authoritative for presentation; capability evidence overrides any depicted interaction. Remote-position map focus is unproven and gets a list/detail fallback. Background location is not default, Realtime identity/status semantics remain backend-truth-bound, and no fake capability is permitted.
 
-Status: complete Plan 028; Plan 029 readiness GO with explicit external/runtime gates.
+Status: historical Plan 028 closeout; Plans 029–035 are now closed/integrated.
 
 ## Plans 021–025 identity/workspace model
 
@@ -208,7 +208,7 @@ Status: active.
 
 ## Completed roadmap transition
 
-Plans 017–020, Plans 021–025, and Plans 026–032 are complete/integrated historical execution. Plan 033 is the remaining Native UI/UX Reference Reconciliation implementation plan; Plan 034 is the dependent terminal full-E2E acceptance and roadmap-closeout plan.
+Plans 017–035 are closed/integrated or administratively closed historical execution. There is currently no active implementation plan.
 
 The following are historical context only:
 
@@ -216,9 +216,9 @@ The following are historical context only:
 - `plans/021-025-prerequisites.md`;
 - `design/ROADMAP-021-025-OVERRIDES.md`.
 
-The Plans 028–034 roadmap is the current planning authority. Plans 028–032 are integrated; Plan 033 is next from updated `main`, and Plan 034 starts only after Plan 033 integration unless the user explicitly authorizes stacking.
+The Plans 028–034 roadmap plus Plan 035 are historical native-roadmap authority. New work must start from updated `main` under a newly created explicit plan.
 
-Status: active.
+Status: active durable closeout/authority rule.
 
 ## Auth abuse protection (Plan 027)
 
@@ -263,7 +263,7 @@ Status: active durable native product/security boundary.
 - Historical authority against creating an event/audit backend solely to populate Recent remains active. If no trustworthy existing recent-history source is available, Plan 033 must ship a polished truthful empty/unavailable Recent surface instead of fabricated history.
 - Plan 033 may integrate after reviewer-approved implementation plus truthful non-device/emulator visual validation. It does not consume any physical/full-cross-client acceptance; those remain Plan 034.
 
-Status: active durable native presentation decision.
+Status: active durable native presentation contract; Plan 033 execution itself is historical/complete.
 
 ## Consolidated native full-E2E gate (2026-08-17)
 
@@ -274,7 +274,7 @@ Status: active durable native presentation decision.
 - Plan 034 is the terminal non-deferrable gate. It must run the accumulated supported-Android physical Map/positioning/navigation, Realtime/native lifecycle, web-to-native/deep-link/distribution, and real-device native presentation E2E before roadmap closeout/merge.
 - Android Studio emulator evidence may supplement launch/UI/WebView/non-sensor regression, but it cannot prove real indoor positioning, BLE/Wi-Fi/sensor behavior, blue-dot/floor transitions, or equivalent physical-device semantics.
 
-Status: active durable roadmap acceptance decision.
+Status: historical roadmap acceptance decision. The explicit Plan 034 closure override superseded the non-deferrable sequencing rule while preserving unpassed evidence.
 
 ## Plan 031 Realtime execution baseline (2026-08-17)
 
@@ -283,7 +283,7 @@ Status: active durable roadmap acceptance decision.
 - No friendly person identity, online/idle/offline presence, trajectory, generic remote marker, or remote focus semantics exist unless Phase 0 proves them from exact current evidence.
 - Remote monitoring remains server-mediated unless a narrower/equivalent least-privilege native path is proven. The dedicated mobile Positioning credential must not be widened for convenience.
 
-Status: active Plan 031 execution baseline; Phase 0 may narrow or supersede only with exact evidence.
+Status: historical Plan 031 baseline; its server-mediated/no-invented-semantics boundary remains active.
 
 ## Plan 031 implementation boundary (2026-08-17)
 
@@ -292,7 +292,7 @@ Status: active Plan 031 execution baseline; Phase 0 may narrow or supersede only
 - Phase 0 source inspection found native generic realtime and Share Live Location APIs in `@situm/react-native` 3.19.2, but not equivalent application/workspace authorization or Positioning-key permission evidence. They remain unused; remote markers/focus and Share Live Location are absent.
 - Background positioning and own-device Realtime publishing are not required by the frozen v1 scope and remain outside Plan 031.
 
-Status: active Plan 031 implementation decision.
+Status: active durable Realtime implementation boundary; Plan 031 execution itself is historical/complete.
 
 ## Security dependency remediation boundary (2026-08-18)
 
@@ -302,10 +302,20 @@ Status: active Plan 031 implementation decision.
 
 Status: active security-maintenance decision; revisit when `image-size` publishes an advisory-patched release.
 
+## Native roadmap closeout and Android distribution (2026-08-18)
+
+- Plans 028–035 are closed/integrated or administratively closed with truthful evidence; there is no active native implementation plan.
+- PR #32 integrated the final Realtime/foreground-positioning remediation plus Android release/distribution polish at merge commit `840c0f9`; the Plan 035 branch was deleted.
+- Android release artifacts use `situm-explore-v<semver>-android-arm64.apk`; the public stable alias is `situm-explore-latest-android-arm64.apk`. Release builds require an explicit non-local HTTPS `EXPO_PUBLIC_API_BASE_URL`.
+- The public MinIO APK is anonymous-read/download; application login is not required to fetch the APK. Staging exposes a logged-out download CTA.
+- Plan 035 physically verified real POS Situm indoor fixes and own-device server-mediated Realtime. This supersedes the earlier provider blocker only for that bounded path and does not retroactively mark every unrelated Plan 034 acceptance criterion PASS.
+
+Status: active durable closeout/distribution decision.
+
 ## Plan 035 foreground positioning ownership (2026-08-18)
 
 - `@situm/react-native` positioning callbacks and running state are process-global; the authenticated shell owns one `ForegroundPositioningSession`, while Explore is only a consumer/presentation surface.
 - The session starts only after explicit Locate me, uses the dedicated workspace POSITIONING credential, persists across Explore/Realtime tab changes, and stops on explicit stop, workspace switch, logout, background, native error/stopped, or teardown. It does not auto-restart after background or process restart.
 - Server-mediated Realtime remains unchanged and maps coordinate-bearing `features`; `devicesInfo` is never converted into a fabricated position.
 
-Status: active Plan 035 architecture decision.
+Status: active durable positioning/Realtime lifecycle architecture; Plan 035 execution itself is historical/complete and integrated via PR #32.

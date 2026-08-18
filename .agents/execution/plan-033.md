@@ -1,5 +1,8 @@
 # Plan 033 execution brief — Native UI/UX Reference Reconciliation
 
+> **Historical execution brief.** This file preserves the instructions used during completed work. It is not current execution authority; consult `.agents/state.md` and create a new explicit plan for future changes.
+
+
 Branch: `plan/033-native-ui-ux-reference-reconciliation`
 Base: updated `origin/main` after Plan 032 integration (`f4f729d8bbd10e0bd257423682489c928c74c95b` or later updated main)
 Plan: `/home/farismnrr/Projects/situm-explore/plans/033-native-ui-ux-reference-reconciliation.md`
