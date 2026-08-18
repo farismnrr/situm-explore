@@ -1,13 +1,14 @@
 import SitumPlugin, { MapView, SitumProvider, type MapViewRef } from '@situm/react-native'
-import type { OnFloorChangedResult, OnPoiDeselectedResult, OnPoiSelectedResult, Location, LocationStatus, Error as SitumError, Route, NavigationProgress } from '@situm/react-native'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import type { OnFloorChangedResult, OnPoiDeselectedResult, OnPoiSelectedResult, Location, Route, NavigationProgress } from '@situm/react-native'
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { ApiError } from '../api/errors'
 import type { PositioningCredentialResponse } from '../api/types'
 import type { WorkspaceContext } from '../workspaces/context'
-import { canStopGuidance, guidanceStateForNavigation, isCurrentLocationUsable, locationFreshnessWindowMs, navigationIsOwned, positionStateForLocationStatus, resolveFloorDisplay, resolvePoi, type GuidanceState, type LocationSnapshot, type NavigationOwnershipState, type PositionState } from './state'
+import { canStopGuidance, guidanceStateForNavigation, isCurrentLocationUsable, locationFreshnessWindowMs, navigationIsOwned, resolveFloorDisplay, resolvePoi, type GuidanceState, type LocationSnapshot, type NavigationOwnershipState } from './state'
 import { colors, radii } from '../ui/theme'
 import { layoutForWidth, type LayoutMode } from '../ui/layout'
+import type { ForegroundPositioningSession } from '../positioning/session'
 
 type Building = { id: number, name: string }
 type Floor = { id: number, buildingId: number, level: number, name: string }
@@ -15,7 +16,7 @@ type Poi = { id: number, buildingId: number, floorId: number, name: string, cate
 type Cartography = { buildings: Building[], floors: Floor[], pois: Poi[] }
 type NavigationState = NavigationOwnershipState
 
-export function NativeMapScreen({ workspaces, lifecycle, layout }: { workspaces: WorkspaceContext, lifecycle: string, layout?: LayoutMode }) {
+export function NativeMapScreen({ workspaces, lifecycle, positioning, layout }: { workspaces: WorkspaceContext, lifecycle: string, positioning: ForegroundPositioningSession, layout?: LayoutMode }) {
   const [credential, setCredential] = useState<PositioningCredentialResponse | null>(null)
   const [cartography, setCartography] = useState<Cartography | null>(null)
   const [error, setError] = useState('')
@@ -47,17 +48,19 @@ export function NativeMapScreen({ workspaces, lifecycle, layout }: { workspaces:
   if (error) return <StateCard title="Map unavailable" body={error} action={() => setRetryNonce(value => value + 1)} />
   if (!credential || !cartography) return <View style={styles.loading}><ActivityIndicator color={colors.action} /><Text style={styles.muted}>Loading workspace cartography…</Text></View>
   if (!cartography.buildings.length) return <StateCard title="No buildings available" body="This workspace has no building available for native exploration." />
-  return <SitumProvider apiKey={credential.apiKey}><NativeMapRuntime key={`${workspaceId}:${activeMapRequestId ?? 'default'}`} workspaceId={workspaceId} cartography={cartography} lifecycle={lifecycle} initialBuildingId={initialBuildingId} layout={layout} /></SitumProvider>
+  return <SitumProvider apiKey={credential.apiKey}><NativeMapRuntime key={`${workspaceId}:${activeMapRequestId ?? 'default'}`} workspaceId={workspaceId} cartography={cartography} lifecycle={lifecycle} workspaces={workspaces} positioning={positioning} initialBuildingId={initialBuildingId} layout={layout} /></SitumProvider>
 }
 
-function NativeMapRuntime({ workspaceId, cartography, lifecycle, initialBuildingId, layout: suppliedLayout }: { workspaceId: string, cartography: Cartography, lifecycle: string, initialBuildingId: number | null, layout?: LayoutMode }) {
+function NativeMapRuntime({ workspaceId, cartography, lifecycle: _lifecycle, workspaces, positioning, initialBuildingId, layout: suppliedLayout }: { workspaceId: string, cartography: Cartography, lifecycle: string, workspaces: WorkspaceContext, positioning: ForegroundPositioningSession, initialBuildingId: number | null, layout?: LayoutMode }) {
   const { width, height } = useWindowDimensions()
   const layout = suppliedLayout || layoutForWidth(width).mode
   const [buildingId, setBuildingId] = useState<number | null>(() => cartography.buildings.some(building => building.id === initialBuildingId) ? initialBuildingId : null)
   const [selectedPoi, setSelectedPoi] = useState<Poi | null>(null)
-  const [positionSnapshot, setPositionSnapshot] = useState<LocationSnapshot<Location> | null>(null)
-  const [positionState, setPositionState] = useState<PositionState>('stopped')
-  const [locationMessage, setLocationMessage] = useState('Location is off.')
+  const positioningSnapshot = useSyncExternalStore(positioning.subscribe, positioning.getSnapshot, positioning.getSnapshot)
+  const positionSnapshot = positioningSnapshot.location ? { state: positioningSnapshot.state === 'active' ? 'fresh' : positioningSnapshot.state, location: positioningSnapshot.location, receivedAt: positioningSnapshot.receivedAt || 0, workspaceId: positioningSnapshot.workspaceId || workspaceId, buildingId: positioningSnapshot.buildingId || buildingId || -1 } as LocationSnapshot<Location> : null
+  const [positionStale, setPositionStale] = useState(false)
+  const positionState = positioningSnapshot.state === 'active' ? (positionStale ? 'stale' : 'fresh') : positioningSnapshot.state
+  const locationMessage = positioningSnapshot.message
   const [navigationState, setNavigationState] = useState<NavigationState>('idle')
   const [guidanceState, setGuidanceState] = useState<GuidanceState>('browse')
   const [navigationMessage, setNavigationMessage] = useState('Choose a real place to see directions.')
@@ -72,7 +75,6 @@ function NativeMapRuntime({ workspaceId, cartography, lifecycle, initialBuilding
   const isGuidance = guidanceState !== 'browse' && guidanceState !== 'positioning-starting' && guidanceState !== 'positioning-active'
   const showStop = canStopGuidance(navigationState)
 
-  const invalidatePosition = useCallback((nextState: PositionState, message: string) => { setPositionSnapshot(null); setPositionState(nextState); setLocationMessage(message) }, [])
   const cancelNavigation = useCallback(() => {
     let nativeNavigationRunning = false
     try { nativeNavigationRunning = SitumPlugin.navigationIsRunning() } catch { /* native cleanup is best effort */ }
@@ -88,25 +90,22 @@ function NativeMapRuntime({ workspaceId, cartography, lifecycle, initialBuilding
   useEffect(() => {
     let active = true
     try {
+      positioning.installNativeListeners()
       void SitumPlugin.setUseRemoteConfig(true); void SitumPlugin.configureUserHelper({ enabled: true, colorScheme: undefined })
-      SitumPlugin.onLocationUpdate((next: Location) => { if (!active || buildingId === null || Number(next.position?.buildingIdentifier) !== buildingId) return; const receivedAt = Date.now(); setPositionSnapshot({ state: 'fresh', location: next, receivedAt, workspaceId, buildingId }); setPositionState('fresh'); setLocationMessage('Live position received from Situm.') })
-      SitumPlugin.onLocationStatus((status: LocationStatus) => { if (!active) return; const nextState = positionStateForLocationStatus(status.statusName); if (nextState === 'stopped') { cancelNavigation(); invalidatePosition('stopped', 'Location is stopped.') } else if (nextState === 'error') { cancelNavigation(); invalidatePosition('error', 'Situm could not determine a position in the selected building.') } else { setPositionState(nextState); setLocationMessage('Situm is determining your indoor position…') } })
-      SitumPlugin.onLocationError((_cause: SitumError) => { if (active) { cancelNavigation(); invalidatePosition('error', 'Situm could not determine a position.') } })
-      SitumPlugin.onLocationStopped(() => { if (active) { cancelNavigation(); invalidatePosition('stopped', 'Location is stopped.') } })
       SitumPlugin.onNavigationStart((_route: Route) => { if (!active) return; try { mapRef.current?.followUser() } catch { /* follow is best effort */ }; setNavigationState('active'); setGuidanceState('guidance-following'); setNavigationMessage('Directions are active.'); setRemainingDistance(null) })
-      SitumPlugin.onNavigationProgress((progress: NavigationProgress) => { if (!active) return; const snappedLocation = progress.closestLocationInRoute; if (snappedLocation) setPositionSnapshot(snapshot => snapshot ? { ...snapshot, location: snappedLocation, receivedAt: Date.now() } : snapshot); setNavigationState('active'); setGuidanceState('guidance-following'); setRemainingDistance(Math.max(0, Math.round(progress.distanceToGoal))); setNavigationMessage('Follow the route on the map.') })
+      SitumPlugin.onNavigationProgress((progress: NavigationProgress) => { if (!active) return; setNavigationState('active'); setGuidanceState('guidance-following'); setRemainingDistance(Math.max(0, Math.round(progress.distanceToGoal))); setNavigationMessage('Follow the route on the map.') })
       SitumPlugin.onNavigationDestinationReached((_route: Route) => { if (active) { navigationStateRef.current = 'arrived'; guidanceStateRef.current = 'arrived'; setNavigationState('arrived'); setGuidanceState('arrived'); setNavigationMessage('Destination reached.'); setRemainingDistance(0) } })
       SitumPlugin.onNavigationOutOfRoute(() => { if (active) { navigationStateRef.current = 'outside-route'; guidanceStateRef.current = 'outside-route'; setNavigationState('outside-route'); setGuidanceState('outside-route'); setNavigationMessage('You are outside the current route.') } })
       SitumPlugin.onNavigationCancellation(() => { if (active && navigationIsOwned(navigationStateRef.current, false)) { navigationStateRef.current = 'cancelled'; guidanceStateRef.current = 'cancelled'; setNavigationState('cancelled'); setGuidanceState('cancelled'); setNavigationMessage('Directions cancelled.'); setRemainingDistance(null) } })
       SitumPlugin.onNavigationError(() => { if (active) { navigationStateRef.current = 'error'; guidanceStateRef.current = 'error'; setNavigationState('error'); setGuidanceState('error'); setNavigationMessage('Directions could not be started.') } })
     } catch { setError('Situm positioning is unavailable on this build.') }
-    return () => { active = false; cancelNavigation(); try { if (SitumPlugin.positioningIsRunning()) SitumPlugin.removeLocationUpdates() } catch { /* native cleanup is best effort */ }; SitumPlugin.onLocationUpdate(() => undefined); SitumPlugin.onLocationStatus(() => undefined); SitumPlugin.onLocationError(() => undefined); SitumPlugin.onLocationStopped(() => undefined); SitumPlugin.onNavigationStart(() => undefined); SitumPlugin.onNavigationProgress(() => undefined); SitumPlugin.onNavigationDestinationReached(() => undefined); SitumPlugin.onNavigationOutOfRoute(() => undefined); SitumPlugin.onNavigationCancellation(() => undefined); SitumPlugin.onNavigationError(() => undefined) }
-  }, [buildingId, cancelNavigation, invalidatePosition, workspaceId])
-  useEffect(() => { if (!positionSnapshot || positionSnapshot.state !== 'fresh') return; const remaining = Math.max(0, locationFreshnessWindowMs - (Date.now() - positionSnapshot.receivedAt)); const timer = setTimeout(() => { setPositionSnapshot(snapshot => snapshot ? { ...snapshot, state: 'stale' } : null); setPositionState('stale'); setLocationMessage('Your last location is no longer current. Find your location again before getting directions.') }, remaining); return () => clearTimeout(timer) }, [positionSnapshot])
-  useEffect(() => { if (lifecycle === 'active') return; cancelNavigation(); try { if (SitumPlugin.positioningIsRunning()) SitumPlugin.removeLocationUpdates() } catch { /* native cleanup is best effort */ }; invalidatePosition('stopped', 'Location paused while the app is in the background.') }, [cancelNavigation, invalidatePosition, lifecycle])
+    return () => { active = false; cancelNavigation(); SitumPlugin.onNavigationStart(() => undefined); SitumPlugin.onNavigationProgress(() => undefined); SitumPlugin.onNavigationDestinationReached(() => undefined); SitumPlugin.onNavigationOutOfRoute(() => undefined); SitumPlugin.onNavigationCancellation(() => undefined); SitumPlugin.onNavigationError(() => undefined) }
+  }, [buildingId, cancelNavigation, positioning])
+  useEffect(() => { setPositionStale(false); if (!positioningSnapshot.receivedAt) return; const remaining = Math.max(0, locationFreshnessWindowMs - (Date.now() - positioningSnapshot.receivedAt)); const timer = setTimeout(() => setPositionStale(true), remaining); return () => clearTimeout(timer) }, [positioningSnapshot.receivedAt])
+  useEffect(() => { if (positionState === 'error' || positionState === 'stopped') cancelNavigation() }, [cancelNavigation, positionState])
 
-  const startPositioning = useCallback(() => { if (buildingId === null) return; invalidatePosition('starting', 'Requesting the permissions needed for indoor positioning…'); setGuidanceState('positioning-starting'); try { SitumPlugin.requestLocationUpdates({ buildingIdentifier: buildingId }) } catch { invalidatePosition('error', 'Location permission or a device sensor is unavailable.'); setGuidanceState('error') } }, [buildingId, invalidatePosition])
-  const stopPositioning = useCallback(() => { cancelNavigation(); try { SitumPlugin.removeLocationUpdates(); invalidatePosition('stopped', 'Location is stopped.') } catch { invalidatePosition('error', 'Location could not be stopped safely.') } setGuidanceState('browse') }, [cancelNavigation, invalidatePosition])
+  const startPositioning = useCallback(() => { if (buildingId === null) return; setGuidanceState('positioning-starting'); void positioning.start(workspaceId, buildingId, () => workspaces.getPositioningCredential()) }, [buildingId, positioning, workspaces, workspaceId])
+  const stopPositioning = useCallback(() => { cancelNavigation(); positioning.stop('explicit'); setGuidanceState('browse') }, [cancelNavigation, positioning])
   const onPoiSelected = useCallback((event: OnPoiSelectedResult) => { if (buildingId === null || Number(event.buildingIdentifier) !== buildingId) return; const poi = resolvePoi(cartography.pois, Number(event.identifier), buildingId); setSelectedPoi(poi) }, [buildingId, cartography.pois])
   const startGuidance = useCallback(() => { if (!selectedPoi || !canNavigate) return; cancelNavigation(); try { mapRef.current?.navigateToPoi({ identifier: selectedPoi.id }); try { mapRef.current?.followUser() } catch { /* follow begins again on navigation start */ }; navigationStateRef.current = 'active'; guidanceStateRef.current = guidanceStateForNavigation('active'); setNavigationState('active'); setGuidanceState('guidance-following'); setNavigationMessage('Starting directions…') } catch { navigationStateRef.current = 'error'; guidanceStateRef.current = 'error'; setNavigationState('error'); setGuidanceState('error'); setNavigationMessage('Directions could not be started.') } }, [canNavigate, cancelNavigation, selectedPoi])
   const recenter = useCallback(() => { try { mapRef.current?.followUser(); guidanceStateRef.current = 'guidance-following'; setGuidanceState('guidance-following'); setNavigationMessage('Following your position.') } catch { setNavigationMessage('Recenter is unavailable right now.') } }, [])
@@ -115,7 +114,7 @@ function NativeMapRuntime({ workspaceId, cartography, lifecycle, initialBuilding
 
   if (error) return <StateCard title="Map unavailable" body={error} />
   return <View style={styles.screen}>
-    {buildingId ? <MapView key={`${workspaceId}:${buildingId}`} ref={mapRef} style={[styles.map, { height: mapHeight }]} configuration={{ buildingIdentifier: String(buildingId), profile: process.env.EXPO_PUBLIC_SITUM_PROFILE || undefined, language: 'en' }} onLoad={() => setLocationMessage('Map ready.')} onLoadError={() => setError('The selected building map could not be loaded.')} onPoiSelected={onPoiSelected} onPoiDeselected={(_event: OnPoiDeselectedResult) => { setSelectedPoi(null) }} onFloorChanged={(floor: OnFloorChangedResult) => { setActiveFloorName(floor.toFloorName); setLocationMessage(`Map level: ${floor.toFloorName}`) }} /> : <View style={styles.mapPlaceholder}><Text style={styles.muted}>Choose a building to load its map.</Text></View>}
+    {buildingId ? <MapView key={`${workspaceId}:${buildingId}`} ref={mapRef} style={[styles.map, { height: mapHeight }]} configuration={{ buildingIdentifier: String(buildingId), profile: process.env.EXPO_PUBLIC_SITUM_PROFILE || undefined, language: 'en' }} onLoadError={() => setError('The selected building map could not be loaded.')} onPoiSelected={onPoiSelected} onPoiDeselected={(_event: OnPoiDeselectedResult) => { setSelectedPoi(null) }} onFloorChanged={(floor: OnFloorChangedResult) => { setActiveFloorName(floor.toFloorName) }} /> : <View style={styles.mapPlaceholder}><Text style={styles.muted}>Choose a building to load its map.</Text></View>}
     <View pointerEvents="box-none" style={styles.overlay}>
       <View style={styles.mapControls}><TouchableOpacity accessibilityRole="button" accessibilityLabel={positionState === 'fresh' ? 'Turn off location' : 'Find my location'} onPress={positionState === 'fresh' || positionState === 'starting' ? stopPositioning : startPositioning} style={styles.locationButton}><Text style={styles.locationButtonText}>{positionState === 'fresh' ? 'Stop location' : 'Locate me'}</Text></TouchableOpacity>{isGuidance && guidanceState !== 'guidance-following' ? <TouchableOpacity accessibilityRole="button" accessibilityLabel="Recenter map" onPress={recenter} style={styles.recenterButton}><Text style={styles.recenterText}>Recenter</Text></TouchableOpacity> : null}</View>
       {selectedPoi && guidanceState === 'browse' ? <View accessibilityState={{ selected: selectedPoi?.id === poi.id }} style={styles.poiSheet}><View style={styles.sheetHandle} /><Text style={styles.sheetEyebrow}>PLACE</Text><Text numberOfLines={1} style={styles.sheetTitle}>{selectedPoi.name}</Text><Text style={styles.sheetMeta}>{selectedPoi.categoryName || 'Place'}{resolveFloorDisplay(cartography.floors, selectedPoi.floorId, buildingId || -1) ? ` · ${resolveFloorDisplay(cartography.floors, selectedPoi.floorId, buildingId || -1)}` : ''}</Text><View style={styles.sheetActions}><TouchableOpacity accessibilityRole="button" accessibilityLabel="Directions" accessibilityState={{ disabled: !canNavigate }} disabled={!canNavigate} onPress={startGuidance} style={[styles.primaryButton, !canNavigate && styles.disabled]}><Text style={styles.primaryButtonText}>Directions</Text></TouchableOpacity><TouchableOpacity accessibilityRole="button" onPress={() => { mapRef.current?.deselectPoi(); setSelectedPoi(null) }} style={styles.clearButton}><Text style={styles.clearText}>Clear</Text></TouchableOpacity></View><Text style={styles.sheetHint}>{canNavigate ? 'Use real Situm positioning for guidance.' : 'Find your current location before starting directions.'}</Text></View> : null}
