@@ -248,7 +248,7 @@ Treat each underlying advisory independently.
 
 For each advisory:
 
-1. confirm current advisory data from an authoritative source (GitHub Security Advisory, package maintainer advisory/release, npm registry metadata, or upstream repository); 
+1. confirm current advisory data from an authoritative source (GitHub Security Advisory, package maintainer advisory/release, npm registry metadata, or upstream repository);
 2. map every vulnerable installed path using `npm ls` / lockfile inspection;
 3. determine whether the vulnerable code is runtime, build-time, development-only, or unreachable;
 4. identify the smallest safe remediation path;
