@@ -57,11 +57,17 @@ test('Plan 035 background stops foreground-only positioning without auto-restart
   assert.equal(native.stopCount, 1); assert.equal(native.startCount, 1); assert.equal(session.getSnapshot().state, 'stopped')
 })
 
-test('Plan 035 native stopped and error callbacks fail closed', async () => {
+test('Plan 035 native stopped and fatal callbacks fail closed and stop the native producer', async () => {
   const native = fakeNative(); const session = new ForegroundPositioningSession(native)
   await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' })); native.emitError({ code: '8002' })
-  assert.equal(session.getSnapshot().state, 'error'); assert.equal(session.getSnapshot().location, null)
-  native.emitStopped(); assert.equal(session.getSnapshot().state, 'stopped'); assert.equal(session.getSnapshot().location, null)
+  assert.equal(native.stopCount, 1); assert.equal(native.running, false); assert.equal(session.getSnapshot().state, 'error'); assert.equal(session.getSnapshot().location, null)
+  native.emitStopped(); assert.equal(native.stopCount, 1); assert.equal(session.getSnapshot().state, 'stopped'); assert.equal(session.getSnapshot().location, null)
+})
+
+test('Plan 035 USER_NOT_IN_BUILDING is fatal and stops the native producer', async () => {
+  const native = fakeNative(); const session = new ForegroundPositioningSession(native)
+  await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' })); native.emitStatus({ statusName: 'USER_NOT_IN_BUILDING' })
+  assert.equal(native.stopCount, 1); assert.equal(native.running, false); assert.equal(session.getSnapshot().state, 'error'); assert.equal(session.getSnapshot().location, null)
 })
 
 test('Plan 035 screen ownership does not stop positioning on Explore unmount and Realtime remains server-mediated', () => {

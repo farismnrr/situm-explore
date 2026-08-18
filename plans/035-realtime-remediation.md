@@ -32,7 +32,7 @@ Installed SDK evidence confirms `@situm/react-native@3.19.2` exposes singleton c
 
 ## Phase 2 — Deterministic regression coverage
 
-Added `test/mobile-plan-035-positioning.test.ts` covering explicit start, tab-consumer survival/duplicate starts, idempotent stop, workspace invalidation, background no-auto-restart, native error/stopped fail-closed behavior, and Realtime/security source contracts.
+Added `test/mobile-plan-035-positioning.test.ts` covering explicit start, tab-consumer survival/duplicate starts, idempotent stop, workspace invalidation, background no-auto-restart, native error/stopped fail-closed behavior including native-producer teardown, and Realtime/security source contracts.
 
 ## Acceptance
 
@@ -45,4 +45,4 @@ Added `test/mobile-plan-035-positioning.test.ts` covering explicit start, tab-co
 - Malformed payload/workspace/building freshness guards: PASS — existing Plan 030/031 tests remain green; Plan 035 does not weaken them.
 - Root/mobile validation: PASS — `git diff --check`, root tests, root lint/typecheck, mobile lint/typecheck, and Android debug build pass.
 - POS app install/navigation/UI reachability: PASS — debug APK installed on `100.113.52.76:35911`; 1366×720 app content, reverse mappings, authenticated Realtime empty state, and Explore/Realtime navigation verified.
-- Physical sensor-backed positioning and own-device Realtime publishing: BLOCKED — POS still reports Situm `LOCATION 8002` and Android `network provider enabled=false` with no last location. No own-device publishing/navigation PASS is claimed.
+- Physical sensor-backed positioning and own-device Realtime publishing: BLOCKED — after remediation-time device settings, Android reports Location enabled, Bluetooth on, and `network provider enabled=true`, but the POS still has `last location=null`; Situm transitions `CALCULATING → STOPPED` without a sensor-backed `onLocationUpdate`. No own-device publishing/navigation PASS is claimed.

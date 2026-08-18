@@ -35,7 +35,7 @@ After: `authenticated shell -> ForegroundPositioningSession -> SitumPlugin`; Exp
 PASS:
 
 - `git diff --check`
-- `npm test` — 55 tests passed
+- `npm test` — 56 tests passed after reviewer remediation
 - `npm run lint`
 - `npm run typecheck`
 - `cd mobile && npm run lint`
@@ -54,7 +54,7 @@ Device `100.113.52.76:35911`:
 - Debug APK installed and app relaunched successfully.
 - UI hierarchy verified authenticated Realtime, `Realtime positions`, `No positions reported`, and truthful no-presence notice. Explore navigation was reached and Map showed `Locate me`.
 - After tapping Locate me, logcat recorded Situm `LOCATION` code `8002` / “Location must be enabled to scan Bluetooth, Wi-Fi and GPS”; Android location dump still showed `network provider enabled=false` and `last location=null`.
-- No sensor-backed location or upstream own-device position was observed. The app opened the vendor User Helper/Location settings flow. The corrected lifecycle therefore cannot be physically exercised through a successful positioning start on this device.
+- No sensor-backed location or upstream own-device position was observed. The app opened the vendor User Helper/Location settings flow. Reviewer remediation then rechecked the device after Location/Bluetooth/provider settings were enabled. Android reported Location enabled, Bluetooth on, and `network provider enabled=true`, but `last location` remained null. A fresh Locate-me attempt entered Situm `CALCULATING` and then `STOPPED` without any sensor-backed location update. Explore → Realtime → Explore remained stable and Realtime truthfully stayed empty. The corrected lifecycle therefore still cannot be physically exercised through successful own-device publishing on this device.
 
 ## Acceptance classification
 
@@ -65,12 +65,19 @@ Device `100.113.52.76:35911`:
 | Explore → Realtime → Explore session ownership | PASS | controller architecture + deterministic tests |
 | Explicit stop/workspace switch/logout | PASS | controller paths + deterministic tests |
 | Background/restart semantics | PASS | background test; new process starts stopped |
-| Native error/stopped fail-closed | PASS | deterministic callback tests |
+| Native error/stopped fail-closed | PASS | reviewer remediation now tears down the native producer on fatal error/`USER_NOT_IN_BUILDING`; deterministic tests assert native stop |
 | Guidance/navigation ownership retained | PASS | existing Plan 030/034 tests remain green; navigation remains Explore-owned |
 | Realtime server mediation/security | PASS | source-contract test and unchanged server route boundary |
 | Features/devicesInfo handling | PASS | installed typings/runtime probe; features-only mapping retained |
 | Root/mobile tests, lint, typecheck, diff check | PASS | commands above |
 | Android build/install and POS UI route | PASS | Gradle, ADB, UI hierarchy |
-| Sensor-backed own-device Realtime publishing/navigation | BLOCKED | external vendor/device blocker: `LOCATION 8002`, network provider disabled, no last location |
+| Sensor-backed own-device Realtime publishing/navigation | BLOCKED | device now reports provider enabled, but no last location; Situm `CALCULATING → STOPPED` produces no location update |
 
 No secrets, raw credentials, fabricated positions, invented freshness/presence, or unsupported physical PASS claims are included here.
+
+## Reviewer remediation — 2026-08-18
+
+- Fatal native positioning errors and `USER_NOT_IN_BUILDING` now invalidate the session generation, best-effort stop the native producer, clear protected location state, and retain an explicit error state.
+- Focused Plan 035 tests: 9/9 PASS.
+- Full root suite: 56/56 PASS; root/mobile lint and typecheck plus `git diff --check` PASS.
+- Physical POS rerun: authenticated Explore and Realtime navigation PASS; no crash/redbox. Location/Bluetooth/network provider are now enabled, but the device still has no last location and Situm immediately transitions `CALCULATING → STOPPED`, so own-device Realtime publishing remains honestly BLOCKED.
