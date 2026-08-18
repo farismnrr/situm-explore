@@ -38,3 +38,10 @@ test('Plan 034 mobile positioning remains owner-scoped and returns only the dedi
   assert.match(mobilePositioning, /apiKey: \(input\.decryptApiKey \|\| decryptWorkspaceApiKey\)\(config\.encryptedPositioningApiKey\)/)
   assert.doesNotMatch(mobilePositioning, /encryptedApiKey|encryptedViewerApiKey/)
 })
+
+
+test('Plan 034 runtime catch-all exposes owner-scoped mobile positioning route', () => {
+  assert.match(workspaceConfigRoute, /parts\[1\] === 'mobile-positioning'/)
+  assert.match(workspaceConfigRoute, /resolveMobilePositioningCredential/)
+  assert.match(workspaceConfigRoute, /requireUserSession\(event\)/)
+})

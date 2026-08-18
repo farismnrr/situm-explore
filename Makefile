@@ -6,7 +6,7 @@ IMAGE_REPOSITORY ?= ghcr.io/farismnrr/situm-explore
 IMAGE ?= $(IMAGE_REPOSITORY)
 SHA_TAG ?= sha-$(shell git rev-parse --short=12 HEAD 2>/dev/null || printf 'unknown')
 STAGING_TAG ?= staging
-PLATFORMS ?= linux/amd64,linux/arm64
+PLATFORMS ?= linux/amd64
 LOCAL_PLATFORM ?= $(shell docker version --format '{{.Server.Os}}/{{.Server.Arch}}' 2>/dev/null || printf 'linux/amd64')
 COMPOSE_FILE ?= deploy/staging.compose.yml
 STAGING_ENV_FILE ?= deploy/staging.env

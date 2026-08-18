@@ -4,7 +4,7 @@ _Last reviewed: 2026-08-18_
 
 Security dependency remediation is complete on `main`/the integrated baseline: UUID is remediated through the compatible `xcode -> uuid@11.1.1` override. The two `image-size` advisories remain present in npm/GitHub published-version scanning with no upstream patched release; the narrowly scoped, reproducible `patch-package` ICNS loop fix and truthful residual evidence are retained. The active Plan 034 branch is `plan/034-full-e2e-acceptance`.
 
-Plan 033 remediation closeout is complete: stale evidence claims were corrected in source/docs, focused deterministic coverage was added, and all available validation gates passed. Plan 034 is now in progress. Its positioning-provisioning remediation is implemented and statically/runtime-smoke validated; all real product-UI provisioning, native runtime retrieval, physical positioning/navigation, Realtime, and cross-client acceptance remain explicitly UNPASSED.
+Plan 033 remediation closeout is complete: stale evidence claims were corrected in source/docs, focused deterministic coverage was added, and all available validation gates passed. Plan 034 is closed by explicit user decision on 2026-08-18. Its positioning-provisioning remediation, login-keyboard remediation, backend mobile-positioning route correction, and Explore/navigation refactor are implemented and validated to their recorded evidence. Closure does not fabricate full physical E2E: vendor POS positioning remains blocked by Situm `LOCATION 8002` with `network provider enabled=false`, and other unexercised physical/cross-client claims remain UNPASSED. A newly observed Realtime issue is intentionally moved to Plan 035.
 
 ## Native roadmap — Plans 033–034 remaining
 
@@ -18,7 +18,7 @@ A post-Plan-032 native design review found that the React Native implementation 
 
 Plan 033 — Native UI/UX Reference Reconciliation — is therefore the next implementation plan. It starts from updated `main`, preserves all Plan 028–032 capability/security/lifecycle contracts, and owns the final native presentation pass across phone, tablet/POS and wide layouts. It must not fabricate Realtime markers/presence/freshness, fake Recent history, sample POIs, permission success, route metrics or other unsupported behavior. It may close on reviewer-approved implementation plus truthful non-device/emulator visual validation; physical runtime claims remain unpassed.
 
-Plan 034 — Full E2E Acceptance & Roadmap Closeout — remains the terminal non-deferrable gate. It inherits every unpassed physical-device item from Plans 030–031, the real web-to-native/deep-link/install/auth/session/workspace E2E introduced by Plan 032, and real-device confirmation of the reconciled Plan 033 UI under actual permission/location/navigation/Realtime states. If the required supported Android device, reachable backend, owner-authorized Positioning credential or calibrated building/profile is unavailable, Plan 034 remains blocked and the roadmap remains incomplete; those checks may not be deferred again.
+Plan 034 — Full E2E Acceptance & Roadmap Closeout — is closed by the user as an administrative work package with its remaining physical blockers preserved in evidence. The earlier terminal/non-deferrable wording is superseded by that explicit decision; no unresolved item is silently converted to PASS. Plan 035 is the next bounded scope for the newly observed Realtime issue.
 
 Current planning authority is `plans/028-034-native-mobile-roadmap.md`, with the bounded remediation brief under `.agents/execution/plan-034-positioning-provisioning-remediation.md`. Plan 034 is explicitly authorized as the active stacked acceptance branch; do not open a PR or merge it in this execution.
 
@@ -38,7 +38,7 @@ Locked product policy for this roadmap:
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
 - the server-side Read & Write Situm credential must never be exposed to mobile; the frozen native authority is a dedicated least-privilege Positioning credential issued only after owner authorization, while native Realtime remains server-mediated.
 
-Current workflow: continue Plan 034 acceptance on `plan/034-full-e2e-acceptance`; after this remediation checkpoint, provision only through the real Workspace Settings UI, exercise native authenticated retrieval, then resume physical acceptance. Do not claim physical positioning acceptance from static or endpoint-only evidence.
+Current workflow: continue Plan 034 acceptance on `plan/034-full-e2e-acceptance`; the Explore map-first/guidance refactor is implemented and physically verified up to the known POS provider blocker. Situm now owns Explore/building/search/floor/POI chrome; the app keeps only location/guidance overlays. Evidence is `.agents/evidence/plan-034-explore-navigation-refactor-2026-08-18.md`. The POS reproduced Situm LOCATION error 8002 with `network provider enabled=false`; do not claim physical positioning/navigation/follow acceptance or use fake location. Automatic gesture-based free-pan detection is also unsupported by the frozen SDK's public API. After the provider/runtime and product-UI provisioning prerequisites are available, resume at the real current-position/navigation gate.
 
 ## Plan 027 (complete/integrated)
 

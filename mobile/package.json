@@ -12,6 +12,7 @@
     "security:test": "node scripts/security/mobile-dependency-regression.cjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test:login-keyboard": "tsx scripts/login-keyboard-geometry.test.ts",
     "build:android": "cd android && ./gradlew assembleDebug"
   },
   "overrides": {
