@@ -24,3 +24,6 @@ logs/
 .DS_Store
 .idea/
 .vscode/
+
+# Mobile release artifacts
+mobile/dist/

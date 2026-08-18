@@ -2,7 +2,9 @@
 
 _Last reviewed: 2026-08-18_
 
-Security dependency remediation is complete on `main`/the integrated baseline: UUID is remediated through the compatible `xcode -> uuid@11.1.1` override. The two `image-size` advisories remain present in npm/GitHub published-version scanning with no upstream patched release; the narrowly scoped, reproducible `patch-package` ICNS loop fix and truthful residual evidence are retained. The active Plan 034 branch is `plan/034-full-e2e-acceptance`.
+Plan 035 — Realtime Remediation is implemented on `plan/035-realtime-remediation`. The confirmed lifecycle defect was screen-owned `removeLocationUpdates()` during Explore unmount. A shell-scoped `ForegroundPositioningSession` now owns singleton Situm callbacks and foreground positioning across Explore/Realtime, with explicit stop/workspace/logout/background/error handling. Deterministic Plan 035 tests, root/mobile validation, Android debug build/install, and POS Realtime/Explore navigation checks pass. Reviewer remediation additionally makes fatal native positioning errors stop the native producer before retaining an error snapshot. Physical sensor-backed positioning and own-device Realtime publishing remain blocked: Android now reports Location/Bluetooth/network provider enabled, but `last location=null` and Situm transitions `CALCULATING → STOPPED` without a location update. No such PASS is claimed.
+
+Security dependency remediation is complete on `main`/the integrated baseline: UUID is remediated through the compatible `xcode -> uuid@11.1.1` override. The two `image-size` advisories remain present in npm/GitHub published-version scanning with no upstream patched release; the narrowly scoped, reproducible `patch-package` ICNS loop fix and truthful residual evidence are retained. The active implementation branch is `plan/035-realtime-remediation`; Plan 034 is already merged/closed.
 
 Plan 033 remediation closeout is complete: stale evidence claims were corrected in source/docs, focused deterministic coverage was added, and all available validation gates passed. Plan 034 is closed by explicit user decision on 2026-08-18. Its positioning-provisioning remediation, login-keyboard remediation, backend mobile-positioning route correction, and Explore/navigation refactor are implemented and validated to their recorded evidence. Closure does not fabricate full physical E2E: vendor POS positioning remains blocked by Situm `LOCATION 8002` with `network provider enabled=false`, and other unexercised physical/cross-client claims remain UNPASSED. A newly observed Realtime issue is intentionally moved to Plan 035.
 
@@ -20,7 +22,7 @@ Plan 033 — Native UI/UX Reference Reconciliation — is therefore the next imp
 
 Plan 034 — Full E2E Acceptance & Roadmap Closeout — is closed by the user as an administrative work package with its remaining physical blockers preserved in evidence. The earlier terminal/non-deferrable wording is superseded by that explicit decision; no unresolved item is silently converted to PASS. Plan 035 is the next bounded scope for the newly observed Realtime issue.
 
-Current planning authority is `plans/028-034-native-mobile-roadmap.md`, with the bounded remediation brief under `.agents/execution/plan-034-positioning-provisioning-remediation.md`. Plan 034 is explicitly authorized as the active stacked acceptance branch; do not open a PR or merge it in this execution.
+Current bounded planning authority is `plans/035-realtime-remediation.md` on `plan/035-realtime-remediation`. Plan 034 is historical/closed; do not reopen its scope. No PR/merge for Plan 035 without explicit user authorization.
 
 Locked product policy for this roadmap:
 

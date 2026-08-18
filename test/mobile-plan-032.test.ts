@@ -66,6 +66,13 @@ test('Plan 032 distribution fallback has no timer-based app detection', () => {
   assert.match(config, /EXPO_PUBLIC_UNIVERSAL_LINK_HOST/)
 })
 
+test('Plan 032 public landing exposes configured Android download without requiring an app route', () => {
+  const landing = readFileSync(new URL('../app/pages/index.vue', import.meta.url), 'utf8')
+  assert.match(landing, /config\.public\.mobile\.androidDownloadUrl/)
+  assert.match(landing, /Download Android/)
+  assert.match(landing, /v-if="androidDownloadUrl"/)
+})
+
 test('Plan 032 install options use OS for mobile and expose all configured targets elsewhere', () => {
   const config = {
     androidStoreUrl: 'https://play.example/app',
@@ -108,4 +115,23 @@ test('Plan 032 applies sequential same-workspace Map links as distinct one-shot 
   request = consumeMapDeepLinkRequest(request, secondRequest.requestId)
   request = consumeMapDeepLinkRequest(request, secondRequest.requestId)
   assert.equal(request, null)
+})
+
+test('Plan 032 Android release artifacts use clean semver arm64 naming', () => {
+  const releaseScript = readFileSync(new URL('../mobile/scripts/build-android-release.cjs', import.meta.url), 'utf8')
+  const distribution = readFileSync(new URL('../docs/mobile-distribution.md', import.meta.url), 'utf8')
+  const staging = readFileSync(new URL('../deploy/staging.compose.yml', import.meta.url), 'utf8')
+  assert.match(releaseScript, /situm-explore-v\$\{version\}-android-arm64/)
+  assert.match(releaseScript, /expo.*prebuild/)
+  assert.match(releaseScript, /reactNativeArchitectures=arm64-v8a/)
+  assert.match(distribution, /situm-explore-v<semver>-android-arm64\.apk/)
+  assert.match(distribution, /situm-explore-latest-android-arm64\.apk/)
+  assert.match(staging, /situm-explore-latest-android-arm64\.apk/)
+})
+
+test('Plan 032 Android release fails closed on local or missing API base URLs', () => {
+  const releaseScript = readFileSync(new URL('../mobile/scripts/build-android-release.cjs', import.meta.url), 'utf8')
+  assert.match(releaseScript, /EXPO_PUBLIC_API_BASE_URL is required for release builds/)
+  assert.match(releaseScript, /Release API base URL must be public HTTPS/)
+  assert.match(releaseScript, /localhost.*127\.0\.0\.1.*0\.0\.0\.0/)
 })

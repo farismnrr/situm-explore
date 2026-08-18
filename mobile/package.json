@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test:login-keyboard": "tsx scripts/login-keyboard-geometry.test.ts",
-    "build:android": "cd android && ./gradlew assembleDebug"
+    "build:android": "cd android && ./gradlew assembleDebug",
+    "build:android:release": "node scripts/build-android-release.cjs"
   },
   "overrides": {
     "xcode": {
@@ -29,6 +30,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.2",
+    "react-native-safe-area-context": "~5.7.0",
     "react-native-svg": "15.15.4",
     "react-native-webview": "13.16.1"
   },

@@ -301,3 +301,11 @@ Status: active Plan 031 implementation decision.
 - When an upstream advisory has no patched `image-size` release, a small maintainer-aligned parser patch may be carried with `patch-package` only when its exact behavior, clean-install reproducibility, and regression evidence are recorded. npm/GitHub scanner residuals must remain visible and must not be dismissed or hidden.
 
 Status: active security-maintenance decision; revisit when `image-size` publishes an advisory-patched release.
+
+## Plan 035 foreground positioning ownership (2026-08-18)
+
+- `@situm/react-native` positioning callbacks and running state are process-global; the authenticated shell owns one `ForegroundPositioningSession`, while Explore is only a consumer/presentation surface.
+- The session starts only after explicit Locate me, uses the dedicated workspace POSITIONING credential, persists across Explore/Realtime tab changes, and stops on explicit stop, workspace switch, logout, background, native error/stopped, or teardown. It does not auto-restart after background or process restart.
+- Server-mediated Realtime remains unchanged and maps coordinate-bearing `features`; `devicesInfo` is never converted into a fabricated position.
+
+Status: active Plan 035 architecture decision.
