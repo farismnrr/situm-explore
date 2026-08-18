@@ -36,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–031 are complete/integrated via PRs #20–#26. Plan 032 Web/Native Handoff & Distribution is implementation-complete/reviewer-approved and PR-ready on `plan/032-web-native-handoff-distribution` through `f72697b` / `ecd2d51`; integration remains user-gated. Plan 033 owns the consolidated full E2E acceptance and roadmap closeout, including every still-unpassed physical-device item from Plans 030–031 plus Plan 032 cross-client acceptance. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
+Plans 026–032 are complete/integrated via PRs #20–#28. Plan 033 — Native UI/UX Reference Reconciliation — is the next implementation plan on `plan/033-native-ui-ux-reference-reconciliation`; it must reconcile the React Native shell, Explore/Map, Realtime, Recent, Settings and authentication with `design/reference/situm-explore-native-responsive-prototype.html` as closely as real backend/SDK authority allows across phone, tablet/POS and wide layouts. Plan 034 remains the terminal full E2E acceptance/roadmap-closeout gate carrying every still-unpassed physical-device item from Plans 030–031, Plan 032 cross-client acceptance, and real-device confirmation of the reconciled Plan 033 UI. Final Plan 025 Viewer acceptance passed; Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 

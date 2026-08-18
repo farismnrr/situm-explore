@@ -31,7 +31,7 @@ Status: active user policy.
 ## Full-stack Nuxt backend/web architecture
 
 - The existing Nuxt 4 application with Nitro server routes remains the single web application and application backend for Situm Explore.
-- Plans 028–033 may add a React Native companion **client**, but not a second backend/service or separate application authority.
+- Plans 028–034 may add a React Native companion **client**, but not a second backend/service or separate application authority.
 - Use Nuxt UI, `nuxt-auth-utils`, PostgreSQL/Drizzle in the application-owned `situm_explore` schema, and the existing ClickHouse analytics integration for the web/backend runtime.
 - Keep `app/`, `server/`, and genuinely shared `shared/` boundaries Nuxt-native; share contracts with mobile only when they are genuinely runtime-neutral.
 - KISS is the default tie-breaker. Do not add generic repositories/services, DI, global stores, event buses, caches, workers, or a second backend without concrete need.
@@ -41,15 +41,15 @@ Status: active.
 ## Web vs native Situm boundary
 
 - The Nuxt web product remains the operations/admin/exploration/analytics client; Nitro remains the single application backend.
-- Plans 028–033 add a separate React Native companion client rather than turning the Nuxt application into a hybrid/mobile wrapper.
+- Plans 028–034 add a separate React Native companion client rather than turning the Nuxt application into a hybrid/mobile wrapper.
 - Device indoor positioning, sensor/permission handling, handset blue-dot positioning, mobile navigation/rerouting, and the product's mobile Realtime experience belong to the native companion roadmap.
 - Web Map remains the product path for desktop/tablet layouts that pass explicit Viewer usability acceptance; phone web Map will hand off to native only after the native Map is accepted.
 - Web Realtime will intentionally hand off to native on desktop/tablet/phone after native Realtime is accepted. This is a product policy, not a claim that Situm web APIs are technically incapable of realtime reads.
 - Situm-domain UI without a truthful owner is removed or left unresolved rather than faked.
 
-Status: active; Plans 030–031 are integrated, Plan 032 owns handoff/distribution implementation, and Plan 033 owns the still-unpassed full-E2E acceptance.
+Status: active; Plans 030–032 are integrated, Plan 033 owns final native UI/UX reference reconciliation, and Plan 034 owns the still-unpassed full-E2E acceptance.
 
-## Native companion technology and credential direction (Plans 028–033)
+## Native companion technology and credential direction (Plans 028–034)
 
 - Target stack: React Native + Expo development builds + `@situm/react-native`, subject to Plan 028 freezing the exact supported dependency/platform matrix from current evidence.
 - Expo Go is not the runtime target for Situm native code; native development builds are required by the current official integration model.
@@ -59,7 +59,7 @@ Status: active; Plans 030–031 are integrated, Plan 032 owns handoff/distributi
 - Read-only Realtime authority should remain server-mediated unless the native product requirement and current SDK contract prove a narrower safe direct path.
 - Deep links may carry only non-secret navigation context. Application sessions, Situm credentials and tokens must never be placed in URLs/QR codes.
 
-Status: approved roadmap direction; Plans 028–031 are integrated, Plan 032 is the remaining implementation plan, and Plan 033 is the terminal full-E2E gate.
+Status: approved roadmap direction; Plans 028–032 are integrated, Plan 033 is the remaining presentation implementation plan, and Plan 034 is the terminal full-E2E gate.
 
 ### Plan 028 Phase 1 native build matrix (2026-08-17)
 
@@ -208,7 +208,7 @@ Status: active.
 
 ## Completed roadmap transition
 
-Plans 017–020, Plans 021–025, and Plans 026–031 are complete/integrated historical execution. Plan 032 is the remaining Web/Native Handoff & Distribution implementation plan; Plan 033 is the dependent terminal full-E2E acceptance and roadmap-closeout plan.
+Plans 017–020, Plans 021–025, and Plans 026–032 are complete/integrated historical execution. Plan 033 is the remaining Native UI/UX Reference Reconciliation implementation plan; Plan 034 is the dependent terminal full-E2E acceptance and roadmap-closeout plan.
 
 The following are historical context only:
 
@@ -216,7 +216,7 @@ The following are historical context only:
 - `plans/021-025-prerequisites.md`;
 - `design/ROADMAP-021-025-OVERRIDES.md`.
 
-The Plans 028–033 roadmap is the current planning authority. Plans 028–031 are integrated; Plan 032 is next from updated `main`, and Plan 033 starts only after Plan 032 integration.
+The Plans 028–034 roadmap is the current planning authority. Plans 028–032 are integrated; Plan 033 is next from updated `main`, and Plan 034 starts only after Plan 033 integration unless the user explicitly authorizes stacking.
 
 Status: active.
 
@@ -249,16 +249,29 @@ Status: active durable runtime/security decision.
 - Native MapView is owned by the authenticated workspace context and must remount when workspace/building changes; it receives only the dedicated owner-authorized Positioning credential. The Read & Write primary and browser Viewer credentials remain server-side/mobile-inaccessible.
 - The installed `@situm/react-native` 3.19.2 surface is consumed through a narrow local TypeScript declaration boundary because the published package omits its referenced `lib/` files; Metro/Android use the installed package source/native module. This workaround mirrors only the proven MapView, positioning, user-helper, floor/POI, and navigation surface and is not evidence of iOS runtime support.
 - Positioning uses Situm User Helper plus Remote Configuration and starts only from the explicit foreground Map action. No background location or Realtime/Share Live Location is enabled in Plan 030.
-- Real-device positioning, blue-dot, floor transition, POI, and navigation claims require physical supported-device evidence. Plan 030 implementation is approved without claiming those outcomes; after the 2026-08-17 roadmap split, the unpassed device checks are explicitly transferred to Plan 033's consolidated hard final E2E gate.
+- Real-device positioning, blue-dot, floor transition, POI, and navigation claims require physical supported-device evidence. Plan 030 implementation is approved without claiming those outcomes; after the 2026-08-17 roadmap split, the unpassed device checks are explicitly transferred to Plan 034's consolidated hard final E2E gate.
 
 Status: active durable native product/security boundary.
+
+## Plan 033 native UI/UX reference reconciliation (2026-08-18)
+
+- A deep post-Plan-032 review found that the React Native client preserves the approved Situm Explore visual family and navigation vocabulary but still has structural gaps against `design/reference/situm-explore-native-responsive-prototype.html`: phone reachability/scroll ownership, Map and Realtime inner responsiveness, Explore search/location hierarchy, final Settings/Recent presentation, wide/POS content utilization, and accessibility.
+- The user explicitly chose one bounded implementation plan before terminal E2E to reconcile all native UI/UX as closely as possible to the canonical reference while continuing to use the real backend, real workspace/cartography data, and proven installed SDK behavior.
+- Plan 033 must preserve Plans 028–032 auth/workspace/credential/Map/positioning/navigation/Realtime/deep-link/distribution ownership; it is not a redesign or a second backend/product system.
+- Reference hierarchy and responsive composition are binding visual intent, but capability/data/security truth wins. In particular, no generic remote Realtime markers/focus, online/idle/offline/freshness semantics, fake Recent activity, sample POIs, fake permission success, background-location enablement, or invented route metrics may be added for visual parity.
+- The approved responsive intent remains phone bottom navigation, tablet/POS compact rail, wide expanded rail, and feature-level adaptive composition. One shared React Native layout-mode contract should drive shell and feature screens rather than scaling a single stacked phone layout.
+- Historical authority against creating an event/audit backend solely to populate Recent remains active. If no trustworthy existing recent-history source is available, Plan 033 must ship a polished truthful empty/unavailable Recent surface instead of fabricated history.
+- Plan 033 may integrate after reviewer-approved implementation plus truthful non-device/emulator visual validation. It does not consume any physical/full-cross-client acceptance; those remain Plan 034.
+
+Status: active durable native presentation decision.
 
 ## Consolidated native full-E2E gate (2026-08-17)
 
 - Plans 030 and 031 were reviewed/integrated after their implementation/build/test/runtime contracts were approved because the required physical-device environment was unavailable; their device-dependent acceptance remains explicitly unpassed.
-- Plan 032 owns web/native handoff, deep-link/install/distribution implementation plus truthful non-device validation. It may integrate after reviewer approval without consuming the final full-E2E gate.
-- Every device-dependent carry-over from Plans 030–031 and every cross-client E2E flow introduced by Plan 032 must be enumerated for Plan 033; deferral never converts missing evidence into acceptance.
-- Plan 033 is the terminal non-deferrable gate. It must run the accumulated supported-Android physical Map/positioning/navigation, Realtime/native lifecycle, and web-to-native/deep-link/distribution E2E before roadmap closeout/merge.
+- Plan 032 owns web/native handoff, deep-link/install/distribution implementation plus truthful non-device validation and is integrated via PR #28; its real cross-client acceptance remains unpassed.
+- Plan 033 owns final native presentation reconciliation plus truthful non-device/emulator visual validation. It may integrate after reviewer approval without consuming the final full-E2E gate.
+- Every device-dependent carry-over from Plans 030–031, every cross-client E2E flow introduced by Plan 032, and real-device confirmation of the reconciled Plan 033 presentation must be enumerated for Plan 034; deferral never converts missing evidence into acceptance.
+- Plan 034 is the terminal non-deferrable gate. It must run the accumulated supported-Android physical Map/positioning/navigation, Realtime/native lifecycle, web-to-native/deep-link/distribution, and real-device native presentation E2E before roadmap closeout/merge.
 - Android Studio emulator evidence may supplement launch/UI/WebView/non-sensor regression, but it cannot prove real indoor positioning, BLE/Wi-Fi/sensor behavior, blue-dot/floor transitions, or equivalent physical-device semantics.
 
 Status: active durable roadmap acceptance decision.

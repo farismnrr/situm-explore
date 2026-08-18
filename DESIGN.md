@@ -22,7 +22,7 @@ Use the shared reference for:
 - shared tenant brand/tokens;
 - web interaction presentation.
 
-Use the native reference for Plans 029–032 when implementing native-facing UI/UX:
+Use the native reference for Plans 029–033 when implementing native-facing UI/UX, with Plan 033 as the final reference-reconciliation pass before full E2E:
 
 - mobile-first information hierarchy and end-user wording;
 - Map and Realtime screen composition;

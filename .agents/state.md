@@ -1,18 +1,22 @@
 # Current State
 
-_Last reviewed: 2026-08-17_
+_Last reviewed: 2026-08-18_
 
-## Native roadmap — Plans 032–033 remaining
+## Native roadmap — Plans 033–034 remaining
 
 Plan 030 was reviewed and integrated into `main` via PR #25 at merge commit `2a751216e752a5da85180925878faf1dddbe5187`; its supported-device Map/positioning/blue-dot/floor/POI/navigation E2E remains explicitly **unpassed** because the required physical-device/runtime path was unavailable.
 
 Plan 031 was reviewed and integrated into `main` via PR #26 at merge commit `655fde0153cd206eedae975bd25693bc48753a0b`; its local/remote branch was deleted. The integrated Realtime implementation is server-mediated, foreground-only, device-position oriented, abortable, fail-closed on malformed payloads, and exposes source time without invented freshness/presence/status semantics. Its supported-device Realtime/native-lifecycle E2E also remains explicitly **unpassed**.
 
-By explicit roadmap decision on 2026-08-17, full E2E is split out of Plan 032. Plan 032 now owns Web/Native Handoff & Distribution implementation plus every truthful non-device validation available from tests, builds, browser viewport checks and emulator/runtime smoke. Plan 032 must record an exact acceptance inventory but may be reviewer-approved/integrated without a physical-device E2E pass.
+Plan 032 — Web/Native Handoff & Distribution — is complete and integrated via PR #28 at merge commit `f4f729d8bbd10e0bd257423682489c928c74c95b`. Its real cross-client/open/install/deep-link/auth/workspace acceptance remains explicitly **unpassed** and is carried to the terminal gate.
 
-Plan 033 — Full E2E Acceptance & Roadmap Closeout — is the terminal non-deferrable gate. It inherits every unpassed physical-device item from Plans 030–031 plus the real web-to-native/deep-link/install/auth/session/workspace E2E introduced by Plan 032. If the required supported Android device, reachable backend, owner-authorized Positioning credential or calibrated building/profile is unavailable, Plan 033 remains blocked and the roadmap remains incomplete; those checks may not be deferred again.
+A post-Plan-032 native design review found that the React Native implementation preserves the approved brand/nav vocabulary and backend/SDK truth but still diverges materially from `design/reference/situm-explore-native-responsive-prototype.html` in screen hierarchy, phone scrolling/reachability, Map and Realtime responsive composition, Explore search/location UX, Settings/Recent final presentation, and accessibility. The user explicitly requested one implementation plan to reconcile all native UI/UX as closely as possible to the reference while staying integrated with real backend/SDK behavior.
 
-Current planning authority is `plans/028-033-native-mobile-roadmap.md`. Plan 032 implementation is reviewer-approved and PR-ready on `plan/032-web-native-handoff-distribution` through `f72697b` / `ecd2d51`. All three non-device reviewer findings are resolved, including sequential same-workspace foreground Map links via monotonic one-shot Map requests. Integration remains user-gated. All physical-device and cross-client acceptance remains explicitly unpassed for Plan 033; Plan 033 has not started.
+Plan 033 — Native UI/UX Reference Reconciliation — is therefore the next implementation plan. It starts from updated `main`, preserves all Plan 028–032 capability/security/lifecycle contracts, and owns the final native presentation pass across phone, tablet/POS and wide layouts. It must not fabricate Realtime markers/presence/freshness, fake Recent history, sample POIs, permission success, route metrics or other unsupported behavior. It may close on reviewer-approved implementation plus truthful non-device/emulator visual validation; physical runtime claims remain unpassed.
+
+Plan 034 — Full E2E Acceptance & Roadmap Closeout — remains the terminal non-deferrable gate. It inherits every unpassed physical-device item from Plans 030–031, the real web-to-native/deep-link/install/auth/session/workspace E2E introduced by Plan 032, and real-device confirmation of the reconciled Plan 033 UI under actual permission/location/navigation/Realtime states. If the required supported Android device, reachable backend, owner-authorized Positioning credential or calibrated building/profile is unavailable, Plan 034 remains blocked and the roadmap remains incomplete; those checks may not be deferred again.
+
+Current planning authority is `plans/028-034-native-mobile-roadmap.md`. Plan 033 has not started. Plan 034 must not start before Plan 033 is integrated unless the user explicitly authorizes stacking.
 
 Locked product policy for this roadmap:
 
@@ -30,7 +34,7 @@ Locked product policy for this roadmap:
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
 - the server-side Read & Write Situm credential must never be exposed to mobile; the frozen native authority is a dedicated least-privilege Positioning credential issued only after owner authorization, while native Realtime remains server-mediated.
 
-Normal workflow: execute Plan 030 on `plan/030-native-map-positioning-navigation`; after review/integration, Plans 031–032 follow the same predecessor-integration rule unless the user explicitly authorizes stacked branches.
+Normal workflow: execute Plan 033 on `plan/033-native-ui-ux-reference-reconciliation` from updated `main`; after reviewer approval/integration, Plan 034 follows from updated `main` unless the user explicitly authorizes stacked execution.
 
 ## Plan 027 (complete/integrated)
 
@@ -75,7 +79,7 @@ The former roadmap planning branch is historical after PR #13 and is not an impl
 
 ## Current authority
 
-Read `.agents/memory/decisions.md`, `ARCHITECTURE.md`, `plans/README.md`, `plans/028-033-native-mobile-roadmap.md` for the approved next roadmap, the capability matrix when relevant, and the active plan. Read `.agents/memory/roadmap-021-025.md` / `plans/021-025-prerequisites.md` only when completed backend-roadmap history is materially relevant.
+Read `.agents/memory/decisions.md`, `ARCHITECTURE.md`, `plans/README.md`, `plans/028-034-native-mobile-roadmap.md` for the approved next roadmap, the capability matrix when relevant, and the active plan. Read `.agents/memory/roadmap-021-025.md` / `plans/021-025-prerequisites.md` only when completed backend-roadmap history is materially relevant.
 
 Historical plans, sessions, and branches remain evidence only.
 

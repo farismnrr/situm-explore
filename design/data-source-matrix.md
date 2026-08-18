@@ -2,7 +2,7 @@
 
 This is the current capability/status router. Detailed rules live in `ARCHITECTURE.md`, `design/IMPLEMENTATION.md`, `.agents/state.md`, and the active plan.
 
-Plans 017–031 are complete/integrated. Plan 032 implementation is complete pending integration; Plan 033 owns consolidated full E2E acceptance and roadmap closeout.
+Plans 017–032 are complete/integrated. Plan 033 owns final native UI/UX reference reconciliation; Plan 034 owns consolidated full E2E acceptance and roadmap closeout.
 
 | Capability | Status / owner |
 | --- | --- |
@@ -13,18 +13,18 @@ Plans 017–031 are complete/integrated. Plan 032 implementation is complete pen
 | Correlation, telemetry reuse, safe error contract | Plan 023 |
 | Workspace-scoped Situm backend/account/building context | Plan 024 |
 | Workspace UX + full regression | Plan 025 |
-| Viewer lifecycle | Implemented on web for ≥768×600 capable layouts; shorter/phone web layouts hand off to native; cross-client acceptance remains Plan 033 |
-| Buildings/Floors/POIs/Categories | Implemented on web/workspace context and native mobile Map in Plan 030; real-device acceptance remains Plan 033 |
+| Viewer lifecycle | Implemented on web for ≥768×600 capable layouts; shorter/phone web layouts hand off to native; cross-client acceptance remains Plan 034 |
+| Buildings/Floors/POIs/Categories | Implemented on web/workspace context and native mobile Map in Plan 030; real-device acceptance remains Plan 034 |
 | Geofences/Paths | Implemented on web/workspace context; native scope only when required/evidenced |
-| Static directions between known POIs | Implemented on web; native directions/navigation implemented in Plan 030 with physical-device acceptance remaining in Plan 033 |
-| Realtime operations | Implemented in the native companion as a server-mediated workspace-scoped device-position list/detail experience; generic remote MapView markers and Share Live Location are not used; all web entry points hand off through the shared native gate; cross-client acceptance remains Plan 033 |
+| Static directions between known POIs | Implemented on web; native directions/navigation implemented in Plan 030 with physical-device acceptance remaining in Plan 034 |
+| Realtime operations | Implemented in the native companion as a server-mediated workspace-scoped device-position list/detail experience; generic remote MapView markers and Share Live Location are not used; all web entry points hand off through the shared native gate; cross-client acceptance remains Plan 034 |
 | Trajectory | Unresolved/omitted |
 | Organization/Users/Groups/Alarms reads | Implemented; migrate workspace context |
 | Analytics + CSV | Implemented; make workspace-isolated |
 | Legacy pre-workspace analytics rows | Historical/unscoped; do not attribute without evidence/policy |
 | Route metrics/steps/geometry/ETA | Unresolved; do not invent |
-| Handset positioning/blue dot/live navigation/rerouting | Native-only; implemented in Plan 030 with real supported-device acceptance still unpassed and owned by Plan 033 |
+| Handset positioning/blue dot/live navigation/rerouting | Native-only; implemented in Plan 030 with real supported-device acceptance still unpassed and owned by Plan 034 |
 
-The current workspace-scoped Situm, Viewer, building, analytics, native Map and native Realtime behavior is integrated. Plans 032–033 finish handoff/distribution and full E2E acceptance; they are not an unfinished backend migration.
+The current workspace-scoped Situm, Viewer, building, analytics, native Map, native Realtime and web/native handoff behavior is integrated. Plan 033 reconciles final native presentation only; Plan 034 performs terminal full E2E. Neither is an unfinished backend migration.
 
 For any new/changed Situm behavior, verify the exact official endpoint/SDK method, installed compatibility, runtime owner, permission semantics, consumed fields/events, and failure behavior. No evidence means unresolved/absent, never fabricated success.

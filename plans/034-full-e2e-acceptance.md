@@ -1,28 +1,28 @@
-# Plan 033 — Full E2E Acceptance & Roadmap Closeout
+# Plan 034 — Full E2E Acceptance & Roadmap Closeout
 
-Branch: `plan/033-full-e2e-acceptance`
-Base: updated `origin/main` after Plan 032 is integrated
-Depends on: Plan 032 complete/integrated
+Branch: `plan/034-full-e2e-acceptance`
+Base: updated `origin/main` after Plan 033 is integrated
+Depends on: Plan 033 complete/integrated
 Status: planned
 
 ## Objective
 
-Run the complete cross-client and supported-Android physical-device acceptance for the native companion roadmap, including every E2E item previously deferred from Plans 030–031 because no supported physical device/runtime path was available, plus the web/native handoff and distribution flows implemented in Plan 032.
+Run the complete cross-client and supported-Android physical-device acceptance for the native companion roadmap, including every E2E item previously deferred from Plans 030–031 because no supported physical device/runtime path was available, the web/native handoff and distribution flows implemented in Plan 032, and real-device confirmation of the final native presentation/interaction behavior reconciled in Plan 033.
 
 This is the terminal roadmap gate. No E2E item may be deferred again.
 
-Plan 032's inherited unpassed inventory is recorded at `.agents/evidence/plan-032.md`; those items remain unpassed until the corresponding Plan 033 phases produce real evidence.
+Plan 032's inherited unpassed inventory is recorded at `.agents/evidence/plan-032.md`; those items remain unpassed until the corresponding Plan 034 phases produce real evidence.
 
 ## Mode
 
-Plan 033 is acceptance-first, not a new feature plan.
+Plan 034 is acceptance-first, not a new feature plan.
 
 - Do not add new product scope.
 - If E2E exposes a defect, fix only the minimum regression/correctness issue required to satisfy existing approved behavior, then rerun affected acceptance.
 - Do not weaken acceptance criteria to make tests pass.
 - Do not fabricate physical-device, sensor, positioning, store/install or deep-link evidence.
 - Emulator evidence is supplemental only where physical semantics matter.
-- No PR/merge without explicit user authorization, and do not merge Plan 033 while any mandatory Android physical-E2E gate remains incomplete.
+- No PR/merge without explicit user authorization, and do not merge Plan 034 while any mandatory Android physical-E2E gate remains incomplete.
 
 ## Required environment
 
@@ -37,7 +37,7 @@ At minimum for mandatory Android acceptance:
 - a build/install path for the current Android application;
 - configured deep-link/open/install destinations required by the Plan 032 distribution contract, or truthful configured-unavailable expectations where release distribution is still externally gated.
 
-If these mandatory prerequisites are unavailable, record the exact missing item and keep Plan 033 **BLOCKED**. Do not move roadmap completion elsewhere.
+If these mandatory prerequisites are unavailable, record the exact missing item and keep Plan 034 **BLOCKED**. Do not move roadmap completion elsewhere.
 
 ## Phase checklist
 
@@ -51,7 +51,7 @@ If these mandatory prerequisites are unavailable, record the exact missing item 
 
 ## Phase 0 — Acceptance inventory and readiness
 
-Before testing, reconcile exact carry-over from Plans 030–032.
+Before testing, reconcile exact carry-over from Plans 030–033.
 
 ### Plan 030 carry-over — currently unpassed
 
@@ -85,6 +85,17 @@ Before testing, reconcile exact carry-over from Plans 030–032.
 - invalid/deleted/unowned workspace context is rejected safely;
 - logout/restart clears or reauthorizes context correctly;
 - no duplicate positioning/Realtime listeners across deep-link navigation.
+
+### Plan 033 carry-over — final native presentation/runtime confirmation
+
+- phone content remains fully reachable with the bottom navigation and software keyboard;
+- tablet/POS and wide layouts switch to the intended compact/expanded rail and multi-column feature composition without duplicate feature owners;
+- Explore uses real cartography-backed search/quick-place/floor/selected-place data and contextual location copy under actual runtime states;
+- real permission/User Helper, positioning, navigation and floor events are presented using the reconciled reference-oriented UI without stale/technical overclaim;
+- Realtime filter/search/list/detail presentation remains truthful with real workspace records and no unsupported presence/freshness/remote-marker semantics;
+- Settings reports only real workspace/session/location/background state;
+- Recent remains truthful under the Plan 033 source decision and never renders fabricated activity;
+- representative phone/tablet/wide visual hierarchy remains usable on actual supported targets.
 
 Record prerequisites and evidence locations before Phase 1.
 
@@ -124,7 +135,8 @@ On the real installed Android app:
 - invalid/deleted/unowned workspace hints fall back safely;
 - session expiry removes protected data and requires reauthentication;
 - logout clears local session material and protected location/Realtime state according to the frozen Plan 029 contract;
-- app restart restores only authorized persisted context.
+- app restart restores only authorized persisted context;
+- reconciled login/shell/Settings UI remains reachable with the real software keyboard, bottom navigation/safe-area insets, and authenticated workspace/session data.
 
 ## Phase 3 — Plan 030 physical Map/positioning/navigation acceptance
 
@@ -134,15 +146,18 @@ Map and cartography:
 
 - load the selected workspace's real building;
 - switch workspace/building without old key/cartography flash;
-- select real floors/POIs and verify displayed names/floor/category are cartography-backed.
+- cartography-backed Explore search/quick-place controls select only real current-building POIs;
+- select real floors/POIs and verify displayed names/floor/category are cartography-backed;
+- active-floor, selected-place and responsive Map/detail presentation match the Plan 033 reference contract without clipping or stale context.
 
 Positioning:
 
-- exercise contextual permission flow;
+- exercise contextual permission/User Helper flow through the reconciled `Find my location` product UX;
 - start positioning and capture real status/location evidence;
+- verify off/starting/fresh/stopped/denied-or-error presentation remains reference-oriented and factual while non-positioning browsing stays usable;
 - verify stop/error/background invalidate the current fix truthfully;
 - confirm blue dot/current-floor behavior against observed environment;
-- perform an actual floor transition where feasible; if the calibrated physical site cannot support a real transition test, this specific requirement remains incomplete and Plan 033 cannot claim it passed.
+- perform an actual floor transition where feasible; if the calibrated physical site cannot support a real transition test, this specific requirement remains incomplete and Plan 034 cannot claim it passed.
 
 Navigation:
 
@@ -162,7 +177,9 @@ Using the same authorized workspace where possible:
 - load Realtime on the physical app and observe real server-mediated workspace positions;
 - verify only current authorized workspace records are shown;
 - source time, building/floor, accuracy and coordinates match the server contract;
-- no UI element implies online/fresh/healthy state without authority;
+- real building/search filters and selected-position detail behave correctly without widening authority;
+- no UI element implies online/fresh/healthy state without authority and no fake remote marker/focus appears;
+- reference-oriented list/detail composition remains usable on the real device and representative wider supplemental layouts;
 - refresh/polling works while foreground-active;
 - leaving Realtime/backgrounding cancels in-flight polling and stops the cadence;
 - returning resumes a single polling owner;
@@ -213,4 +230,4 @@ Closeout requires:
 - `ARCHITECTURE.md`, `design/data-source-matrix.md`, `plans/README.md`, `.agents/state.md`, durable decisions/evidence and roadmap status reconciled to exact runtime truth;
 - no remaining deferred native-roadmap E2E item.
 
-Plan 033 is PR-ready only when all mandatory Android/full-E2E checks pass. If any required physical acceptance is still unavailable, keep the plan blocked and the roadmap incomplete.
+Plan 034 is PR-ready only when all mandatory Android/full-E2E checks pass. If any required physical acceptance is still unavailable, keep the plan blocked and the roadmap incomplete.
