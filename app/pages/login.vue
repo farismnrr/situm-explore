@@ -41,7 +41,7 @@ async function submit() {
             <UInput v-model="email" type="email" autocomplete="email" placeholder="you@example.com" required class="w-full" />
           </UFormField>
           <UFormField label="Password" name="password" required>
-            <UInput v-model="password" type="password" autocomplete="current-password" placeholder="Enter your password" required class="w-full" />
+            <PasswordInput v-model="password" autocomplete="current-password" placeholder="Enter your password" required class="w-full" />
           </UFormField>
           <UButton type="submit" block size="lg" :loading="loading" :disabled="loading">Sign in <span aria-hidden="true">→</span></UButton>
         </form>

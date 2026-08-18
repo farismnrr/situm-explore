@@ -19,7 +19,7 @@ const config = {
   splash: { image: './assets/splash-icon.png', resizeMode: 'contain', backgroundColor: '#111827' },
   newArchEnabled: true,
   ios: { bundleIdentifier: 'com.situm.explore', supportsTablet: true, deploymentTarget: '16.4', buildNumber: iosBuildNumber, ...(universalLinkHost ? { associatedDomains: [`applinks:${universalLinkHost}`] } : {}) },
-  android: { package: 'com.situm.explore', versionCode: androidVersionCode, softwareKeyboardLayoutMode: 'resize', adaptiveIcon: { foregroundImage: './assets/adaptive-icon.png', backgroundColor: '#111827' }, ...(universalLinkHost ? { intentFilters: [{ action: 'VIEW', autoVerify: true, category: ['BROWSABLE', 'DEFAULT'], data: [{ scheme: 'https', host: universalLinkHost, pathPrefix: '/' }] }] } : {}) },
+  android: { package: 'com.situm.explore', versionCode: androidVersionCode, softwareKeyboardLayoutMode: 'resize', permissions: ['REQUEST_INSTALL_PACKAGES'], adaptiveIcon: { foregroundImage: './assets/adaptive-icon.png', backgroundColor: '#111827' }, ...(universalLinkHost ? { intentFilters: [{ action: 'VIEW', autoVerify: true, category: ['BROWSABLE', 'DEFAULT'], data: [{ scheme: 'https', host: universalLinkHost, pathPrefix: '/' }] }] } : {}) },
   plugins: [
     'expo-secure-store',
     ['expo-build-properties', { android: { minSdkVersion: 24, compileSdkVersion: 36, targetSdkVersion: 36, kotlinVersion: '2.1.20' }, ios: { deploymentTarget: '16.4' } }],

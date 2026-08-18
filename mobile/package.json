@@ -12,7 +12,8 @@
     "security:test": "node scripts/security/mobile-dependency-regression.cjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:login-keyboard": "tsx scripts/login-keyboard-geometry.test.ts",
+    "test:login-keyboard": "tsx scripts/login-keyboard-strategy.test.ts",
+    "test:android-update": "tsx scripts/android-update.test.ts",
     "build:android": "cd android && ./gradlew assembleDebug",
     "build:android:release": "node scripts/build-android-release.cjs"
   },
@@ -21,10 +22,22 @@
       "uuid": "11.1.1"
     }
   },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "@situm/react-native"
+        ]
+      }
+    }
+  },
   "dependencies": {
     "@situm/react-native": "3.19.2",
-    "expo": "57.0.13",
-    "expo-build-properties": "57.0.11",
+    "expo": "~57.0.14",
+    "expo-application": "~57.0.2",
+    "expo-build-properties": "~57.0.12",
+    "expo-file-system": "~57.0.4",
+    "expo-intent-launcher": "~57.0.1",
     "expo-secure-store": "~57.0.1",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
