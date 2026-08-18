@@ -148,3 +148,22 @@ The earlier sections documenting LOCATION 8002/provider/no-fix behavior are reta
 - Staging smoke: container healthy; logged-out landing contains the public APK anchor; direct APK download HTTP 200 without cookies; authenticated Realtime login succeeds and renders `Download Android build`.
 - Validation after the public landing change: root tests 62/62 PASS; root lint PASS; root typecheck PASS; `git diff --check` PASS.
 
+
+## Clean Android release distribution — 2026-08-18
+
+Android distribution was standardized so future releases no longer depend on Gradle's generic `app-release.apk` name or Git-SHA customer-facing filenames.
+
+- Canonical versioned artifact: `situm-explore-v<semver>-android-arm64.apk`.
+- Stable public web alias: `situm-explore-latest-android-arm64.apk`.
+- Matching `.sha256` objects are published alongside both names.
+- `mobile/scripts/build-android-release.cjs` runs Expo Android prebuild, restores the local Android SDK path needed after regeneration, builds `arm64-v8a` only, emits the canonical filename into ignored `mobile/dist/`, and writes SHA-256 evidence.
+- The release helper fails closed unless `EXPO_PUBLIC_API_BASE_URL` is explicitly supplied as a public HTTPS URL. During implementation this guard caught a candidate build that inherited `http://127.0.0.1:3000` from the local mobile `.env`; that candidate was not published. The corrected build embeds `https://situm.farismunir.my.id` and contains no `127.0.0.1:3000` marker.
+- Final v1.0.0 artifact SHA-256: `b7ba41ee87ab1858110748b40560e3d3a4ff1c584bdccc0758785baccb609b82`.
+- APK inspection: package `com.situm.explore`, versionName `1.0.0`, versionCode `1`, application label `Situm Explore`, native ABI `arm64-v8a` only.
+- Branding source remains Expo-owned: `icon.png`, centered/padded `adaptive-icon.png`, `splash-icon.png`, splash background `#111827`; prebuild synchronizes these assets into every native release.
+- Final canonical APK installed successfully on physical POS `100.113.52.76:35911`; package manager reported versionName `1.0.0` / versionCode `1`, with no crash evidence from the launch smoke.
+- MinIO public versioned and stable objects both return HTTP 200 with `application/vnd.android.package-archive`, size `36,890,209` bytes, and the public stable download hash matches the local artifact exactly.
+- Staging runtime now points to `https://minio.farismunir.my.id/situm-explore/android/situm-explore-latest-android-arm64.apk`. Staging was force-recreated only, reached healthy, and its logged-out landing page renders the public `Download Android` action to that stable alias. Direct download requires no Situm Explore login.
+- Legacy MinIO filenames were intentionally left untouched; they are no longer referenced by staging and were not destructively removed.
+
+`docs/mobile-distribution.md` now documents the complete app identity, version policy, artifact naming, build command, verification gates, MinIO layout, public web contract, release sequence, and signing/secret boundary.
