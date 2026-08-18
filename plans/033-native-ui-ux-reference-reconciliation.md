@@ -93,8 +93,8 @@ The exact React Native thresholds may reuse the reference values when they remai
 - [x] Phase 2 — Explore/Map reference reconciliation with real cartography, positioning and navigation state.
 - [x] Phase 3 — Realtime reference reconciliation with truthful list/detail fallback.
 - [x] Phase 4 — Settings, Recent and authentication final-product surfaces.
-- [ ] Phase 5 — Responsive/accessibility/interaction regression and emulator visual acceptance.
-- [ ] Phase 6 — Final validation, documentation reconciliation and Plan 034 handoff.
+- [x] Phase 5 — Responsive/accessibility/interaction regression and emulator visual acceptance.
+- [x] Phase 6 — Final validation, documentation reconciliation and Plan 034 handoff.
 
 ## Phase 0 — Reference/capability matrix
 

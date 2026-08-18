@@ -176,3 +176,21 @@ All of those remain Plan 034 acceptance items.
 - Recent is a polished truthful empty state because no existing user-scoped history source was proven; no audit/event backend or fabricated activity was added.
 - Login now uses visible labels, accessible controls, keyboard-safe scrolling, generic safe errors and the existing secure session/auth flow.
 - No permission success, background location, Recent history, or unsupported session detail is implied.
+
+## Phase 5 execution evidence — 2026-08-18
+
+- Added deterministic breakpoint coverage in `test/native-plan-033.test.ts`.
+- Root test suite passes: 32/32 tests. Mobile lint and typecheck pass.
+- Root lint passes with generated `.nuxt`/`.output` and clean-prebuild native directories excluded from the direct ESLint traversal; these are generated artifacts, not source inputs.
+- Root Nuxt typecheck and production build complete successfully; `.output/server/index.mjs` is present.
+- Expo config resolves `com.situm.explore` and `situm-explore-dev`.
+- Clean Expo prebuild completed. Android `assembleDebug` passes with `/home/farismnrr/Android/Sdk`; generated native directories remain ignored.
+- `expo-doctor` reports the frozen Expo patch versions (`57.0.13` / `57.0.11`) and the known untested New Architecture Situm package; no dependency changes were made because the roadmap explicitly freezes those versions.
+- No physical emulator/device visual capture was obtained in this environment; Plan 034 retains real-device visual and behavior acceptance.
+
+## Phase 6 execution evidence and handoff — 2026-08-18
+
+- Full branch diff reviewed against updated `origin/main`; `git diff --check origin/main...HEAD` passes.
+- Bounded source scan found no new credential-bearing UI/logging path, no fabricated Realtime presence/freshness classes, no fake POI/activity fixtures, no background-location request, and no route metric/instruction additions.
+- Deliberate reference deviations remain: Realtime remote markers become list/detail, Recent remains truthful empty, location permission/sensor recovery stays with Situm User Helper/OS, and camera follow is not claimed.
+- Plan 034 carry-over remains explicitly unpassed: supported-device Map/permission/blue-dot/floor/navigation E2E; supported-device Realtime lifecycle/own-device behavior; web-to-native open/install/deep-link/auth/workspace cross-client E2E; and real-device confirmation of the reconciled Plan 033 UI.
