@@ -1,6 +1,6 @@
 # Plan 033 — Native UI/UX reference evidence
 
-Status: Phase 0 baseline frozen; implementation in progress on `plan/033-native-ui-ux-reference-reconciliation`.
+Status: Plan 033 complete on `plan/033-native-ui-ux-reference-reconciliation`; PR/merge intentionally not started.
 
 Canonical visual authority:
 
