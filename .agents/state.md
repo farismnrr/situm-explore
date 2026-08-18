@@ -8,7 +8,7 @@ There is currently **no active implementation plan**.
 
 Latest integrated product work is PR #32 at merge commit `840c0f9` (`Complete realtime remediation and Android release flow`). The former `plan/035-realtime-remediation` branch was deleted after merge.
 
-Current documentation reconciliation is being prepared on `docs/native-roadmap-closeout`. This branch is docs-only and has not been merged yet.
+Current pre-PR closeout work is on `docs/native-roadmap-closeout`. In addition to documentation reconciliation, this branch now strengthens the existing local `image-size` parser remediation and its deterministic security regression coverage because both upstream advisories still have no patched release. The branch has not been merged yet.
 
 New implementation work must start from updated `main` on a dedicated plan branch. Historical plans, execution briefs, sessions, reviews, and evidence are not current execution instructions.
 
