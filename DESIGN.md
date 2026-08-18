@@ -1,194 +1,123 @@
-# DESIGN.md
+# Situm Explore Design
 
-This file is the current design router for Situm Explore.
-
-It separates **visual authority** from **product/capability authority** so historical prototypes cannot override current backend/security truth.
+This document defines the current product design rules for the web and native Situm Explore clients.
 
 ## Canonical visual references
 
-The approved shared web/product visual reference remains:
+Shared web/product reference:
 
 `design/reference/situm-explore-interactive-prototype.html`
 
-The approved native/responsive companion reference is:
+Native/responsive reference:
 
 `design/reference/situm-explore-native-responsive-prototype.html`
 
-Use the shared reference for:
+These references define hierarchy, density, spacing, typography, surface treatment, navigation vocabulary, and responsive intent. They do **not** override real backend, security, SDK, or data capability.
 
-- hierarchy and composition;
-- density and spacing;
-- typography and surface treatment;
-- shared tenant brand/tokens;
-- web interaction presentation.
+## Product visual direction
 
-Use the native reference for native-facing UI/UX. Plans 029–033 established and reconciled this visual contract; future native changes should preserve it unless the user explicitly supersedes it:
+- clean minimalist SaaS presentation;
+- light mode with restrained cool-neutral surfaces;
+- premium but not decorative;
+- consistent Situm Explore brand and icon language across clients;
+- responsive layouts instead of scaled-up phone screens;
+- accessible labels, focus behavior, touch targets, keyboard behavior, and large-text resilience;
+- truthful loading, empty, denied, unavailable, and error states;
+- no fake product data or fake capability for prototype parity.
 
-- mobile-first information hierarchy and end-user wording;
-- Map and Realtime screen composition;
-- location-permission, denied, stale/freshness and safe fallback presentation;
-- phone bottom navigation, tablet/POS rail, and wide-screen expanded-navigation intent;
-- responsive behavior across phone, tablet, Android POS/kiosk and TV/wide displays;
-- Lucide-style icon language and the same light, cool-neutral Situm Explore surface system used by web.
+## Responsive navigation
 
-The native app is still the same Situm Explore tenant/product. Do not invent a parallel native design system, unrelated color palette, typography, spacing scale, icon family, or product vocabulary merely because the runtime is React Native.
+Native intent:
 
-The native reference is visual/interaction authority, **not capability or data-contract evidence**. If a reference interaction cannot be supported truthfully by the installed Situm SDK/current backend contract, keep the visual intent where possible but implement only the evidenced capability and record the deviation in the current work/plan when one exists. Never fake SDK behavior, identity, online/offline state, position freshness, route data or permissions to match the prototype.
+- phone: bottom navigation with reachable scroll content;
+- tablet/POS: compact rail;
+- wide displays: expanded rail and multi-column feature layouts;
+- very wide displays: use available space without an artificial narrow content cap.
 
-Do not copy either reference HTML/CSS/JS wholesale into production.
+Web keeps its responsive authenticated shell and uses native handoff where defined by the product capability matrix.
 
-## Authority order
+## Authentication UX
 
-### Visual decisions
+Email/password login and registration are real application flows.
 
-1. user's latest explicit visual direction;
-2. applicable canonical HTML reference (shared web/product, then native for native-facing UI);
-3. current explicit work/plan, when one exists;
-4. `design/IMPLEMENTATION.md`;
-5. agent judgment only for uncovered gaps.
-
-### Product/capability decisions
-
-1. user's latest explicit product direction;
-2. `.agents/state.md` + active durable decisions;
-3. current explicit roadmap/plan, when one exists;
-4. `ARCHITECTURE.md`;
-5. `design/data-source-matrix.md`;
-6. verified official Situm contract + installed SDK behavior;
-7. current source/runtime behavior;
-8. historical plans/prototype behavior.
-
-Current `ARCHITECTURE.md`, this file, `design/IMPLEMENTATION.md`, and `design/data-source-matrix.md` are reconciled for Plans 021–025. Historical Plan 010-era design wording is evidence only.
-
-## Product direction
-
-- Clean minimalist SaaS.
-- Light mode.
-- Premium but restrained.
-- Responsive authenticated shell/sidebar/drawer.
-- Accessible keyboard/focus behavior.
-- Truthful loading, empty, forbidden, and error states.
-- No fake product success to preserve a visual prototype.
-
-## Plans 021–025 UI direction
-
-The backend refactor is not a redesign, but it adds real product surfaces that the UI must support.
-
-Approved additions/changes:
-
-- real `/register` experience;
-- database-backed login/session identity;
-- private workspace create/rename/delete/switch flow;
-- workspace Situm configuration form/status;
-- clear explanation that configuration requires separate verified Read & Write primary and Read-only Viewer credentials;
-- read-only action guidance and safe forbidden feedback;
-- correlation/reference ID presentation for unexpected failures when useful;
-- Google sign-in affordance may be wired, but real provider runtime acceptance remains manual/user-owned for now.
-
-Do not add workspace invite/member/team UI in this roadmap.
-
-## Auth UX
-
-Email/password registration/login must be real product behavior, not a dummy screen.
-
-Use:
-
-- generic invalid-credential feedback for login;
-- clear duplicate-account/validation feedback without leaking unnecessary account existence detail;
-- accessible form labels/errors/focus;
-- loading/disabled states for submission;
-- safe redirect/session behavior after successful auth.
-
-Do not expose password hashes, provider tokens, session internals, or server diagnostics in UI.
+- use visible field labels and accessible validation;
+- keep submit/loading/error states clear;
+- keep software-keyboard layouts usable, including landscape/small-height Android devices;
+- use generic safe invalid-credential feedback;
+- do not expose session, password-hash, provider-token, or server diagnostic details.
 
 ## Workspace UX
 
-A workspace is a private app-owned container for one user's Situm configuration/context.
+A workspace is a private app-owned container for one user's Situm configuration and product context.
 
-UX must make clear:
+- one user may own multiple workspaces;
+- switching workspace changes active cartography/operations context;
+- stored Situm credential values are write-only and are never rendered back;
+- deletion must clearly refer to application workspace state, not deletion of the external Situm organization;
+- there is no invite/member/team UI in the current product model.
 
-- one user may own many workspaces;
-- workspace membership/invites do not exist in this roadmap;
-- different workspaces may point to different Situm accounts;
-- switching workspace changes the active product context;
-- stored Situm API-key values are write-only after submission and are not rendered back to the user.
+## Credential/configuration UX
 
-Deletion must use appropriate confirmation because it removes app-owned workspace configuration/state. Do not imply it deletes the external Situm organization/account.
+Workspace configuration distinguishes:
 
-## Situm permission UX
+- primary credential — Situm Read & Write, server-only;
+- Viewer credential — Situm Read-only, used for browser Viewer;
+- Positioning credential — dedicated mobile positioning authority;
+- Situm account/organization ID — derived server-side rather than manually entered.
 
-Product modes are:
+Configuration UI should explain these roles without exposing stored secrets.
 
-- Primary credential — required Situm `Read & Write` capability, verified server-side at save time;
-- Viewer credential — required Situm `Only Read` capability, verified server-side and used only for the browser Viewer;
-- Situm account/organization ID — derived server-side from the authenticated primary credential; never entered manually.
+## Explore / Map UX
 
-The app should explain the expected Situm key type at configuration time.
+Native Explore is map-first and uses real Situm cartography.
 
-Rules:
+- search and selection operate on real current-building POIs;
+- building/floor/selected-place context comes from real cartography;
+- location intent uses end-user language such as finding/centering location rather than SDK lifecycle jargon;
+- permission/sensor failures leave non-positioning map exploration usable where possible;
+- navigation actions use actual supported Situm behavior and do not invent ETA, route steps, or geometry fields that are not available;
+- positioning, follow, floor, and guidance states must remain tied to real runtime state.
 
-- read-only workspaces keep supported read scenarios available;
-- known mutation controls should be disabled/guarded with clear guidance when local workspace mode is view-only;
-- backend authorization remains authoritative;
-- upstream forbidden results become safe product feedback/toasts, never raw Situm messages;
-- unsupported/intermediate Situm permission states receive configuration guidance rather than being treated as full write.
+Web map behavior remains the browser Viewer experience on capable layouts and follows the handoff policy defined in the capability matrix.
 
-Do not fabricate successful edits for a read-only workspace.
+## Realtime UX
 
-## Error / support UX
+Realtime is a device/position operations view, not a people-presence product.
 
-Expected validation/auth/forbidden/not-found/conflict errors should use clear product language.
+- show only authorized device/position identity and supported building/floor, accuracy, coordinate, and source-time information;
+- search/filter may use already-authorized real data;
+- do not invent online/idle/offline state or local freshness semantics;
+- do not fabricate remote map markers/focus when the installed native MapView does not expose that capability;
+- native Realtime remains visually useful as list/detail while remote reads remain server-mediated.
 
-Unexpected/internal failures should use a generic safe message. A correlation/reference ID may be shown for support lookup when Plan 023 provides one.
+## Recent UX
 
-Never render:
+Do not fabricate recent activity or create an artificial audit backend solely to populate the screen. Without a trustworthy user-scoped history source, use a polished truthful empty/unavailable state.
 
-- stack traces;
-- raw SQL/DB errors;
-- raw upstream bodies;
-- SDK internals;
-- credential/token values;
-- internal telemetry metadata not intended for users.
+## Settings UX
 
-## Viewer design boundary
+Settings should expose real workspace/session/location state only:
 
-`SitumViewer.vue` remains the single Viewer lifecycle owner.
+- workspace context/switching;
+- contextual location-access information;
+- background location as not requested while the product does not request it;
+- authenticated account identity;
+- sign out using the actual session/logout contract.
 
-Pages/components may expose controls around the Viewer but should not instantiate independent Viewer clients or obtain the raw Viewer object.
+Sign out is a destructive-session action and should be visually differentiated accordingly.
 
-Workspace switching must eventually update Viewer/account/building context truthfully. Loading/re-authentication states should be visible rather than showing stale cartography as if it belonged to the new workspace.
+## Error and support UX
 
-## Web/native boundary
+Expected validation/auth/forbidden/not-found/conflict failures use clear product language. Unexpected failures use a safe generic message and may include a support/reference ID.
 
-Do not represent these as working web features:
+Never render stack traces, SQL details, raw upstream bodies, SDK internals, credentials, tokens, or telemetry internals.
 
-- sensor-generated handset blue dot;
-- browser indoor positioning engine;
-- live handset turn-by-turn navigation;
-- movement-aware rerouting.
+## Capability rule
 
-Realtime monitoring of positions produced elsewhere and verified static directions remain valid web operations features.
+For Situm-domain behavior: **no evidence = no implementation**. Verify the current installed SDK/integration capability and runtime owner before changing behavior. Prototype labels and historical plans are not capability evidence.
 
-## Capability evidence rule
+## Implementation guidance
 
-For any Situm-domain field/action, **no evidence = no implementation**.
+Use Nuxt UI primitives first on web and the existing native token/layout primitives on mobile. Prefer small semantic components over broad framework-like abstractions. Add custom styling only when it serves a real product gap.
 
-Before a new behavior becomes real, verify exact endpoint/SDK method, installed compatibility, owner/runtime, permission semantics, consumed data, and failure behavior.
-
-Prototype labels and old plans are not evidence.
-
-## Production implementation
-
-Production remains Nuxt 4 + Vue + Nuxt UI.
-
-Translation order:
-
-1. reuse Nuxt UI primitive;
-2. configure props/variants/slots/tokens;
-3. compose primitives;
-4. create a small semantic product component when responsibility/reuse is real;
-5. add narrow custom CSS only for a genuine visual gap.
-
-Do not build a parallel design system or broad generic component factory.
-
-Read `design/IMPLEMENTATION.md`, `design/data-source-matrix.md`, and any explicitly active plan before UI changes.
+See `design/IMPLEMENTATION.md` for production implementation boundaries and `design/data-source-matrix.md` for current capability ownership.

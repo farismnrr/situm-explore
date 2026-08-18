@@ -1,30 +1,40 @@
 # Situm Explore Capability & Data Source Matrix
 
-This is the current capability/status router. Detailed rules live in `ARCHITECTURE.md`, `design/IMPLEMENTATION.md`, `.agents/state.md`, and any explicitly active future plan.
+This is the current product capability and runtime-owner matrix. Detailed technical rules live in `ARCHITECTURE.md` and `design/IMPLEMENTATION.md`.
 
-Plans 017–035 are closed/integrated. Plan 034 retains historical documented acceptance limitations; Plan 035 subsequently verified the physical own-device positioning/server-mediated Realtime path required by its bounded remediation scope. There is no active native roadmap plan.
-
-| Capability | Status / owner |
+| Capability | Current source / owner |
 | --- | --- |
-| Email/password auth + registration | Plan 021 |
-| Google OAuth plumbing | Plan 021; manual runtime acceptance deferred |
-| Private single-owner workspaces | Plan 022 |
-| Workspace Situm configuration with verified Read & Write primary and separate Read-only Viewer credentials; server-derived account ID | Plan 022 / Plan 025 |
-| Correlation, telemetry reuse, safe error contract | Plan 023 |
-| Workspace-scoped Situm backend/account/building context | Plan 024 |
-| Workspace UX + full regression | Plan 025 |
-| Viewer lifecycle | Implemented on web for ≥768×600 capable layouts; shorter/phone web layouts hand off to native. Historical unexercised cross-client cases remain documented in Plan 034 evidence. |
-| Buildings/Floors/POIs/Categories | Implemented on web/workspace context and native mobile Map in Plan 030; historical physical acceptance limitations remain recorded in Plan 034 evidence. |
-| Geofences/Paths | Implemented on web/workspace context; native scope only when required/evidenced |
-| Static directions between known POIs | Implemented on web; native directions/navigation implemented in Plan 030. Any still-unexercised physical navigation cases remain historical Plan 034 limitations. |
-| Realtime operations | Implemented in the native companion as a server-mediated workspace-scoped device-position list/detail experience; generic remote MapView markers and Share Live Location are not used; all web entry points hand off through the shared native gate. Plan 035 physically verified own-device positioning publishing and server-mediated Realtime rendering on the POS. |
+| Email/password authentication | PostgreSQL-backed application identity + Nitro session APIs |
+| Google OAuth | Provider plumbing exists; runtime provider acceptance is not part of the verified path |
+| Private workspaces | PostgreSQL/Drizzle + owner-scoped Nitro APIs |
+| Workspace Situm configuration | Nitro + encrypted PostgreSQL workspace credential storage |
+| Primary Situm authority | Verified Read & Write credential; server-only |
+| Browser Viewer authority | Separate verified Read-only Viewer credential issued through authenticated owner scope |
+| Native positioning authority | Separate verified Positioning credential issued through authenticated owner scope |
+| Browser Viewer/cartography | `@situm/sdk-js` Viewer on capable web layouts |
+| Buildings/Floors/POIs/Categories | Workspace-scoped Situm/cartography; web and native consume authorized real data |
+| Geofences/Paths | Workspace-scoped server Situm integration where implemented |
+| Web static directions | Browser Viewer over real known Situm POIs; no synthetic route metrics |
+| Native Map/positioning/navigation | `@situm/react-native` + shared `ForegroundPositioningSession` |
+| Native Realtime remote positions | Server-mediated owner-scoped workspace Realtime API |
+| Own-device Realtime positioning | Shared foreground native positioning session; reported position reaches server-mediated Realtime |
+| Realtime presence/online state | Not supported; omitted |
+| Generic native remote-position Map markers/focus | Not supported by the current proven MapView surface; omitted |
+| Share Live Location | Separate Situm capability; not used as Realtime Positions |
+| Organization/Users/Groups/Alarms reads | Workspace-scoped server Situm integration |
+| Analytics + CSV | Workspace-isolated ClickHouse analytics through Nitro |
+| Legacy pre-workspace analytics rows | Historical/unscoped; not attributed without evidence/policy |
 | Trajectory | Unresolved/omitted |
-| Organization/Users/Groups/Alarms reads | Implemented; migrate workspace context |
-| Analytics + CSV | Implemented; make workspace-isolated |
-| Legacy pre-workspace analytics rows | Historical/unscoped; do not attribute without evidence/policy |
-| Route metrics/steps/geometry/ETA | Unresolved; do not invent |
-| Handset positioning/blue dot/live navigation/rerouting | Native-only; implemented in Plan 030. Plan 035 physically verified sensor-backed positioning and Explore ↔ Realtime continuity on the POS; broader historical navigation/floor-transition acceptance limitations remain in Plan 034 evidence. |
+| Route steps/geometry/ETA synthesis | Not supported; do not invent |
+| Android direct installation | Public anonymous-download APK via the distribution contract in `docs/mobile-distribution.md` |
+| iOS store/device delivery | External Apple/macOS/signing gate; not part of the currently verified local release path |
 
-The current workspace-scoped Situm, Viewer, building, analytics, native Map, native Realtime and web/native handoff behavior is integrated. Plans 033–035 are closed; historical Plan 034 limitations remain evidence, not active execution scope.
+## Web/native routing policy
 
-For any new/changed Situm behavior, verify the exact official endpoint/SDK method, installed compatibility, runtime owner, permission semantics, consumed fields/events, and failure behavior. No evidence means unresolved/absent, never fabricated success.
+- capable desktop/tablet web Map: browser Viewer;
+- phone web Map: native handoff;
+- web Realtime on desktop/tablet/phone: native handoff;
+- native positioning/navigation: native client only;
+- analytics/admin/workspace configuration: web product.
+
+For new or changed Situm behavior, verify the installed/current endpoint or SDK method, auth/permission, runtime owner, consumed data/events, and failure behavior. No evidence means unresolved/absent.

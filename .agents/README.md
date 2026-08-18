@@ -4,6 +4,20 @@
 
 Root `AGENTS.md` is the router. `.agents/state.md` owns current focus/blockers; durable decisions own current project decisions; sessions/completed plans are chronological evidence and may become stale. With no active plan, new implementation work must first create explicit scope from updated `main`.
 
+
+## Boundary with project documentation
+
+`.agents/` documents **the work**, not the product manual. Keep branch/plan state, execution decisions, evidence, reviews, sessions, protocols, and handoff context here.
+
+Current product/runtime documentation belongs outside `.agents/`:
+
+- `README.md` — project overview, setup, capabilities, and entry points;
+- `ARCHITECTURE.md` — current runtime/security architecture;
+- `DESIGN.md` + `design/` — current product UI/UX and implementation contracts;
+- `docs/` — developer/operator procedures such as mobile release/distribution.
+
+Agent files may link to those documents and record why/when they changed, but should not become duplicate product documentation.
+
 ## Mandatory implementation reads
 
 1. `AGENTS.md`;
