@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const { loggedIn } = useUserSession()
+const config = useRuntimeConfig()
 
 const continuePath = computed(() => loggedIn.value ? '/app' : '/login')
+const androidDownloadUrl = computed(() => config.public.mobile.androidDownloadUrl || '')
 </script>
 
 <template>
@@ -25,7 +27,7 @@ const continuePath = computed(() => loggedIn.value ? '/app' : '/login')
           <ProductStatusBadge label="Indoor operations workspace" tone="success" dot />
           <h1>Understand your indoor spaces at a glance.</h1>
           <p>Situm Explore brings maps, live positions, cartography, routes and analytics into one calm web workspace built for fast operational decisions.</p>
-          <div class="landing-hero-actions"><UButton :to="continuePath" size="lg">Explore the prototype <span aria-hidden="true">→</span></UButton><UButton to="/login" size="lg" variant="outline" color="neutral">Sign in</UButton></div>
+          <div class="landing-hero-actions"><UButton :to="continuePath" size="lg">Explore the prototype <span aria-hidden="true">→</span></UButton><UButton v-if="androidDownloadUrl" :href="androidDownloadUrl" target="_blank" rel="noreferrer" size="lg" variant="outline" color="neutral" icon="i-lucide-download">Download Android</UButton><UButton to="/login" size="lg" variant="outline" color="neutral">Sign in</UButton></div>
           <div class="landing-note"><span>✓ Interactive demo</span><span>✓ Dummy data only</span><span>✓ Light-mode product reference</span></div>
         </div>
         <div class="landing-preview" aria-label="Preview of the Situm Explore map workspace">

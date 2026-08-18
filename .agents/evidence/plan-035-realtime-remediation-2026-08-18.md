@@ -136,3 +136,15 @@ The earlier sections documenting LOCATION 8002/provider/no-fix behavior are reta
 - Full validation after distribution polish: root tests 61/61 PASS; root lint PASS; root typecheck PASS; mobile lint PASS; mobile typecheck PASS; release Android build PASS; `git diff --check` PASS.
 - MinIO upload and staging container recreate are intentionally not claimed here until authenticated MinIO write access is explicitly approved and the public object download is verified.
 
+## APK distribution + public web download — 2026-08-18
+
+- Built the standalone Android release for `arm64-v8a` only with embedded JS and public API base `https://situm.farismunir.my.id`; the bundle contains no `127.0.0.1:3000` marker.
+- Release APK SHA256: `3dad7c4d41c42c9a5820567ba50fa97f452a05c5d412f3a38dd9d776fda776e7`.
+- Uploaded versioned and stable objects to dedicated MinIO bucket `situm-explore` under `android/`, including checksum files. Anonymous bucket policy is download-only.
+- Public `https://minio.farismunir.my.id/situm-explore/android/latest.apk` returns HTTP 200, `application/vnd.android.package-archive`, 36,890,209 bytes; streamed public SHA256 matches the local release artifact exactly.
+- Staging runtime config points `NUXT_PUBLIC_MOBILE_ANDROID_DOWNLOAD_URL` to the MinIO `latest.apk` object.
+- The public landing page now exposes a `Download Android` CTA when that runtime URL is configured, so APK download does not require a Situm Explore login. Authenticated Map/Realtime native gates continue to expose the configured Android build as well.
+- Staging-only image was rebuilt locally for `linux/amd64` and `deploy-situm-explore-1` was force-recreated. No production change and no registry push were performed.
+- Staging smoke: container healthy; logged-out landing contains the public APK anchor; direct APK download HTTP 200 without cookies; authenticated Realtime login succeeds and renders `Download Android build`.
+- Validation after the public landing change: root tests 62/62 PASS; root lint PASS; root typecheck PASS; `git diff --check` PASS.
+

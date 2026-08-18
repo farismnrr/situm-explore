@@ -66,6 +66,13 @@ test('Plan 032 distribution fallback has no timer-based app detection', () => {
   assert.match(config, /EXPO_PUBLIC_UNIVERSAL_LINK_HOST/)
 })
 
+test('Plan 032 public landing exposes configured Android download without requiring an app route', () => {
+  const landing = readFileSync(new URL('../app/pages/index.vue', import.meta.url), 'utf8')
+  assert.match(landing, /config\.public\.mobile\.androidDownloadUrl/)
+  assert.match(landing, /Download Android/)
+  assert.match(landing, /v-if="androidDownloadUrl"/)
+})
+
 test('Plan 032 install options use OS for mobile and expose all configured targets elsewhere', () => {
   const config = {
     androidStoreUrl: 'https://play.example/app',
