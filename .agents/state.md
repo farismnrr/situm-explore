@@ -2,9 +2,9 @@
 
 _Last reviewed: 2026-08-18_
 
-Security dependency remediation is in progress on `chore/security-dependency-remediation` from `origin/main`. UUID is remediated through the compatible `xcode -> uuid@11.1.1` override. The two `image-size` advisories remain present in npm/GitHub published-version scanning with no upstream patched release; a narrowly scoped, reproducible `patch-package` ICNS loop fix is committed for validation, and evidence truthfully records the scanner residual. Plan 034 remains unstarted.
+Security dependency remediation is complete on `main`/the integrated baseline: UUID is remediated through the compatible `xcode -> uuid@11.1.1` override. The two `image-size` advisories remain present in npm/GitHub published-version scanning with no upstream patched release; the narrowly scoped, reproducible `patch-package` ICNS loop fix and truthful residual evidence are retained. The active Plan 034 branch is `plan/034-full-e2e-acceptance`.
 
-Plan 033 remediation closeout is complete on `plan/033-native-ui-ux-reference-reconciliation`: stale evidence claims were corrected in source/docs, focused deterministic coverage was added, and all available validation gates passed. Plan 034 remains unstarted and all physical/cross-client acceptance remains explicitly UNPASSED; the branch awaits the user-gated PR/review/integration step.
+Plan 033 remediation closeout is complete: stale evidence claims were corrected in source/docs, focused deterministic coverage was added, and all available validation gates passed. Plan 034 is now in progress. Its positioning-provisioning remediation is implemented and statically/runtime-smoke validated; all real product-UI provisioning, native runtime retrieval, physical positioning/navigation, Realtime, and cross-client acceptance remain explicitly UNPASSED.
 
 ## Native roadmap — Plans 033–034 remaining
 
@@ -20,7 +20,7 @@ Plan 033 — Native UI/UX Reference Reconciliation — is therefore the next imp
 
 Plan 034 — Full E2E Acceptance & Roadmap Closeout — remains the terminal non-deferrable gate. It inherits every unpassed physical-device item from Plans 030–031, the real web-to-native/deep-link/install/auth/session/workspace E2E introduced by Plan 032, and real-device confirmation of the reconciled Plan 033 UI under actual permission/location/navigation/Realtime states. If the required supported Android device, reachable backend, owner-authorized Positioning credential or calibrated building/profile is unavailable, Plan 034 remains blocked and the roadmap remains incomplete; those checks may not be deferred again.
 
-Current planning authority is `plans/028-034-native-mobile-roadmap.md`. Plan 033 implementation is complete on `plan/033-native-ui-ux-reference-reconciliation` and awaits user-gated PR/review/integration. Plan 034 must not start before Plan 033 is integrated unless the user explicitly authorizes stacking.
+Current planning authority is `plans/028-034-native-mobile-roadmap.md`, with the bounded remediation brief under `.agents/execution/plan-034-positioning-provisioning-remediation.md`. Plan 034 is explicitly authorized as the active stacked acceptance branch; do not open a PR or merge it in this execution.
 
 Locked product policy for this roadmap:
 
@@ -38,7 +38,7 @@ Locked product policy for this roadmap:
 - the existing Nitro backend and PostgreSQL application identity/workspace model remain authoritative for both clients;
 - the server-side Read & Write Situm credential must never be exposed to mobile; the frozen native authority is a dedicated least-privilege Positioning credential issued only after owner authorization, while native Realtime remains server-mediated.
 
-Normal workflow: execute Plan 033 on `plan/033-native-ui-ux-reference-reconciliation` from updated `main`; after reviewer approval/integration, Plan 034 follows from updated `main` unless the user explicitly authorizes stacked execution.
+Current workflow: continue Plan 034 acceptance on `plan/034-full-e2e-acceptance`; after this remediation checkpoint, provision only through the real Workspace Settings UI, exercise native authenticated retrieval, then resume physical acceptance. Do not claim physical positioning acceptance from static or endpoint-only evidence.
 
 ## Plan 027 (complete/integrated)
 

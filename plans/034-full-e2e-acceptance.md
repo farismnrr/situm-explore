@@ -3,7 +3,7 @@
 Branch: `plan/034-full-e2e-acceptance`
 Base: updated `origin/main` after Plan 033 is integrated
 Depends on: Plan 033 complete/integrated
-Status: planned
+Status: in progress — acceptance remediation checkpoint complete; physical/cross-client acceptance remains unpassed
 
 ## Objective
 
@@ -52,6 +52,16 @@ If these mandatory prerequisites are unavailable, record the exact missing item 
 ## Phase 0 — Acceptance inventory and readiness
 
 Before testing, reconcile exact carry-over from Plans 030–033.
+
+Acceptance-discovered remediation authority: `/home/farismnrr/Projects/situm-explore/.agents/execution/plan-034-positioning-provisioning-remediation.md`. Phase 0 physical readiness found that the backend/schema/native issuance path already supports a dedicated encrypted Positioning credential, but the web Workspace Settings UI does not expose the existing `positioningApiKey` provisioning field. This is a bounded Plan 034 correctness remediation, not a new roadmap plan. Complete it, validate it, provision through the product UI, then resume physical acceptance; do not bypass the product boundary with direct DB secret writes.
+
+### Acceptance remediation checkpoint — 2026-08-18
+
+- [x] Confirmed the gap was the product provisioning surface, not the backend schema, encryption, owner/session gate, or native retrieval path.
+- [x] Added the dedicated write-only Positioning API key field and conditional save request; omitted positioning input preserves the existing encrypted value.
+- [x] Exposed only `positioningConfigured`; no stored credential value is returned or rendered.
+- [x] Added focused Plan 034 regression coverage and passed root tests/lint/typecheck/build, mobile security/lint/typecheck, `git diff --check`, and production-preview smoke (root 200, protected workspace API 401, security headers present, no credential-bearing logs).
+- [ ] Real product-UI provisioning, authenticated native retrieval, and physical positioning/navigation acceptance remain unpassed pending the user-owned Situm credentials and supported runtime path. No physical PASS is claimed here.
 
 ### Plan 030 carry-over — currently unpassed
 

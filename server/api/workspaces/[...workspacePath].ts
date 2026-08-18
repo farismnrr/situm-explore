@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
       if (positioningSession.apiPermissionLevel !== SitumApiPermissionLevel.POSITIONING || positioningSession.organizationId !== primarySession.organizationId) throw new Error('Positioning credential is invalid')
     }
   } catch {
-    throw createError({ statusCode: 422, statusMessage: 'Both Situm credentials could not be verified with the required permissions.' })
+    throw createError({ statusCode: 422, statusMessage: 'The Situm credentials could not be verified with the required permissions.' })
   }
   const encryptedApiKey = encryptWorkspaceApiKey(parsed.data.apiKey)
   const encryptedViewerApiKey = encryptWorkspaceApiKey(parsed.data.viewerApiKey)
