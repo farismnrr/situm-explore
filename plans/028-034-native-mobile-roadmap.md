@@ -1,9 +1,10 @@
-# Native Companion Roadmap — Plans 028–033
+# Native Companion Roadmap — Plans 028–034
 
-Status: **in progress; Plans 028–031 integrated, Plans 032–033 remaining**
+Status: **in progress; Plans 028–032 integrated, Plans 033–034 remaining**
 
 Original planning branch: `roadmap/028-032-native-mobile`
-Current acceptance split: `roadmap/032-033-e2e-split`
+Acceptance split branch: `roadmap/032-033-e2e-split`
+Current UI/E2E reconciliation branch: `roadmap/033-034-native-ui-reconciliation`
 
 ## Product decision
 
@@ -35,8 +36,9 @@ Plan 028 — Native Capability, Auth & Distribution Spike [integrated]
 -> Plan 029 — Native App Foundation & Workspace Session [integrated]
 -> Plan 030 — Native Map, Positioning & Navigation [integrated; physical E2E unpassed]
 -> Plan 031 — Native Realtime Operations [integrated; physical E2E unpassed]
--> Plan 032 — Web/Native Handoff & Distribution
--> Plan 033 — Full E2E Acceptance & Roadmap Closeout
+-> Plan 032 — Web/Native Handoff & Distribution [integrated]
+-> Plan 033 — Native UI/UX Reference Reconciliation
+-> Plan 034 — Full E2E Acceptance & Roadmap Closeout
 ```
 
 Each dependent plan starts from updated `origin/main` only after its predecessor is integrated, unless the user explicitly authorizes stacked execution.
@@ -45,16 +47,19 @@ Each dependent plan starts from updated `origin/main` only after its predecessor
 
 Plans 030 and 031 were allowed to integrate after implementation/build/test review because no supported physical Android device and calibrated runtime path were available. Their physical-only acceptance was **deferred, not passed**.
 
-Plan 032 is now implementation-focused. It owns web/native routing, deep-link behavior, install/open fallback, distribution configuration, and all truthful non-device validation available from builds, unit/integration tests, browser viewport checks, and emulator/runtime smoke. Plan 032 must enumerate every remaining end-to-end acceptance item but does **not** own the final full E2E gate.
+Plan 032 is integrated. It owns web/native routing, deep-link behavior, install/open fallback and distribution configuration; its real cross-client/open/install/auth/workspace acceptance remains explicitly unpassed.
 
-Plan 033 is the terminal, non-deferrable full E2E gate. It inherits:
+Plan 033 is the final native presentation implementation pass before physical/full E2E. It reconciles shell, Explore/Map, Realtime, Recent, Settings and authentication with the canonical native responsive reference across phone, tablet/POS and wide layouts while preserving all backend/SDK/security truth from Plans 028–032. It may close on reviewer-approved implementation plus truthful non-device/emulator visual validation, but it may not convert physical-device or cross-client acceptance to PASS.
+
+Plan 034 is the terminal, non-deferrable full E2E gate. It inherits:
 
 - every unpassed supported-device Map/positioning/navigation check from Plan 030;
 - every unpassed supported-device Realtime/native lifecycle check from Plan 031;
 - cross-client web-to-native, deep-link, install/open, auth/session/workspace and distribution-path E2E from Plan 032;
+- real-device presentation/interaction confirmation for the reconciled Plan 033 native UI;
 - final security/secret/logging and lifecycle regression across the completed native roadmap.
 
-Emulator evidence may supplement Plan 033 but cannot satisfy real indoor-positioning, BLE/Wi-Fi/sensor, blue-dot/floor-transition, or equivalent physical-device claims. If the required supported physical Android device/runtime environment is unavailable, Plan 033 remains blocked and the roadmap remains incomplete. There is no further deferral after Plan 033.
+Emulator evidence may supplement Plan 034 but cannot satisfy real indoor-positioning, BLE/Wi-Fi/sensor, blue-dot/floor-transition, or equivalent physical-device claims. If the required supported physical Android device/runtime environment is unavailable, Plan 034 remains blocked and the roadmap remains incomplete. There is no further deferral after Plan 034.
 
 ## Cross-plan architecture rules
 
@@ -84,16 +89,17 @@ Native implementation uses `DESIGN.md` plus `design/reference/situm-explore-nati
 
 ## Platform target
 
-Target Android and iOS from one React Native codebase. Supported Android physical-device acceptance is the mandatory locally executable gate for Plan 033 when the required device/building/profile/credentials are available. iOS build/device acceptance may remain explicitly macOS/Apple-device gated when the execution environment cannot run Xcode; source/config acceptance must still be complete and truthful.
+Target Android and iOS from one React Native codebase. Supported Android physical-device acceptance is the mandatory locally executable gate for Plan 034 when the required device/building/profile/credentials are available. iOS build/device acceptance may remain explicitly macOS/Apple-device gated when the execution environment cannot run Xcode; source/config acceptance must still be complete and truthful.
 
 ## Roadmap completion condition
 
-The roadmap is complete only when Plan 033 has discharged every accumulated E2E carry-over and:
+The roadmap is complete only when Plan 034 has discharged every accumulated E2E carry-over and:
 
 - native login/session and workspace selection use the existing application identity model;
 - mobile Situm authentication is least-privilege and evidence-backed;
 - native Map/positioning/navigation is accepted on a real supported Android device;
 - native Realtime is truthful and accepted for its frozen scope;
+- native shell, Explore, Realtime, Recent, Settings and authentication match the canonical responsive reference as closely as real backend/SDK authority allows across phone, tablet/POS and wide layouts;
 - phone web Map routes to native handoff while accepted desktop/tablet web Map remains available;
 - all web Realtime entry points route to native handoff;
 - deep links/install fallback work end-to-end without leaking credentials;

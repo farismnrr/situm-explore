@@ -19,7 +19,7 @@ A little explicit duplication is better than speculative infrastructure.
 
 ## Runtime model
 
-The integrated web/backend runtime remains one full-stack Nuxt 4 application. Plans 028–033 add a React Native companion client while keeping Nitro as the single application backend.
+The integrated web/backend runtime remains one full-stack Nuxt 4 application. Plans 028–034 add a React Native companion client while keeping Nitro as the single application backend.
 
 ```text
 browser / Vue / Nuxt UI
@@ -268,7 +268,7 @@ Current web runtime may retain verified:
 - browser-safe Viewer settings/actions;
 - workspace-scoped realtime backend reads where needed by server/client contracts.
 
-Plans 028–033 add a **separate native companion client** while keeping Nitro as the single application backend. They do not turn the Nuxt runtime into a native wrapper or introduce a second backend.
+Plans 028–034 add a **separate native companion client** while keeping Nitro as the single application backend. They do not turn the Nuxt runtime into a native wrapper or introduce a second backend.
 
 Plan 031 implements native Realtime as a foreground-only, server-mediated list/detail read from the owner-scoped workspace route. The mobile client receives only sanitized position/device fields and never receives Situm credentials for remote monitoring. The installed SDK's generic realtime and Share Live Location surfaces remain capability evidence only; no remote MapView markers, focus behavior, or background positioning is claimed.
 
@@ -308,7 +308,7 @@ Do not add without a concrete requirement:
 - workspace invite/member hierarchy;
 - password reset/email verification flows.
 
-Native positioning/navigation is no longer deferred generically; it is owned explicitly by Plans 028–033 and must stay within those plan boundaries/evidence gates.
+Native positioning/navigation is no longer deferred generically; it is owned explicitly by Plans 028–034 and must stay within those plan boundaries/evidence gates.
 
 ## Active roadmap execution order
 
@@ -319,18 +319,19 @@ Plan 021 -> 022 -> 023 -> 024 -> 025
 Plan 026 -> 027
 ```
 
-Plans 028–031 are complete and integrated. The React Native foundation, native spatial runtime and server-mediated native Realtime now exist under `mobile/`. Plan 032 owns Web/Native Handoff & Distribution implementation; Plan 033 owns the terminal full-E2E acceptance. The still-unpassed supported-device checks from Plans 030–031 are carried to Plan 033, not treated as accepted:
+Plans 028–032 are complete and integrated. The React Native foundation, native spatial runtime, server-mediated native Realtime, and web/native handoff now exist under the current single-backend architecture. Plan 033 owns final native UI/UX reference reconciliation; Plan 034 owns terminal full-E2E acceptance. The still-unpassed supported-device checks from Plans 030–031 and cross-client checks from Plan 032 remain carried to Plan 034, not treated as accepted:
 
 ```text
 Plan 028 — Native Capability, Auth & Distribution Spike [complete/integrated]
 -> Plan 029 — Native App Foundation & Workspace Session [complete/integrated]
--> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 033]
--> Plan 031 — Native Realtime Operations [complete/integrated; physical E2E carried to Plan 033]
--> Plan 032 — Web/Native Handoff & Distribution
--> Plan 033 — Full E2E Acceptance & Roadmap Closeout [terminal hard gate]
+-> Plan 030 — Native Map, Positioning & Navigation [complete/integrated; physical E2E carried to Plan 034]
+-> Plan 031 — Native Realtime Operations [complete/integrated; physical E2E carried to Plan 034]
+-> Plan 032 — Web/Native Handoff & Distribution [complete/integrated]
+-> Plan 033 — Native UI/UX Reference Reconciliation
+-> Plan 034 — Full E2E Acceptance & Roadmap Closeout [terminal hard gate]
 ```
 
-Plan 032 implementation is complete on its dedicated branch with non-device validation recorded in `.agents/evidence/plan-032.md`; integration remains a review/user gate. Plan 033 starts only after Plan 032 integration.
+Plan 033 must preserve the existing auth/workspace/credential/Map/positioning/navigation/Realtime/deep-link ownership contracts while translating the final presentation to `design/reference/situm-explore-native-responsive-prototype.html` across phone, tablet/POS and wide layouts. Unsupported reference interactions remain truthful fallbacks. Plan 034 starts only after Plan 033 integration unless the user explicitly authorizes stacking.
 
 ## Review checklist
 

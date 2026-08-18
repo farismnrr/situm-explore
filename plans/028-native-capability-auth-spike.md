@@ -2,7 +2,7 @@
 
 Branch: `plan/028-native-capability-auth-spike`
 Base: updated `origin/main` after the native roadmap planning branch is integrated
-Depends on: `plans/028-033-native-mobile-roadmap.md`
+Depends on: `plans/028-034-native-mobile-roadmap.md`
 Status: complete — Phases 0–6 passed; Plan 029 ready with recorded gates
 
 ## Objective

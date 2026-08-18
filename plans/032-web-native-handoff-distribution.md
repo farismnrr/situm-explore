@@ -3,13 +3,13 @@
 Branch: `plan/032-web-native-handoff-distribution`
 Base: updated `origin/main` after Plan 031 is integrated
 Depends on: Plan 031 complete/integrated
-Status: implementation complete/reviewer-approved; PR-ready pending user authorization
+Status: complete/integrated via PR #28 at merge commit `f4f729d8bbd10e0bd257423682489c928c74c95b`; cross-client/full-device E2E remains unpassed for Plan 034
 
 ## Objective
 
 Finish the native-companion product boundary without consuming the final full-E2E gate: route phone-web Map users to Situm Explore Mobile while preserving accepted desktop/tablet web Map; route every web Realtime entry point to the native app; add safe deep-link/install/download fallbacks; and establish reproducible distribution configuration without committed signing/store secrets.
 
-Full cross-client and physical-device E2E is owned by Plan 033.
+Full cross-client and physical-device E2E is owned by Plan 034.
 
 ## Product policy to implement
 
@@ -34,8 +34,8 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 - Deep links may carry non-secret routing context such as feature/workspace/building identifiers only when authorization is rechecked after app open/login.
 - Store/signing credentials and private keys remain external/ignored.
 - Web/native handoff UI and native destinations remain visibly one Situm Explore product.
-- Do not claim physical-device Map, positioning, navigation or Realtime acceptance in this plan. Those previously unpassed Plan 030/031 checks move to Plan 033.
-- Plan 032 may close/merge after implementation and truthful non-device validation are reviewer-approved, with all remaining E2E items explicitly handed to Plan 033.
+- Do not claim physical-device Map, positioning, navigation or Realtime acceptance in this plan. Those previously unpassed Plan 030/031 checks move to Plan 034.
+- Plan 032 may close/merge after implementation and truthful non-device validation are reviewer-approved, with all remaining E2E items explicitly handed to Plan 034.
 - No PR/merge without explicit user authorization.
 
 ## Phase checklist
@@ -47,24 +47,24 @@ Full cross-client and physical-device E2E is owned by Plan 033.
 - [x] Phase 4 — Realtime all-web native handoff policy.
 - [x] Phase 5 — Install/open-app, QR and distribution fallback UX.
 - [x] Phase 6 — Production mobile packaging/distribution documentation.
-- [x] Phase 7 — Implementation validation, documentation reconciliation and Plan 033 handoff.
+- [x] Phase 7 — Implementation validation, documentation reconciliation and Plan 034 handoff.
 
 ## Phase 0 — Readiness and breakpoint matrix
 
 ### Execution evidence — 2026-08-17
 
-- Plans 029–031 are integrated in `main`; Plan 030/031 physical-device outcomes remain unpassed and are preserved for Plan 033.
+- Plans 029–031 are integrated in `main`; Plan 030/031 physical-device outcomes remain unpassed and are preserved for Plan 034.
 - Existing native identifiers are `com.situm.explore` on Android/iOS. Existing schemes remain `situm-explore-dev`, `situm-explore-staging`, and production `situm-explore`; no signing or store credential is committed.
 - No published Play Store/App Store/direct-download destination is currently available in repository configuration. Public distribution destinations are therefore runtime-configured and render an explicit unavailable state until supplied.
 - The web Map capability matrix is frozen by usable viewport geometry: Viewer renders when width is at least 768px and height is at least 600px. Representative accepted layout classes are tablet portrait (768×1024), tablet landscape (1024×768), and desktop (at least 1024×600). Smaller/shorter layouts use the native handoff. This is a layout capability threshold, not user-agent classification.
 - The app shell's navigation breakpoint remains an independent 801px presentation breakpoint; Map capability does not depend on sidebar visibility.
 
-These observations are non-device readiness evidence only. Real web-to-native opening, install, deep-link, authentication, workspace authorization, and native spatial/realtime outcomes remain Plan 033 acceptance items.
+These observations are non-device readiness evidence only. Real web-to-native opening, install, deep-link, authentication, workspace authorization, and native spatial/realtime outcomes remain Plan 034 acceptance items.
 
 Before changing web routes:
 
 - confirm Plans 029–031 are integrated and their implementation reviews are authoritative;
-- confirm the still-unpassed physical-device acceptance from Plans 030–031 is preserved for Plan 033, not silently converted to acceptance;
+- confirm the still-unpassed physical-device acceptance from Plans 030–031 is preserved for Plan 034, not silently converted to acceptance;
 - confirm actual Android/iOS application identifiers and deep-link configuration from Plan 028/029;
 - confirm which distribution targets are actually available (Play Store, App Store, direct Android artifact, internal distribution, etc.); do not invent links;
 - test the existing web Situm Viewer at representative phone/tablet/desktop viewport sizes and orientations;
@@ -83,13 +83,13 @@ If tablet acceptance is not actually usable, record that evidence and obtain an 
 - Map building hints are validated against returned workspace cartography before native Map selection; invalid hints fall back to the first available building.
 - Added focused parser/lifecycle regression coverage in `test/mobile-plan-032.test.ts`.
 
-Real device link association/open behavior and login/workspace cross-client E2E remain unpassed for Plan 033.
+Real device link association/open behavior and login/workspace cross-client E2E remain unpassed for Plan 034.
 
 ### Final lifecycle remediation evidence — 2026-08-17
 
 - `WorkspaceContext` now represents each Map deep link as a monotonic `mapRequest` with a request ID and building ID. Consumption is idempotent and manual workspace selection clears pending requests.
 - `NativeMapScreen` consumes each request once and keys only its inner Map runtime by the locally applied request ID. A second foreground link to another building in the same authorized workspace is consequently applied once without stale building context or a request-clearing remount loop.
-- Focused regression coverage proves sequential request IDs/buildings and repeated-consumption safety. Root tests now pass 31/31; all physical-device and full cross-client acceptance remains explicitly unpassed for Plan 033.
+- Focused regression coverage proves sequential request IDs/buildings and repeated-consumption safety. Root tests now pass 31/31; all physical-device and full cross-client acceptance remains explicitly unpassed for Plan 034.
 
 Implement the frozen Universal Link / Android App Link / app-scheme contract.
 
@@ -101,7 +101,7 @@ Requirements:
 - after login, re-fetch/re-authorize workspace context from Nitro before navigation;
 - invalid/deleted/unowned workspace context falls back safely;
 - no session token, Situm key, password, bearer token or encrypted credential in URL/query/fragment;
-- duplicate/open-link lifecycle does not create duplicate positioning/realtime listeners by design and testable state ownership; final full lifecycle E2E remains Plan 033.
+- duplicate/open-link lifecycle does not create duplicate positioning/realtime listeners by design and testable state ownership; final full lifecycle E2E remains Plan 034.
 
 ## Phase 2 — Reusable Native App Gate
 
@@ -214,23 +214,23 @@ Requirements:
 
 Do not add CI/App Store automation unless the user explicitly authorizes it.
 
-## Phase 7 — Implementation validation and Plan 033 handoff
+## Phase 7 — Implementation validation and Plan 034 handoff
 
 ### Execution evidence — 2026-08-17
 
 - Full non-device validation passed: root build/lint/typecheck/tests (28), mobile prebuild/lint/typecheck, Expo config rendering, and Android debug compilation.
 - Built production preview returned HTTP 200 from `/` with security headers and non-secret public mobile config.
-- Final acceptance inventory is recorded in `.agents/evidence/plan-032.md` and remains explicitly unpassed for Plan 033. It includes all Plan 030/031 physical carry-over and all Plan 032 cross-client/deep-link/install/auth/workspace/security E2E.
-- Architecture, capability matrix, README/plan router, durable state, execution context, session evidence, and Plan 033 handoff were reconciled. No PR, merge, or Plan 033 execution occurred.
+- Final acceptance inventory is recorded in `.agents/evidence/plan-032.md` and remains explicitly unpassed for Plan 034. It includes all Plan 030/031 physical carry-over and all Plan 032 cross-client/deep-link/install/auth/workspace/security E2E.
+- Architecture, capability matrix, README/plan router, durable state, execution context, session evidence, and Plan 034 handoff were reconciled. No PR, merge, or Plan 034 execution occurred.
 
-Plan 032 implementation is complete on this branch pending review/integration. The terminal Plan 033 gate may start only after this branch is integrated into updated `main`.
+Plan 032 was subsequently reviewer-approved and integrated via PR #28 at merge commit `f4f729d8bbd10e0bd257423682489c928c74c95b`. A later post-integration design review inserted Plan 033 — Native UI/UX Reference Reconciliation — before the terminal Plan 034 gate; the Plan 034 acceptance inventory above remains unpassed and unchanged.
 
 ### Final reviewer remediation — 2026-08-17
 
 - Resolved the stale building-context blocker: manual workspace selection clears pending `mapRequest` state, and each Map request is consumed exactly once by the mounted screen.
 - Resolved the foreground same-workspace lifecycle blocker: monotonic request IDs and a local runtime key apply a second building link once without changing the parent Explore key or remounting when the request is cleared.
 - Resolved the install-platform blocker: recognized Android/iOS user agents select their OS regardless of viewport width; desktop/unknown clients receive every configured Android/iOS store/download option instead of defaulting to iOS.
-- Added pure install-option tests plus focused sequential same-workspace request and source-level lifecycle regressions. The Plan 033 physical-device and full cross-client inventory remains explicitly UNPASSED.
+- Added pure install-option tests plus focused sequential same-workspace request and source-level lifecycle regressions. The Plan 034 physical-device and full cross-client inventory remains explicitly UNPASSED.
 
 Plan 032 validation must prove every contract that does **not** require the final real-device/full-E2E environment:
 
@@ -244,12 +244,12 @@ Plan 032 validation must prove every contract that does **not** require the fina
 - diff and secret checks;
 - documentation/architecture/data-source matrix reconciliation.
 
-Before closeout, create an explicit Plan 033 acceptance inventory containing:
+Before closeout, create an explicit Plan 034 acceptance inventory containing:
 
 - all Plan 030 physical-device carry-over: real building load, permission helper, positioning start/stop/status, blue dot/current floor, real floor transitions where environment permits, known POI interaction, navigation start/cancel/finish/error, and native lifecycle cleanup;
 - all Plan 031 physical-device carry-over: Realtime with real authorized workspace data, own-device physical positioning/publishing behavior if applicable, sensor/BLE/Wi-Fi/background behavior where applicable, workspace/lifecycle/logout/restart cleanup;
 - Plan 032 full web-to-native E2E: real open/install/deep-link behavior, login restoration, workspace authorization, Map/Realtime destination routing, invalid links, logout/restart, and cross-client secret audit.
 
-These items remain **unpassed** until Plan 033 proves them. Plan 032 may be reviewer-approved and merged once its implementation/non-device evidence passes and this handoff is complete.
+These items remain **unpassed** until Plan 034 proves them. Plan 032 may be reviewer-approved and merged once its implementation/non-device evidence passes and this handoff is complete.
 
-Run the Plan 032 validation suite, update durable authority/evidence, commit/push each completed phase, and stop before PR/merge until explicit user authorization. Do not start Plan 033 before Plan 032 is integrated.
+Historical execution rule: Plan 032 stopped before PR/merge until explicit user authorization. Current sequencing is Plan 033 from updated `main`, then Plan 034 only after Plan 033 integration unless the user explicitly authorizes stacking.

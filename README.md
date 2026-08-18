@@ -6,7 +6,7 @@ Situm Explore is a full-stack Nuxt 4 web operations/exploration application usin
 
 Plans 017–027 are complete and integrated into `main`, with Plan 027 integrated via PR #21.
 
-The Plans 028–033 native companion roadmap is active. Plans 028–031 are complete and integrated; Plan 032 implementation is complete on its review branch, and Plan 033 is the terminal full-E2E acceptance/roadmap-closeout gate carrying all still-unpassed physical-device and cross-client checks. The architecture remains the current Nuxt/Nitro web/backend runtime plus the React Native second client under `mobile/`; there is no second backend.
+The Plans 028–034 native companion roadmap is active. Plans 028–032 are complete and integrated. Plan 033 is the final native UI/UX reference-reconciliation implementation pass across shell, Explore/Map, Realtime, Recent, Settings and authentication; Plan 034 is the terminal full-E2E acceptance/roadmap-closeout gate carrying all still-unpassed physical-device, cross-client and real-device presentation checks. The architecture remains the current Nuxt/Nitro web/backend runtime plus the React Native second client under `mobile/`; there is no second backend.
 
 ```text
 Plan 028 — Native Capability, Auth & Distribution Spike
@@ -14,10 +14,11 @@ Plan 028 — Native Capability, Auth & Distribution Spike
 -> Plan 030 — Native Map, Positioning & Navigation
 -> Plan 031 — Native Realtime Operations
 -> Plan 032 — Web/Native Handoff & Distribution
--> Plan 033 — Full E2E Acceptance & Roadmap Closeout
+-> Plan 033 — Native UI/UX Reference Reconciliation
+-> Plan 034 — Full E2E Acceptance & Roadmap Closeout
 ```
 
-Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, and `plans/028-033-native-mobile-roadmap.md` before executing current plan work. The Plans 021–027 roadmap and prerequisites are historical context.
+Read `AGENTS.md`, `.agents/state.md`, `ARCHITECTURE.md`, and `plans/028-034-native-mobile-roadmap.md` before executing current plan work. The Plans 021–027 roadmap and prerequisites are historical context.
 
 ## Production container workflow
 
