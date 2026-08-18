@@ -88,8 +88,8 @@ The exact React Native thresholds may reuse the reference values when they remai
 
 ## Phase checklist
 
-- [ ] Phase 0 — Freeze reference-to-capability matrix and current UI baseline.
-- [ ] Phase 1 — Shared native visual tokens, responsive shell, scroll/safe-area and accessibility foundation.
+- [x] Phase 0 — Freeze reference-to-capability matrix and current UI baseline.
+- [x] Phase 1 — Shared native visual tokens, responsive shell, scroll/safe-area and accessibility foundation.
 - [ ] Phase 2 — Explore/Map reference reconciliation with real cartography, positioning and navigation state.
 - [ ] Phase 3 — Realtime reference reconciliation with truthful list/detail fallback.
 - [ ] Phase 4 — Settings, Recent and authentication final-product surfaces.

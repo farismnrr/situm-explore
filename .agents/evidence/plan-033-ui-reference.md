@@ -1,6 +1,6 @@
 # Plan 033 — Native UI/UX reference evidence
 
-Status: initial planning/review evidence; implementation not started.
+Status: Phase 0 baseline frozen; implementation in progress on `plan/033-native-ui-ux-reference-reconciliation`.
 
 Canonical visual authority:
 
@@ -137,3 +137,19 @@ This UI review does not prove or reclassify:
 - real-device visual interaction under the final reconciled Plan 033 UI.
 
 All of those remain Plan 034 acceptance items.
+
+## Phase 0 execution evidence — 2026-08-18
+
+- Integrated `roadmap/033-034-native-ui-reconciliation` into `main` and created the dedicated Plan 033 branch.
+- Rechecked the native baseline in `mobile/App.tsx`, `mobile/src/map/NativeMapScreen.tsx`, and `mobile/src/realtime/RealtimeScreen.tsx`.
+- Confirmed the reference/capability matrix above remains authoritative: real cartography and positioning may drive presentation; Realtime remains factual server-mediated device-position list/detail; Recent has no proven history source; remote Realtime map markers, presence, fabricated freshness classes, route metrics and background location remain absent.
+- Exact installed `@situm/react-native` version remains 3.19.2. No optional remote-marker or camera-follow helper is being assumed without installed-package proof.
+- Baseline visual gaps frozen for implementation: single shared layout mode, phone scroll ownership, removal of the global workspace card, adaptive Map/Realtime compositions, truthful final Recent/Settings surfaces, and auth accessibility labels.
+
+## Phase 1 execution evidence — 2026-08-18
+
+- Added `mobile/src/ui/theme.ts` semantic light/cool-neutral tokens and `mobile/src/ui/layout.ts` deterministic phone/tablet/wide/very-wide contract.
+- Reconciled `mobile/App.tsx` with the reference shell: floating phone bottom navigation with bottom inset, 72 dp tablet rail, expanded 208/228 dp wide rail, no duplicated rail brand in the topbar, truthful workspace-ready state, and authenticated account footer.
+- Removed the always-on workspace picker from destination content; workspace switching now lives in Settings while the selected workspace remains topbar context.
+- Added destination scroll owners and keyboard-safe login behavior, visible auth field labels, selected navigation semantics, and large-font-friendly controls.
+- No backend, session, Situm credential, positioning, Realtime, or lifecycle ownership changed.
