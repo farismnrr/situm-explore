@@ -161,3 +161,11 @@ All of those remain Plan 034 acceptance items.
 - Floor controls use real floor IDs and expose selected state from the installed MapView callback; selected-place details use real POI/building/category context.
 - Location copy is intent-led (`Your location is off`, `Find my location`) while Situm User Helper, current-fix freshness, navigation guards, cancellation, deep-link building ownership and listener cleanup remain unchanged.
 - Deliberate deviations: no fabricated distance, route metrics, instructions, camera-follow behavior, permission success, or sample POIs.
+
+## Phase 3 execution evidence — 2026-08-18
+
+- Realtime now matches the reference operations hierarchy with factual intro notice, explicit real-building filters, in-memory device/position/floor search, Refresh, and responsive list/detail layout.
+- Phone uses a scroll-owned stacked list/detail surface; tablet/POS/wide uses a flexible two-column composition with a bounded list pane.
+- Rows and details expose only device/position identity, building/floor, accuracy, coordinates and source time. Selection is neutral/accent-soft and does not imply presence or freshness.
+- The reference's remote-marker map remains a truthful list/detail fallback because installed `@situm/react-native` 3.19.2 evidence does not prove generic remote marker/focus support.
+- Abortable foreground polling, workspace authorization, malformed-payload rejection and lifecycle cleanup are unchanged.
