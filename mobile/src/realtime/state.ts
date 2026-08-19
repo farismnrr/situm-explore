@@ -2,6 +2,41 @@ import type { SitumRealtimePosition, SitumRealtimeResponse } from '../../../shar
 
 export const realtimePollIntervalMs = 10_000
 
+export class RealtimePollCoordinator {
+  private current: { generation: number, controller: AbortController } | null = null
+  private generation = 0
+  private disposed = false
+
+  constructor(private readonly load: (signal: AbortSignal) => Promise<void>) {}
+
+  poll() {
+    if (this.disposed || this.current) return
+    const generation = ++this.generation
+    const controller = new AbortController()
+    this.current = { generation, controller }
+    void this.run(generation, controller)
+  }
+
+  refresh() {
+    if (this.disposed) return
+    this.current?.controller.abort()
+    this.current = null
+    this.poll()
+  }
+
+  dispose() {
+    this.disposed = true
+    this.generation++
+    this.current?.controller.abort()
+    this.current = null
+  }
+
+  private async run(generation: number, controller: AbortController) {
+    try { await this.load(controller.signal) } catch { /* the consumer owns visible request-error state */ }
+    if (this.current?.generation === generation) this.current = null
+  }
+}
+
 export type RealtimeLoadState = 'idle' | 'loading' | 'ready' | 'empty' | 'error'
 export type RealtimeFilterablePosition = { id: string, deviceId?: string, buildingId: number, floorId: number }
 

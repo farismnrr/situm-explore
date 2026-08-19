@@ -27,7 +27,7 @@ declare module '@situm/react-native' {
     setApiKey: (apiKey: string) => Promise<void>
     setUseRemoteConfig: (enabled: boolean) => Promise<void>
     configureUserHelper: (options: { enabled: boolean, colorScheme?: unknown }) => Promise<void>
-    requestLocationUpdates: (options?: { buildingIdentifier?: number }) => void
+    requestLocationUpdates: (options?: { buildingIdentifier?: number, realtimeUpdateInterval?: string }) => void
     removeLocationUpdates: () => void
     positioningIsRunning: () => boolean
     navigationIsRunning: () => boolean
