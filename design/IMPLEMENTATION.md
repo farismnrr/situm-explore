@@ -77,6 +77,8 @@ Remote Realtime remains server-mediated through the authenticated workspace rout
 
 The client model is intentionally minimal: device/position identity, source time, building/floor, accuracy, coordinates, and supported IDs. Do not add presence, unsupported freshness classification, or fabricated remote-map semantics.
 
+Realtime reliability diagnostics are intentionally bounded: poll outcomes and producer start are logged as sanitized state/count metadata, while native-fix diagnostics are throttled rather than emitted for every high-frequency location callback. Location coordinates, credentials, headers, and raw upstream payloads stay out of normal diagnostics.
+
 ## Workspace-scoped backend
 
 Protected Situm behavior resolves:

@@ -52,4 +52,7 @@ test('native positioning sends the verified explicit realtime upload cadence whi
   const source = readFileSync(new URL('../mobile/src/positioning/session.ts', import.meta.url), 'utf8')
   assert.match(source, /realtimeUpdateInterval:\s*'REALTIME'/)
   assert.match(source, /buildingIdentifier:\s*buildingId/)
+  assert.match(source, /const nativeFixDiagnosticIntervalMs = 10_000/)
+  assert.match(source, /receivedAt - this\.lastFixDiagnosticAt >= nativeFixDiagnosticIntervalMs/)
+  assert.match(source, /this\.lastFixDiagnosticAt = 0/)
 })

@@ -17,6 +17,7 @@ No upstream omission or server-normalization drop was reproduced. The installed 
 - Added explicit `REALTIME` upload cadence to the shared foreground positioning request.
 - Added generation-safe, non-overlapping Realtime polling.
 - Added sanitized native producer, native-fix, mobile poll, server fetch, and normalization count diagnostics.
+- Bounded native-fix diagnostics to at most one heartbeat every 10 seconds per active positioning session, with the throttle reset for each new start and on stop so a restarted session reports its first fix promptly.
 - Added bounded normalization statistics while retaining fail-closed malformed-feature handling.
 - Added regression coverage for polling ownership, explicit cadence/building scope, and normalization counts.
 
@@ -32,7 +33,7 @@ No upstream omission or server-normalization drop was reproduced. The installed 
 | Active Explore ↔ Realtime transitions | PASS | Realtime retained one reported position and active producer across the transition. |
 | Background / foreground | PASS | Background stopped the producer; foreground returned with positioning off and did not silently restart it. |
 | Network interruption / recovery | PASS | Removing only the API reverse route showed a truthful unavailable/try-again state; restoring it and refreshing returned a truthful current empty response without app restart. |
-| Credentials/secrets in UI/logs/evidence | PASS | Diagnostics contain only counts, states, IDs needed for building scope, and timestamps; no credentials, headers, or raw payloads. |
+| Credentials/secrets in UI/logs/evidence | PASS | Diagnostics contain only counts, states, IDs needed for building scope, and timestamps; no credentials, headers, or raw payloads. High-frequency native fixes are throttled to a bounded 10-second heartbeat. |
 
 The initial debug install showed the expected Expo “Unable to load script” redbox before Metro was started. After Metro was started and the bundle reloaded, the candidate app authenticated and completed all acceptance runs without an app crash. A later UiAutomator duplicate-registration fatal was tooling-side, not an app process failure.
 

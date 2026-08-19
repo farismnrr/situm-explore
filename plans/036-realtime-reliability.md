@@ -103,13 +103,14 @@ The observed symptom is intermittent Realtime visibility: Explore positioning ca
 1. Add sanitized diagnostics sufficient to answer where the chain stopped, using counts/state/timestamps only.
 2. Prefer existing server/app logging conventions and request correlation rather than a new diagnostics subsystem.
 3. Never log API keys, authorization headers, raw credentials, or full sensitive payloads.
-4. Ensure diagnostics can differentiate:
+4. Keep high-frequency producer callbacks bounded; native-fix diagnostics must be throttled rather than emitted for every location update.
+5. Ensure diagnostics can differentiate:
    - native producer active/no fix;
    - native producer receiving fixes;
    - server Realtime zero/non-zero features;
    - normalization drop count;
    - mobile poll success/error/empty.
-5. Keep user-facing UI clean; diagnostics should not become permanent developer clutter unless a small status line materially improves operator understanding.
+6. Keep user-facing UI clean; diagnostics should not become permanent developer clutter unless a small status line materially improves operator understanding.
 
 ## Phase 6 — Physical POS acceptance
 
