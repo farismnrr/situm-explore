@@ -3,8 +3,9 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOp
 import { ApiError } from '../api/errors'
 import type { SitumRealtimePosition } from '../../../shared/situm-realtime'
 import type { WorkspaceContext } from '../workspaces/context'
-import { filterRealtimePositions, formatSourceTime, normalizeRealtimeResponse, realtimePollIntervalMs, type RealtimeLoadState } from './state'
+import { filterRealtimePositions, formatSourceTime, normalizeRealtimeResponse, RealtimePollCoordinator, realtimePollIntervalMs, type RealtimeLoadState } from './state'
 import { colors, radii } from '../ui/theme'
+import { logDiagnostic } from '../diagnostics'
 import type { LayoutMode } from '../ui/layout'
 import type { ForegroundPositioningSession } from '../positioning/session'
 
@@ -35,25 +36,28 @@ export function RealtimeScreen({ workspaces, lifecycle, positioning, layout = 'p
 
   const load = useCallback(async (signal: AbortSignal) => {
     if (!workspaceId || lifecycle !== 'active') return
+    const startedAt = Date.now()
     setState('loading'); setError('')
     try {
       const response = await workspaces.auth.api.get<unknown>(`/api/workspaces/${workspaceId}/situm/realtime`, { signal, timeoutMs: 10_000 })
       const nextPositions = normalizeRealtimeResponse(response)
       if (signal.aborted) return
       setPositions(nextPositions); setSelectedId(current => nextPositions.some(position => position.id === current) ? current : nextPositions[0]?.id ?? null); setState(nextPositions.length ? 'ready' : 'empty')
+      logDiagnostic('info', 'realtime.poll_success', { count: nextPositions.length, empty: nextPositions.length === 0, durationMs: Date.now() - startedAt })
     } catch (cause: unknown) {
       if (signal.aborted) return
       if (cause instanceof ApiError && (cause.code === 'UNAUTHENTICATED' || cause.code === 'FORBIDDEN')) { setPositions([]); setSelectedId(null) }
       setState('error'); setError(cause instanceof ApiError ? cause.message : 'Realtime positions are unavailable.')
+      logDiagnostic('warn', 'realtime.poll_error', { code: cause instanceof ApiError ? cause.code : 'UNKNOWN', durationMs: Date.now() - startedAt })
     }
   }, [lifecycle, workspaceId, workspaces])
 
   useEffect(() => {
-    const controller = new AbortController()
-    void load(controller.signal)
-    if (lifecycle !== 'active') return () => controller.abort()
-    const interval = setInterval(() => { void load(controller.signal) }, realtimePollIntervalMs)
-    return () => { controller.abort(); clearInterval(interval) }
+    const coordinator = new RealtimePollCoordinator(load)
+    coordinator.poll()
+    if (lifecycle !== 'active') return () => coordinator.dispose()
+    const interval = setInterval(() => coordinator.poll(), realtimePollIntervalMs)
+    return () => { coordinator.dispose(); clearInterval(interval) }
   }, [lifecycle, load, refreshNonce])
 
   if (!workspaceId) return <StateCard title="Select a workspace" body="Realtime loads only after an owned workspace is selected." />

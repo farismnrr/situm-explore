@@ -28,6 +28,11 @@ export function normalizeSitumRealtimeFeature(feature: RealtimeFeature, index: n
 }
 
 export function normalizeSitumRealtimeFeatures(features: unknown): SitumRealtimePosition[] {
-  if (!Array.isArray(features)) return []
-  return features.map((feature, index) => normalizeSitumRealtimeFeature(feature as RealtimeFeature, index)).filter((position): position is SitumRealtimePosition => position !== null)
+  return normalizeSitumRealtimeFeaturesWithStats(features).positions
+}
+
+export function normalizeSitumRealtimeFeaturesWithStats(features: unknown): { positions: SitumRealtimePosition[], inputCount: number, acceptedCount: number, droppedCount: number } {
+  if (!Array.isArray(features)) return { positions: [], inputCount: 0, acceptedCount: 0, droppedCount: 0 }
+  const positions = features.map((feature, index) => normalizeSitumRealtimeFeature(feature as RealtimeFeature, index)).filter((position): position is SitumRealtimePosition => position !== null)
+  return { positions, inputCount: features.length, acceptedCount: positions.length, droppedCount: features.length - positions.length }
 }

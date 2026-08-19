@@ -1,10 +1,10 @@
 # Current State
 
-_Last reviewed: 2026-08-18_
+_Last reviewed: 2026-08-19_
 
 ## Work status
 
-There is currently **no active implementation plan**.
+Plan 036 — Realtime Reliability completed on `plan/036-realtime-reliability` under explicit user authorization received 2026-08-19. Acceptance passed with repeated physical POS evidence and automated validation. A pre-PR review hardening pass then bounded high-frequency native-fix diagnostics and updated implementation/evidence docs; validation remains green. The branch is awaiting user-gated review/integration.
 
 Latest integrated product work is PR #32 at merge commit `840c0f9` (`Complete realtime remediation and Android release flow`). The former `plan/035-realtime-remediation` branch was deleted after merge.
 
