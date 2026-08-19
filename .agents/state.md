@@ -4,11 +4,11 @@ _Last reviewed: 2026-08-19_
 
 ## Work status
 
-Plan 036 — Realtime Reliability completed on `plan/036-realtime-reliability` under explicit user authorization received 2026-08-19. Acceptance passed with repeated physical POS evidence and automated validation. A pre-PR review hardening pass then bounded high-frequency native-fix diagnostics and updated implementation/evidence docs; validation remains green. The branch is awaiting user-gated review/integration.
+Plan 036 — Realtime Reliability completed and integrated into `main` via PR #35 at merge commit `7a87afb` on 2026-08-19. Acceptance passed with repeated physical POS evidence and automated validation. A pre-PR review hardening pass bounded high-frequency native-fix diagnostics and updated implementation/evidence docs; final validation remained green. The local and remote feature branches were deleted.
 
-Latest integrated product work is PR #32 at merge commit `840c0f9` (`Complete realtime remediation and Android release flow`). The former `plan/035-realtime-remediation` branch was deleted after merge.
+Latest integrated product work is PR #35 at merge commit `7a87afb` (`Realtime reliability hardening`). The former `plan/036-realtime-reliability` branch was deleted after merge; Plan 035 was previously integrated through PR #32 at `840c0f9`.
 
-Current pre-PR closeout work is on `docs/native-roadmap-closeout`. In addition to documentation reconciliation, this branch now strengthens the existing local `image-size` parser remediation and its deterministic security regression coverage because both upstream advisories still have no patched release. The branch has not been merged yet.
+There is currently **no active implementation plan**. Plan 036 is the latest integrated product work; navigation camera/perspective work remains separate future scope.
 
 New implementation work must start from updated `main` on a dedicated plan branch. Historical plans, execution briefs, sessions, reviews, and evidence are not current execution instructions.
 

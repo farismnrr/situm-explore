@@ -69,7 +69,7 @@ roadmap/033-034-native-ui-reconciliation          [historical/closed]
 -> Plan 035 — Realtime Remediation [complete/integrated via PR #32]
 ```
 
-Roadmap history: `plans/028-034-native-mobile-roadmap.md`. Plan 036 — Realtime Reliability is **complete / acceptance passed** on `plan/036-realtime-reliability`; it awaits user-gated review/integration. Historical Plan 034 limitations remain evidence unless a future scoped plan explicitly reopens them.
+Roadmap history: `plans/028-034-native-mobile-roadmap.md`. Plan 036 — Realtime Reliability is **complete / integrated via PR #35** at merge commit `7a87afb`. Historical Plan 034 limitations remain evidence unless a future scoped plan explicitly reopens them.
 
 ## Transition direction
 
