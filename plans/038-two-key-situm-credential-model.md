@@ -1,7 +1,7 @@
 # Plan 038 — Two-Key Situm Credential Model
 
 Status: **complete by explicit user waiver of remaining physical/raw-secret E2E gates — implementation, validation, staging, GHCR, browser, and release-build evidence captured; pre-migration dump retention caveat documented**
-Depends on: **stacked on Plan 037 commit `cb00201c` by explicit user authorization on 2026-08-27; neither plan is integrated yet.**
+Depends on: **stacked on Plan 037 commit `cb00201c` by explicit user authorization on 2026-08-27; Plan 037 and Plan 038 are integrated together through PR #36 at merge commit `80dad1b`.**
 Branch: `plan/038-two-key-situm-credentials`
 
 ## Goal

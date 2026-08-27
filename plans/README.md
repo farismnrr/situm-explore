@@ -71,10 +71,12 @@ roadmap/033-034-native-ui-reconciliation          [historical/closed]
 
 Roadmap history: `plans/028-034-native-mobile-roadmap.md`. Plan 036 — Realtime Reliability is **complete / integrated via PR #35** at merge commit `7a87afb`. Historical Plan 034 limitations remain evidence unless a future scoped plan explicitly reopens them.
 
-## Active / unintegrated work
+## Completed recent work
 
-- Plan 037 — Web Loading-State Hygiene: implementation complete at `cb00201c` on `plan/037-loading-state-hygiene`; automated validation passed and branch pushed; not yet integrated or deployed.
-- Plan 038 — Two-Key Situm Credential Model: complete by explicit user waiver on 2026-08-27; automated validation, GHCR immutable publication, staging recreate, authenticated Workspace/Map acceptance, and release APK build passed. Physical Android sensor-backed positioning and raw-secret browser form replay were not executed and are not claimed as PASS; the branch is proceeding through PR/merge closeout.
+- Plan 037 — Web Loading-State Hygiene: complete/integrated through PR #36 at merge commit `80dad1b`.
+- Plan 038 — Two-Key Situm Credential Model: complete/integrated through PR #36 at merge commit `80dad1b` by explicit user waiver on 2026-08-27. Automated validation, GHCR immutable publication, staging recreate, authenticated Workspace/Map acceptance, and release APK build passed. Physical Android sensor-backed positioning and raw-secret browser form replay were not executed and are not claimed as PASS.
+
+There is currently no active implementation plan.
 
 ## Transition direction
 
