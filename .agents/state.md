@@ -4,13 +4,15 @@ _Last reviewed: 2026-08-27_
 
 ## Work status
 
-Plan 037 — Web Loading-State Hygiene is the current unintegrated implementation on branch `plan/037-loading-state-hygiene`. The 2026-08-27 review found a common first-render defect: workspace-scoped Nuxt requests using `immediate: false` begin in `idle`, while multiple pages treated only `pending` as loading. This allowed false empty/count/configuration copy to render before skeletons.
+Plan 037 — Web Loading-State Hygiene is implementation-complete on `plan/037-loading-state-hygiene`, committed as `cb00201c` and pushed. It centralizes unresolved `idle`/`pending` semantics, removes transient false empty/configuration copy, and gates Alarms/Map/Workspace states behind real resolution. Validation passed with 74/74 tests, lint, typecheck, build, and `git diff --check`. It is not yet integrated or deployed.
 
-Plan 037 now centralizes `idle`/`pending` loading semantics and applies resolved-state precedence across the workspace web surfaces, including Alarms and browser Map. Alarms no longer renders the transient `Select a building` prompt, the Map no longer mounts `SitumViewer` before a real building resolves, and Workspace configuration no longer claims `Not configured` while its read is unresolved. Automated validation passed: 74/74 tests, lint, typecheck, build, and `git diff --check`. No production deployment, PR, or merge has occurred.
+Plan 038 — Two-Key Situm Credential Model is now the active stacked implementation on `plan/038-two-key-situm-credentials`, explicitly authorized by the user to proceed after finishing Plan 037 without waiting for integration. The runtime/configuration model now exposes exactly **Only Read** plus **Read & Write**: Only Read powers authenticated browser Viewer, native positioning, and server read paths; Read & Write remains server-only for mutation/admin authority. Dedicated Positioning storage/UI/runtime contracts were removed and a forward migration drops the legacy column. Automated validation passed: 75/75 root tests, root lint/typecheck/build, mobile lint/typecheck, and `git diff --check`.
 
-Latest **integrated** product work remains PR #35 at merge commit `7a87afb` (`Realtime reliability hardening`). Plan 037 is not integrated yet. Navigation camera/perspective work remains separate future scope.
+Plan 038 runtime acceptance is still pending. The generated migration has not been applied to a real database because it drops the legacy encrypted Positioning column, no production deployment has occurred, and no stored/raw Situm secret was accessed. Physical Android confirmation that a real Only Read key produces a Situm fix remains required before calling Plan 038 fully accepted.
 
-Continue Plan 037 only from branch `plan/037-loading-state-hygiene`; preserve the already-present local changes that predated this loading-state review. Historical plans, execution briefs, sessions, reviews, and evidence are not current execution instructions.
+Latest **integrated** product work remains PR #35 at merge commit `7a87afb` (`Realtime reliability hardening`). Plans 037–038 are not integrated yet. Navigation camera/perspective work remains separate future scope.
+
+Continue Plan 038 from `plan/038-two-key-situm-credentials`. Historical plans, execution briefs, sessions, reviews, and evidence are not current execution instructions.
 
 ## Last completed work
 

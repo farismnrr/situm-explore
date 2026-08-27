@@ -62,5 +62,5 @@ test('workspace configuration does not claim Not configured while its read is un
   assert.match(source, /const configLoading = ref\(true\)/)
   assert.match(source, /v-if="configLoading"/)
   assert.match(source, /v-else-if="config"/)
-  assert.match(source, /<UAlert v-else color="neutral" variant="subtle" title="Not configured"/)
+  assert.match(source, /<UAlert v-else color="neutral" variant="subtle" title="Connect only what you need"/)
 })

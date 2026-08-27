@@ -59,14 +59,13 @@ A workspace is a private app-owned container for one user's Situm configuration 
 
 ## Credential/configuration UX
 
-Workspace configuration distinguishes:
+Workspace configuration distinguishes exactly two Situm credentials:
 
-- primary credential — Situm Read & Write, server-only;
-- Viewer credential — Situm Read-only, used for browser Viewer;
-- Positioning credential — dedicated mobile positioning authority;
-- Situm account/organization ID — derived server-side rather than manually entered.
+- Only Read API key — used for browser Viewer, mobile positioning, and read-only Situm access; it may be issued only to authenticated clients through bounded backend endpoints;
+- Read & Write API key — server-only authority for operations that modify Situm data and must never be returned to browser/mobile clients;
+- Situm account/organization ID — derived server-side from whichever verified credential establishes the workspace context rather than manually entered.
 
-Configuration UI should explain these roles without exposing stored secrets.
+Either key may be configured independently. Configuration UI should explain these roles without exposing stored secrets, and replacing one credential must not require or erase the other.
 
 ## Explore / Map UX
 

@@ -11,10 +11,21 @@ This file contains **currently active durable decisions**. Completed execution h
 
 Status: active.
 
+## Situm two-key credential boundary
+
+- The current workspace credential model has exactly two user-managed Situm keys: **Only Read** and **Read & Write**.
+- Only Read is verified as `READ_ONLY`, encrypted at rest, used by server read paths, and may be issued through authenticated owner-scoped endpoints to the browser Viewer and native positioning flow.
+- Read & Write is verified as `READ_WRITE`, encrypted at rest, and remains server-only; it must never be returned to browser/mobile clients or embedded in client artifacts.
+- Either key may be configured independently. A replacement must match the workspace Situm organization and an omitted credential is preserved.
+- Native positioning continues to request a credential from Nitro and receives Only Read; the dedicated Positioning-key storage/configuration model is superseded.
+- Remote native Realtime reads remain server-mediated.
+
+Status: active durable security/runtime boundary; supersedes the prior three-key Viewer + Positioning model.
+
 ## Viewer authentication decision
 
-- The final integrated Plan-025 path uses a dual-credential model: the primary Read & Write credential remains server-only.
-- A separate Read-only Viewer API key is owner-scoped, verified READ_ONLY + org match server-side, and then intentionally visible to the browser for Situm's documented direct-api-key Viewer flow.
+- Viewer uses the workspace Only Read API key, owner-scoped and verified `READ_ONLY` + organization match server-side before being intentionally issued to the authenticated browser for Situm's documented direct-api-key Viewer flow.
+- Read & Write remains server-only.
 - The prior JWT/postMessage flow is historical evidence, not the current model.
 - No temporary credential or generated JWT may be persisted in repository files, logs, traces, session evidence, or browser storage.
 
@@ -86,7 +97,7 @@ Status: historical Plan 028 capability evidence; later Plans 029–035 supplied 
 - Read-only Realtime and broad GET operations remain server-mediated; the Positioning key is not widened for them.
 - JWT support in the wrapper is source-proven but unselected because no complete issuer/claims/lifetime/refresh/revocation contract is proven for Situm Explore. Revisit only with current evidence.
 
-Status: historical Plan 028 auth evidence; the least-privilege Positioning/server-mediated Realtime boundary remains active.
+Status: historical Plan 028 auth evidence; its dedicated Positioning-key decision is superseded by the current two-key Only Read + Read & Write boundary. Server-mediated Realtime remains active.
 
 ### Plan 028 Phase 4 application session boundary (2026-08-17)
 
@@ -147,14 +158,16 @@ The previous two-global-env-key model is **historical** and replaced by the curr
 - Situm configuration is owned by an authenticated workspace and persisted server-side;
 - stored long-lived workspace credentials use authenticated encryption at rest;
 - browser code must not receive the stored long-lived workspace Read & Write API key;
-- workspace configuration requires a primary credential verified as Situm Read & Write and a separate Viewer credential verified as Situm Read-only; account/organization ID is derived server-side from the primary auth session;
+- workspace configuration supports independently optional Situm Only Read and Read & Write credentials;
+- account/organization ID is derived server-side from a verified credential and later replacements must match it;
+- Only Read owns authenticated client/read authority, including Viewer and native positioning; Read & Write remains server-only;
 - verified upstream permission remains authoritative;
 - unsupported/intermediate permission states are handled conservatively;
 - workspace/account/building context is workspace-scoped, never process-global.
 
-Viewer authentication changes remain evidence-gated against current official Situm contracts and the installed SDK. The integrated direct Read-only Viewer API-key flow remains authoritative unless newer evidence proves a safer compatible replacement; never widen browser authority or expose the Read & Write credential silently.
+Viewer authentication changes remain evidence-gated against current official Situm contracts and the installed SDK. The direct Only Read Viewer API-key flow remains authoritative unless newer evidence proves a safer compatible replacement; never expose the Read & Write credential to browser/mobile clients.
 
-Status: active durable runtime decision; integration is complete.
+Status: active durable runtime decision; current two-key integration supersedes the earlier three-key model.
 
 ## Evidence-backed Situm integration
 
@@ -246,7 +259,7 @@ Status: active durable runtime/security decision.
 
 ## Plan 030 native Map/positioning/navigation (2026-08-17)
 
-- Native MapView is owned by the authenticated workspace context and must remount when workspace/building changes; it receives only the dedicated owner-authorized Positioning credential. The Read & Write primary and browser Viewer credentials remain server-side/mobile-inaccessible.
+- Native MapView is owned by the authenticated workspace context and must remount when workspace/building changes. Historical Plan 030 used a dedicated Positioning credential; current runtime instead receives the owner-authorized Only Read credential from Nitro. Read & Write remains mobile-inaccessible.
 - The installed `@situm/react-native` 3.19.2 surface is consumed through a narrow local TypeScript declaration boundary because the published package omits its referenced `lib/` files; Metro/Android use the installed package source/native module. This workaround mirrors only the proven MapView, positioning, user-helper, floor/POI, and navigation surface and is not evidence of iOS runtime support.
 - Positioning uses Situm User Helper plus Remote Configuration and starts only from the explicit foreground Map action. No background location or Realtime/Share Live Location is enabled in Plan 030.
 - Real-device positioning, blue-dot, floor transition, POI, and navigation claims require physical supported-device evidence. Plan 030 implementation is approved without claiming those outcomes; after the 2026-08-17 roadmap split, the unpassed device checks are explicitly transferred to Plan 034's consolidated hard final E2E gate.
@@ -281,7 +294,7 @@ Status: historical roadmap acceptance decision. The explicit Plan 034 closure ov
 - Realtime Positions is operational device-position monitoring; Situm Share Live Location is a separate session-based feature and must not be conflated with it.
 - The current owner-scoped Nitro Realtime route is the preferred remote-monitoring boundary and exposes only position/device identity, source time, building/floor, accuracy, coordinates, and optional device ID.
 - No friendly person identity, online/idle/offline presence, trajectory, generic remote marker, or remote focus semantics exist unless Phase 0 proves them from exact current evidence.
-- Remote monitoring remains server-mediated unless a narrower/equivalent least-privilege native path is proven. The dedicated mobile Positioning credential must not be widened for convenience.
+- Remote monitoring remains server-mediated unless a narrower/equivalent safe native path is proven. Native positioning may use the workspace Only Read credential, while Read & Write remains server-only.
 
 Status: historical Plan 031 baseline; its server-mediated/no-invented-semantics boundary remains active.
 

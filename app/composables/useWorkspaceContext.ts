@@ -10,8 +10,8 @@ export interface WorkspaceSitumConfig {
   workspaceId: string
   situmAccountId: string
   configured: boolean
-  viewerConfigured: boolean
-  positioningConfigured: boolean
+  readOnlyConfigured: boolean
+  readWriteConfigured: boolean
   updatedAt: string
 }
 

@@ -7,44 +7,54 @@ const passwordInput = readFileSync(new URL('../app/components/form/PasswordInput
 const workspaceConfigRoute = readFileSync(new URL('../server/api/workspaces/[...workspacePath].ts', import.meta.url), 'utf8')
 const mobilePositioningRoute = readFileSync(new URL('../server/api/workspaces/[workspaceId]/mobile-positioning.get.ts', import.meta.url), 'utf8')
 const mobilePositioning = readFileSync(new URL('../server/utils/mobile-positioning.ts', import.meta.url), 'utf8')
+const workspaceSitum = readFileSync(new URL('../server/utils/workspace-situm.ts', import.meta.url), 'utf8')
+const schema = readFileSync(new URL('../server/db/schema.ts', import.meta.url), 'utf8')
 
-test('Plan 034 Workspace Settings provisions a distinct write-only positioning credential', () => {
-  assert.match(workspacePage, /const positioningApiKey = ref\(''\)/)
-  assert.match(workspacePage, /label="Positioning API key"/)
-  assert.match(workspacePage, /<PasswordInput v-model="positioningApiKey"/)
+test('workspace settings exposes exactly Only Read and Read & Write credential inputs', () => {
+  assert.match(workspacePage, /label="Only Read API key"/)
+  assert.match(workspacePage, /label="Read & Write API key"/)
+  assert.match(workspacePage, /<FormPasswordInput v-model="viewerApiKey"/)
+  assert.match(workspacePage, /<FormPasswordInput v-model="apiKey"/)
   assert.match(passwordInput, /:type="visible \? 'text' : 'password'"/)
-  assert.match(passwordInput, /i-lucide-eye/)
-  assert.match(workspacePage, /positioningApiKey: positioningApiKey\.value/)
-  assert.match(workspacePage, /positioningApiKey\.value = ''/)
-  assert.match(workspacePage, /config\.positioningConfigured \? 'Configured' : 'Not configured'/)
+  assert.doesNotMatch(workspacePage, /Positioning API key/)
+  assert.doesNotMatch(workspacePage, /positioningApiKey/)
 })
 
-test('Plan 034 omitting positioningApiKey preserves the existing encrypted value', () => {
-  assert.match(workspacePage, /\.\.\.\(positioningApiKey\.value \? \{ positioningApiKey: positioningApiKey\.value \} : \{\}\)/)
-  assert.match(workspaceConfigRoute, /\.\.\.\(encryptedPositioningApiKey \? \{ encryptedPositioningApiKey \} : \{\}\)/)
-  assert.match(workspaceConfigRoute, /positioningConfigured: Boolean\(config\.positioningConfigured\)/)
-  assert.match(workspaceConfigRoute, /positioningConfigured: workspaceSitumConfigs\.encryptedPositioningApiKey/)
-  assert.match(workspaceConfigRoute, /positioningConfigured: Boolean\(config\.encryptedPositioningApiKey\)/)
+test('workspace credential saves are independent and omitted keys are preserved', () => {
+  assert.match(workspacePage, /!apiKey\.value && !viewerApiKey\.value/)
+  assert.match(workspacePage, /\.\.\.\(apiKey\.value \? \{ apiKey: apiKey\.value \} : \{\}\)/)
+  assert.match(workspacePage, /\.\.\.\(viewerApiKey\.value \? \{ viewerApiKey: viewerApiKey\.value \} : \{\}\)/)
+  assert.match(workspaceConfigRoute, /apiKey: credential\.optional\(\)/)
+  assert.match(workspaceConfigRoute, /viewerApiKey: credential\.optional\(\)/)
+  assert.match(workspaceConfigRoute, /\.\.\.\(encryptedApiKey \? \{ encryptedApiKey \} : \{\}\)/)
+  assert.match(workspaceConfigRoute, /\.\.\.\(encryptedViewerApiKey \? \{ encryptedViewerApiKey \} : \{\}\)/)
 })
 
-test('Plan 034 server validation keeps positioning least-privilege and organization-bound', () => {
-  assert.match(workspaceConfigRoute, /apiPermissionLevel !== SitumApiPermissionLevel\.POSITIONING/)
-  assert.match(workspaceConfigRoute, /positioningSession\.organizationId !== primarySession\.organizationId/)
-  assert.match(workspaceConfigRoute, /encryptWorkspaceApiKey\(parsed\.data\.positioningApiKey\)/)
-  assert.match(workspaceConfigRoute, /positioningApiKey: z\.string\(\)\.min\(1\)\.max\(4096\)\.optional\(\)/)
+test('server validates the two Situm permission levels and organization boundary', () => {
+  assert.match(workspaceConfigRoute, /SitumApiPermissionLevel\.READ_WRITE, 'Read & Write API key'/)
+  assert.match(workspaceConfigRoute, /SitumApiPermissionLevel\.READ_ONLY, 'Only Read API key'/)
+  assert.match(workspaceConfigRoute, /organizationIds\.some\(id => id !== situmAccountId\)/)
+  assert.doesNotMatch(workspaceConfigRoute, /SitumApiPermissionLevel\.POSITIONING/)
 })
 
-test('Plan 034 mobile positioning remains owner-scoped and returns only the dedicated credential', () => {
+test('mobile positioning is owner-scoped and receives only the stored Only Read key', () => {
   assert.match(mobilePositioningRoute, /requireUserSession\(event\)/)
-  assert.match(mobilePositioningRoute, /encryptedPositioningApiKey: workspaceSitumConfigs\.encryptedPositioningApiKey/)
+  assert.match(mobilePositioningRoute, /encryptedViewerApiKey: workspaceSitumConfigs\.encryptedViewerApiKey/)
   assert.match(mobilePositioningRoute, /eq\(workspaces\.ownerId, ownerId\)/)
-  assert.match(mobilePositioning, /apiKey: \(input\.decryptApiKey \|\| decryptWorkspaceApiKey\)\(config\.encryptedPositioningApiKey\)/)
-  assert.doesNotMatch(mobilePositioning, /encryptedApiKey|encryptedViewerApiKey/)
+  assert.match(mobilePositioning, /decryptWorkspaceApiKey\)\(config\.encryptedViewerApiKey\)/)
+  assert.doesNotMatch(mobilePositioning, /encryptedApiKey/)
+  assert.doesNotMatch(mobilePositioning, /encryptedPositioningApiKey/)
 })
 
+test('read helpers use Only Read while Read & Write remains a separate server-only helper', () => {
+  assert.match(workspaceSitum, /getWorkspaceSitumClient[\s\S]*config\.encryptedViewerApiKey/)
+  assert.match(workspaceSitum, /getWorkspaceSitumApiKey[\s\S]*config\.encryptedViewerApiKey/)
+  assert.match(workspaceSitum, /getWorkspaceSitumReadWriteClient/)
+  assert.match(workspaceSitum, /getWorkspaceSitumReadWriteClient[\s\S]*config\.encryptedApiKey/)
+})
 
-test('Plan 034 runtime catch-all exposes owner-scoped mobile positioning route', () => {
-  assert.match(workspaceConfigRoute, /parts\[1\] === 'mobile-positioning'/)
-  assert.match(workspaceConfigRoute, /resolveMobilePositioningCredential/)
-  assert.match(workspaceConfigRoute, /requireUserSession\(event\)/)
+test('active schema contains exactly two Situm credential columns', () => {
+  assert.match(schema, /encryptedApiKey: varchar\('encrypted_api_key'/)
+  assert.match(schema, /encryptedViewerApiKey: varchar\('encrypted_viewer_api_key'/)
+  assert.doesNotMatch(schema, /encryptedPositioningApiKey/)
 })

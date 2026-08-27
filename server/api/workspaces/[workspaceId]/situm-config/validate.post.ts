@@ -5,19 +5,35 @@ import { workspaceSitumConfigs, workspaces } from '../../../../db/schema'
 import { decryptWorkspaceApiKey } from '../../../../utils/workspace-credentials'
 import { assertWorkspaceId } from '../../../../utils/workspace-owner'
 
+async function validateCredential(encrypted: string, permission: SitumApiPermissionLevel, accountId: string) {
+  const sdk = new SitumSDK({ auth: { apiKey: decryptWorkspaceApiKey(encrypted) }, compact: true })
+  const auth = await sdk.authSession
+  if (auth.apiPermissionLevel !== permission || auth.organizationId !== accountId) throw new Error('Credential context mismatch')
+  return sdk
+}
+
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
   const workspaceId = assertWorkspaceId(getRouterParam(event, 'workspaceId') || '')
-  const [config] = await getDb().select({ situmAccountId: workspaceSitumConfigs.situmAccountId, encryptedApiKey: workspaceSitumConfigs.encryptedApiKey }).from(workspaceSitumConfigs).innerJoin(workspaces, eq(workspaceSitumConfigs.workspaceId, workspaces.id)).where(and(eq(workspaceSitumConfigs.workspaceId, workspaceId), eq(workspaces.ownerId, session.user.id))).limit(1)
+  const [config] = await getDb().select({
+    situmAccountId: workspaceSitumConfigs.situmAccountId,
+    encryptedApiKey: workspaceSitumConfigs.encryptedApiKey,
+    encryptedViewerApiKey: workspaceSitumConfigs.encryptedViewerApiKey,
+  }).from(workspaceSitumConfigs).innerJoin(workspaces, eq(workspaceSitumConfigs.workspaceId, workspaces.id)).where(and(eq(workspaceSitumConfigs.workspaceId, workspaceId), eq(workspaces.ownerId, session.user.id))).limit(1)
   if (!config) throw createError({ statusCode: 404, statusMessage: 'Situm configuration not found.' })
+
   try {
-    const sdk = new SitumSDK({ auth: { apiKey: decryptWorkspaceApiKey(config.encryptedApiKey) }, compact: true })
-    const auth = await sdk.authSession
-    if (auth.apiPermissionLevel !== SitumApiPermissionLevel.READ_WRITE || auth.organizationId !== config.situmAccountId) throw new Error('Primary credential context mismatch')
-    const organization = await sdk.cartography.getCurrentOrganization()
-    if (!organization.id || organization.id !== config.situmAccountId) throw new Error('Account context mismatch')
+    if (config.encryptedApiKey) await validateCredential(config.encryptedApiKey, SitumApiPermissionLevel.READ_WRITE, config.situmAccountId)
+    if (config.encryptedViewerApiKey) await validateCredential(config.encryptedViewerApiKey, SitumApiPermissionLevel.READ_ONLY, config.situmAccountId)
   } catch {
-    throw createError({ statusCode: 422, statusMessage: 'Situm configuration could not be validated.' })
+    throw createError({ statusCode: 422, statusMessage: 'One or more configured Situm API keys are no longer valid or no longer have the expected permission.' })
   }
-  return { valid: true, status: 'validated', accountContext: 'matched' }
+
+  return {
+    valid: true,
+    status: 'validated',
+    accountContext: 'matched',
+    readWriteConfigured: Boolean(config.encryptedApiKey),
+    readOnlyConfigured: Boolean(config.encryptedViewerApiKey),
+  }
 })

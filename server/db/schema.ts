@@ -45,9 +45,8 @@ export const workspaceSitumConfigs = app.table('workspace_situm_configs', {
   id: uuid('id').defaultRandom().primaryKey(),
   workspaceId: uuid('workspace_id').notNull().unique(),
   situmAccountId: varchar('situm_account_id', { length: 255 }).notNull(),
-  encryptedApiKey: varchar('encrypted_api_key', { length: 2048 }).notNull(),
+  encryptedApiKey: varchar('encrypted_api_key', { length: 2048 }),
   encryptedViewerApiKey: varchar('encrypted_viewer_api_key', { length: 2048 }),
-  encryptedPositioningApiKey: varchar('encrypted_positioning_api_key', { length: 2048 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, table => [

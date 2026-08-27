@@ -8,9 +8,10 @@ This is the current product capability and runtime-owner matrix. Detailed techni
 | Google OAuth | Provider plumbing exists; runtime provider acceptance is not part of the verified path |
 | Private workspaces | PostgreSQL/Drizzle + owner-scoped Nitro APIs |
 | Workspace Situm configuration | Nitro + encrypted PostgreSQL workspace credential storage |
-| Primary Situm authority | Verified Read & Write credential; server-only |
-| Browser Viewer authority | Separate verified Read-only Viewer credential issued through authenticated owner scope |
-| Native positioning authority | Separate verified Positioning credential issued through authenticated owner scope |
+| Situm read/client authority | Verified Only Read credential; used for server read paths and issued through authenticated owner scope to browser Viewer/native positioning when needed |
+| Situm mutation/admin authority | Verified Read & Write credential; server-only and never returned to browser/mobile |
+| Browser Viewer authority | Workspace Only Read credential issued through authenticated owner scope |
+| Native positioning authority | Workspace Only Read credential requested from Nitro after authenticated workspace-owner authorization |
 | Browser Viewer/cartography | `@situm/sdk-js` Viewer on capable web layouts |
 | Buildings/Floors/POIs/Categories | Workspace-scoped Situm/cartography; web and native consume authorized real data |
 | Geofences/Paths | Workspace-scoped server Situm integration where implemented |

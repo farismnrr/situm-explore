@@ -46,10 +46,10 @@ Google OAuth wiring exists, but runtime provider acceptance must be treated sepa
 
 Workspace Situm configuration is secret write input plus safe metadata/status output.
 
-- primary Read & Write credential: encrypted server-side, server-only;
-- Viewer Read-only credential: encrypted server-side and returned only through the authenticated owner-scoped Viewer-auth boundary after permission/org validation;
-- Positioning credential: encrypted server-side and returned only through the authenticated owner-scoped mobile positioning boundary;
-- account/organization ID: derived and stored as metadata.
+- Only Read credential: encrypted server-side and returned only through authenticated owner-scoped client credential boundaries after permission/org validation; it powers browser Viewer, native positioning, and read-only Situm operations;
+- Read & Write credential: encrypted server-side and server-only for Situm mutation/admin operations;
+- either credential may be configured independently and replacing one preserves the other;
+- account/organization ID: derived from a verified credential and stored as metadata; later replacements must match it.
 
 Stored secret values are never returned by normal configuration reads and must not enter logs, traces, docs, public runtime config, or client errors.
 
@@ -57,13 +57,13 @@ Stored secret values are never returned by normal configuration reads and must n
 
 `app/components/situm/SitumViewer.vue` is the single browser Viewer lifecycle owner.
 
-The current flow uses the separate verified Read-only Viewer API key with Situm's direct API-key Viewer initialization. The primary Read & Write key must never be exposed to the browser.
+The current flow uses the verified workspace Only Read API key with Situm's direct API-key Viewer initialization. The Read & Write key must never be exposed to the browser.
 
 Keep a small typed Viewer command surface. Do not expose raw Viewer access or a generic invoke escape hatch.
 
 ## Native positioning and Map
 
-The native app receives only the dedicated Positioning credential after application-session and workspace-owner authorization.
+The native app receives only the workspace Only Read credential after application-session and workspace-owner authorization. The APK contains no Situm key and never receives Read & Write.
 
 `ForegroundPositioningSession` owns the process-global Situm positioning callbacks/running state. Explore and Realtime consume that shared foreground session instead of independently starting/stopping global callbacks.
 
@@ -73,7 +73,7 @@ Map/cartography/POI/floor/navigation UI must consume real Situm state. Do not in
 
 ## Native Realtime
 
-Remote Realtime remains server-mediated through the authenticated workspace route. The mobile Positioning credential is not widened for remote monitoring.
+Remote Realtime remains server-mediated through the authenticated workspace route. Native positioning may use the issued Only Read credential, while remote monitoring continues through Nitro rather than broadening client-side data ownership.
 
 The client model is intentionally minimal: device/position identity, source time, building/floor, accuracy, coordinates, and supported IDs. Do not add presence, unsupported freshness classification, or fabricated remote-map semantics.
 
