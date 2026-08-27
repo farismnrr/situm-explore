@@ -33,7 +33,9 @@ test('workspace credential saves are independent and omitted keys are preserved'
 test('server validates the two Situm permission levels and organization boundary', () => {
   assert.match(workspaceConfigRoute, /SitumApiPermissionLevel\.READ_WRITE, 'Read & Write API key'/)
   assert.match(workspaceConfigRoute, /SitumApiPermissionLevel\.READ_ONLY, 'Only Read API key'/)
-  assert.match(workspaceConfigRoute, /organizationIds\.some\(id => id !== situmAccountId\)/)
+  assert.match(workspaceConfigRoute, /resolveWorkspaceSitumOrganization/)
+  assert.match(workspaceConfigRoute, /SITUM_CREDENTIAL_ORG_MISMATCH/)
+  assert.match(workspaceConfigRoute, /SITUM_WORKSPACE_ORG_MISMATCH/)
   assert.doesNotMatch(workspaceConfigRoute, /SitumApiPermissionLevel\.POSITIONING/)
 })
 

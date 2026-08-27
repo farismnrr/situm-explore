@@ -7,6 +7,7 @@ import { resolveMobilePositioningCredential } from '../../utils/mobile-positioni
 import { issueWorkspaceViewerApiKey } from '../../utils/viewer-auth'
 import { encryptWorkspaceApiKey } from '../../utils/workspace-credentials'
 import { assertWorkspaceId } from '../../utils/workspace-owner'
+import { resolveWorkspaceSitumOrganization } from '../../utils/workspace-situm-organization'
 
 const credential = z.string().min(1).max(4096)
 const schema = z.object({
@@ -16,18 +17,37 @@ const schema = z.object({
 
 type VerifiedCredential = { organizationId: string, apiPermissionLevel: SitumApiPermissionLevel }
 
+type SitumConfigPublicErrorCode =
+  | 'SITUM_ONLY_READ_WRONG_PERMISSION'
+  | 'SITUM_READ_WRITE_WRONG_PERMISSION'
+  | 'SITUM_ONLY_READ_UNVERIFIED'
+  | 'SITUM_READ_WRITE_UNVERIFIED'
+  | 'SITUM_CREDENTIAL_ORG_MISMATCH'
+  | 'SITUM_WORKSPACE_ORG_MISMATCH'
+  | 'SITUM_ORG_UNDETERMINED'
+
+function publicValidationError(code: SitumConfigPublicErrorCode, statusMessage: string) {
+  return createError({ statusCode: 422, statusMessage, data: { publicCode: code } })
+}
+
 async function verifyCredential(apiKey: string, expectedPermission: SitumApiPermissionLevel, label: 'Only Read API key' | 'Read & Write API key'): Promise<VerifiedCredential> {
   try {
     const sdk = new SitumSDK({ auth: { apiKey }, compact: true })
     const session = await sdk.authSession
     if (!session.organizationId) throw new Error('Credential has no organization')
     if (session.apiPermissionLevel !== expectedPermission) {
-      throw createError({ statusCode: 422, statusMessage: `${label} has the wrong Situm permission. Use ${expectedPermission === SitumApiPermissionLevel.READ_ONLY ? 'an Only Read' : 'a Read & Write'} key.` })
+      throw publicValidationError(
+        expectedPermission === SitumApiPermissionLevel.READ_ONLY ? 'SITUM_ONLY_READ_WRONG_PERMISSION' : 'SITUM_READ_WRITE_WRONG_PERMISSION',
+        `${label} has the wrong Situm permission. Use ${expectedPermission === SitumApiPermissionLevel.READ_ONLY ? 'an Only Read' : 'a Read & Write'} key.`,
+      )
     }
     return session
   } catch (error: unknown) {
     if ((error as { statusCode?: number }).statusCode === 422) throw error
-    throw createError({ statusCode: 422, statusMessage: `${label} could not be verified. Check that the key is active and copied correctly.` })
+    throw publicValidationError(
+      expectedPermission === SitumApiPermissionLevel.READ_ONLY ? 'SITUM_ONLY_READ_UNVERIFIED' : 'SITUM_READ_WRITE_UNVERIFIED',
+      `${label} could not be verified. Check that the key is active and copied correctly.`,
+    )
   }
 }
 
@@ -84,15 +104,37 @@ export default defineEventHandler(async (event) => {
   const parsed = schema.safeParse(await readBody(event))
   if (!parsed.success) throw createError({ statusCode: 400, statusMessage: 'Add an Only Read or Read & Write Situm API key to save.' })
 
-  const [existing] = await getDb().select({ situmAccountId: workspaceSitumConfigs.situmAccountId }).from(workspaceSitumConfigs).where(eq(workspaceSitumConfigs.workspaceId, workspaceId)).limit(1)
+  const [existing] = await getDb().select({
+    situmAccountId: workspaceSitumConfigs.situmAccountId,
+    encryptedApiKey: workspaceSitumConfigs.encryptedApiKey,
+    encryptedViewerApiKey: workspaceSitumConfigs.encryptedViewerApiKey,
+  }).from(workspaceSitumConfigs).where(eq(workspaceSitumConfigs.workspaceId, workspaceId)).limit(1)
   const [readWriteSession, readOnlySession] = await Promise.all([
     parsed.data.apiKey ? verifyCredential(parsed.data.apiKey, SitumApiPermissionLevel.READ_WRITE, 'Read & Write API key') : null,
     parsed.data.viewerApiKey ? verifyCredential(parsed.data.viewerApiKey, SitumApiPermissionLevel.READ_ONLY, 'Only Read API key') : null,
   ])
   const organizationIds = [readWriteSession?.organizationId, readOnlySession?.organizationId].filter((value): value is string => Boolean(value))
-  const situmAccountId = existing?.situmAccountId || organizationIds[0]
-  if (!situmAccountId) throw createError({ statusCode: 422, statusMessage: 'The Situm organization could not be determined from the supplied API key.' })
-  if (organizationIds.some(id => id !== situmAccountId)) throw createError({ statusCode: 422, statusMessage: 'Only Read and Read & Write API keys must belong to the same Situm organization.' })
+  const organizationResolution = resolveWorkspaceSitumOrganization({
+    existingOrganizationId: existing?.situmAccountId,
+    hasExistingReadWrite: Boolean(existing?.encryptedApiKey),
+    hasExistingReadOnly: Boolean(existing?.encryptedViewerApiKey),
+    replacingReadWrite: Boolean(parsed.data.apiKey),
+    replacingReadOnly: Boolean(parsed.data.viewerApiKey),
+    suppliedOrganizationIds: organizationIds,
+  })
+  if (!organizationResolution.ok) {
+    if (organizationResolution.reason === 'credential-org-mismatch') {
+      throw publicValidationError('SITUM_CREDENTIAL_ORG_MISMATCH', 'Only Read and Read & Write API keys must belong to the same Situm organization.')
+    }
+    if (organizationResolution.reason === 'workspace-org-mismatch') {
+      throw publicValidationError(
+        'SITUM_WORKSPACE_ORG_MISMATCH',
+        'This API key belongs to a different Situm organization than the credential already stored for this workspace. Replace both keys together to move this workspace to another Situm organization.',
+      )
+    }
+    throw publicValidationError('SITUM_ORG_UNDETERMINED', 'The Situm organization could not be determined from the supplied API key.')
+  }
+  const situmAccountId = organizationResolution.organizationId
 
   const encryptedApiKey = parsed.data.apiKey ? encryptWorkspaceApiKey(parsed.data.apiKey) : undefined
   const encryptedViewerApiKey = parsed.data.viewerApiKey ? encryptWorkspaceApiKey(parsed.data.viewerApiKey) : undefined
