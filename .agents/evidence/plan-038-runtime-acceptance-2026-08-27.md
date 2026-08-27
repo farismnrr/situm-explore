@@ -5,7 +5,7 @@ This file records the Plan 038 closeout state without storing or reproducing any
 ## Scope and source
 
 - Branch: `plan/038-two-key-situm-credentials`
-- Implementation commits exercised: `ccb8e0a` (Node runtime hardening) and `1a18aa8` (mounted Viewer initialization fix)
+- Implementation commits exercised: `ccb8e0a` (Node runtime hardening) and `1a18aa8` (mounted Viewer initialization fix); the final closeout image was built from `bddd72889135429df9f6fac5880e15e1795badac` (docs-only closeout commit on top of the tested implementation).
 - Product contract: exactly two workspace-managed Situm credentials — **Only Read** and **Read & Write**. Only Read is the client-safe credential; Read & Write is server-only.
 - Dedicated Positioning credential storage/UI/runtime contract is absent from active source and client artifacts.
 
@@ -20,8 +20,8 @@ This file records the Plan 038 closeout state without storing or reproducing any
 
 - Docker base/runtime stages use `node:22.22.0-bookworm-slim`, satisfying the current Nuxt engine requirement without a Node 24 major upgrade.
 - Clean image build completed without the prior Node engine mismatch warning. Remaining build messages are informational plugin-timing/system-user-UID warnings.
-- GHCR publication succeeded with normal repository authentication. `ghcr.io/farismnrr/situm-explore:staging` and the immutable commit tag resolve to digest `sha256:b0b0f551e6b5f67f440c5b7f753a0fbe8412b020744b062bb22a1f688411a79d`.
-- `deploy-situm-explore-1` was pulled and force-recreated from that image only. It reports image revision `1a18aa8351070e983247dc7cbe36537975e754ae`, Node `v22.22.0`, `running`, `healthy`, and restart count `0`.
+- GHCR publication succeeded with normal repository authentication. `ghcr.io/farismnrr/situm-explore:staging` and the immutable commit tag resolve to digest `sha256:75739ca6d557fc9c5098879cc668284581ee77b61a1d9889df5376ad2b0b6f58`.
+- `deploy-situm-explore-1` was pulled and force-recreated from that image only. It reports image revision `bddd72889135429df9f6fac5880e15e1795badac`, Node `v22.22.0`, `running`, `healthy`, and restart count `0`.
 - Runtime checks: root `200`, unauthenticated `/api/workspaces` `401`, `make staging-smoke` `ok`.
 - Recent application logs contained no raw credentials or error output; the inspected window had no application log lines after the final recreate.
 
