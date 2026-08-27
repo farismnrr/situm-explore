@@ -89,6 +89,8 @@ function getConfigSaveError(error: unknown) {
     'Only Read API key could not be verified. Check that the key is active and copied correctly.',
     'Read & Write API key could not be verified. Check that the key is active and copied correctly.',
     'Only Read and Read & Write API keys must belong to the same Situm organization.',
+    'This API key belongs to a different Situm organization than the credential already stored for this workspace. Replace both keys together to move this workspace to another Situm organization.',
+    'The Situm organization could not be determined from the supplied API key.',
     'Add an Only Read or Read & Write Situm API key to save.',
   ]
   return statusMessage && safeMessages.includes(statusMessage) ? statusMessage : getSafeErrorMessage(error, 'Situm configuration could not be saved.')

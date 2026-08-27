@@ -14,7 +14,9 @@ The Docker base-image warning is addressed: both build stages use Node `22.22.0-
 
 Latest **integrated** product work is PR #36 at merge commit `80dad1bf87300846fab2f7b914d5ec666acf06d6` (Plans 037–038 closeout). Navigation camera/perspective work remains separate future scope.
 
-There is no active implementation plan. New product work starts from updated `main` on a new dedicated plan branch. Historical plans, execution briefs, sessions, reviews, and evidence are not current execution instructions.
+Plan 039 — Workspace Situm Isolation is implementation-complete but unintegrated on `plan/039-workspace-situm-isolation`. It fixes workspace-level Situm tenancy so first-time configuration is independent per workspace, a retained credential pins only that workspace to its current Situm organization, and replacing every stored credential may atomically re-bind that workspace to another organization. Safe allowlisted Situm validation errors now survive the global error boundary and reach Workspace UX without exposing raw upstream details. Automated validation passed with 83/83 tests, lint, typecheck, build, and `git diff --check`. It has not been deployed, opened as a PR, or merged.
+
+Continue Plan 039 from `plan/039-workspace-situm-isolation`. Historical plans, execution briefs, sessions, reviews, and evidence are not current execution instructions.
 
 ## Last completed work
 

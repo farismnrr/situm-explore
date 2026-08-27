@@ -13,6 +13,16 @@ const categories: Record<number, { code: string, message: string }> = {
   503: { code: 'SERVICE_UNAVAILABLE', message: 'This service is temporarily unavailable.' },
 }
 
+const publicErrorMessages: Record<string, string> = {
+  SITUM_ONLY_READ_WRONG_PERMISSION: 'Only Read API key has the wrong Situm permission. Use an Only Read key.',
+  SITUM_READ_WRITE_WRONG_PERMISSION: 'Read & Write API key has the wrong Situm permission. Use a Read & Write key.',
+  SITUM_ONLY_READ_UNVERIFIED: 'Only Read API key could not be verified. Check that the key is active and copied correctly.',
+  SITUM_READ_WRITE_UNVERIFIED: 'Read & Write API key could not be verified. Check that the key is active and copied correctly.',
+  SITUM_CREDENTIAL_ORG_MISMATCH: 'Only Read and Read & Write API keys must belong to the same Situm organization.',
+  SITUM_WORKSPACE_ORG_MISMATCH: 'This API key belongs to a different Situm organization than the credential already stored for this workspace. Replace both keys together to move this workspace to another Situm organization.',
+  SITUM_ORG_UNDETERMINED: 'The Situm organization could not be determined from the supplied API key.',
+}
+
 function safeCategory(statusCode: number) {
   return categories[statusCode] || (statusCode >= 500
     ? { code: 'INTERNAL_ERROR', message: 'An unexpected server error occurred.' }
@@ -31,6 +41,12 @@ export default defineNitroPlugin((nitroApp) => {
     const failure = error as Error & { statusCode?: number, statusMessage?: string, data?: unknown }
     const statusCode = typeof failure.statusCode === 'number' ? failure.statusCode : 500
     const category = safeCategory(statusCode)
+    const publicCode = typeof failure.data === 'object' && failure.data !== null && 'publicCode' in failure.data
+      ? String((failure.data as { publicCode?: unknown }).publicCode || '')
+      : ''
+    const publicMessage = publicErrorMessages[publicCode]
+    const responseCode = publicMessage ? publicCode : category.code
+    const responseMessage = publicMessage || category.message
     const diagnostic = {
       name: failure.name || 'Error',
       message: safeDiagnostic(failure.message || 'Unknown server error'),
@@ -39,9 +55,9 @@ export default defineNitroPlugin((nitroApp) => {
     const requestId = event?.context.telemetry?.requestId || (event ? getRequestHeader(event, 'x-request-id') : undefined) || 'unavailable'
     if (event) setResponseHeader(event, 'x-request-id', requestId)
     failure.statusCode = statusCode
-    failure.statusMessage = category.message
-    failure.message = category.message
-    failure.data = { code: category.code, requestId }
+    failure.statusMessage = responseMessage
+    failure.message = responseMessage
+    failure.data = { code: responseCode, requestId }
     emitTelemetryLog(statusCode >= 500 ? 'ERROR' : 'WARN', 'http.request.failed', {
       'app.request_id': requestId,
       'http.response.status_code': statusCode,
