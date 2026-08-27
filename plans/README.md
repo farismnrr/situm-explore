@@ -74,7 +74,7 @@ Roadmap history: `plans/028-034-native-mobile-roadmap.md`. Plan 036 — Realtime
 ## Active / unintegrated work
 
 - Plan 037 — Web Loading-State Hygiene: implementation complete at `cb00201c` on `plan/037-loading-state-hygiene`; automated validation passed and branch pushed; not yet integrated or deployed.
-- Plan 038 — Two-Key Situm Credential Model: stacked implementation complete on `plan/038-two-key-situm-credentials`; automated validation passed; runtime migration/deployment and physical Android Only Read positioning acceptance remain pending.
+- Plan 038 — Two-Key Situm Credential Model: stacked implementation complete on `plan/038-two-key-situm-credentials`; automated validation passed; migration and local production-style Compose deployment passed on 2026-08-27; authenticated browser Viewer, GHCR publication, and physical Android Only Read positioning acceptance remain pending.
 
 ## Transition direction
 

@@ -1,6 +1,6 @@
 # Plan 038 — Two-Key Situm Credential Model
 
-Status: **implementation complete / automated validation passed / runtime acceptance pending**
+Status: **implementation complete / automated validation passed / local production-style deployment passed / authenticated + physical acceptance pending**
 Depends on: **stacked on Plan 037 commit `cb00201c` by explicit user authorization on 2026-08-27; neither plan is integrated yet.**
 Branch: `plan/038-two-key-situm-credentials`
 
@@ -252,7 +252,7 @@ Passed on 2026-08-27:
 - `mobile/npm run lint`;
 - `mobile/npm run typecheck`.
 
-Runtime/physical acceptance remains intentionally pending because the branch has not been deployed and no raw existing Situm secrets were accessed. Applying the generated migration to a real database and validating a physical APK with a real Only Read key require the normal destructive/production/credential gates.
+Local production-style deployment was authorized and completed on 2026-08-27. Migration `0009_unusual_wrecking_crew` was applied after a local mode-0600 PostgreSQL backup; the existing configuration row remained, Read & Write became nullable, and the legacy Positioning column was removed. Commit `5ed21dd` was built locally as the Compose `staging` image, force-recreated, and passed container health, HTTP liveness/root, unauthenticated authorization-boundary, and `make staging-smoke` checks. GHCR publication failed with HTTP 403, so the remote staging tag remains unchanged. Authenticated browser Viewer acceptance and physical APK positioning with a real backend-issued Only Read key remain pending; no raw existing Situm secrets were accessed.
 
 ## Definition of done
 
