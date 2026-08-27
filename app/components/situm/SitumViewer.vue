@@ -83,6 +83,7 @@ watch(() => [props.workspaceId, props.buildingId], ([workspaceId, buildingId], p
   if (workspaceId !== previous?.[0] || buildingId !== previous?.[1]) resetViewer()
   void initialize()
 }, { immediate: true })
+onMounted(() => { void initialize() })
 onBeforeUnmount(resetViewer)
 </script>
 

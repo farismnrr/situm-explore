@@ -35,6 +35,7 @@ test('Map waits for workspace and cartography before mounting SitumViewer', () =
   assert.match(map, /v-if="cartographyLoading"/)
   assert.match(map, /v-else-if="viewerAvailable" ref="viewer"/)
   assert.match(viewer, /<USkeleton v-else-if="!buildingConfirmed"/)
+  assert.match(viewer, /onMounted\(\(\) => \{\s*void initialize\(\)\s*\}\)/)
   assert.doesNotMatch(viewer, /title="Loading map"/)
   assert.doesNotMatch(viewer, /Preparing the read-only Viewer/)
 })

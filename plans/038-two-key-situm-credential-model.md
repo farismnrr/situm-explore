@@ -246,6 +246,7 @@ Runtime hardening completed on 2026-08-27:
 
 - Docker build stages now pin `node:22.22.0-bookworm-slim`, which satisfies Nuxt 4.5.2's Node `>=22.19.0` engine requirement;
 - a clean production image build completed without the previous Node engine mismatch warning (the remaining output is informational plugin-timing and system-user-UID warnings).
+- authenticated browser acceptance found and isolated a Viewer mount lifecycle regression: `SitumViewer` now retries initialization in `onMounted` after the immediate prop watcher can run before its DOM host exists; the regression is covered by the web loading-state test.
 
 Passed on 2026-08-27:
 
