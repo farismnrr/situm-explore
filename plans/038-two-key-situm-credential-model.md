@@ -1,6 +1,6 @@
 # Plan 038 — Two-Key Situm Credential Model
 
-Status: **runtime acceptance complete except physical Android gate — automated, staging, authenticated browser, GHCR, and release-build evidence captured; pre-migration dump retention is also a documented temporary-file caveat; PR/merge pending device availability or explicit waiver**
+Status: **complete by explicit user waiver of remaining physical/raw-secret E2E gates — implementation, validation, staging, GHCR, browser, and release-build evidence captured; pre-migration dump retention caveat documented**
 Depends on: **stacked on Plan 037 commit `cb00201c` by explicit user authorization on 2026-08-27; neither plan is integrated yet.**
 Branch: `plan/038-two-key-situm-credentials`
 
@@ -114,7 +114,7 @@ Acceptance:
 - [x] Preserve the existing mobile request-to-backend flow; no key is bundled into the APK.
 - [x] Return only the Only Read credential plus minimum required workspace/account metadata.
 - [x] Keep missing credential failure actionable: mobile positioning requires an Only Read key configured in Workspace settings.
-- [ ] Verify on a physical Android runtime that Situm SDK positioning starts and produces a real fix using the issued Only Read key. No Android device was connected during this closeout; the release APK build passed, but physical positioning is not claimed.
+- [ ] Verify on a physical Android runtime that Situm SDK positioning starts and produces a real fix using the issued Only Read key. No Android device was connected during this closeout; the release APK build passed, but physical positioning is not claimed. **Explicitly waived by the user on 2026-08-27 to close without this E2E.**
 - [x] Confirm logout/workspace-switch/session protections from Plans 029–035 remain intact through the existing regression suite.
 
 Acceptance:
@@ -194,12 +194,12 @@ Use a production build/runtime, not Nuxt dev mode.
 Web acceptance:
 
 - [x] select the existing workspace with no Situm keys and verify the no-configuration state without changing production data;
-- [ ] save Only Read only and verify status/copy through the browser. The credential-bearing form submission was not replayed because no raw test key may be entered or transmitted without an action-time secret confirmation; the independent-update contract is covered by automated tests;
+- [ ] save Only Read only and verify status/copy through the browser. The credential-bearing form submission was not replayed because no raw test key may be entered or transmitted without an action-time secret confirmation; the independent-update contract is covered by automated tests. **Explicitly waived by the user on 2026-08-27.**
 - [x] Map Viewer obtains and renders with the backend-issued Only Read credential;
 - [x] read-only surfaces load through the workspace-scoped read path; available cartography returned one building/two floors, while other surfaces exposed their expected route headings without browser error alerts;
 - [x] write-required/missing-RW behavior has actionable server UX and the server-only Read & Write helper is covered by automated tests;
 - [x] adding/replacing either credential preserves the other through the independent-update contract and the existing configured workspace reports both slots independently;
-- [ ] execute a Situm data mutation. No current application route invokes the server-only mutation helper, so no safe disposable mutation exists to exercise in this scope.
+- [ ] execute a Situm data mutation. No current application route invokes the server-only mutation helper, so no safe disposable mutation exists to exercise in this scope; this is not an available acceptance operation for the current product surface.
 
 Android acceptance on a physical device where available:
 

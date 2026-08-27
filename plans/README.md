@@ -74,7 +74,7 @@ Roadmap history: `plans/028-034-native-mobile-roadmap.md`. Plan 036 — Realtime
 ## Active / unintegrated work
 
 - Plan 037 — Web Loading-State Hygiene: implementation complete at `cb00201c` on `plan/037-loading-state-hygiene`; automated validation passed and branch pushed; not yet integrated or deployed.
-- Plan 038 — Two-Key Situm Credential Model: implementation and production-style runtime acceptance are complete on `plan/038-two-key-situm-credentials`; automated validation, GHCR immutable publication, staging recreate, authenticated Workspace/Map acceptance, and release APK build passed on 2026-08-27. Physical Android sensor-backed positioning remains an explicit environment gate because no device is connected; PR/merge is withheld until that gate is exercised or explicitly waived.
+- Plan 038 — Two-Key Situm Credential Model: complete by explicit user waiver on 2026-08-27; automated validation, GHCR immutable publication, staging recreate, authenticated Workspace/Map acceptance, and release APK build passed. Physical Android sensor-backed positioning and raw-secret browser form replay were not executed and are not claimed as PASS; the branch is proceeding through PR/merge closeout.
 
 ## Transition direction
 

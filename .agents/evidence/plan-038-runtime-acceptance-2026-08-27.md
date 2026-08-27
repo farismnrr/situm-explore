@@ -51,7 +51,7 @@ Credential-bearing save/replace forms were not replayed in the browser because d
 - Release build passed with `EXPO_PUBLIC_APP_VERSION=1.0.2`, Android `versionCode=3`, staging HTTPS API base, arm64 architecture.
 - Artifact: `mobile/dist/situm-explore-v1.0.2-android-arm64.apk`
 - SHA-256: `039497c87767b4ae2df6da1ecdffac76b2498671586275e7b1648816c967a7f8`
-- `adb devices -l` returned an empty device list. Therefore install/login/permission/real sensor position fix/realtime physical acceptance is **not claimed** and remains the explicit external gate before full PR/merge closeout.
+- `adb devices -l` returned an empty device list. Therefore install/login/permission/real sensor position fix/realtime physical acceptance is **not claimed**. The user explicitly waived this physical E2E on 2026-08-27 to close the plan under time pressure.
 - The APK string scan contained no `positioningApiKey`, `positioningConfigured`, or `encryptedPositioningApiKey` identifiers. No raw credential was written to the APK, logs, evidence, or docs.
 
 ## Security and automated validation
@@ -71,4 +71,4 @@ Credential-bearing save/replace forms were not replayed in the browser because d
 
 ## Gate decision
 
-Everything available in the current environment passed, including GHCR publication, immutable staging recreate, authenticated browser Workspace/Map acceptance, database schema verification, security scans, and Android release compilation. One evidence-retention caveat remains: the pre-migration dump was created before migration but its `/tmp` path was not retained through final closeout. Plan 038 is not marked as fully complete and no PR/merge/branch deletion is performed because no physical Android device was available to prove the final sensor-backed Only Read positioning and server-mediated realtime path. Next action: connect an authorized Android device, install the recorded APK, run the normal login/workspace/permission/Locate Me flow, inspect only redacted endpoint/log metadata, and then update this evidence and re-evaluate the normal PR gate.
+Everything available in the current environment passed, including GHCR publication, immutable staging recreate, authenticated browser Workspace/Map acceptance, database schema verification, security scans, and Android release compilation. One evidence-retention caveat remains: the pre-migration dump was created before migration but its `/tmp` path was not retained through final closeout. On 2026-08-27 the user explicitly waived the remaining physical Android E2E and raw-secret browser form replay to close the plan under time pressure; those items remain documented as not executed, never as PASS. The plan is therefore closed by explicit waiver and proceeds through the normal PR/merge workflow.
