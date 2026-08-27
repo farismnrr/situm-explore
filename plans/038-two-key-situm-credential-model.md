@@ -1,6 +1,6 @@
 # Plan 038 — Two-Key Situm Credential Model
 
-Status: **runtime acceptance complete except physical Android gate — automated, staging, authenticated browser, GHCR, and release-build evidence captured; PR/merge pending device availability or explicit waiver**
+Status: **runtime acceptance complete except physical Android gate — automated, staging, authenticated browser, GHCR, and release-build evidence captured; pre-migration dump retention is also a documented temporary-file caveat; PR/merge pending device availability or explicit waiver**
 Depends on: **stacked on Plan 037 commit `cb00201c` by explicit user authorization on 2026-08-27; neither plan is integrated yet.**
 Branch: `plan/038-two-key-situm-credentials`
 
@@ -100,7 +100,7 @@ Acceptance:
 - [x] Remove `encryptedPositioningApiKey` from the active schema and TypeScript contracts.
 - [x] Add a forward Drizzle migration that drops the Positioning credential column only after runtime no longer depends on it (`drizzle/0009_unusual_wrecking_crew.sql`).
 - [x] Do not attempt to transform or expose existing encrypted Positioning values.
-- [x] Apply/verify the destructive column-drop migration against the approved local production-style deployment target after creating a mode-0600 PostgreSQL backup.
+- [x] Apply/verify the destructive column-drop migration against the approved local production-style deployment target after creating a mode-0600 PostgreSQL backup. The pre-migration dump was created and recorded during preflight, but the `/tmp` file is no longer present at final closeout and is not being represented as retained backup evidence.
 - [x] Ensure generated migration metadata remains consistent.
 
 Acceptance:
@@ -261,7 +261,7 @@ Passed on 2026-08-27:
 - `mobile/npm run test:android-update`;
 - release APK build `v1.0.2`, Android `versionCode 3`, arm64, with SHA-256 recorded in the evidence file.
 
-Local production-style deployment was authorized and completed on 2026-08-27. Migration `0009_unusual_wrecking_crew` was applied after a local mode-0600 PostgreSQL backup; the existing configuration row remained, Read & Write became nullable, and the legacy Positioning column was removed. The final image built from closeout commit `bddd72889135429df9f6fac5880e15e1795badac` uses `node:22.22.0-bookworm-slim`, was published to GHCR under both the immutable commit tag and `staging` at digest `sha256:75739ca6d557fc9c5098879cc668284581ee77b61a1d9889df5376ad2b0b6f58`, and was pulled/force-recreated successfully. The final container is healthy, reports Node `v22.22.0`, and passed HTTP liveness/root, unauthenticated authorization-boundary, and `make staging-smoke` checks. Authenticated browser acceptance verified the exactly-two-key Workspace UI and a rendered Map Viewer backed by Only Read; physical Android positioning remains unverified because `adb devices` reported no connected device. No raw existing Situm secrets were accessed.
+Local production-style deployment was authorized and completed on 2026-08-27. Migration `0009_unusual_wrecking_crew` was applied after a mode-0600 PostgreSQL backup was created during preflight; the existing configuration row remained, Read & Write became nullable, and the legacy Positioning column was removed. The recorded pre-migration dump path `/tmp/situm-explore-plan038-pre-migration-20260827-134152.dump` was missing at final closeout, likely due to temporary-directory cleanup, so retention of that backup is not claimed. The final image built from closeout commit `bddd72889135429df9f6fac5880e15e1795badac` uses `node:22.22.0-bookworm-slim`, was published to GHCR under both the immutable commit tag and `staging` at digest `sha256:75739ca6d557fc9c5098879cc668284581ee77b61a1d9889df5376ad2b0b6f58`, and was pulled/force-recreated successfully. The final container is healthy, reports Node `v22.22.0`, and passed HTTP liveness/root, unauthenticated authorization-boundary, and `make staging-smoke` checks. Authenticated browser acceptance verified the exactly-two-key Workspace UI and a rendered Map Viewer backed by Only Read; physical Android positioning remains unverified because `adb devices` reported no connected device. No raw existing Situm secrets were accessed.
 
 Runtime acceptance evidence: `.agents/evidence/plan-038-runtime-acceptance-2026-08-27.md`.
 

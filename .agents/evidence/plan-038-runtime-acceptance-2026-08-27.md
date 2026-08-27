@@ -11,7 +11,7 @@ This file records the Plan 038 closeout state without storing or reproducing any
 
 ## Database migration and runtime state
 
-- Pre-migration PostgreSQL custom-format backup exists at `/tmp/situm-explore-plan038-pre-migration-20260827-134152.dump` with mode `0600`.
+- A pre-migration PostgreSQL custom-format backup was created during the authorized preflight at `/tmp/situm-explore-plan038-pre-migration-20260827-134152.dump` with mode `0600`; the final closeout check found that temporary path missing, likely because `/tmp` was cleaned. The file's retention is therefore not claimed, and no post-migration dump is mislabeled as a pre-migration backup.
 - Drizzle migration `0009_unusual_wrecking_crew` is applied in the runtime database. Its migration journal entry matches the repository migration timestamp/hash metadata.
 - Runtime `situm_explore.workspace_situm_configs` columns are exactly: `id`, `workspace_id`, `situm_account_id`, `encrypted_api_key`, `created_at`, `updated_at`, and `encrypted_viewer_api_key`.
 - Secret-free row checks: one configuration row exists; the encrypted Read & Write slot is populated in one row; the encrypted Only Read slot is populated in one row; no legacy Positioning column exists.
@@ -71,4 +71,4 @@ Credential-bearing save/replace forms were not replayed in the browser because d
 
 ## Gate decision
 
-Everything available in the current environment passed, including GHCR publication, immutable staging recreate, authenticated browser Workspace/Map acceptance, database schema verification, security scans, and Android release compilation. Plan 038 is not marked as fully complete and no PR/merge/branch deletion is performed because no physical Android device was available to prove the final sensor-backed Only Read positioning and server-mediated realtime path. Next action: connect an authorized Android device, install the recorded APK, run the normal login/workspace/permission/Locate Me flow, inspect only redacted endpoint/log metadata, and then update this evidence and re-evaluate the normal PR gate.
+Everything available in the current environment passed, including GHCR publication, immutable staging recreate, authenticated browser Workspace/Map acceptance, database schema verification, security scans, and Android release compilation. One evidence-retention caveat remains: the pre-migration dump was created before migration but its `/tmp` path was not retained through final closeout. Plan 038 is not marked as fully complete and no PR/merge/branch deletion is performed because no physical Android device was available to prove the final sensor-backed Only Read positioning and server-mediated realtime path. Next action: connect an authorized Android device, install the recorded APK, run the normal login/workspace/permission/Locate Me flow, inspect only redacted endpoint/log metadata, and then update this evidence and re-evaluate the normal PR gate.
