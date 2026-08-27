@@ -1,6 +1,6 @@
 # Plan 038 — Two-Key Situm Credential Model
 
-Status: **implementation complete / automated validation passed / local production-style deployment passed / authenticated + physical acceptance pending**
+Status: **runtime acceptance in progress — automated validation passed; authenticated browser and physical Android gates are environment-dependent**
 Depends on: **stacked on Plan 037 commit `cb00201c` by explicit user authorization on 2026-08-27; neither plan is integrated yet.**
 Branch: `plan/038-two-key-situm-credentials`
 
@@ -241,6 +241,11 @@ Do not put execution/process instructions into product docs; keep those in `.age
 - No production deployment, PR, merge, or destructive cleanup without the normal user gates.
 
 ## Automated validation
+
+Runtime hardening completed on 2026-08-27:
+
+- Docker build stages now pin `node:22.22.0-bookworm-slim`, which satisfies Nuxt 4.5.2's Node `>=22.19.0` engine requirement;
+- a clean production image build completed without the previous Node engine mismatch warning (the remaining output is informational plugin-timing and system-user-UID warnings).
 
 Passed on 2026-08-27:
 
