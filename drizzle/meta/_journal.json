@@ -64,6 +64,13 @@
       "when": 1786956846898,
       "tag": "0008_glorious_metal_master",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1787812040031,
+      "tag": "0009_unusual_wrecking_crew",
+      "breakpoints": true
     }
   ]
 }

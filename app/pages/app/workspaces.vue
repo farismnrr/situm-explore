@@ -5,6 +5,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Workspaces' })
 
 const { workspaces, selectedWorkspaceId, selectedWorkspace, loadWorkspaces, selectWorkspace } = useWorkspaceContext()
 const loading = ref(true)
+const configLoading = ref(true)
 const saving = ref(false)
 const validating = ref(false)
 const message = ref('')
@@ -13,17 +14,22 @@ const newName = ref('')
 const renameName = ref('')
 const apiKey = ref('')
 const viewerApiKey = ref('')
-const positioningApiKey = ref('')
 const config = ref<WorkspaceSitumConfig | null>(null)
 
 async function loadConfig() {
+  configLoading.value = true
   config.value = null
-  if (!selectedWorkspaceId.value) return
+  if (!selectedWorkspaceId.value) {
+    configLoading.value = false
+    return
+  }
   try {
     config.value = await $fetch<WorkspaceSitumConfig>(`/api/workspaces/${selectedWorkspaceId.value}/situm-config`)
   } catch (error: unknown) {
     const status = (error as { statusCode?: number, data?: { statusCode?: number } })
     if (status.statusCode !== 404 && status.data?.statusCode !== 404) errorMessage.value = getSafeErrorMessage(error, 'Workspace configuration could not be loaded.')
+  } finally {
+    configLoading.value = false
   }
 }
 
@@ -74,16 +80,35 @@ async function deleteWorkspace() {
   } catch (error: unknown) { errorMessage.value = getSafeErrorMessage(error, 'Workspace could not be deleted.') } finally { saving.value = false }
 }
 
+function getConfigSaveError(error: unknown) {
+  const value = error as { data?: { statusMessage?: string }, statusMessage?: string }
+  const statusMessage = value.data?.statusMessage || value.statusMessage
+  const safeMessages = [
+    'Only Read API key has the wrong Situm permission. Use an Only Read key.',
+    'Read & Write API key has the wrong Situm permission. Use a Read & Write key.',
+    'Only Read API key could not be verified. Check that the key is active and copied correctly.',
+    'Read & Write API key could not be verified. Check that the key is active and copied correctly.',
+    'Only Read and Read & Write API keys must belong to the same Situm organization.',
+    'Add an Only Read or Read & Write Situm API key to save.',
+  ]
+  return statusMessage && safeMessages.includes(statusMessage) ? statusMessage : getSafeErrorMessage(error, 'Situm configuration could not be saved.')
+}
+
 async function saveConfig() {
-  if (!selectedWorkspaceId.value || !apiKey.value || !viewerApiKey.value) return
+  if (!selectedWorkspaceId.value || (!apiKey.value && !viewerApiKey.value)) return
   saving.value = true; errorMessage.value = ''; message.value = ''
   try {
-    config.value = await $fetch<WorkspaceSitumConfig & { configured: boolean }>(`/api/workspaces/${selectedWorkspaceId.value}/situm-config`, { method: 'PUT', body: { apiKey: apiKey.value, viewerApiKey: viewerApiKey.value, ...(positioningApiKey.value ? { positioningApiKey: positioningApiKey.value } : {}) } })
+    config.value = await $fetch<WorkspaceSitumConfig>(`/api/workspaces/${selectedWorkspaceId.value}/situm-config`, {
+      method: 'PUT',
+      body: {
+        ...(apiKey.value ? { apiKey: apiKey.value } : {}),
+        ...(viewerApiKey.value ? { viewerApiKey: viewerApiKey.value } : {}),
+      },
+    })
     apiKey.value = ''
     viewerApiKey.value = ''
-    positioningApiKey.value = ''
-    message.value = 'Situm configuration saved. The credential will not be shown again.'
-  } catch (error: unknown) { errorMessage.value = getSafeErrorMessage(error, 'Situm configuration could not be saved.') } finally { saving.value = false }
+    message.value = 'Situm configuration saved. Existing credentials you did not replace were kept unchanged.'
+  } catch (error: unknown) { errorMessage.value = getConfigSaveError(error) } finally { saving.value = false }
 }
 
 async function deleteConfig() {
@@ -112,7 +137,7 @@ onMounted(refresh)
 <template>
   <div class="operations-page space-y-6">
     <ProductPageHeader eyebrow="Workspace" title="Workspaces" description="Create private workspaces and manage their server-side Situm configuration.">
-      <template #actions><UBadge color="neutral" variant="soft">{{ loading ? 'Loading' : `${workspaces.length} workspace${workspaces.length === 1 ? '' : 's'}` }}</UBadge></template>
+      <template #actions><USkeleton v-if="loading" class="h-6 w-24 rounded-full" /><UBadge v-else color="neutral" variant="soft">{{ workspaces.length }} workspace{{ workspaces.length === 1 ? '' : 's' }}</UBadge></template>
     </ProductPageHeader>
     <UAlert v-if="errorMessage" color="error" variant="subtle" title="Action could not be completed" :description="errorMessage" />
     <UAlert v-if="message" color="success" variant="subtle" title="Done" :description="message" />
@@ -132,14 +157,15 @@ onMounted(refresh)
           <div class="flex flex-col gap-2 sm:flex-row"><UInput v-model="renameName" aria-label="Workspace name" class="min-w-0 flex-1" /><UButton label="Rename" color="neutral" variant="outline" :loading="saving" :disabled="!renameName.trim() || saving" @click="renameWorkspace" /><UButton label="Delete" color="error" variant="soft" :loading="saving" :disabled="saving" @click="deleteWorkspace" /></div>
         </UCard>
         <UCard :ui="{ body: 'space-y-4' }">
-          <div><h2 class="font-semibold text-highlighted">Situm configuration</h2><p class="mt-1 text-xs leading-5 text-muted">Credentials are encrypted on the server. The stored API key is never returned or shown again.</p></div>
-          <div v-if="config" class="grid gap-3 rounded-lg border border-default bg-elevated p-3 text-xs sm:grid-cols-4"><div><span class="block text-muted">Status</span><strong class="text-highlighted">Configured</strong></div><div><span class="block text-muted">Account</span><strong class="break-all text-highlighted">{{ config.situmAccountId }}</strong></div><div><span class="block text-muted">Viewer credential</span><strong class="text-highlighted">{{ config.viewerConfigured ? 'Configured' : 'Not configured' }}</strong></div><div><span class="block text-muted">Positioning</span><strong class="text-highlighted">{{ config.positioningConfigured ? 'Configured' : 'Not configured' }}</strong></div></div>
-          <UAlert v-else color="neutral" variant="subtle" title="Not configured" description="Add a primary Situm Read & Write API key and a separate read-only Viewer API key to connect this workspace." />
-          <UFormField label="Primary Read & Write API key" hint="Required to add or replace the stored credentials"><PasswordInput v-model="apiKey" autocomplete="new-password" placeholder="Enter a new key" class="w-full" /></UFormField>
-          <UFormField label="Read-only Viewer API key" hint="Required for the browser Viewer; write-only and never returned"><PasswordInput v-model="viewerApiKey" autocomplete="new-password" placeholder="Enter a read-only key" class="w-full" /></UFormField>
-          <UFormField label="Positioning API key" hint="Dedicated mobile indoor positioning credential; optional when updating existing settings"><PasswordInput v-model="positioningApiKey" autocomplete="new-password" placeholder="Enter a positioning key" class="w-full" /></UFormField>
+          <div><h2 class="font-semibold text-highlighted">Situm configuration</h2><p class="mt-1 text-xs leading-5 text-muted">Credentials are encrypted on the server. Stored values are never shown again in Workspace settings.</p></div>
+          <div v-if="configLoading" class="grid gap-3 sm:grid-cols-3" aria-label="Loading Situm configuration" aria-busy="true"><USkeleton v-for="item in 3" :key="item" class="h-14 w-full" /></div>
+          <div v-else-if="config" class="grid gap-3 rounded-lg border border-default bg-elevated p-3 text-xs sm:grid-cols-3"><div><span class="block text-muted">Only Read</span><strong class="text-highlighted">{{ config.readOnlyConfigured ? 'Configured' : 'Not configured' }}</strong></div><div><span class="block text-muted">Read & Write</span><strong class="text-highlighted">{{ config.readWriteConfigured ? 'Configured' : 'Not configured' }}</strong></div><div><span class="block text-muted">Account</span><strong class="break-all text-highlighted">{{ config.situmAccountId }}</strong></div></div>
+          <UAlert v-else color="neutral" variant="subtle" title="Connect only what you need" description="Add an Only Read key for Map Viewer, mobile positioning, and read-only Situm features. Add Read & Write only when server-side editing or administrative operations need it." />
+          <UAlert color="warning" variant="subtle" title="Read & Write stays server-side" description="Situm Explore never sends the Read & Write API key to the browser or mobile app. Authenticated clients receive only the Only Read credential when a client-side Situm SDK needs it." />
+          <UFormField label="Only Read API key" hint="Optional. Used for Map Viewer, mobile positioning, and read-only Situm access; may be issued to authenticated clients."><FormPasswordInput v-model="viewerApiKey" autocomplete="new-password" placeholder="Add or replace Only Read key" class="w-full" /></UFormField>
+          <UFormField label="Read & Write API key" hint="Optional. Used only by the Situm Explore server for operations that modify Situm data; never sent to browser or mobile clients."><FormPasswordInput v-model="apiKey" autocomplete="new-password" placeholder="Add or replace Read & Write key" class="w-full" /></UFormField>
           <div class="flex flex-wrap gap-2">
-            <UButton label="Save configuration" :loading="saving" :disabled="saving || !apiKey || !viewerApiKey" @click="saveConfig" />
+            <UButton label="Save configuration" :loading="saving" :disabled="saving || (!apiKey && !viewerApiKey)" @click="saveConfig" />
             <UButton v-if="config" label="Validate configuration" color="neutral" variant="outline" :loading="validating" :disabled="saving || validating" @click="validateConfig" />
             <UButton v-if="config" label="Delete configuration" color="error" variant="soft" :loading="saving" :disabled="saving || validating" @click="deleteConfig" />
           </div>

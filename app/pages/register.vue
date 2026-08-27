@@ -31,7 +31,7 @@ async function submit() {
         <UInput v-model="email" type="email" autocomplete="email" placeholder="you@example.com" required class="w-full" />
       </UFormField>
       <UFormField label="Password" name="password" required hint="At least 8 characters">
-        <PasswordInput v-model="password" autocomplete="new-password" placeholder="Create a password" minlength="8" required class="w-full" />
+        <FormPasswordInput v-model="password" autocomplete="new-password" placeholder="Create a password" minlength="8" required class="w-full" />
       </UFormField>
       <UButton type="submit" block size="lg" :loading="loading" :disabled="loading">Create account <span aria-hidden="true">→</span></UButton>
     </form>

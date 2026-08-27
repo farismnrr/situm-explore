@@ -13,7 +13,7 @@ Current product behavior includes:
 
 - database-backed email/password authentication;
 - private single-owner workspaces;
-- workspace-managed Situm credentials with separate Read & Write, browser Viewer, and native Positioning authority;
+- workspace-managed Situm credentials with exactly two authorities: Only Read for client/read flows and Read & Write for server-side mutation/admin flows;
 - workspace-scoped Situm cartography and operational data;
 - web Situm Viewer exploration on capable desktop/tablet layouts;
 - native indoor positioning, map exploration, POI navigation, and foreground positioning lifecycle;
@@ -95,4 +95,4 @@ Android standalone releases are arm64 artifacts with deterministic semantic-vers
 
 For Situm behavior, do not infer capabilities from UI prototypes or old implementation history. New or changed behavior must be supported by the installed SDK/current integration contract and must preserve least privilege.
 
-The primary Read & Write Situm credential remains server-only. Browser Viewer and native Positioning use separate bounded credentials, while native Realtime remote reads remain server-mediated.
+The Read & Write Situm credential remains server-only. The authenticated browser Viewer and native positioning flow receive only the workspace Only Read credential through bounded backend endpoints, while native Realtime remote reads remain server-mediated.

@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { isAsyncDataLoading, isWorkspaceRequestLoading } from '~/utils/async-state'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Dashboard' })
 
 const { data: foundation, status: foundationStatus } = await useFetch('/api/me')
-const { selectedWorkspaceId } = useWorkspaceContext()
+const { selectedWorkspaceId, loaded: workspaceLoaded } = useWorkspaceContext()
 const { data: situm, error: situmError, status: situmStatus, refresh: refreshSitum } = await useFetch<{ configured?: boolean }>(useWorkspaceEndpoint('/situm/status'), { immediate: false })
 type DashboardAnalytics = {
   visitors: Array<{ visitors: number | string }>
@@ -19,10 +20,12 @@ const analyticsUrl = computed(() => selectedWorkspaceId.value ? `/api/workspaces
 const { data: analytics, error: analyticsError, status: analyticsStatus, refresh: refreshAnalytics } = await useFetch<DashboardAnalytics>(analyticsUrl, { query: analyticsQuery, immediate: false })
 watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) { refreshSitum(); refreshAnalytics() } }, { immediate: true })
 
-const databaseLabel = computed(() => foundationStatus.value === 'pending' ? 'Loading' : foundation.value?.status === 'connected' || foundation.value?.status === 'connected-empty' ? 'Connected' : 'Unavailable')
+const databaseLabel = computed(() => isAsyncDataLoading(String(foundationStatus.value)) ? 'Loading' : foundation.value?.status === 'connected' || foundation.value?.status === 'connected-empty' ? 'Connected' : 'Unavailable')
 const databaseColor = computed(() => databaseLabel.value === 'Connected' ? 'success' : databaseLabel.value === 'Loading' ? 'neutral' : 'error')
-const situmLabel = computed(() => situmStatus.value === 'pending' ? 'Loading' : situmError.value ? 'Unavailable' : situm.value?.configured ? 'Configured' : 'Not configured')
-const situmColor = computed(() => situmLabel.value === 'Configured' ? 'success' : situmLabel.value === 'Loading' ? 'neutral' : situmLabel.value === 'Unavailable' ? 'error' : 'warning')
+const situmLoading = computed(() => isWorkspaceRequestLoading(workspaceLoaded.value, selectedWorkspaceId.value, String(situmStatus.value)))
+const analyticsLoading = computed(() => isWorkspaceRequestLoading(workspaceLoaded.value, selectedWorkspaceId.value, String(analyticsStatus.value)))
+const situmLabel = computed(() => situmLoading.value ? 'Loading' : !selectedWorkspaceId.value ? 'No workspace' : situmError.value ? 'Unavailable' : situm.value?.configured ? 'Configured' : 'Not configured')
+const situmColor = computed(() => situmLabel.value === 'Configured' ? 'success' : situmLabel.value === 'Loading' || situmLabel.value === 'No workspace' ? 'neutral' : situmLabel.value === 'Unavailable' ? 'error' : 'warning')
 const analyticsLoaded = computed(() => String(analyticsStatus.value) === 'success' && !analyticsError.value)
 const hasAnalytics = computed(() => analyticsLoaded.value && Boolean(analytics.value && (analytics.value.visitors.length || analytics.value.positioning.length || analytics.value.geofencing.length)))
 const visitorTotal = computed(() => analytics.value?.visitors.reduce((sum, row) => sum + Number(row.visitors), 0) ?? 0)
@@ -39,7 +42,8 @@ const geofenceHours = computed(() => analytics.value?.geofencing[0] ? Math.round
     <div class="content-grid mb-4">
       <UCard :ui="{ body: 'space-y-4' }">
         <div><h2 class="font-semibold text-highlighted">Workspace metrics</h2><p class="mt-1 text-xs text-muted">Reported analytics for the last 7 days. Each metric keeps its source semantics.</p></div>
-        <div v-if="String(analyticsStatus) === 'pending' || String(analyticsStatus) === 'idle'" class="grid gap-3 sm:grid-cols-3" aria-label="Loading workspace metrics" aria-busy="true"><USkeleton class="h-16 w-full" /><USkeleton class="h-16 w-full" /><USkeleton class="h-16 w-full" /></div>
+        <div v-if="analyticsLoading" class="grid gap-3 sm:grid-cols-3" aria-label="Loading workspace metrics" aria-busy="true"><USkeleton class="h-16 w-full" /><USkeleton class="h-16 w-full" /><USkeleton class="h-16 w-full" /></div>
+        <UAlert v-else-if="!selectedWorkspaceId" color="neutral" variant="subtle" title="No workspace selected" description="Create or select a workspace before loading workspace metrics." />
         <UAlert v-else-if="analyticsError" color="error" variant="subtle" title="Metrics unavailable" description="The workspace analytics summary could not be loaded." />
         <UAlert v-else-if="!hasAnalytics" color="neutral" variant="subtle" title="No reported metrics" description="No synced analytics rows are available for the last 7 days." />
         <div v-else class="grid gap-3 sm:grid-cols-3"><ProductStatCard label="Visitors" :value="visitorTotal" note="Reported visitor count" /><ProductStatCard label="Positioning time" :value="`${positioningMinutes} min`" note="Reported positioning time" /><ProductStatCard label="Geofence stay" :value="`${geofenceHours} hr`" note="Reported matched-fence time" /></div>

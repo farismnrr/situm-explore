@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import type { SitumCartographyBuilding, SitumCartographyResponse } from '#shared/situm-cartography'
+import { isWorkspaceRequestLoading } from '~/utils/async-state'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Buildings & floors' })
 
 const query = ref('')
 const selectedBuilding = ref<SitumCartographyBuilding | null>(null)
 const drawerOpen = ref(false)
-const { selectedWorkspaceId } = useWorkspaceContext()
+const { selectedWorkspaceId, loaded: workspaceLoaded } = useWorkspaceContext()
 const { data, error, status, refresh } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
 watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refresh() }, { immediate: true })
 
 const buildings = computed(() => data.value?.buildings ?? [])
 const floors = computed(() => data.value?.floors ?? [])
+const loading = computed(() => isWorkspaceRequestLoading(workspaceLoaded.value, selectedWorkspaceId.value, String(status.value)))
 const filteredBuildings = computed(() => {
   const search = query.value.trim().toLowerCase()
   return buildings.value.filter(building => !search || [building.name, String(building.id), building.description].some(value => value.toLowerCase().includes(search)))
@@ -28,16 +30,16 @@ function openDetails(building: SitumCartographyBuilding) {
   <div class="cartography-page">
     <ProductPageHeader eyebrow="Cartography" title="Buildings & floors" description="Live Situm venue and floor metadata." />
 
-    <UAlert v-if="error" class="mb-4" color="error" variant="subtle" title="Buildings unavailable" description="The authenticated Situm cartography read could not be loaded. No fixture buildings are shown." />
-    <div v-else-if="String(status) === 'pending'" class="mb-4 space-y-2" aria-label="Loading buildings" aria-busy="true"><USkeleton class="h-4 w-48" /><USkeleton class="h-3 w-72" /></div>
-
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <UInput v-model="query" icon="i-lucide-search" placeholder="Search buildings…" aria-label="Search buildings" class="w-full sm:w-72" />
-      <span class="text-xs text-muted">{{ filteredBuildings.length }} buildings · {{ floors.length }} floors</span>
+      <USkeleton v-if="loading" class="h-4 w-28" />
+      <span v-else-if="selectedWorkspaceId" class="text-xs text-muted">{{ filteredBuildings.length }} buildings · {{ floors.length }} floors</span>
     </div>
 
-    <div v-if="String(status) !== 'success' && !error" class="space-y-2" aria-label="Loading building rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
-    <UCard v-else :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
+    <div v-if="loading" class="space-y-2" aria-label="Loading building rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
+    <UAlert v-else-if="!selectedWorkspaceId" color="neutral" variant="subtle" title="No workspace selected" description="Create or select a workspace before browsing buildings." />
+    <UAlert v-else-if="error" color="error" variant="subtle" title="Buildings unavailable" description="The authenticated Situm cartography read could not be loaded. No fixture buildings are shown." />
+    <UCard v-else-if="String(status) === 'success'" :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
       <div class="hidden overflow-x-auto md:block">
         <table class="table-density w-full text-left">
           <thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Building</th><th class="px-4 py-3 font-medium">ID</th><th class="px-4 py-3 font-medium">Floors</th><th class="w-12 px-4 py-3" /></tr></thead>

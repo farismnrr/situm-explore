@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { SitumGeofencesResponse, SitumGeofence } from '#shared/situm-geofences'
+import { isWorkspaceRequestLoading } from '~/utils/async-state'
 
 const selectedGeofenceId = ref<string | null>(null)
-const { selectedWorkspaceId } = useWorkspaceContext()
+const { selectedWorkspaceId, loaded: workspaceLoaded } = useWorkspaceContext()
 const { data, error, status, refresh } = await useFetch<SitumGeofencesResponse>(useWorkspaceEndpoint('/situm/geofences'), { immediate: false })
 watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refresh() }, { immediate: true })
 const geofences = computed(() => data.value?.geofences ?? [])
+const loading = computed(() => isWorkspaceRequestLoading(workspaceLoaded.value, selectedWorkspaceId.value, String(status.value)))
 
 const filteredGeofences = computed(() => geofences.value)
 
@@ -30,15 +32,15 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Geofences' })
     <ProductPageHeader eyebrow="Cartography" title="Geofences" description="Spatial zones used for occupancy, visit and stay-time context.">
       <template #actions><UButton to="/app/map?overlay=geofences" icon="i-lucide-map" label="Show on map" /></template>
     </ProductPageHeader>
-    <UAlert v-if="error" color="error" variant="subtle" title="Geofences unavailable" description="The authenticated Situm geofence read failed. No fixture zones are shown." />
-    <div v-else-if="String(status) === 'pending'" class="space-y-2" aria-label="Loading geofences" aria-busy="true"><USkeleton class="h-4 w-44" /><USkeleton class="h-3 w-72" /></div>
-
-    <div class="grid gap-4 sm:grid-cols-2">
+    <div v-if="loading" class="grid gap-4 sm:grid-cols-2" aria-label="Loading geofence summary" aria-busy="true"><USkeleton class="h-24 w-full" /></div>
+    <div v-else-if="selectedWorkspaceId && String(status) === 'success'" class="grid gap-4 sm:grid-cols-2">
       <ProductStatCard label="Geofences" :value="geofences.length" :note="`across ${activeBuildingCount} buildings`" />
     </div>
 
-    <div v-if="String(status) !== 'success' && !error" class="space-y-2" aria-label="Loading geofence rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
-    <UCard v-else :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
+    <div v-if="loading" class="space-y-2" aria-label="Loading geofence rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
+    <UAlert v-else-if="!selectedWorkspaceId" color="neutral" variant="subtle" title="No workspace selected" description="Create or select a workspace before loading geofences." />
+    <UAlert v-else-if="error" color="error" variant="subtle" title="Geofences unavailable" description="The authenticated Situm geofence read failed. No fixture zones are shown." />
+    <UCard v-else-if="String(status) === 'success'" :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
       <div class="hidden overflow-x-auto md:block">
         <table class="table-density w-full text-left">
           <thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Geofence</th><th class="px-4 py-3 font-medium">Building</th><th class="px-4 py-3 font-medium">Floor</th><th class="px-4 py-3 font-medium">Type</th><th class="px-4 py-3 font-medium">Status</th><th class="w-10 px-4 py-3" /></tr></thead>

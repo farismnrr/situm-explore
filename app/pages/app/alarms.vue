@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { SitumCartographyResponse } from '#shared/situm-cartography'
 import type { SitumAlarm, SitumAlarmResponse, SitumAlarmsResponse } from '#shared/situm-groups-alarms'
+import { isAsyncDataLoading, isWorkspaceRequestLoading } from '~/utils/async-state'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Alarms' })
 
@@ -8,22 +9,32 @@ type ActiveFilter = 'all' | 'true' | 'false'
 
 const buildingId = ref('')
 const active = ref<ActiveFilter>('all')
-const type = ref('')
+const allAlarmTypesValue = '__all__'
+const type = ref(allAlarmTypesValue)
 const selectedAlarm = ref<SitumAlarm | null>(null)
 const detailOpen = ref(false)
 
-const { selectedWorkspaceId } = useWorkspaceContext()
-const { data: cartography, error: buildingsError, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
+const { selectedWorkspaceId, loaded: workspaceLoaded } = useWorkspaceContext()
+const { data: cartography, error: buildingsError, status: cartographyStatus, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
 const buildings = computed(() => cartography.value?.buildings ?? [])
 const buildingItems = computed(() => buildings.value.map(building => ({ label: `${building.name} · ${building.id}`, value: String(building.id) })))
 const buildingNames = computed(() => new Map(buildings.value.map(building => [building.id, building.name])))
 const floorNames = computed(() => new Map((cartography.value?.floors ?? []).map(floor => [floor.id, floor.name])))
 const alarmTypes = ['BREACH', 'DANGER', 'DEADMAN', 'EMERGENCY', 'STATIONARY', 'GEOFENCE_MAX_STAY_TIME', 'ASSISTANCE_REQUEST']
-const typeItems = computed(() => [{ label: 'All types', value: '' }, ...alarmTypes.map(value => ({ label: value, value }))])
-const query = computed(() => ({ building_id: buildingId.value, ...(active.value !== 'all' ? { active: active.value } : {}), ...(type.value ? { type: type.value } : {}) }))
+const typeItems = computed(() => [{ label: 'All types', value: allAlarmTypesValue }, ...alarmTypes.map(value => ({ label: value, value }))])
+const query = computed(() => ({ building_id: buildingId.value, ...(active.value !== 'all' ? { active: active.value } : {}), ...(type.value !== allAlarmTypesValue ? { type: type.value } : {}) }))
 const { data, error, status, refresh } = await useFetch<SitumAlarmsResponse>(useWorkspaceEndpoint('/situm/alarms'), { query, immediate: false })
-watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refreshCartography() }, { immediate: true })
+watch(selectedWorkspaceId, (workspaceId) => {
+  buildingId.value = ''
+  selectedAlarm.value = null
+  detailOpen.value = false
+  if (workspaceId) refreshCartography()
+}, { immediate: true })
 const alarms = computed(() => data.value?.alarms ?? [])
+const cartographyLoading = computed(() => isWorkspaceRequestLoading(workspaceLoaded.value, selectedWorkspaceId.value, String(cartographyStatus.value)))
+const alarmLoading = computed(() => Boolean(buildingId.value && isAsyncDataLoading(String(status.value))))
+const waitingForBuildingSelection = computed(() => String(cartographyStatus.value) === 'success' && buildings.value.length > 0 && !buildingId.value)
+const loading = computed(() => cartographyLoading.value || alarmLoading.value || waitingForBuildingSelection.value)
 
 watch(buildings, (value) => {
   if (!buildingId.value && value[0]) {
@@ -55,24 +66,26 @@ async function loadDetail(alarm: SitumAlarm) {
 <template>
   <div class="operations-page space-y-6">
     <ProductPageHeader eyebrow="Operations" title="Alarms" description="Read-only operational alarm context from Situm.">
-      <template #actions><ProductStatusBadge :label="error ? 'Unavailable' : `${alarms.length} alarms`" :tone="error ? 'error' : 'success'" /></template>
+      <template #actions>
+        <USkeleton v-if="loading" class="h-6 w-20 rounded-full" />
+        <ProductStatusBadge v-else-if="selectedWorkspaceId" :label="buildingsError || error ? 'Unavailable' : `${alarms.length} alarms`" :tone="buildingsError || error ? 'error' : 'success'" />
+      </template>
     </ProductPageHeader>
 
     <UCard>
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_auto] lg:items-end">
-        <UFormField label="Building" required><USelect v-model="buildingId" :items="buildingItems" value-key="value" aria-label="Required alarm building filter" :disabled="!buildingItems.length" /></UFormField>
+        <UFormField label="Building" required><USkeleton v-if="cartographyLoading" class="h-8 w-full" /><USelect v-else v-model="buildingId" :items="buildingItems" value-key="value" aria-label="Required alarm building filter" :disabled="!buildingItems.length" /></UFormField>
         <UFormField label="Active"><USelect v-model="active" :items="[{ label: 'All alarms', value: 'all' }, { label: 'Active only', value: 'true' }, { label: 'Inactive only', value: 'false' }]" value-key="value" aria-label="Filter alarms by active state" /></UFormField>
         <UFormField label="Type"><USelect v-model="type" :items="typeItems" value-key="value" aria-label="Filter alarms by type" /></UFormField>
-        <UButton label="Apply filters" icon="i-lucide-filter" color="neutral" variant="outline" :loading="String(status) === 'pending'" :disabled="!buildingId" @click="loadAlarms" />
+        <UButton label="Apply filters" icon="i-lucide-filter" color="neutral" variant="outline" :loading="String(status) === 'pending'" :disabled="cartographyLoading || !buildingId" @click="loadAlarms" />
       </div>
     </UCard>
 
-    <UAlert v-if="buildingsError" color="error" variant="subtle" title="Buildings unavailable" description="The required building filter could not be loaded." />
-    <div v-else-if="String(status) === 'pending'" class="space-y-2" aria-label="Loading alarms" aria-busy="true"><USkeleton class="h-4 w-40" /><USkeleton class="h-3 w-72" /></div>
+    <div v-if="loading" class="space-y-2" aria-label="Loading alarm rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
+    <UAlert v-else-if="!selectedWorkspaceId" color="neutral" variant="subtle" title="No workspace selected" description="Create or select a workspace before loading alarms." />
+    <UAlert v-else-if="buildingsError" color="error" variant="subtle" title="Buildings unavailable" description="The required building filter could not be loaded." />
+    <UAlert v-else-if="String(cartographyStatus) === 'success' && buildings.length === 0" color="neutral" variant="subtle" title="No buildings available" description="This workspace did not return any Situm buildings for alarm filtering." />
     <UAlert v-else-if="error" color="error" variant="subtle" title="Alarms unavailable" description="The protected Situm alarms read failed. No fixture rows are shown." />
-    <UAlert v-else-if="!buildingId" color="neutral" variant="subtle" title="Select a building" description="A building is required before alarms can be read." />
-
-    <div v-if="buildingId && (String(status) === 'idle' || String(status) === 'pending')" class="space-y-2" aria-label="Loading alarm rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
     <UCard v-else-if="String(status) === 'success' && !error" :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
       <div class="hidden overflow-x-auto md:block">
         <table class="table-density w-full text-left">

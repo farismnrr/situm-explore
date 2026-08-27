@@ -135,11 +135,13 @@ Rules:
 - long-lived workspace credentials are encrypted at rest using authenticated encryption;
 - encryption uses one server-only master key configured outside the database;
 - stored envelopes are versioned so future rotation/migration is possible;
-- raw stored credentials are never returned by read APIs;
+- normal configuration/status reads return only non-secret metadata/booleans; the Only Read value is returned only by the bounded authenticated Viewer/mobile credential endpoints that need it;
 - raw credentials are never logged, traced, persisted in docs/tests, or exposed through public runtime config;
 - missing/invalid encryption configuration fails closed;
-- workspace configuration requires a primary Situm credential verified as Read & Write and a separate Viewer credential verified as Read-only;
-- the Situm organization/account ID is derived from the authenticated primary credential and persisted as server-side metadata;
+- workspace configuration supports exactly two independently optional Situm credentials: Only Read and Read & Write;
+- Only Read is the bounded client/read authority used for browser Viewer, native positioning, and server read operations where applicable;
+- Read & Write is server-only and reserved for operations that require mutation/admin authority;
+- the Situm organization/account ID is derived from the first verified configured credential and replacement credentials must match that persisted organization;
 - upstream Situm authorization remains authoritative;
 - do not run a mutation merely to discover whether a key can write.
 
@@ -151,7 +153,7 @@ Use the existing versioned authenticated-encryption implementation; do not inven
 
 Keep a small typed command surface only for verified product behavior. Never expose the raw Viewer or a generic method-invocation escape hatch.
 
-The current Viewer flow uses a separate workspace-managed **Read-only Viewer API key**. The owner-scoped server endpoint verifies its permission and organization match before returning it to the authenticated browser, where the Situm SDK uses the documented direct-API-key Viewer flow. The primary Read & Write credential is never returned to the browser.
+The current Viewer flow uses the workspace-managed **Only Read API key**. The owner-scoped server endpoint verifies its permission and organization match before returning it to the authenticated browser, where the Situm SDK uses the documented direct-API-key Viewer flow. The Read & Write credential is never returned to the browser.
 
 Any future Viewer-auth change must preserve least privilege and be revalidated against the installed `@situm/sdk-js` contract and current Situm behavior.
 
@@ -276,7 +278,7 @@ Current ownership:
 - sensor-generated handset blue dot, positioning permissions/runtime, mobile navigation/rerouting, and native Realtime presentation belong to the React Native companion;
 - native Realtime remote reads remain foreground-oriented and server-mediated through the owner-scoped workspace route;
 - mobile receives only sanitized remote position/device fields and no broad Situm credential for remote monitoring;
-- the workspace Read & Write credential remains server-only; native positioning uses the dedicated least-privilege Positioning credential;
+- the workspace Read & Write credential remains server-only; native positioning requests the workspace Only Read credential from Nitro after application-session and workspace-owner authorization;
 - mobile application sessions reuse the same PostgreSQL identity through the sealed `x-nuxt-session` transport and SecureStore persistence;
 - Share Live Location is not used as the product Realtime contract; generic remote MapView markers/focus remain unsupported by the current proven native surface.
 
@@ -311,7 +313,7 @@ Native positioning/navigation is implemented under the closed Plans 028–035 ev
 The standalone `mobile/` application is React Native + Expo and reuses the same Nitro/PostgreSQL identity and workspace authorization boundary as web.
 
 - native application sessions use the sealed application session over `x-nuxt-session` and persist bearer-equivalent material only in SecureStore;
-- native Situm positioning receives only the dedicated owner-authorized Positioning credential;
+- native Situm positioning receives only the owner-authorized Only Read credential from the backend; no Situm credential is embedded in the APK;
 - `ForegroundPositioningSession` owns the process-global Situm positioning callbacks/running state across Explore and Realtime;
 - foreground positioning begins only after explicit user action and runtime permission success;
 - native Realtime reads remote positions through the authenticated workspace Nitro route, not through a broad mobile Situm credential;
@@ -328,7 +330,7 @@ There is no requirement for a second backend, mobile-only identity store, or cli
 
 - [ ] current user/session identity is server-authoritative;
 - [ ] workspace ownership is verified server-side;
-- [ ] stored long-lived Situm credentials never enter browser/public config/logs/errors;
+- [ ] Read & Write never enters browser/mobile/public config/logs/errors, while Only Read is issued only through authenticated bounded client endpoints;
 - [ ] Viewer remains single-owner with a typed verified surface;
 - [ ] Situm/analytics context is workspace-isolated after migration;
 - [ ] ClickHouse cannot cross workspace boundaries;

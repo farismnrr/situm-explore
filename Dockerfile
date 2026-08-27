@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:22.14.0-bookworm-slim AS base
+FROM node:22.22.0-bookworm-slim AS base
 WORKDIR /app
 
 ARG OCI_SOURCE="https://github.com/farismnrr/situm-explore"
@@ -22,7 +22,7 @@ COPY drizzle ./drizzle
 COPY nuxt.config.ts tsconfig.json eslint.config.mjs drizzle.config.ts ./
 RUN npm run build
 
-FROM node:22.14.0-bookworm-slim AS runtime
+FROM node:22.22.0-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production \
     HOST=0.0.0.0 \

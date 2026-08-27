@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { SitumCartographyResponse } from '#shared/situm-cartography'
+import { isWorkspaceRequestLoading } from '~/utils/async-state'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Home' })
 
 const { user } = useUserSession()
 const firstName = computed(() => user.value?.email?.split('@')[0]?.split(/[._-]/)[0] || 'there')
 
-const { selectedWorkspaceId } = useWorkspaceContext()
+const { selectedWorkspaceId, loaded: workspaceLoaded } = useWorkspaceContext()
 const { data: cartography, error: cartographyError, status: cartographyStatus, refresh: refreshCartography } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
 watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refreshCartography() }, { immediate: true })
+const cartographyLoading = computed(() => isWorkspaceRequestLoading(workspaceLoaded.value, selectedWorkspaceId.value, String(cartographyStatus.value)))
 const previewBuildingId = computed(() => cartography.value?.buildings[0]?.id)
 const previewBuilding = computed(() => cartography.value?.buildings[0] ?? null)
 const previewFloors = computed(() => (cartography.value?.floors ?? [])
@@ -46,14 +48,15 @@ const homeExplore = [
       </div>
     </UCard>
 
-    <UAlert v-if="cartographyError" class="mb-4" color="error" variant="subtle" title="Workspace preview unavailable" description="The selected workspace cartography could not be loaded." />
-    <div v-else-if="String(cartographyStatus) === 'pending' || !selectedWorkspaceId" class="content-grid mb-4" aria-label="Loading workspace preview" aria-busy="true">
+    <div v-if="cartographyLoading" class="content-grid mb-4" aria-label="Loading workspace preview" aria-busy="true">
       <UCard :ui="{ body: 'p-0' }" class="overflow-hidden"><USkeleton class="h-[15.3125rem] w-full" /></UCard>
       <UCard><div class="space-y-3"><USkeleton class="h-4 w-32" /><USkeleton class="h-3 w-full" /><USkeleton class="h-3 w-4/5" /></div></UCard>
     </div>
-    <UAlert v-else-if="String(cartographyStatus) !== 'pending' && !previewBuilding" class="mb-4" color="neutral" variant="subtle" title="No building data" description="The selected workspace has not returned any buildings to preview." />
+    <UAlert v-else-if="!selectedWorkspaceId" class="mb-4" color="neutral" variant="subtle" title="No workspace selected" description="Create or select a workspace before loading the indoor preview." />
+    <UAlert v-else-if="cartographyError" class="mb-4" color="error" variant="subtle" title="Workspace preview unavailable" description="The selected workspace cartography could not be loaded." />
+    <UAlert v-else-if="String(cartographyStatus) === 'success' && !previewBuilding" class="mb-4" color="neutral" variant="subtle" title="No building data" description="The selected workspace has not returned any buildings to preview." />
 
-    <div v-if="String(cartographyStatus) !== 'pending' && !cartographyError && previewBuilding" class="content-grid mb-4">
+    <div v-if="String(cartographyStatus) === 'success' && !cartographyError && previewBuilding" class="content-grid mb-4">
       <UCard :ui="{ body: 'p-0' }" class="overflow-hidden">
         <div class="panel-head flex items-start justify-between gap-3 p-4 pb-3">
           <div><h2 class="font-semibold text-highlighted">{{ previewBuilding.name }}</h2><p class="mt-1 text-xs text-muted">{{ previewBuilding.description || 'Situm building' }}<span v-if="previewFloors[0]"> · {{ previewFloors[0].name }}</span></p></div>

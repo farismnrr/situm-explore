@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     workspaceId,
     userId: session.user.id,
     findOwnedConfig: async (ownedWorkspaceId, ownerId) => {
-      const [config] = await getDb().select({ encryptedPositioningApiKey: workspaceSitumConfigs.encryptedPositioningApiKey, situmAccountId: workspaceSitumConfigs.situmAccountId }).from(workspaceSitumConfigs).innerJoin(workspaces, eq(workspaces.id, workspaceSitumConfigs.workspaceId)).where(and(eq(workspaceSitumConfigs.workspaceId, ownedWorkspaceId), eq(workspaces.ownerId, ownerId))).limit(1)
+      const [config] = await getDb().select({ encryptedViewerApiKey: workspaceSitumConfigs.encryptedViewerApiKey, situmAccountId: workspaceSitumConfigs.situmAccountId }).from(workspaceSitumConfigs).innerJoin(workspaces, eq(workspaces.id, workspaceSitumConfigs.workspaceId)).where(and(eq(workspaceSitumConfigs.workspaceId, ownedWorkspaceId), eq(workspaces.ownerId, ownerId))).limit(1)
       return config
     },
   })

@@ -47,15 +47,15 @@ test('session version validation fails closed for legacy, invalid, mismatched, a
   assert.equal(isCurrentSessionVersion(0, 1), false, 'old version after revocation must fail')
 })
 
-test('mobile positioning authorization isolates owners and returns only the dedicated authority', async () => {
+test('mobile positioning authorization isolates owners and returns only the Only Read authority', async () => {
   const records = [
-    { workspaceId: 'workspace-owner-a', ownerId: 'user-a', encryptedPositioningApiKey: 'enc:positioning-a', situmAccountId: 'org-a' },
-    { workspaceId: 'workspace-owner-b', ownerId: 'user-b', encryptedPositioningApiKey: 'enc:positioning-b', situmAccountId: 'org-b' },
+    { workspaceId: 'workspace-owner-a', ownerId: 'user-a', encryptedViewerApiKey: 'enc:read-only-a', situmAccountId: 'org-a' },
+    { workspaceId: 'workspace-owner-b', ownerId: 'user-b', encryptedViewerApiKey: 'enc:read-only-b', situmAccountId: 'org-b' },
   ]
   const findOwnedConfig = async (workspaceId: string, ownerId: string) => records.find(record => record.workspaceId === workspaceId && record.ownerId === ownerId)
   const ownerResponse = await resolveMobilePositioningCredential({ workspaceId: 'workspace-owner-a', userId: 'user-a', findOwnedConfig, decryptApiKey: value => value.replace('enc:', '') })
   assert.deepEqual(Object.keys(ownerResponse).sort(), ['apiKey', 'configured', 'situmAccountId', 'workspaceId'])
-  assert.equal(ownerResponse.apiKey, 'positioning-a')
+  assert.equal(ownerResponse.apiKey, 'read-only-a')
   assert.equal('encryptedApiKey' in ownerResponse, false)
   assert.equal('encryptedViewerApiKey' in ownerResponse, false)
   await assert.rejects(() => resolveMobilePositioningCredential({ workspaceId: 'workspace-owner-a', userId: 'user-b', findOwnedConfig }), (error: unknown) => (error as { statusCode?: number }).statusCode === 404)

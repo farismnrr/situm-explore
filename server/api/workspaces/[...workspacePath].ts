@@ -1,14 +1,35 @@
+import SitumSDK, { SitumApiPermissionLevel } from '@situm/sdk-js'
 import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { getDb } from '../../db/client'
 import { workspaceSitumConfigs, workspaces } from '../../db/schema'
+import { resolveMobilePositioningCredential } from '../../utils/mobile-positioning'
+import { issueWorkspaceViewerApiKey } from '../../utils/viewer-auth'
 import { encryptWorkspaceApiKey } from '../../utils/workspace-credentials'
 import { assertWorkspaceId } from '../../utils/workspace-owner'
-import { issueWorkspaceViewerApiKey } from '../../utils/viewer-auth'
-import { resolveMobilePositioningCredential } from '../../utils/mobile-positioning'
-import SitumSDK, { SitumApiPermissionLevel } from '@situm/sdk-js'
 
-const schema = z.object({ apiKey: z.string().min(1).max(4096), viewerApiKey: z.string().min(1).max(4096), positioningApiKey: z.string().min(1).max(4096).optional() }).strict()
+const credential = z.string().min(1).max(4096)
+const schema = z.object({
+  apiKey: credential.optional(),
+  viewerApiKey: credential.optional(),
+}).strict().refine(value => Boolean(value.apiKey || value.viewerApiKey), { message: 'At least one credential is required.' })
+
+type VerifiedCredential = { organizationId: string, apiPermissionLevel: SitumApiPermissionLevel }
+
+async function verifyCredential(apiKey: string, expectedPermission: SitumApiPermissionLevel, label: 'Only Read API key' | 'Read & Write API key'): Promise<VerifiedCredential> {
+  try {
+    const sdk = new SitumSDK({ auth: { apiKey }, compact: true })
+    const session = await sdk.authSession
+    if (!session.organizationId) throw new Error('Credential has no organization')
+    if (session.apiPermissionLevel !== expectedPermission) {
+      throw createError({ statusCode: 422, statusMessage: `${label} has the wrong Situm permission. Use ${expectedPermission === SitumApiPermissionLevel.READ_ONLY ? 'an Only Read' : 'a Read & Write'} key.` })
+    }
+    return session
+  } catch (error: unknown) {
+    if ((error as { statusCode?: number }).statusCode === 422) throw error
+    throw createError({ statusCode: 422, statusMessage: `${label} could not be verified. Check that the key is active and copied correctly.` })
+  }
+}
 
 export default defineEventHandler(async (event) => {
   const parts = (getRouterParam(event, 'workspacePath') || '').split('/').filter(Boolean)
@@ -24,7 +45,7 @@ export default defineEventHandler(async (event) => {
       workspaceId,
       userId: session.user.id,
       findOwnedConfig: async (ownedWorkspaceId, ownerId) => {
-        const [config] = await getDb().select({ encryptedPositioningApiKey: workspaceSitumConfigs.encryptedPositioningApiKey, situmAccountId: workspaceSitumConfigs.situmAccountId }).from(workspaceSitumConfigs).innerJoin(workspaces, eq(workspaces.id, workspaceSitumConfigs.workspaceId)).where(and(eq(workspaceSitumConfigs.workspaceId, ownedWorkspaceId), eq(workspaces.ownerId, ownerId))).limit(1)
+        const [config] = await getDb().select({ encryptedViewerApiKey: workspaceSitumConfigs.encryptedViewerApiKey, situmAccountId: workspaceSitumConfigs.situmAccountId }).from(workspaceSitumConfigs).innerJoin(workspaces, eq(workspaces.id, workspaceSitumConfigs.workspaceId)).where(and(eq(workspaceSitumConfigs.workspaceId, ownedWorkspaceId), eq(workspaces.ownerId, ownerId))).limit(1)
         return config
       },
     })
@@ -36,9 +57,21 @@ export default defineEventHandler(async (event) => {
   if (!owned) throw createError({ statusCode: 404, statusMessage: 'Workspace not found.' })
 
   if (getMethod(event) === 'GET') {
-    const [config] = await getDb().select({ id: workspaceSitumConfigs.id, workspaceId: workspaceSitumConfigs.workspaceId, situmAccountId: workspaceSitumConfigs.situmAccountId, viewerConfigured: workspaceSitumConfigs.encryptedViewerApiKey, positioningConfigured: workspaceSitumConfigs.encryptedPositioningApiKey, configured: workspaceSitumConfigs.id, updatedAt: workspaceSitumConfigs.updatedAt }).from(workspaceSitumConfigs).where(eq(workspaceSitumConfigs.workspaceId, workspaceId)).limit(1)
+    const [config] = await getDb().select({
+      id: workspaceSitumConfigs.id,
+      workspaceId: workspaceSitumConfigs.workspaceId,
+      situmAccountId: workspaceSitumConfigs.situmAccountId,
+      readWriteConfigured: workspaceSitumConfigs.encryptedApiKey,
+      readOnlyConfigured: workspaceSitumConfigs.encryptedViewerApiKey,
+      updatedAt: workspaceSitumConfigs.updatedAt,
+    }).from(workspaceSitumConfigs).where(eq(workspaceSitumConfigs.workspaceId, workspaceId)).limit(1)
     if (!config) throw createError({ statusCode: 404, statusMessage: 'Situm configuration not found.' })
-    return { ...config, configured: Boolean(config.configured), viewerConfigured: Boolean(config.viewerConfigured), positioningConfigured: Boolean(config.positioningConfigured) }
+    return {
+      ...config,
+      configured: Boolean(config.readWriteConfigured || config.readOnlyConfigured),
+      readWriteConfigured: Boolean(config.readWriteConfigured),
+      readOnlyConfigured: Boolean(config.readOnlyConfigured),
+    }
   }
 
   if (getMethod(event) === 'DELETE') {
@@ -49,29 +82,49 @@ export default defineEventHandler(async (event) => {
 
   if (getMethod(event) !== 'PUT') throw createError({ statusCode: 405, statusMessage: 'Method not allowed.' })
   const parsed = schema.safeParse(await readBody(event))
-  if (!parsed.success) throw createError({ statusCode: 400, statusMessage: 'Valid Situm configuration is required.' })
-  let primarySession: { organizationId: string, apiPermissionLevel: SitumApiPermissionLevel }
-  try {
-    const primary = new SitumSDK({ auth: { apiKey: parsed.data.apiKey }, compact: true })
-    primarySession = await primary.authSession
-    if (primarySession.apiPermissionLevel !== SitumApiPermissionLevel.READ_WRITE) throw new Error('Primary credential is not read-write')
-    const viewer = new SitumSDK({ auth: { apiKey: parsed.data.viewerApiKey }, compact: true })
-    const viewerSession = await viewer.authSession
-    if (viewerSession.apiPermissionLevel !== SitumApiPermissionLevel.READ_ONLY) throw new Error('Viewer credential is not read-only')
-    if (!primarySession.organizationId) throw new Error('Primary credential has no organization')
-    if (viewerSession.organizationId !== primarySession.organizationId) throw new Error('Viewer credential belongs to a different organization')
-    if (parsed.data.positioningApiKey) {
-      const positioning = new SitumSDK({ auth: { apiKey: parsed.data.positioningApiKey }, compact: true })
-      const positioningSession = await positioning.authSession
-      if (positioningSession.apiPermissionLevel !== SitumApiPermissionLevel.POSITIONING || positioningSession.organizationId !== primarySession.organizationId) throw new Error('Positioning credential is invalid')
-    }
-  } catch {
-    throw createError({ statusCode: 422, statusMessage: 'The Situm credentials could not be verified with the required permissions.' })
-  }
-  const encryptedApiKey = encryptWorkspaceApiKey(parsed.data.apiKey)
-  const encryptedViewerApiKey = encryptWorkspaceApiKey(parsed.data.viewerApiKey)
-  const encryptedPositioningApiKey = parsed.data.positioningApiKey ? encryptWorkspaceApiKey(parsed.data.positioningApiKey) : undefined
-  const [config] = await getDb().insert(workspaceSitumConfigs).values({ workspaceId, situmAccountId: primarySession.organizationId, encryptedApiKey, encryptedViewerApiKey, ...(encryptedPositioningApiKey ? { encryptedPositioningApiKey } : {}) }).onConflictDoUpdate({ target: workspaceSitumConfigs.workspaceId, set: { situmAccountId: primarySession.organizationId, encryptedApiKey, encryptedViewerApiKey, ...(encryptedPositioningApiKey ? { encryptedPositioningApiKey } : {}), updatedAt: new Date() } }).returning({ id: workspaceSitumConfigs.id, workspaceId: workspaceSitumConfigs.workspaceId, situmAccountId: workspaceSitumConfigs.situmAccountId, encryptedViewerApiKey: workspaceSitumConfigs.encryptedViewerApiKey, encryptedPositioningApiKey: workspaceSitumConfigs.encryptedPositioningApiKey, updatedAt: workspaceSitumConfigs.updatedAt })
+  if (!parsed.success) throw createError({ statusCode: 400, statusMessage: 'Add an Only Read or Read & Write Situm API key to save.' })
+
+  const [existing] = await getDb().select({ situmAccountId: workspaceSitumConfigs.situmAccountId }).from(workspaceSitumConfigs).where(eq(workspaceSitumConfigs.workspaceId, workspaceId)).limit(1)
+  const [readWriteSession, readOnlySession] = await Promise.all([
+    parsed.data.apiKey ? verifyCredential(parsed.data.apiKey, SitumApiPermissionLevel.READ_WRITE, 'Read & Write API key') : null,
+    parsed.data.viewerApiKey ? verifyCredential(parsed.data.viewerApiKey, SitumApiPermissionLevel.READ_ONLY, 'Only Read API key') : null,
+  ])
+  const organizationIds = [readWriteSession?.organizationId, readOnlySession?.organizationId].filter((value): value is string => Boolean(value))
+  const situmAccountId = existing?.situmAccountId || organizationIds[0]
+  if (!situmAccountId) throw createError({ statusCode: 422, statusMessage: 'The Situm organization could not be determined from the supplied API key.' })
+  if (organizationIds.some(id => id !== situmAccountId)) throw createError({ statusCode: 422, statusMessage: 'Only Read and Read & Write API keys must belong to the same Situm organization.' })
+
+  const encryptedApiKey = parsed.data.apiKey ? encryptWorkspaceApiKey(parsed.data.apiKey) : undefined
+  const encryptedViewerApiKey = parsed.data.viewerApiKey ? encryptWorkspaceApiKey(parsed.data.viewerApiKey) : undefined
+  const [config] = await getDb().insert(workspaceSitumConfigs).values({
+    workspaceId,
+    situmAccountId,
+    ...(encryptedApiKey ? { encryptedApiKey } : {}),
+    ...(encryptedViewerApiKey ? { encryptedViewerApiKey } : {}),
+  }).onConflictDoUpdate({
+    target: workspaceSitumConfigs.workspaceId,
+    set: {
+      situmAccountId,
+      ...(encryptedApiKey ? { encryptedApiKey } : {}),
+      ...(encryptedViewerApiKey ? { encryptedViewerApiKey } : {}),
+      updatedAt: new Date(),
+    },
+  }).returning({
+    id: workspaceSitumConfigs.id,
+    workspaceId: workspaceSitumConfigs.workspaceId,
+    situmAccountId: workspaceSitumConfigs.situmAccountId,
+    encryptedApiKey: workspaceSitumConfigs.encryptedApiKey,
+    encryptedViewerApiKey: workspaceSitumConfigs.encryptedViewerApiKey,
+    updatedAt: workspaceSitumConfigs.updatedAt,
+  })
   if (!config) throw createError({ statusCode: 500, statusMessage: 'Unable to save Situm configuration.' })
-  return { id: config.id, workspaceId: config.workspaceId, situmAccountId: config.situmAccountId, updatedAt: config.updatedAt, configured: true, viewerConfigured: Boolean(config.encryptedViewerApiKey), positioningConfigured: Boolean(config.encryptedPositioningApiKey) }
+  return {
+    id: config.id,
+    workspaceId: config.workspaceId,
+    situmAccountId: config.situmAccountId,
+    updatedAt: config.updatedAt,
+    configured: Boolean(config.encryptedApiKey || config.encryptedViewerApiKey),
+    readWriteConfigured: Boolean(config.encryptedApiKey),
+    readOnlyConfigured: Boolean(config.encryptedViewerApiKey),
+  }
 })
