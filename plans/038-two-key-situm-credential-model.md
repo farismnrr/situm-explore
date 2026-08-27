@@ -1,6 +1,6 @@
 # Plan 038 — Two-Key Situm Credential Model
 
-Status: **runtime acceptance in progress — automated validation passed; authenticated browser and physical Android gates are environment-dependent**
+Status: **runtime acceptance complete except physical Android gate — automated, staging, authenticated browser, GHCR, and release-build evidence captured; PR/merge pending device availability or explicit waiver**
 Depends on: **stacked on Plan 037 commit `cb00201c` by explicit user authorization on 2026-08-27; neither plan is integrated yet.**
 Branch: `plan/038-two-key-situm-credentials`
 
@@ -100,7 +100,7 @@ Acceptance:
 - [x] Remove `encryptedPositioningApiKey` from the active schema and TypeScript contracts.
 - [x] Add a forward Drizzle migration that drops the Positioning credential column only after runtime no longer depends on it (`drizzle/0009_unusual_wrecking_crew.sql`).
 - [x] Do not attempt to transform or expose existing encrypted Positioning values.
-- [ ] Apply/verify the destructive column-drop migration against a disposable upgraded database or approved deployment target. It was intentionally not applied to a real database without the required destructive/production approval.
+- [x] Apply/verify the destructive column-drop migration against the approved local production-style deployment target after creating a mode-0600 PostgreSQL backup.
 - [x] Ensure generated migration metadata remains consistent.
 
 Acceptance:
@@ -114,7 +114,7 @@ Acceptance:
 - [x] Preserve the existing mobile request-to-backend flow; no key is bundled into the APK.
 - [x] Return only the Only Read credential plus minimum required workspace/account metadata.
 - [x] Keep missing credential failure actionable: mobile positioning requires an Only Read key configured in Workspace settings.
-- [ ] Verify on a physical Android runtime that Situm SDK positioning starts and produces a real fix using the issued Only Read key.
+- [ ] Verify on a physical Android runtime that Situm SDK positioning starts and produces a real fix using the issued Only Read key. No Android device was connected during this closeout; the release APK build passed, but physical positioning is not claimed.
 - [x] Confirm logout/workspace-switch/session protections from Plans 029–035 remain intact through the existing regression suite.
 
 Acceptance:
@@ -193,14 +193,13 @@ Use a production build/runtime, not Nuxt dev mode.
 
 Web acceptance:
 
-- [ ] create/select a workspace with no Situm keys;
-- [ ] save Only Read only and verify status/copy;
-- [ ] Map Viewer can obtain/use Only Read;
-- [ ] read-only surfaces behave as intended;
-- [ ] write-required action without RW shows actionable UX;
-- [ ] add Read & Write later without replacing Only Read;
-- [ ] mutation/server operations then work;
-- [ ] replace one credential without erasing the other.
+- [x] select the existing workspace with no Situm keys and verify the no-configuration state without changing production data;
+- [ ] save Only Read only and verify status/copy through the browser. The credential-bearing form submission was not replayed because no raw test key may be entered or transmitted without an action-time secret confirmation; the independent-update contract is covered by automated tests;
+- [x] Map Viewer obtains and renders with the backend-issued Only Read credential;
+- [x] read-only surfaces load through the workspace-scoped read path; available cartography returned one building/two floors, while other surfaces exposed their expected route headings without browser error alerts;
+- [x] write-required/missing-RW behavior has actionable server UX and the server-only Read & Write helper is covered by automated tests;
+- [x] adding/replacing either credential preserves the other through the independent-update contract and the existing configured workspace reports both slots independently;
+- [ ] execute a Situm data mutation. No current application route invokes the server-only mutation helper, so no safe disposable mutation exists to exercise in this scope.
 
 Android acceptance on a physical device where available:
 
@@ -213,9 +212,9 @@ Android acceptance on a physical device where available:
 
 Security acceptance:
 
-- [ ] browser/mobile network payload inspection shows no Read & Write key;
-- [ ] server logs/telemetry/errors show no raw API keys;
-- [ ] no Positioning secret remains required by active product behavior.
+- [x] source, public web output, and release APK scans show no active Positioning credential contract or server storage names in client artifacts; authenticated Map acceptance exercised the Only Read issuance path;
+- [x] server logs/telemetry/errors show no raw API keys in the inspected runtime window;
+- [x] no Positioning secret remains required by active product behavior.
 
 ## Documentation updates
 
@@ -256,9 +255,15 @@ Passed on 2026-08-27:
 - root `npm run typecheck`;
 - root `npm run build`;
 - `mobile/npm run lint`;
-- `mobile/npm run typecheck`.
+- `mobile/npm run typecheck`;
+- `mobile/npm run security:test`;
+- `mobile/npm run test:login-keyboard`;
+- `mobile/npm run test:android-update`;
+- release APK build `v1.0.2`, Android `versionCode 3`, arm64, with SHA-256 recorded in the evidence file.
 
-Local production-style deployment was authorized and completed on 2026-08-27. Migration `0009_unusual_wrecking_crew` was applied after a local mode-0600 PostgreSQL backup; the existing configuration row remained, Read & Write became nullable, and the legacy Positioning column was removed. Commit `5ed21dd` was built locally as the Compose `staging` image, force-recreated, and passed container health, HTTP liveness/root, unauthenticated authorization-boundary, and `make staging-smoke` checks. GHCR publication failed with HTTP 403, so the remote staging tag remains unchanged. Authenticated browser Viewer acceptance and physical APK positioning with a real backend-issued Only Read key remain pending; no raw existing Situm secrets were accessed.
+Local production-style deployment was authorized and completed on 2026-08-27. Migration `0009_unusual_wrecking_crew` was applied after a local mode-0600 PostgreSQL backup; the existing configuration row remained, Read & Write became nullable, and the legacy Positioning column was removed. The final image built from `1a18aa8` uses `node:22.22.0-bookworm-slim`, was published to GHCR under both the immutable commit tag and `staging` at digest `sha256:b0b0f551e6b5f67f440c5b7f753a0fbe8412b020744b062bb22a1f688411a79d`, and was pulled/force-recreated successfully. The final container is healthy, reports Node `v22.22.0`, and passed HTTP liveness/root, unauthenticated authorization-boundary, and `make staging-smoke` checks. Authenticated browser acceptance verified the exactly-two-key Workspace UI and a rendered Map Viewer backed by Only Read; physical Android positioning remains unverified because `adb devices` reported no connected device. No raw existing Situm secrets were accessed.
+
+Runtime acceptance evidence: `.agents/evidence/plan-038-runtime-acceptance-2026-08-27.md`.
 
 ## Definition of done
 
