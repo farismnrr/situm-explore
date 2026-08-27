@@ -1,16 +1,16 @@
 # Current State
 
-_Last reviewed: 2026-08-19_
+_Last reviewed: 2026-08-27_
 
 ## Work status
 
-Plan 036 — Realtime Reliability completed and integrated into `main` via PR #35 at merge commit `7a87afb` on 2026-08-19. Acceptance passed with repeated physical POS evidence and automated validation. A pre-PR review hardening pass bounded high-frequency native-fix diagnostics and updated implementation/evidence docs; final validation remained green. The local and remote feature branches were deleted.
+Plan 037 — Web Loading-State Hygiene is the current unintegrated implementation on branch `plan/037-loading-state-hygiene`. The 2026-08-27 review found a common first-render defect: workspace-scoped Nuxt requests using `immediate: false` begin in `idle`, while multiple pages treated only `pending` as loading. This allowed false empty/count/configuration copy to render before skeletons.
 
-Latest integrated product work is PR #35 at merge commit `7a87afb` (`Realtime reliability hardening`). The former `plan/036-realtime-reliability` branch was deleted after merge; Plan 035 was previously integrated through PR #32 at `840c0f9`.
+Plan 037 now centralizes `idle`/`pending` loading semantics and applies resolved-state precedence across the workspace web surfaces, including Alarms and browser Map. Alarms no longer renders the transient `Select a building` prompt, the Map no longer mounts `SitumViewer` before a real building resolves, and Workspace configuration no longer claims `Not configured` while its read is unresolved. Automated validation passed: 74/74 tests, lint, typecheck, build, and `git diff --check`. No production deployment, PR, or merge has occurred.
 
-There is currently **no active implementation plan**. Plan 036 is the latest integrated product work; navigation camera/perspective work remains separate future scope.
+Latest **integrated** product work remains PR #35 at merge commit `7a87afb` (`Realtime reliability hardening`). Plan 037 is not integrated yet. Navigation camera/perspective work remains separate future scope.
 
-New implementation work must start from updated `main` on a dedicated plan branch. Historical plans, execution briefs, sessions, reviews, and evidence are not current execution instructions.
+Continue Plan 037 only from branch `plan/037-loading-state-hygiene`; preserve the already-present local changes that predated this loading-state review. Historical plans, execution briefs, sessions, reviews, and evidence are not current execution instructions.
 
 ## Last completed work
 

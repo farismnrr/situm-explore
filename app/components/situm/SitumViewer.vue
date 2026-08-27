@@ -92,7 +92,7 @@ onBeforeUnmount(resetViewer)
       <div ref="root" class="absolute inset-0" :class="buildingConfirmed ? '' : 'invisible opacity-0'" />
       <div v-if="!props.workspaceId || !props.buildingId" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="warning" variant="subtle" title="Map Viewer unavailable" :description="message" class="max-w-md" /></div>
       <div v-else-if="viewerError" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="error" variant="subtle" :title="fallbackTitle" :description="fallbackMessage" :actions="[{ label: 'Retry', color: 'error', variant: 'subtle', onClick: retry }]" class="max-w-md" /></div>
-      <div v-else-if="!buildingConfirmed" class="absolute inset-0 flex items-center justify-center bg-default px-6"><UAlert color="neutral" variant="subtle" title="Loading map" description="Preparing the read-only Viewer." class="max-w-md" /></div>
+      <USkeleton v-else-if="!buildingConfirmed" class="absolute inset-0 h-full w-full rounded-none" aria-label="Loading map viewer" aria-busy="true" />
     </div>
   </UCard>
 </template>

@@ -23,6 +23,7 @@ These references define hierarchy, density, spacing, typography, surface treatme
 - responsive layouts instead of scaled-up phone screens;
 - accessible labels, focus behavior, touch targets, keyboard behavior, and large-text resilience;
 - truthful loading, empty, denied, unavailable, and error states;
+- workspace-scoped async surfaces treat unresolved workspace context plus Nuxt `idle`/`pending` requests as loading; data-derived empty, count, configuration, and unavailable states appear only after resolution;
 - no fake product data or fake capability for prototype parity.
 
 ## Responsive navigation

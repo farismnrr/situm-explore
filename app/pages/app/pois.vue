@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SitumCartographyPoi, SitumCartographyResponse } from '#shared/situm-cartography'
+import { isWorkspaceRequestLoading } from '~/utils/async-state'
 
 definePageMeta({ middleware: 'auth', layout: 'app', title: 'Points of interest' })
 
@@ -7,11 +8,12 @@ const query = ref('')
 const categoryFilter = ref('All categories')
 const selectedPoi = ref<SitumCartographyPoi | null>(null)
 const drawerOpen = ref(false)
-const { selectedWorkspaceId } = useWorkspaceContext()
+const { selectedWorkspaceId, loaded: workspaceLoaded } = useWorkspaceContext()
 const { data, error, status, refresh } = await useFetch<SitumCartographyResponse>(useWorkspaceEndpoint('/situm/cartography'), { immediate: false })
 watch(selectedWorkspaceId, (workspaceId) => { if (workspaceId) refresh() }, { immediate: true })
 
 const pois = computed(() => data.value?.pois ?? [])
+const loading = computed(() => isWorkspaceRequestLoading(workspaceLoaded.value, selectedWorkspaceId.value, String(status.value)))
 const categories = computed(() => ['All categories', ...(data.value?.categories ?? []).map(category => category.name)])
 const buildingNames = computed(() => new Map((data.value?.buildings ?? []).map(building => [building.id, building.name])))
 const floorNames = computed(() => new Map((data.value?.floors ?? []).map(floor => [floor.id, floor.name])))
@@ -36,16 +38,16 @@ function openDetails(poi: SitumCartographyPoi) {
       <template #actions><UButton to="/app/map" icon="i-lucide-map">View on map</UButton></template>
     </ProductPageHeader>
 
-    <UAlert v-if="error" class="mb-4" color="error" variant="subtle" title="POIs unavailable" description="The authenticated Situm cartography read could not be loaded. No fixture POIs are shown." />
-    <div v-else-if="String(status) === 'pending'" class="mb-4 space-y-2" aria-label="Loading POIs" aria-busy="true"><USkeleton class="h-4 w-40" /><USkeleton class="h-3 w-72" /></div>
-
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex flex-col gap-2 sm:flex-row"><UInput v-model="query" icon="i-lucide-search" placeholder="Search POIs…" aria-label="Search POIs" class="w-full sm:w-72" /><USelect v-model="categoryFilter" :items="categories" aria-label="Filter by category" class="w-full sm:w-48" /></div>
-      <UBadge color="neutral" variant="soft">{{ String(status) === 'success' && !error ? `${filteredPois.length} POIs` : String(status) === 'pending' ? 'Loading' : '—' }}</UBadge>
+      <USkeleton v-if="loading" class="h-6 w-20 rounded-full" />
+      <UBadge v-else-if="selectedWorkspaceId && String(status) === 'success'" color="neutral" variant="soft">{{ filteredPois.length }} POIs</UBadge>
     </div>
 
-    <div v-if="String(status) !== 'success' && !error" class="space-y-2" aria-label="Loading POI rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
-    <UCard v-else :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
+    <div v-if="loading" class="space-y-2" aria-label="Loading POI rows" aria-busy="true"><USkeleton v-for="row in 5" :key="row" class="h-12 w-full" /></div>
+    <UAlert v-else-if="!selectedWorkspaceId" color="neutral" variant="subtle" title="No workspace selected" description="Create or select a workspace before browsing POIs." />
+    <UAlert v-else-if="error" color="error" variant="subtle" title="POIs unavailable" description="The authenticated Situm cartography read could not be loaded. No fixture POIs are shown." />
+    <UCard v-else-if="String(status) === 'success'" :ui="{ body: 'p-0 sm:p-0' }" class="overflow-hidden">
       <div class="hidden overflow-x-auto md:block"><table class="table-density w-full text-left"><thead class="border-b border-default bg-elevated/40 text-xs text-muted"><tr><th class="px-5 py-3 font-medium">Name</th><th class="px-4 py-3 font-medium">Category</th><th class="px-4 py-3 font-medium">Building</th><th class="px-4 py-3 font-medium">Floor</th><th class="px-4 py-3 font-medium">ID</th></tr></thead><tbody class="divide-y divide-default"><tr v-for="poi in filteredPois" :key="poi.id" class="group transition hover:bg-elevated/40"><td><button class="text-left font-semibold text-highlighted hover:text-info" @click="openDetails(poi)">{{ poi.name }}<span v-if="poi.info" class="mt-0.5 block text-[10px] font-normal text-muted">{{ poi.info }}</span></button></td><td class="text-muted">{{ poi.categoryName || 'Uncategorized' }}</td><td class="text-muted">{{ buildingNames.get(poi.buildingId) ?? poi.buildingId }}</td><td class="text-muted">{{ floorNames.get(poi.floorId) ?? poi.floorId }}</td><td class="font-mono text-[10px] text-muted">{{ poi.id }}</td></tr></tbody></table></div>
       <div class="divide-y divide-default md:hidden"><button v-for="poi in filteredPois" :key="poi.id" class="flex w-full items-center gap-3 p-4 text-left" @click="openDetails(poi)"><span class="grid size-9 shrink-0 place-items-center rounded-lg bg-info/10 text-info"><UIcon name="i-lucide-map-pin" /></span><span class="min-w-0 flex-1"><strong class="block truncate text-sm text-highlighted">{{ poi.name }}</strong><span class="mt-1 block truncate text-xs text-muted">{{ poi.categoryName || 'Uncategorized' }} · {{ floorNames.get(poi.floorId) ?? poi.floorId }}</span></span><UIcon name="i-lucide-chevron-right" class="text-muted" /></button></div>
       <p v-if="String(status) === 'success' && !error && filteredPois.length === 0" class="px-5 py-10 text-center text-sm text-muted">No real POIs match your filters.</p>

@@ -5,6 +5,7 @@ definePageMeta({ middleware: 'auth', layout: 'app', title: 'Workspaces' })
 
 const { workspaces, selectedWorkspaceId, selectedWorkspace, loadWorkspaces, selectWorkspace } = useWorkspaceContext()
 const loading = ref(true)
+const configLoading = ref(true)
 const saving = ref(false)
 const validating = ref(false)
 const message = ref('')
@@ -17,13 +18,19 @@ const positioningApiKey = ref('')
 const config = ref<WorkspaceSitumConfig | null>(null)
 
 async function loadConfig() {
+  configLoading.value = true
   config.value = null
-  if (!selectedWorkspaceId.value) return
+  if (!selectedWorkspaceId.value) {
+    configLoading.value = false
+    return
+  }
   try {
     config.value = await $fetch<WorkspaceSitumConfig>(`/api/workspaces/${selectedWorkspaceId.value}/situm-config`)
   } catch (error: unknown) {
     const status = (error as { statusCode?: number, data?: { statusCode?: number } })
     if (status.statusCode !== 404 && status.data?.statusCode !== 404) errorMessage.value = getSafeErrorMessage(error, 'Workspace configuration could not be loaded.')
+  } finally {
+    configLoading.value = false
   }
 }
 
@@ -112,7 +119,7 @@ onMounted(refresh)
 <template>
   <div class="operations-page space-y-6">
     <ProductPageHeader eyebrow="Workspace" title="Workspaces" description="Create private workspaces and manage their server-side Situm configuration.">
-      <template #actions><UBadge color="neutral" variant="soft">{{ loading ? 'Loading' : `${workspaces.length} workspace${workspaces.length === 1 ? '' : 's'}` }}</UBadge></template>
+      <template #actions><USkeleton v-if="loading" class="h-6 w-24 rounded-full" /><UBadge v-else color="neutral" variant="soft">{{ workspaces.length }} workspace{{ workspaces.length === 1 ? '' : 's' }}</UBadge></template>
     </ProductPageHeader>
     <UAlert v-if="errorMessage" color="error" variant="subtle" title="Action could not be completed" :description="errorMessage" />
     <UAlert v-if="message" color="success" variant="subtle" title="Done" :description="message" />
@@ -133,11 +140,12 @@ onMounted(refresh)
         </UCard>
         <UCard :ui="{ body: 'space-y-4' }">
           <div><h2 class="font-semibold text-highlighted">Situm configuration</h2><p class="mt-1 text-xs leading-5 text-muted">Credentials are encrypted on the server. The stored API key is never returned or shown again.</p></div>
-          <div v-if="config" class="grid gap-3 rounded-lg border border-default bg-elevated p-3 text-xs sm:grid-cols-4"><div><span class="block text-muted">Status</span><strong class="text-highlighted">Configured</strong></div><div><span class="block text-muted">Account</span><strong class="break-all text-highlighted">{{ config.situmAccountId }}</strong></div><div><span class="block text-muted">Viewer credential</span><strong class="text-highlighted">{{ config.viewerConfigured ? 'Configured' : 'Not configured' }}</strong></div><div><span class="block text-muted">Positioning</span><strong class="text-highlighted">{{ config.positioningConfigured ? 'Configured' : 'Not configured' }}</strong></div></div>
+          <div v-if="configLoading" class="grid gap-3 sm:grid-cols-4" aria-label="Loading Situm configuration" aria-busy="true"><USkeleton v-for="item in 4" :key="item" class="h-14 w-full" /></div>
+          <div v-else-if="config" class="grid gap-3 rounded-lg border border-default bg-elevated p-3 text-xs sm:grid-cols-4"><div><span class="block text-muted">Status</span><strong class="text-highlighted">Configured</strong></div><div><span class="block text-muted">Account</span><strong class="break-all text-highlighted">{{ config.situmAccountId }}</strong></div><div><span class="block text-muted">Viewer credential</span><strong class="text-highlighted">{{ config.viewerConfigured ? 'Configured' : 'Not configured' }}</strong></div><div><span class="block text-muted">Positioning</span><strong class="text-highlighted">{{ config.positioningConfigured ? 'Configured' : 'Not configured' }}</strong></div></div>
           <UAlert v-else color="neutral" variant="subtle" title="Not configured" description="Add a primary Situm Read & Write API key and a separate read-only Viewer API key to connect this workspace." />
-          <UFormField label="Primary Read & Write API key" hint="Required to add or replace the stored credentials"><PasswordInput v-model="apiKey" autocomplete="new-password" placeholder="Enter a new key" class="w-full" /></UFormField>
-          <UFormField label="Read-only Viewer API key" hint="Required for the browser Viewer; write-only and never returned"><PasswordInput v-model="viewerApiKey" autocomplete="new-password" placeholder="Enter a read-only key" class="w-full" /></UFormField>
-          <UFormField label="Positioning API key" hint="Dedicated mobile indoor positioning credential; optional when updating existing settings"><PasswordInput v-model="positioningApiKey" autocomplete="new-password" placeholder="Enter a positioning key" class="w-full" /></UFormField>
+          <UFormField label="Primary Read & Write API key" hint="Required to add or replace the stored credentials"><FormPasswordInput v-model="apiKey" autocomplete="new-password" placeholder="Enter a new key" class="w-full" /></UFormField>
+          <UFormField label="Read-only Viewer API key" hint="Required for the browser Viewer; write-only and never returned"><FormPasswordInput v-model="viewerApiKey" autocomplete="new-password" placeholder="Enter a read-only key" class="w-full" /></UFormField>
+          <UFormField label="Positioning API key" hint="Dedicated mobile indoor positioning credential; optional when updating existing settings"><FormPasswordInput v-model="positioningApiKey" autocomplete="new-password" placeholder="Enter a positioning key" class="w-full" /></UFormField>
           <div class="flex flex-wrap gap-2">
             <UButton label="Save configuration" :loading="saving" :disabled="saving || !apiKey || !viewerApiKey" @click="saveConfig" />
             <UButton v-if="config" label="Validate configuration" color="neutral" variant="outline" :loading="validating" :disabled="saving || validating" @click="validateConfig" />

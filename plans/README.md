@@ -71,6 +71,10 @@ roadmap/033-034-native-ui-reconciliation          [historical/closed]
 
 Roadmap history: `plans/028-034-native-mobile-roadmap.md`. Plan 036 — Realtime Reliability is **complete / integrated via PR #35** at merge commit `7a87afb`. Historical Plan 034 limitations remain evidence unless a future scoped plan explicitly reopens them.
 
+## Active / unintegrated work
+
+- Plan 037 — Web Loading-State Hygiene: implementation complete on `plan/037-loading-state-hygiene`; automated validation passed on 2026-08-27; not yet integrated or deployed.
+
 ## Transition direction
 
 The historical pre-refactor baseline used env-defined app auth and process-global Situm account/Viewer/building context; it also produced analytics history before workspace ownership existed.
