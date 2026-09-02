@@ -39,16 +39,22 @@ if (abiResult.status !== 0) {
 const abi = abiResult.stdout.trim()
 if (abi !== 'arm64-v8a') throw new Error(`This fast physical-device build is pinned to arm64-v8a, but the connected device reports ${abi || 'unknown'}.`)
 
-console.log(`Building/installing debug shell for ${abi}. Native prebuild is skipped because android/ already exists.`)
+console.log(`Building debug shell for ${abi}. Native prebuild is skipped because android/ already exists.`)
 console.log(`Gradle cache: ${gradleUserHome}`)
 const gradleEnv = {
   ...adbEnv,
   NODE_ENV: process.env.NODE_ENV || 'development',
   GRADLE_USER_HOME: gradleUserHome,
 }
-const gradle = spawnSync('./gradlew', [':app:installDebug', '-PreactNativeArchitectures=arm64-v8a', '--build-cache', '--console=plain'], {
+const gradle = spawnSync('./gradlew', [':app:assembleDebug', '-PreactNativeArchitectures=arm64-v8a', '--build-cache', '--console=plain'], {
   cwd: androidRoot,
   env: gradleEnv,
   stdio: 'inherit',
 })
-process.exit(gradle.status || 0)
+if (gradle.status !== 0) process.exit(gradle.status || 1)
+
+const debugApk = resolve(androidRoot, 'app/build/outputs/apk/debug/app-debug.apk')
+if (!existsSync(debugApk)) throw new Error(`Debug APK was not produced at ${debugApk}`)
+console.log('Installing debug shell with data preserved. -d permits the lower dev versionCode used by local shells.')
+const install = spawnSync('adb', ['install', '-r', '-d', debugApk], { cwd: root, env: adbEnv, stdio: 'inherit' })
+process.exit(install.status || 0)

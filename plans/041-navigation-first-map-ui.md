@@ -1,6 +1,6 @@
 # Plan 041 — App-Owned Indoor Map + Navigation UI
 
-Status: **active / custom-renderer implementation complete / physical hot-reload E2E passed / release packaging pending**
+Status: **active / custom-renderer + branded launch accepted / physical E2E and final release packaging passed / movement-only follow-ups documented**
 Branch: `plan/041-navigation-first-map-ui`
 Target repo: `/home/farismnrr/Projects/situm-explore`
 
@@ -105,9 +105,10 @@ The floorplan image and SVG overlay share exactly the same fitted frame and tran
 | 01 — data/source contract | complete | existing cartography/path endpoints and positioning Cartesian fields verified |
 | 02 — custom map renderer | complete in source | floorplan + SVG POIs/bluedot/route render with no Situm visual SDK |
 | 03 — custom route/navigation | complete in source | graph route, floor segments, remaining distance, basic turn/floor guidance, arrival/off-route |
-| 04 — automated/build validation | source gates complete; release packaging pending | lint/typecheck/tests/diff green; final release packaging remains separate |
+| 04 — automated/build validation | complete | lint/typecheck/tests/diff green; final arm64 release package/checksum produced |
 | 05 — physical Android E2E | complete | installed debug shell + Metro hot reload exercised real positioning, POI, routing, floor, fullscreen/back, stop, and crash checks |
 | 06 — documentation/commit closeout | complete | physical evidence recorded and coherent work committed locally |
+| 07 — branded launch experience | complete | supported native splash config + same-logo app-owned animation validated on final release cold launch |
 
 ## Phase 01 — source contract
 
@@ -170,12 +171,12 @@ Required gates:
 - [x] `npm --prefix mobile run typecheck`
 - [x] `npm --prefix mobile run lint`
 - [x] focused Plan 041 tests
-- [x] full `npm test` — **88/88 pass**
+- [x] full `npm test` — **92/92 pass**
 - [x] `git diff --check`
 - [x] arm64 debug shell build/install completes for physical E2E
 - [x] hot/incremental device rebuild proves cache reuse (`52s`, `6 executed / 241 up-to-date`)
-- [ ] final release Android package is rebuilt from the post-E2E source
-- [ ] final release APK checksum recorded when release packaging is requested
+- [x] final release Android package rebuilt from the post-E2E source through `npm --prefix mobile run build:android:release` — **BUILD SUCCESSFUL in 1m 53s**, `411/422` tasks up-to-date
+- [x] final release artifact `mobile/dist/situm-explore-v1.0.2-android-arm64.apk` recorded at SHA-256 `60ed6a8b5a589364dc61497bf2c0c7c05926fa417586885aba9467d853d9b165`; checksum verification passes and APK native libraries contain only `arm64-v8a`
 
 Root ESLint note: a direct root `npm run lint` currently cannot start when `.nuxt/eslint.config.mjs` has not been generated in the checkout. This is an environment/preparation issue, not a lint finding. Mobile lint is the required lint gate for this mobile-only implementation; root test coverage still runs.
 
@@ -216,6 +217,21 @@ The current environment did obtain a real indoor fix and real graph routes, so t
 
 Post-E2E bug hardening also moved `SitumPlugin.init()` out of session construction and into the explicit fail-closed start path, removed redundant map-screen listener registration, and updated stale Settings copy. The POS was relaunched through the existing debug shell/Metro loop after this change: Locate me received fresh real fixes again, Realtime still rendered the shared active device position, and no fatal/React JS exception appeared.
 
+## Phase 07 — branded launch experience
+
+The final mobile polish keeps the existing Situm Explore logo and dark brand background while moving off the deprecated legacy `splash` config. Expo's supported `expo-splash-screen` config plugin owns the native launch surface; the React layer immediately continues with the same centered image and a dependency-light `Animated` pulse/halo plus wordmark reveal. This avoids a Lottie/native animation dependency and works on the Android 11 POS as well as platforms where Android 12 AnimatedVectorDrawable-only behavior is unavailable.
+
+- [x] Configure native splash through `expo-splash-screen` with `assets/splash-icon.png`, `#111827`, and an Android-safe centered icon size.
+- [x] Call `preventAutoHideAsync()` at module scope so the native launch surface stays up until the matching React animation layer mounts.
+- [x] Release the native surface from the mounted app-owned launch component on the next animation frame, then start the same-logo animation without waiting on an asynchronous hide promise.
+- [x] Animate the same logo with React Native `Animated` only: subtle scale pulse, halo expansion, and Situm Explore wordmark fade-up.
+- [x] Gate the final fade-out on both bootstrap readiness and animation completion; do not artificially delay a slow bootstrap with a second loading screen.
+- [x] Keep the native splash background opaque and aligned to the app/adaptive-icon brand color.
+- [x] Preserve arm64-only/non-clean cached build behavior when native config changes require regeneration.
+- [x] Cold-launch the final release artifact on the Android 11 POS and record the launch. `am start -W` reports `LaunchState: COLD` with `TotalTime: 1519 ms`; the app resumes normally with no bounded `FATAL EXCEPTION`/`E/ReactNativeJS` evidence. Logo-only frame analysis (wordmark excluded) measures the white logo bounds expanding from **88×88 px** to **95×94 px** at pulse peak and settling near **90×89 px**, proving the logo itself animates rather than only the wordmark.
+
+Android 12+ can animate `windowSplashScreenAnimatedIcon` through an AnimatedVectorDrawable, but Android's compat implementation cannot animate that icon below API 31. The current POS is Android 11, so Plan 041 deliberately uses a static system-native logo followed by the same-logo React animation for consistent behavior rather than maintaining two divergent launch animations.
+
 ## Trial/error rules
 
 Physical screenshots are authoritative for visual acceptance. If the first custom candidate reveals inverted coordinates, wrong physical aspect, inaccessible floor images, POI touch capture, or overlay collision, fix source and repeat build/install/E2E until the tested flow is stable.
@@ -248,7 +264,7 @@ Suggested boundaries:
 - [x] Mobile lint/typecheck and full automated tests pass.
 - [x] Arm64 debug shell builds/installs on the connected target and supports Metro hot-reload E2E.
 - [x] Physical custom-renderer functional E2E passes for cartography, real positioning, POI selection, same/cross-floor routing, floor switching, fullscreen/back state preservation, recenter, stop, and crash checks.
-- [ ] Final post-E2E release package/checksum is produced when release packaging is requested.
+- [x] Final post-E2E arm64 release package/checksum is produced and verified through the repository release script.
 - [ ] Pixel-level screenshot polish plus movement-dependent arrival/off-route remain separate visual/physical follow-ups.
 - [x] Worktree changes are auto-committed locally.
-- [ ] No unrequested push/PR/merge/deploy/OTA occurs.
+- [x] No unrequested push/PR/merge/deploy/OTA occurs.
