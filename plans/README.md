@@ -29,6 +29,7 @@ Historical plans/sessions/branches are evidence only. Current state, durable dec
 - PR creation/review and merge are user-gated;
 - normal dependent plans start after prerequisite work is integrated into updated `main`;
 - stacked implementation requires explicit user authorization recorded in state.
+- persistent unit tests are prohibited; temporary E2E/white-box/black-box checks must be deleted before commit/closeout.
 
 ## Completed roadmap
 
@@ -75,8 +76,10 @@ Roadmap history: `plans/028-034-native-mobile-roadmap.md`. Plan 036 — Realtime
 
 - Plan 037 — Web Loading-State Hygiene: complete/integrated through PR #36 at merge commit `80dad1b`.
 - Plan 038 — Two-Key Situm Credential Model: complete/integrated through PR #36 at merge commit `80dad1b` by explicit user waiver on 2026-08-27. Automated validation, GHCR immutable publication, staging recreate, authenticated Workspace/Map acceptance, and release APK build passed. Physical Android sensor-backed positioning and raw-secret browser form replay were not executed and are not claimed as PASS.
+- Plan 039 — Workspace Situm Isolation: complete/integrated through PR #37 at merge commit `a9acda6`.
+- Plan 040 — Explicit Explore Fullscreen: complete/integrated through PR #38 at merge commit `845b437`.
 
-There is currently no active implementation plan.
+Active: Plan 041 — App-Owned Indoor Map + Navigation UI on `plan/041-navigation-first-map-ui`. React Native owns the visible floorplan/POI/bluedot/route renderer and route graph; authenticated Situm REST remains the cartography/path source and the native Situm runtime remains headless positioning only. Physical POS functional acceptance passes through the installed arm64 debug shell + Metro: real indoor fixes, real POI selection, same/cross-floor routing, floor switching, fullscreen/back route preservation, Stop, and bounded crash checks were exercised. Final post-E2E arm64 release packaging/checksum and the branded same-logo cold-launch animation now pass as well. Pixel-level map screenshot polish and movement-dependent arrival/off-route reproduction remain separate physical follow-ups and are not claimed.
 
 ## Transition direction
 

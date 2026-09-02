@@ -186,17 +186,18 @@ Leave a store/download destination empty until it is real. The app link and QR m
 Use this order for every Android release:
 
 1. choose the new semver and increment Android version code;
-2. run root/mobile tests, lint, and typecheck;
+2. run root/mobile lint and typecheck plus the relevant build checks;
+   Any E2E/white-box/black-box helper used for this acceptance is temporary and must be deleted before commit/closeout.
 3. run `npm run build:android:release` from `mobile/`;
 4. verify ABI, checksum, embedded production/staging URL, app label, launcher icon, and cold-start splash;
-5. install and smoke the APK on a physical Android target;
+5. install the APK on a physical Android target and perform the needed runtime acceptance manually or with a temporary E2E/black-box aid that is deleted afterward;
 6. upload the versioned APK, checksum, and versioned JSON manifest to MinIO;
 7. verify the public versioned APK returns HTTP 200 and the downloaded SHA-256 matches locally;
 8. update the `situm-explore-latest-android-arm64.apk` aliases from the verified versioned release;
 9. upload `situm-explore-latest-android.json` **last**, then verify it returns HTTP 200 and its `downloadUrl`, `versionCode`, and SHA-256 match the versioned APK;
-10. install the previous APK and smoke the in-app update modal against the newly published manifest, both before login and immediately after login;
+10. install the previous APK and verify the in-app update modal against the newly published manifest, both before login and immediately after login;
 11. rebuild/recreate staging web only when its runtime configuration or web UI changed;
-12. smoke the public landing download without login and the authenticated mobile-install action;
+12. verify the public landing download without login and the authenticated mobile-install action;
 13. record release evidence and commit source/docs changes.
 
 Never claim a release is published before both the versioned object and stable alias pass public checksum verification.

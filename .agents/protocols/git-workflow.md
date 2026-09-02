@@ -13,7 +13,7 @@ The goals are isolation, reviewability, recoverability, and low process overhead
 5. Before every phase commit, update the active plan and relevant `.agents/` persistent context.
 6. Never open a pull request until the user explicitly asks for one.
 7. CI is intentionally deferred for now.
-8. Unit tests are intentionally deferred for now; do not add a test framework just for ceremony.
+8. Persistent unit tests are prohibited. Temporary E2E/white-box/black-box checks are allowed only during execution and must be deleted before staging/commit/closeout.
 9. Linting is mandatory for code-changing phases and must pass before commit/push.
 10. Never commit secrets, `.env`, API keys, database credentials, tokens, or generated credential files.
 11. Prefer small, phase-scoped commits with clear Conventional Commit-style messages.
@@ -166,7 +166,7 @@ npm run lint
 
 Do not switch package managers during a plan.
 
-If the active plan defines additional validation such as typecheck or build, run it too. Unit tests are not required at this stage unless the user later changes this policy.
+If the active plan defines additional validation such as typecheck or build, run it too. Do not create or restore persistent unit tests. Temporary E2E/white-box/black-box checks may be used when they materially help validation, but they must be removed before staging, commit, and task closeout.
 
 For docs/resources-only phases, use appropriate lightweight validation and `git diff --check`; do not add framework tooling solely for ceremony.
 
@@ -240,15 +240,17 @@ CI is intentionally not configured yet.
 - Do not add GitHub Actions or another CI service unless the user explicitly changes this decision.
 - Local validation is the quality gate for now.
 
-### Unit tests
+### Persistent tests
 
-Unit tests are intentionally deferred to avoid premature complexity.
+Persistent unit tests are prohibited by explicit user policy.
 
-- Do not install Vitest/Jest/etc. just to satisfy a generic convention.
-- Do not add placeholder tests.
-- Revisit testing when product logic becomes substantial enough to justify it or the user explicitly requests it.
+- Do not add, restore, or commit unit-test files, unit-test fixtures, unit-test scripts, snapshots, coverage harnesses, or a unit-test framework.
+- Do not keep regression scripts that function as a persistent unit test under another name.
+- E2E, white-box, and black-box checks are allowed only as temporary execution aids. Prefer `/tmp` or the ignored `.tmp-tests/` path.
+- Every temporary test artifact must be deleted before staging, commit, push, PR handoff, or task closeout. A clean closeout must contain no authored temporary test artifact.
+- Historical plans/evidence can retain truthful references to tests that existed when that work was performed; those references are not current execution authority.
 
-This does not prohibit manual verification, lint, typecheck, build checks, migration inspection, or other validation required by the active plan.
+Current durable validation is lint, typecheck, build, migration/static inspection, production-preview/runtime checks, physical-device/browser E2E, bounded logs/screenshots, and other evidence appropriate to the change. Never fabricate PASS when a runtime condition was not exercised.
 
 ## 10. Branch lifecycle
 

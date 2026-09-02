@@ -19,7 +19,7 @@ export COMPOSE_FILE STAGING_ENV_FILE STAGING_PORT IMAGE_REPOSITORY STAGING_TAG
 
 .PHONY: help doctor check image-build image-push image-inspect image-security-check \
         staging-pull staging-up staging-update staging-down staging-restart \
-        staging-ps staging-logs staging-smoke staging-migrate staging-config release-staging
+        staging-ps staging-logs staging-migrate staging-config release-staging
 
 help:
 	@printf '%s\n' \
@@ -41,7 +41,6 @@ help:
 		'  staging-restart        Restart staging services' \
 		'  staging-ps             Show staging service status' \
 		'  staging-logs           Follow staging service logs' \
-		'  staging-smoke          Check the staging HTTP health endpoint' \
 		'  staging-migrate       Apply Drizzle migrations using staging.env (operator-invoked)' \
 		'  release-staging        Publish tags, pull, and recreate staging'
 
@@ -107,11 +106,6 @@ staging-logs:
 	$(COMPOSE) logs -f
 staging-config:
 	$(STAGING_CONFIG)
-staging-smoke:
-	@attempt=0; until curl --fail --silent --show-error --max-time 10 'http://127.0.0.1:$(STAGING_PORT)/api/health/liveness' >/dev/null; do \
-		attempt=$$((attempt + 1)); test $$attempt -lt 10 || exit 1; sleep 1; \
-	done
-	@echo 'staging smoke: ok'
 staging-migrate:
 	$(STAGING_CONFIG)
 	@database_url=$$(awk -F= '/^[[:space:]]*DATABASE_URL[[:space:]]*=/{sub(/^[[:space:]]*DATABASE_URL[[:space:]]*=/, ""); print; exit}' '$(STAGING_ENV_FILE)'); \

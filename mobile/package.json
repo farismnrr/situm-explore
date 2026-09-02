@@ -9,13 +9,11 @@
     "ios": "expo run:ios",
     "prebuild": "expo prebuild",
     "postinstall": "patch-package",
-    "security:test": "node scripts/security/mobile-dependency-regression.cjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:login-keyboard": "tsx scripts/login-keyboard-strategy.test.ts",
-    "test:android-update": "tsx scripts/android-update.test.ts",
     "build:android": "cd android && ./gradlew assembleDebug",
-    "build:android:release": "node scripts/build-android-release.cjs"
+    "build:android:release": "node scripts/build-android-release.cjs",
+    "build:android:device": "node scripts/build-android-device.cjs"
   },
   "overrides": {
     "xcode": {
@@ -39,6 +37,7 @@
     "expo-file-system": "~57.0.4",
     "expo-intent-launcher": "~57.0.1",
     "expo-secure-store": "~57.0.1",
+    "expo-splash-screen": "~57.0.7",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -49,6 +48,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "@typescript-eslint/parser": "^8.69.0",
     "eslint": "^10.8.1",
     "patch-package": "8.0.1",
     "typescript": "~6.0.3"

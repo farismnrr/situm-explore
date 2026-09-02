@@ -2,11 +2,34 @@ declare module '@situm/react-native' {
   import type { ForwardRefExoticComponent, ReactNode, RefAttributes } from 'react'
   import type { StyleProp, ViewStyle } from 'react-native'
 
-  export type Location = { position?: { floorIdentifier?: string, buildingIdentifier?: string } }
+  export type Location = {
+    accuracy?: number
+    bearing?: { degrees?: number, degreesClockwise?: number, radians?: number, radiansMinusPiToPi?: number }
+    position?: { floorIdentifier?: string, buildingIdentifier?: string, cartesianCoordinate?: { x: number, y: number } }
+  }
   export type LocationStatus = { statusName: string }
   export type Error = { code?: string, message?: string }
   export type Route = { poiTo?: unknown }
-  export type NavigationProgress = { distanceToGoal: number, closestLocationInRoute: Location }
+  export type Indication = {
+    distance: number
+    distanceToNextLevel: number
+    indicationType: string
+    neededLevelChange: boolean
+    orientation: number
+    orientationType: string
+    stepIdxDestination: number
+    stepIdxOrigin: number
+  }
+  export type NavigationProgress = {
+    closestLocationInRoute: Location
+    currentIndication: number
+    currentStepIndex: number
+    distanceToEndStep: number
+    distanceToGoal: number
+    nextIndication: Indication
+    timeToEndStep: number
+    timeToGoal: number
+  }
   export type OnPoiSelectedResult = { identifier: string, buildingIdentifier: string }
   export type OnPoiDeselectedResult = { identifier: string, buildingIdentifier: string }
   export type OnFloorChangedResult = { toFloorName: string }

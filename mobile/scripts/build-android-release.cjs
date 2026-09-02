@@ -7,6 +7,7 @@ const { resolve } = require('node:path')
 const { homedir } = require('node:os')
 
 const root = resolve(__dirname, '..')
+const gradleUserHome = process.env.GRADLE_USER_HOME || resolve(root, '.gradle-agent-home')
 const version = process.env.EXPO_PUBLIC_APP_VERSION?.trim()
 const versionCode = process.env.EXPO_PUBLIC_ANDROID_VERSION_CODE?.trim()
 if (!version) throw new Error('EXPO_PUBLIC_APP_VERSION is required for release builds.')
@@ -38,7 +39,7 @@ const latestManifestFile = resolve(distDir, 'situm-explore-latest-android.json')
 
 const releaseEnv = { ...process.env, NODE_ENV: process.env.NODE_ENV || 'production', EXPO_PUBLIC_API_BASE_URL: apiBaseUrl, EXPO_PUBLIC_ENVIRONMENT: environment, EXPO_PUBLIC_APP_VERSION: version, EXPO_PUBLIC_ANDROID_VERSION_CODE: versionCode }
 
-const prebuild = spawnSync('npx', ['expo', 'prebuild', '--platform', 'android', '--no-install'], {
+const prebuild = spawnSync('npx', ['expo', 'prebuild', '--platform', 'android', '--no-install', '--no-clean'], {
   cwd: root,
   env: releaseEnv,
   stdio: 'inherit',
@@ -55,9 +56,11 @@ const sdkDir = sdkCandidates.find(candidate => existsSync(candidate))
 if (!sdkDir) throw new Error('Android SDK not found. Set ANDROID_HOME or ANDROID_SDK_ROOT.')
 writeFileSync(resolve(root, 'android/local.properties'), `sdk.dir=${sdkDir.replace(/\\/g, '\\\\')}\n`)
 
-const gradle = spawnSync('./gradlew', ['assembleRelease', '-PreactNativeArchitectures=arm64-v8a'], {
+const gradleEnv = { ...releaseEnv, ANDROID_HOME: sdkDir, ANDROID_SDK_ROOT: sdkDir, GRADLE_USER_HOME: gradleUserHome }
+console.log(`Gradle cache: ${gradleUserHome}`)
+const gradle = spawnSync('./gradlew', ['assembleRelease', '-PreactNativeArchitectures=arm64-v8a', '--build-cache', '--console=plain'], {
   cwd: resolve(root, 'android'),
-  env: releaseEnv,
+  env: gradleEnv,
   stdio: 'inherit',
 })
 if (gradle.status !== 0) process.exit(gradle.status || 1)
