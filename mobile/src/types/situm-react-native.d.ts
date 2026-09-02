@@ -6,7 +6,26 @@ declare module '@situm/react-native' {
   export type LocationStatus = { statusName: string }
   export type Error = { code?: string, message?: string }
   export type Route = { poiTo?: unknown }
-  export type NavigationProgress = { distanceToGoal: number, closestLocationInRoute: Location }
+  export type Indication = {
+    distance: number
+    distanceToNextLevel: number
+    indicationType: string
+    neededLevelChange: boolean
+    orientation: number
+    orientationType: string
+    stepIdxDestination: number
+    stepIdxOrigin: number
+  }
+  export type NavigationProgress = {
+    closestLocationInRoute: Location
+    currentIndication: number
+    currentStepIndex: number
+    distanceToEndStep: number
+    distanceToGoal: number
+    nextIndication: Indication
+    timeToEndStep: number
+    timeToGoal: number
+  }
   export type OnPoiSelectedResult = { identifier: string, buildingIdentifier: string }
   export type OnPoiDeselectedResult = { identifier: string, buildingIdentifier: string }
   export type OnFloorChangedResult = { toFloorName: string }

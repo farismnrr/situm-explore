@@ -75,8 +75,10 @@ Roadmap history: `plans/028-034-native-mobile-roadmap.md`. Plan 036 — Realtime
 
 - Plan 037 — Web Loading-State Hygiene: complete/integrated through PR #36 at merge commit `80dad1b`.
 - Plan 038 — Two-Key Situm Credential Model: complete/integrated through PR #36 at merge commit `80dad1b` by explicit user waiver on 2026-08-27. Automated validation, GHCR immutable publication, staging recreate, authenticated Workspace/Map acceptance, and release APK build passed. Physical Android sensor-backed positioning and raw-secret browser form replay were not executed and are not claimed as PASS.
+- Plan 039 — Workspace Situm Isolation: complete/integrated through PR #37 at merge commit `a9acda6`.
+- Plan 040 — Explicit Explore Fullscreen: complete/integrated through PR #38 at merge commit `845b437`.
 
-There is currently no active implementation plan.
+Active: Plan 041 — Navigation-First Native Map UI on `plan/041-navigation-first-map-ui`. It keeps Situm as the map/positioning/navigation engine and rebuilds the visible React Native Explore controls around real POI, floor, positioning, and navigation data, ending in connected Android ADB acceptance.
 
 ## Transition direction
 
