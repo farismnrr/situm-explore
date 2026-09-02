@@ -1,6 +1,6 @@
 # Current State
 
-_Last reviewed: 2026-08-27_
+_Last reviewed: 2026-09-02_
 
 ## Work status
 
@@ -14,7 +14,7 @@ The Docker base-image warning is addressed: both build stages use Node `22.22.0-
 
 Latest **integrated** product work on `main` is PR #38 at merge commit `845b437` (`feat(mobile): add explicit Explore fullscreen mode`), following PR #37 at `a9acda6` for workspace Situm isolation. The Android 1.0.2 OTA release remains separately recorded on `release/android-v1.0.2` and is not the source base for new product work.
 
-Plan 041 — Navigation-First Native Map UI is active on `plan/041-navigation-first-map-ui`, based on current `origin/main`. PHASE-01 is complete and PHASE-02–03 implementation is complete locally: Explore now owns real current-building POI search/results, destination selection, floor controls, coherent location/fullscreen controls, and a navigation HUD driven by verified Situm distance/time/indication callbacks with explicit recenter/stop/outcome states. Focused native regressions pass (36/36), plus mobile lint/typecheck. PHASE-04 Android build/install is next, followed by physical ADB trial/error. The connected Android POS at `100.113.52.76:37371` is the physical acceptance target. Git push is currently blocked in this MCP sandbox because HTTPS origin authentication is unavailable; local commits remain intact. No PR, merge, OTA publication, or production deployment is authorized by this plan.
+Plan 041 — App-Owned Indoor Map + Navigation UI is active on `plan/041-navigation-first-map-ui`, based on current `origin/main`. The first MapView-overlay candidate was physically rejected because the center map still looked like Situm; the plan pivoted to a genuine app-owned renderer. `NativeMapScreen` now consumes authenticated cartography + path graph endpoints, renders the real floorplan through React Native Image with app-owned SVG POIs/bluedot/accuracy/heading/route overlays, and calculates route geometry from the venue graph. Situm native is retained only as the shared headless foreground positioning producer. Physical Metro E2E on the connected POS exposed and fixed three runtime defects that source-only validation missed: the headless path now calls idempotent `SitumPlugin.init()` before configuration, POI selection dismisses the Android keyboard so destination actions remain tappable, and fullscreen no longer remounts Explore/loses active route state. Final E2E received real building `19866` / floor `69905` fixes at roughly 1.4–1.8 m reported accuracy, selected real venue POIs, calculated same-floor and cross-floor app-owned routes (`20 m` and `51 m` observed samples), preserved guidance through fullscreen/back, switched real floors, stopped guidance cleanly, and showed no fatal/React JS error in the bounded final logcat slice. The arm64 debug shell is installed and Metro is the approved JS/TS iteration loop; a final post-E2E release package/checksum and pixel-level screenshot/movement-dependent arrival/off-route acceptance remain separate. Auto-commit is authorized locally; no push, PR, merge, OTA publication, or production deployment is authorized by this plan.
 
 Continue Plan 041 from `plan/041-navigation-first-map-ui`. Historical plans, execution briefs, sessions, reviews, and evidence are context only unless explicitly re-opened.
 

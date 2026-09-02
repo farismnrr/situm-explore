@@ -60,6 +60,15 @@ For Situm behavior: **no evidence, no implementation**. Verify current official 
 - implementation/fixes for an explicitly active plan go to the configured `worker` subagent;
 - parent owns orchestration, review, state/plan persistence, commits, pushes, and transitions.
 
+## Android build safety
+
+- The physical acceptance POS is `arm64-v8a`; ordinary agent Android builds must not compile x86/x86_64/armeabi-v7a unless a task explicitly requires another ABI.
+- Prefer `cd mobile && npm run build:android:release` for release candidates; its script pins `-PreactNativeArchitectures=arm64-v8a` and validates the public API origin.
+- `expo-build-properties` also pins `android.buildArchs` to `arm64-v8a`, so `expo prebuild` must preserve the single-ABI default in `android/gradle.properties`.
+- Before a long physical-device build, verify the target ABI with `adb shell getprop ro.product.cpu.abi` and inspect the effective `reactNativeArchitectures` value. If the build starts CMake tasks for four ABIs, stop and correct the invocation/config instead of letting it burn CPU.
+- For normal React Native UI/TypeScript E2E iteration, do **not** regenerate native projects or run a release build on every change. Build/install the native debug shell once with `cd mobile && npm run build:android:device`, then keep Metro running with the required API env and iterate through JS/TS reloads. Rebuild native only after native dependencies/config plugins/app config change.
+- The MCP terminal sandbox does not preserve the normal user Gradle home reliably between calls. The device-build script therefore uses the ignored `mobile/.gradle-agent-home` cache by default; direct agent Gradle commands must set that same `GRADLE_USER_HOME` explicitly. Never use `--no-daemon` for iterative local/device builds.
+
 ## Mandatory closeout
 
 Follow `.agents/protocols/persistence.md` and keep durable state aligned with exact current truth.

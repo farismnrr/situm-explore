@@ -78,7 +78,7 @@ Roadmap history: `plans/028-034-native-mobile-roadmap.md`. Plan 036 — Realtime
 - Plan 039 — Workspace Situm Isolation: complete/integrated through PR #37 at merge commit `a9acda6`.
 - Plan 040 — Explicit Explore Fullscreen: complete/integrated through PR #38 at merge commit `845b437`.
 
-Active: Plan 041 — Navigation-First Native Map UI on `plan/041-navigation-first-map-ui`. It keeps Situm as the map/positioning/navigation engine and rebuilds the visible React Native Explore controls around real POI, floor, positioning, and navigation data, ending in connected Android ADB acceptance.
+Active: Plan 041 — App-Owned Indoor Map + Navigation UI on `plan/041-navigation-first-map-ui`. React Native owns the visible floorplan/POI/bluedot/route renderer and route graph; authenticated Situm REST remains the cartography/path source and the native Situm runtime remains headless positioning only. Physical POS functional acceptance now passes through the installed arm64 debug shell + Metro: real indoor fixes, real POI selection, same/cross-floor routing, floor switching, fullscreen/back route preservation, Stop, and bounded crash checks were exercised. Final post-E2E release packaging/checksum plus pixel-level screenshot and movement-dependent arrival/off-route review remain separate gates.
 
 ## Transition direction
 

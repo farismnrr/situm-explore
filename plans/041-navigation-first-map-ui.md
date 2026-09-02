@@ -1,298 +1,252 @@
-# Plan 041 — Navigation-First Native Map UI
+# Plan 041 — App-Owned Indoor Map + Navigation UI
 
-Status: **active / PHASE-01 complete / PHASE-02–03 implementation complete / PHASE-04 next**
+Status: **active / custom-renderer implementation complete / physical hot-reload E2E passed / release packaging pending**
 Branch: `plan/041-navigation-first-map-ui`
-Depends on: current `main` through PR #38 (`845b437`), including workspace Situm isolation and the explicit Explore fullscreen mode.
+Target repo: `/home/farismnrr/Projects/situm-explore`
 
 ## Goal
 
-Rework the React Native Explore experience into a navigation-first indoor map UI inspired by the supplied reference: Situm remains the map, positioning, route, and navigation engine while Situm Explore owns the visible search, destination, guidance, floor, location, and route-status controls.
+Make React Native Explore a genuinely app-owned indoor navigation experience. Situm remains the authorized cartography source and the headless indoor-positioning producer, but Situm's MapView/Map Viewer is no longer allowed to render the visible map.
 
-## Success criteria
+The app now owns every visible map pixel and interaction:
 
-- Normal Explore remains usable as the existing authenticated Situm Explore product shell.
-- The map is visually dominant and app-owned controls feel like one navigation product rather than a thin wrapper around Situm MapView.
-- Users can search real current-building POIs, select a destination, start positioning, start real Situm navigation, follow/recenter, change floor, and stop guidance without fabricated data.
-- Active navigation presents a compact turn/guidance HUD using only fields proven by the installed `@situm/react-native@3.19.2` contract.
-- Remaining distance and ETA are shown only when supplied by real `NavigationProgress`; no synthetic route metrics are created.
-- Fullscreen keeps the Plan 040 contract: app shell and ordinary Explore overlays disappear. Android Back exits fullscreen.
-- Connected Android POS acceptance passes with the supplied test account, including login, map load, POI selection/search, location lifecycle, fullscreen regression, and navigation interaction where the live Situm environment provides a routable destination/current fix.
+- floorplan image placement;
+- POI markers and selection;
+- route geometry and style;
+- user bluedot, accuracy radius, and heading marker;
+- pan/zoom/recenter behavior;
+- floor switching;
+- destination search/sheet;
+- guidance HUD, remaining distance, ETA estimate, arrival, and off-route state;
+- fullscreen behavior.
 
-## Scope
+## Why the plan changed
 
-### In scope
+The first Plan 041 physical candidate successfully built and ran on the connected Android target, but product acceptance rejected it because the center of the experience was still Situm MapView. React Native only owned overlays, so the map looked materially like the previous UI.
 
-- `mobile/src/map/NativeMapScreen.tsx` Explore/map presentation and interaction hierarchy.
-- Narrow map-domain helpers/types when needed to keep UI state deterministic and testable.
-- Local `@situm/react-native` TypeScript declarations only when the exact installed/public 3.19.2 runtime surface is verified.
-- Existing React Native token/layout primitives and `react-native-svg`; no new UI framework.
-- Automated mobile validation plus physical Android ADB trial/error and E2E.
-- Product/agent documentation only where behavior or durable execution state actually changes.
+That candidate is retained as useful evidence that the native SDK/runtime and ADB pipeline were healthy, but it is **not** accepted as the target implementation.
 
-### Out of scope
+The approved direction is now:
 
-- Forking or modifying Situm's native SDK internals.
-- Replacing Situm MapView with a custom map renderer.
-- AR navigation.
-- Background positioning.
-- Realtime map markers or people-presence semantics.
-- Synthetic turn instructions, route geometry, distance, ETA, floor transitions, or other capability not proven by the installed/current Situm contract.
-- Web UI changes, backend redesign, production deployment, OTA publication, PR creation, or merge.
+```text
+Situm REST cartography + paths
+            |
+            v
+   app-owned map model
+            |
+            v
+React Native Image + SVG renderer
+            ^
+            |
+headless Situm positioning only
+(x/y/floor/bearing/accuracy)
+```
 
-## Current state
+No Situm MapView, SitumProvider, MapView controller, `navigateToPoi`, or hosted visual SDK UI belongs in `NativeMapScreen`.
 
-- The native client already uses `@situm/react-native` MapView plus a shared shell-scoped `ForegroundPositioningSession`.
-- Current Explore can load authenticated workspace cartography, select a real POI, start/stop positioning, start/cancel Situm navigation, follow the user, receive navigation progress/destination/out-of-route callbacks, and enter the shell-free fullscreen mode.
-- Current visible map UI is minimal: a fullscreen trigger, Locate me, a selected-POI sheet, and Stop guidance. Several already-tracked navigation values are not currently rendered.
-- Official Situm React Native documentation exposes richer `NavigationProgress` fields including `distanceToGoal`, `distanceToEndStep`, `timeToGoal`, `timeToEndStep`, `currentStepIndex`, `nextIndication`, and `routeStep`; exact installed-package compatibility must be verified before consuming any field beyond the current local declaration.
-- The connected Android target is available through ADB as `100.113.52.76:37371` and has `com.situm.explore` installed.
+## Security and ownership boundaries
 
-## Constraints & decisions
+- Preserve the existing two-key workspace model.
+- Mobile positioning continues to receive only the already-approved owner-authorized positioning/read material.
+- Cartography and paths continue to be fetched through authenticated Situm Explore server routes; the client does not receive a Read & Write secret.
+- Do not expose credentials in plans, logs, screenshots, fixtures, or commits.
+- Do not fork or modify Situm native SDK internals.
+- Situm native runtime is retained only for indoor position production and its required configuration.
 
-- Keep Situm as engine and route/map renderer; build the experience as React Native overlays around the official MapView.
-- Preserve the two-key credential/security model. Mobile must receive only the already-approved owner-authorized Only Read/positioning material; no Read & Write secret may enter the client.
-- Search/filter only the already-authorized real cartography POIs for the current building.
-- Prefer explicit state derived from real Situm callbacks over visual imitation. If an instruction field cannot be proven in 3.19.2, omit it instead of inventing copy such as “turn right.”
-- Preserve accessibility labels for ADB/UIAutomator-driven acceptance and at least 44px touch targets where practical.
-- Preserve responsive phone/tablet/POS behavior. The connected POS is the primary physical acceptance target, not the only layout target.
+## Data contracts used
 
-## Phase overview
+### Cartography
 
-| Phase | Goal | Depends on | Exit criteria |
-| --- | --- | --- | --- |
-| PHASE-01 | Freeze the real Situm navigation data contract and navigation-first UI state model | none | 3.19.2 package/runtime surface verified; plan/state active; no speculative fields |
-| PHASE-02 | Build browse/search/destination/floor/location map controls | PHASE-01 | real POI search/selection and map controls work without breaking fullscreen |
-| PHASE-03 | Build active guidance HUD and route progress presentation | PHASE-01, PHASE-02 | guidance uses real Situm navigation data and supports follow/recenter/stop |
-| PHASE-04 | Automated validation and Android build/install | PHASE-02, PHASE-03 | lint/typecheck/tests/build pass and candidate is installed on connected device |
-| PHASE-05 | Physical ADB trial/error and E2E closeout | PHASE-04 | connected-device flows pass or any external/runtime limitation is recorded truthfully |
+Existing endpoint:
 
-## PHASE-01 — Situm contract and UI-state foundation
+`GET /api/workspaces/:workspaceId/situm/cartography`
 
-**Goal:** Prove exactly which navigation fields/actions are usable in the installed 3.19.2 wrapper and establish small deterministic display helpers before presentation changes depend on them.
+Provides authorized real:
 
-### TASK-001 — Install and inspect the frozen mobile dependencies
+- buildings and physical dimensions;
+- floors and floorplan `mapUrl`;
+- POIs, categories, and Cartesian x/y positions.
 
-**Outcome:** Exact package source/types for `@situm/react-native@3.19.2` are locally inspectable.
+### Navigation graph
 
-**Files:**
-- Inspect: `mobile/package.json`
-- Inspect: `mobile/package-lock.json`
-- Inspect: installed `mobile/node_modules/@situm/react-native/**`
+Existing endpoint:
 
-**Steps:**
-- [x] Run clean dependency installation from the existing lockfile.
-- [x] Verify package version is exactly 3.19.2.
-- [x] Inspect `NavigationProgress`, `Indication`, `RouteStep`, MapView ref actions, and navigation callbacks.
-- [x] Confirm fields are forwarded/typed by this installed package before adding them to the local declaration.
+`GET /api/workspaces/:workspaceId/situm/paths`
 
-**Validation:**
-- Package version/source matches 3.19.2 and required fields are present.
+Provides Situm path nodes and links. The app builds its own weighted graph and computes an ordered route rather than asking MapView to navigate.
 
-### TASK-002 — Narrow local type/state helpers
+### Positioning
 
-**Outcome:** Local TypeScript declarations and pure helpers expose only proven fields needed by UI formatting/state.
+Existing shared `ForegroundPositioningSession` remains the only native map-runtime dependency. It emits Situm `Location` fixes with:
 
-**Files:**
-- Modify if required: `mobile/src/types/situm-react-native.d.ts`
-- Modify: `mobile/src/map/state.ts`
-- Add/modify focused existing-script tests only if useful under the repository's current lightweight test convention.
+- building identifier;
+- floor identifier;
+- Cartesian x/y;
+- accuracy;
+- bearing.
 
-**Steps:**
-- [x] Add proven navigation-progress/indication fields only.
-- [x] Add pure format/selection helpers for distance, ETA, floor, and search state as needed.
-- [x] Keep unknown/optional fields nullable and fail-safe in presentation.
+The session remains explicit-user-action, foreground-only, workspace/building scoped, and lifecycle hardened.
 
-**Validation:**
-- `cd mobile && npm run typecheck`
-- `cd mobile && npm run lint`
+## Coordinate model
 
-**Commit boundary:** `feat(mobile): establish navigation-first map state`
+Situm Cartesian coordinates use a lower-left physical-space origin, while React Native/SVG uses an upper-left screen origin. App-owned rendering therefore maps:
 
-**Phase exit criteria:**
-- [x] No speculative Situm field is consumed.
-- [x] Mobile lint/typecheck pass.
-- [x] Plan/state/session persistence reflects the verified contract.
+```text
+screenX = x / buildingWidth * renderedMapWidth
+screenY = (buildingLength - y) / buildingLength * renderedMapHeight
+```
 
-## PHASE-02 — Browse, search, destination, floor, and location UI
+The floorplan image and SVG overlay share exactly the same fitted frame and transform, so POIs, route geometry, accuracy, and user position stay registered while panning/zooming.
 
-**Goal:** Make normal Explore map-first and destination-oriented while keeping current real capability intact.
+## Implementation phases
 
-### TASK-003 — Build navigation-first browse overlay
+| Phase | State | Exit criteria |
+| --- | --- | --- |
+| 01 — data/source contract | complete | existing cartography/path endpoints and positioning Cartesian fields verified |
+| 02 — custom map renderer | complete in source | floorplan + SVG POIs/bluedot/route render with no Situm visual SDK |
+| 03 — custom route/navigation | complete in source | graph route, floor segments, remaining distance, basic turn/floor guidance, arrival/off-route |
+| 04 — automated/build validation | source gates complete; release packaging pending | lint/typecheck/tests/diff green; final release packaging remains separate |
+| 05 — physical Android E2E | complete | installed debug shell + Metro hot reload exercised real positioning, POI, routing, floor, fullscreen/back, stop, and crash checks |
+| 06 — documentation/commit closeout | complete | physical evidence recorded and coherent work committed locally |
+
+## Phase 01 — source contract
+
+- [x] Keep existing authenticated cartography endpoint.
+- [x] Keep existing authenticated paths endpoint.
+- [x] Verify path schema uses real nodes/links rather than synthetic route fixtures.
+- [x] Verify native `Location.position.cartesianCoordinate`, floor, accuracy, and bearing fields.
+- [x] Keep remote Situm positioning configuration in the headless positioning session rather than map presentation.
+
+## Phase 02 — app-owned renderer
 
-**Outcome:** Explore presents app-owned navigation controls over the existing Situm MapView.
+New files:
 
-**Files:**
-- Modify: `mobile/src/map/NativeMapScreen.tsx`
+- `mobile/src/map/CustomIndoorMap.tsx`
+- `mobile/src/map/customMapGeometry.ts`
 
-**Steps:**
-- [x] Add a compact top destination/search surface using real current-building POIs.
-- [x] Filter locally by POI name/category and provide accessible selectable results.
-- [x] Selecting a result calls the existing MapView `selectPoi` path and updates the destination sheet.
-- [x] Keep tap-on-map POI selection synchronized with the same destination UI.
-- [x] Add a compact app-owned floor control from authorized cartography, wired to `selectFloor`.
-- [x] Move Locate me/recenter/fullscreen into a coherent control stack that avoids the previous Situm-control collision zones by design; physical confirmation remains in PHASE-05.
-- [x] Keep positioning permission/error semantics unchanged and truthful.
-- [x] Keep selected destination actions clear: Directions, Clear, and location prerequisite state.
+Requirements:
 
-**Validation:**
-- `cd mobile && npm run lint`
-- `cd mobile && npm run typecheck`
-- UIAutomator hierarchy exposes stable accessibility labels for search, destination results, floor controls, Locate me, Directions, and fullscreen.
+- [x] No `MapView`/`SitumProvider` in `NativeMapScreen`.
+- [x] Render real floorplan `mapUrl` with React Native `Image`.
+- [x] Render all map overlays using `react-native-svg`.
+- [x] Project Cartesian POIs onto the floorplan.
+- [x] Draw a selected-destination marker independent of Situm visual UI.
+- [x] Draw app-owned bluedot, accuracy radius, and heading indicator from live positioning.
+- [x] Draw app-owned dashed/high-contrast route geometry.
+- [x] Keep floor image and overlays under one shared pan/zoom transform.
+- [x] Preserve POI tap interaction while pan/pinch gestures remain available.
+- [x] Recenter the custom camera from current Cartesian location.
+- [x] Preserve shell-free fullscreen behavior.
 
-**Commit boundary:** `feat(mobile): redesign Explore destination controls`
+## Phase 03 — custom route and guidance
 
-**Phase exit criteria:**
-- [x] Search uses real POIs only.
-- [x] Floor switching uses real floors only.
-- [x] Normal Explore remains shell-integrated in source/layout ownership.
-- [ ] Existing fullscreen semantics remain intact on the physical device.
+New file:
 
-## PHASE-03 — Active navigation guidance UI
+- `mobile/src/map/customRoute.ts`
 
-**Goal:** Turn existing real Situm navigation callbacks into the supplied reference's navigation-first experience without fabricating guidance.
+Requirements:
 
-### TASK-004 — Render active guidance HUD
+- [x] Build a graph from real Situm path nodes and links.
+- [x] Find nearest start/destination graph nodes on their respective floors.
+- [x] Calculate an ordered route without MapView routing.
+- [x] Refuse to invent a route when graph connectivity is missing.
+- [x] Split route geometry by floor for rendering.
+- [x] Keep current live position as the route origin and real POI Cartesian coordinates as destination.
+- [x] Calculate remaining route distance from live position.
+- [x] Produce bounded geometry-derived straight/left/right/floor-change guidance.
+- [x] Surface arrival near the real destination.
+- [x] Surface off-route state when the live fix moves materially away from the calculated path.
+- [x] Use a clearly internal walking-speed estimate for ETA rather than claiming it is Situm navigation progress.
+- [x] Stop guidance by clearing app-owned route state; do not stop foreground positioning unless the user explicitly turns location off.
 
-**Outcome:** During real navigation, the UI clearly presents destination, remaining route progress, instruction/progress information when proven, and stop/recenter controls.
+### Current path-direction decision
 
-**Files:**
-- Modify: `mobile/src/map/NativeMapScreen.tsx`
-- Modify if needed: `mobile/src/map/state.ts`
+The current Situm path response contains link connectivity plus metadata, but this venue contract does not yet expose a separately normalized direction field in the shared model. Plan 041 therefore traverses links symmetrically. If a future venue depends on one-way indoor links, normalize that upstream metadata first rather than guessing from arbitrary tags in the client.
 
-**Steps:**
-- [x] Store the latest real `NavigationProgress` rather than only `distanceToGoal`.
-- [x] Show remaining distance from Situm.
-- [x] Show ETA from Situm `timeToGoal` after installed-contract verification.
-- [x] Show documented Situm indication action/orientation strings through a bounded human-readable mapping with a safe generic fallback.
-- [x] Display destination name and active floor context only when known.
-- [x] Support follow/recenter and explicit Stop guidance without changing the shared foreground positioning lifecycle.
-- [x] Handle out-of-route, arrival, cancellation, and navigation-error states visibly and cleanly.
-- [x] Hide browse search/results while active/outcome guidance HUD is shown.
+## Phase 04 — automated validation and Android build
 
-**Validation:**
-- `cd mobile && npm run lint`
-- `cd mobile && npm run typecheck`
-- Source/runtime inspection confirms every displayed metric originates from Situm navigation callbacks.
+Required gates:
 
-**Commit boundary:** `feat(mobile): add real-time navigation guidance HUD`
+- [x] `npm --prefix mobile run typecheck`
+- [x] `npm --prefix mobile run lint`
+- [x] focused Plan 041 tests
+- [x] full `npm test` — **88/88 pass**
+- [x] `git diff --check`
+- [x] arm64 debug shell build/install completes for physical E2E
+- [x] hot/incremental device rebuild proves cache reuse (`52s`, `6 executed / 241 up-to-date`)
+- [ ] final release Android package is rebuilt from the post-E2E source
+- [ ] final release APK checksum recorded when release packaging is requested
 
-**Phase exit criteria:**
-- [x] No invented turn/ETA/distance semantics in source; every metric is callback-derived.
-- [ ] Guidance controls are reachable and non-overlapping on the connected POS layout.
-- [ ] Fullscreen remains shell-free under the existing Plan 040 rule on device.
+Root ESLint note: a direct root `npm run lint` currently cannot start when `.nuxt/eslint.config.mjs` has not been generated in the checkout. This is an environment/preparation issue, not a lint finding. Mobile lint is the required lint gate for this mobile-only implementation; root test coverage still runs.
 
-## PHASE-04 — Automated validation, Android build, and install
+### Automated regression coverage added
 
-**Goal:** Produce a clean Android candidate on the connected device.
+- Cartesian lower-left → screen upper-left projection.
+- Building aspect-fit behavior.
+- Same/cross-floor real graph routing.
+- Disconnected graph fails closed.
+- Source regression that `NativeMapScreen` contains `CustomIndoorMap` and contains no `MapView`, `SitumProvider`, or `navigateToPoi`.
 
-### TASK-005 — Run regression gates
+## Phase 05 — physical Android E2E
 
-**Outcome:** Code is statically and behaviorally clean before physical interaction testing.
+Target device: connected Android POS through the existing ADB transport.
+Package: `com.situm.explore`.
 
-**Steps:**
-- [ ] Run `git diff --check`.
-- [ ] Run relevant root tests that cover native positioning/navigation contracts where present.
-- [ ] Run root lint/typecheck only if shared/root files were changed; otherwise keep validation scoped to mobile plus repository-required diff checks.
-- [ ] Run `cd mobile && npm run lint`.
-- [ ] Run `cd mobile && npm run typecheck`.
-- [ ] Run existing focused mobile tests affected by map/navigation behavior.
-- [ ] Build Android debug APK with the repository's native build path.
+Acceptance sequence:
 
-### TASK-006 — Install candidate through ADB
+- [x] install an arm64 debug shell with app data preserved and use Metro for JS/TS iteration;
+- [x] launch without fatal native/React crash;
+- [x] wait for authenticated cartography to load;
+- [x] confirm the Explore hierarchy exposes the app-owned custom floorplan controls rather than Situm MapView chrome;
+- [x] search real POIs from the authenticated venue (`Pintu Masuk`, `Ruang Kerja 3`, `Kitchen`, `Toilet`, etc.);
+- [x] select a real POI and verify the app-owned destination sheet;
+- [x] switch the real floor from `lt 2` to `lt 1` and verify the rendered floorplan accessibility identity changes with it;
+- [x] enter fullscreen and use Android Back to restore Explore;
+- [x] verify fullscreen/back preserves the active route after the remount bug found during E2E was fixed;
+- [x] start Locate me and receive real Situm indoor fixes for building `19866`, floor `69905` (`lt 2`), including Cartesian x/y, bearing, and ~1.4–1.8 m reported accuracy;
+- [x] calculate app-owned Directions from the live fix to real `Ruang Kerja 3` and `Pintu Masuk` destinations;
+- [x] verify real route HUD output (`Turn sharply left`, `<1 min`, `20 m` for the same-floor sample and `51 m` for the cross-floor destination sample);
+- [x] verify Stop guidance → `Directions stopped.` → Done returns to browse mode;
+- [x] verify Recenter returns the map to the live-position floor;
+- [x] inspect a bounded logcat slice after the final flow with no `FATAL EXCEPTION` or `E/ReactNativeJS` entries;
+- [ ] visually judge pixel-level POI/bluedot/floorplan alignment from a captured screenshot; hierarchy/runtime evidence is complete, but screenshot review remains useful for presentation polish;
+- [ ] physically reproduce off-route and arrival transitions by moving the device through the venue; source behavior is covered, but those movement-dependent states were not forced artificially.
 
-**Outcome:** Connected Android POS is running the candidate branch build.
+The current environment did obtain a real indoor fix and real graph routes, so the bounded Locate/route path is a physical PASS. Movement-dependent arrival/off-route behavior remains unclaimed because it was not physically reproduced.
 
-**Steps:**
-- [ ] Verify target package/device before install.
-- [ ] Install/update the built APK without clearing app data unless a test explicitly requires a clean-login state.
-- [ ] Launch `com.situm.explore/.MainActivity` and verify no startup crash.
+## Trial/error rules
 
-**Validation:**
-- Build exits 0.
-- `adb shell dumpsys package com.situm.explore` confirms installed candidate package.
-- Relevant logcat slice has no fatal React Native/native crash.
+Physical screenshots are authoritative for visual acceptance. If the first custom candidate reveals inverted coordinates, wrong physical aspect, inaccessible floor images, POI touch capture, or overlay collision, fix source and repeat build/install/E2E until the tested flow is stable.
 
-**Commit boundary:** `test(mobile): validate navigation-first Android candidate`
+Temporary screenshots/hierarchy/log files stay outside the repository or in ignored temporary paths.
 
-**Phase exit criteria:**
-- [ ] Required automated checks pass.
-- [ ] Candidate is installed and launches on the connected device.
+## Commit policy
 
-## PHASE-05 — Physical Android trial/error and E2E closeout
+The user explicitly requested automatic local commits.
 
-**Goal:** Exercise the actual UX on the connected POS and fix interaction/layout defects until the bounded acceptance is stable.
+- Auto-commit coherent source/test changes after validation.
+- Auto-commit physical-E2E/documentation evidence after the final device pass.
+- Do **not** push, open a PR, merge, deploy, or publish OTA without separate explicit instruction.
 
-### TASK-007 — Authenticated ADB E2E
+Suggested boundaries:
 
-**Outcome:** The navigation-first Explore flow works on the real connected device.
-
-**Transient test account:** use the credentials supplied in chat only; never write the password to repository files, logs, plans, or evidence.
-
-**Steps:**
-- [ ] Launch app and authenticate if the existing secure session is not already valid.
-- [ ] Wait for authenticated cartography/map load before judging layout.
-- [ ] Capture hierarchy/screenshot evidence outside the repository or under ignored temporary paths only.
-- [ ] Verify normal Explore shell + redesigned map UI fit the 1366x720 POS without overlap.
-- [ ] Search for a real visible POI and select it.
-- [ ] Clear and reselect destination from both search and map when practical.
-- [ ] Exercise floor selector against real available floors.
-- [ ] Start Locate me and wait for a real Situm positioning result; do not count permission UI alone as a fix.
-- [ ] Start Directions to a real destination when the current position and venue permit routing.
-- [ ] Verify guidance HUD values update from real callbacks; test recenter/follow and Stop guidance.
-- [ ] Verify fullscreen entry still removes all app shell/overlays and Android Back restores normal Explore.
-- [ ] Re-run after any UI fix until hierarchy, screenshot, logcat, and interaction evidence agree.
-
-**Validation:**
-- No fatal/crash logcat signal.
-- No control collision/obscured primary action in the tested POS layout.
-- POI/search/floor/location/navigation actions are bound to real Situm data/runtime.
-- Any inability to physically route due venue/sensor/environment state is recorded as an external acceptance limitation rather than fabricated PASS.
-
-### TASK-008 — Closeout and persistence
-
-**Outcome:** Repository accurately records what changed and what was actually verified.
-
-**Files:**
-- Update: `plans/041-navigation-first-map-ui.md`
-- Update: `.agents/state.md`
-- Update: relevant `.agents/knowledge/` only for reusable device/UI interaction discoveries.
-- Append: `.agents/sessions/2026-09-02.md`
-- Update product docs only if the product contract materially changed.
-
-**Steps:**
-- [ ] Record exact automated and physical acceptance results.
-- [ ] Keep screenshots/log payloads free of credentials/secrets.
-- [ ] Review final branch diff and staged content.
-- [ ] Commit and push the task branch according to repository policy.
-- [ ] Do not open a PR, merge, publish OTA, or deploy without a separate explicit user instruction.
-
-**Commit boundary:** `docs: close Plan 041 navigation-first map UI`
-
-**Phase exit criteria:**
-- [ ] Working tree is clean.
-- [ ] Branch is pushed and synchronized.
-- [ ] Plan claims only verified results.
-
-## Risks & rollback
-
-- **Situm hosted MapView control collisions** → keep app-owned overlays in bounded safe zones; test on the connected POS after map load rather than relying only on source layout.
-- **Published package type gaps** → inspect installed 3.19.2 source and keep the local declaration narrow; revert any field whose runtime contract is not confirmed.
-- **Navigation cannot start without a fresh venue position** → retain browse/search/floor testing and record route E2E as environment-blocked rather than faking progress.
-- **Search overlay becomes too dense on small/landscape screens** → cap result height, collapse after selection/navigation start, and preserve map interaction area.
-- **Fullscreen regression** → keep Plan 040 as a hard regression gate and use Android Back for deterministic exit.
+1. `feat(mobile): render indoor map without Situm MapView`
+2. `docs(plan): record custom renderer Android E2E`
 
 ## Final acceptance criteria
 
-- [ ] Navigation-first React Native UI is implemented around Situm MapView without forking Situm SDK.
-- [ ] Real POI search/destination/floor/location controls work.
-- [ ] Real navigation progress drives the guidance HUD; synthetic route facts are absent.
-- [ ] Existing foreground-only positioning/security boundaries are preserved.
-- [ ] Existing fullscreen contract is preserved.
-- [ ] Mobile lint/typecheck/build and relevant focused tests pass.
-- [ ] Candidate is installed and exercised on the connected Android POS with ADB.
-- [ ] Physical results and any external limitations are recorded truthfully.
-- [ ] No production deployment, OTA publication, PR, or merge occurs in this plan without separate authorization.
-
-## Execution handoff
-
-Execute phases sequentially because later UI depends on the verified 3.19.2 data contract. Browse/floor visual work and pure helper work may be implemented in parallel only after PHASE-01 establishes the exact Situm fields. Physical E2E is the final gate and should drive bounded trial/error fixes before closeout.
+- [x] React Native owns the indoor map renderer.
+- [x] Situm visual MapView is absent from native Explore.
+- [x] Real building/floor/floorplan/POI/path data come from authenticated server-mediated Situm REST integration.
+- [x] Situm native SDK is retained only for headless positioning in this map flow.
+- [x] POI markers, destination, route, bluedot, heading, and accuracy are app-owned SVG rendering.
+- [x] Route calculation is app-owned and fails closed on disconnected graph data.
+- [x] Existing foreground positioning/security boundaries remain intact.
+- [x] Existing fullscreen contract remains implemented in source.
+- [x] Mobile lint/typecheck and full automated tests pass.
+- [x] Arm64 debug shell builds/installs on the connected target and supports Metro hot-reload E2E.
+- [x] Physical custom-renderer functional E2E passes for cartography, real positioning, POI selection, same/cross-floor routing, floor switching, fullscreen/back state preservation, recenter, stop, and crash checks.
+- [ ] Final post-E2E release package/checksum is produced when release packaging is requested.
+- [ ] Pixel-level screenshot polish plus movement-dependent arrival/off-route remain separate visual/physical follow-ups.
+- [x] Worktree changes are auto-committed locally.
+- [ ] No unrequested push/PR/merge/deploy/OTA occurs.
