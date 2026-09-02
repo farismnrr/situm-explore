@@ -1,6 +1,6 @@
 # Plan 041 — Navigation-First Native Map UI
 
-Status: **active / PHASE-01 complete / PHASE-02 next**
+Status: **active / PHASE-01 complete / PHASE-02–03 implementation complete / PHASE-04 next**
 Branch: `plan/041-navigation-first-map-ui`
 Depends on: current `main` through PR #38 (`845b437`), including workspace Situm isolation and the explicit Explore fullscreen mode.
 
@@ -125,14 +125,14 @@ Rework the React Native Explore experience into a navigation-first indoor map UI
 - Modify: `mobile/src/map/NativeMapScreen.tsx`
 
 **Steps:**
-- [ ] Add a compact top destination/search surface using real current-building POIs.
-- [ ] Filter locally by POI name/category and provide accessible selectable results.
-- [ ] Selecting a result calls the existing MapView `selectPoi` path and updates the destination sheet.
-- [ ] Keep tap-on-map POI selection synchronized with the same destination UI.
-- [ ] Add a compact app-owned floor control from authorized cartography, wired to `selectFloor`.
-- [ ] Move Locate me/recenter/fullscreen into a coherent control stack that does not collide with Situm's own visible controls.
-- [ ] Keep positioning permission/error semantics unchanged and truthful.
-- [ ] Keep selected destination actions clear: Directions, Clear, and location prerequisite state.
+- [x] Add a compact top destination/search surface using real current-building POIs.
+- [x] Filter locally by POI name/category and provide accessible selectable results.
+- [x] Selecting a result calls the existing MapView `selectPoi` path and updates the destination sheet.
+- [x] Keep tap-on-map POI selection synchronized with the same destination UI.
+- [x] Add a compact app-owned floor control from authorized cartography, wired to `selectFloor`.
+- [x] Move Locate me/recenter/fullscreen into a coherent control stack that avoids the previous Situm-control collision zones by design; physical confirmation remains in PHASE-05.
+- [x] Keep positioning permission/error semantics unchanged and truthful.
+- [x] Keep selected destination actions clear: Directions, Clear, and location prerequisite state.
 
 **Validation:**
 - `cd mobile && npm run lint`
@@ -142,10 +142,10 @@ Rework the React Native Explore experience into a navigation-first indoor map UI
 **Commit boundary:** `feat(mobile): redesign Explore destination controls`
 
 **Phase exit criteria:**
-- [ ] Search uses real POIs only.
-- [ ] Floor switching uses real floors only.
-- [ ] Normal Explore remains shell-integrated.
-- [ ] Existing fullscreen semantics remain intact.
+- [x] Search uses real POIs only.
+- [x] Floor switching uses real floors only.
+- [x] Normal Explore remains shell-integrated in source/layout ownership.
+- [ ] Existing fullscreen semantics remain intact on the physical device.
 
 ## PHASE-03 — Active navigation guidance UI
 
@@ -160,14 +160,14 @@ Rework the React Native Explore experience into a navigation-first indoor map UI
 - Modify if needed: `mobile/src/map/state.ts`
 
 **Steps:**
-- [ ] Store the latest real `NavigationProgress` rather than only `distanceToGoal`.
-- [ ] Show remaining distance from Situm.
-- [ ] Show ETA from Situm `timeToGoal` only if installed contract verification passed.
-- [ ] Show next/current indication information only if a reliable human-readable mapping can be proven from the installed type/runtime; otherwise use truthful generic route-following copy.
-- [ ] Display destination name and active floor context.
-- [ ] Support follow/recenter and explicit Stop guidance without interfering with the shared foreground positioning lifecycle.
-- [ ] Handle out-of-route, arrival, cancellation, and navigation-error states visibly and cleanly.
-- [ ] Do not show browse search/results over active guidance unless intentionally collapsed into a non-conflicting control.
+- [x] Store the latest real `NavigationProgress` rather than only `distanceToGoal`.
+- [x] Show remaining distance from Situm.
+- [x] Show ETA from Situm `timeToGoal` after installed-contract verification.
+- [x] Show documented Situm indication action/orientation strings through a bounded human-readable mapping with a safe generic fallback.
+- [x] Display destination name and active floor context only when known.
+- [x] Support follow/recenter and explicit Stop guidance without changing the shared foreground positioning lifecycle.
+- [x] Handle out-of-route, arrival, cancellation, and navigation-error states visibly and cleanly.
+- [x] Hide browse search/results while active/outcome guidance HUD is shown.
 
 **Validation:**
 - `cd mobile && npm run lint`
@@ -177,9 +177,9 @@ Rework the React Native Explore experience into a navigation-first indoor map UI
 **Commit boundary:** `feat(mobile): add real-time navigation guidance HUD`
 
 **Phase exit criteria:**
-- [ ] No invented turn/ETA/distance semantics.
-- [ ] Guidance controls are reachable and non-overlapping on phone/POS layouts.
-- [ ] Fullscreen remains shell-free under the existing Plan 040 rule.
+- [x] No invented turn/ETA/distance semantics in source; every metric is callback-derived.
+- [ ] Guidance controls are reachable and non-overlapping on the connected POS layout.
+- [ ] Fullscreen remains shell-free under the existing Plan 040 rule on device.
 
 ## PHASE-04 — Automated validation, Android build, and install
 

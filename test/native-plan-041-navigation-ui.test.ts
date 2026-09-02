@@ -1,4 +1,5 @@
 import { strict as assert } from 'node:assert'
+import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import { formatNavigationDistance, formatNavigationEta, guidanceInstructionForIndication } from '../mobile/src/map/state'
 
@@ -24,4 +25,18 @@ test('Plan 041 translates documented Situm indication action/orientation strings
   assert.equal(guidanceInstructionForIndication({ indicationType: 'CHANGE_FLOOR', orientationType: 'INVALID_ORIENTATION', neededLevelChange: true }), 'Change floor')
   assert.equal(guidanceInstructionForIndication({ indicationType: 'END', orientationType: 'INVALID_ORIENTATION' }), 'Arrive at destination')
   assert.equal(guidanceInstructionForIndication({ indicationType: 'UNKNOWN', orientationType: 'UNKNOWN' }), null)
+})
+
+test('Plan 041 Explore source owns real destination, floor, location, and guidance controls', () => {
+  const mapScreen = readFileSync(new URL('../mobile/src/map/NativeMapScreen.tsx', import.meta.url), 'utf8')
+  assert.match(mapScreen, /accessibilityLabel="Search places"/)
+  assert.match(mapScreen, /filterPois\(cartography\.pois, buildingId, searchQuery\)/)
+  assert.match(mapScreen, /mapRef\.current\?\.selectFloor/)
+  assert.match(mapScreen, /accessibilityLabel="Directions"/)
+  assert.match(mapScreen, /navigationProgress\?\.timeToGoal/)
+  assert.match(mapScreen, /navigationProgress\?\.nextIndication/)
+  assert.match(mapScreen, /accessibilityLabel="Stop guidance"/)
+  assert.match(mapScreen, /label="Enter fullscreen map"/)
+  assert.doesNotMatch(mapScreen, />4 min</)
+  assert.doesNotMatch(mapScreen, />170 m</)
 })
