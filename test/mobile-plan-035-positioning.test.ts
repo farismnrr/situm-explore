@@ -23,14 +23,25 @@ const permittedSession = (native: ReturnType<typeof fakeNative>) => new Foregrou
 test('Plan 035 does not start positioning without explicit user action', () => {
   const native = fakeNative(); const session = permittedSession(native)
   session.setWorkspace('workspace-a')
-  assert.equal(native.initCount, 1); assert.equal(native.startCount, 0); assert.equal(session.getSnapshot().state, 'stopped')
+  assert.equal(native.initCount, 0); assert.equal(native.startCount, 0); assert.equal(session.getSnapshot().state, 'stopped')
 })
 
 
 test('Plan 035 requests runtime permissions before starting native positioning', async () => {
   const native = fakeNative(); let permissionRequests = 0; const session = new ForegroundPositioningSession(native, async () => { permissionRequests++; return true })
   await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' }))
-  assert.equal(permissionRequests, 1); assert.equal(native.startCount, 1)
+  assert.equal(permissionRequests, 1); assert.equal(native.initCount, 1); assert.equal(native.startCount, 1)
+})
+
+test('Plan 035 native SDK initialization fails closed without crashing session construction', async () => {
+  const native = fakeNative()
+  native.init = () => { throw new Error('init failed') }
+  const session = new ForegroundPositioningSession(native, async () => true)
+  assert.equal(session.getSnapshot().state, 'stopped')
+  await session.start('workspace-a', 10, async () => ({ apiKey: 'positioning-only-test-fixture' }))
+  assert.equal(native.startCount, 0)
+  assert.equal(session.getSnapshot().state, 'error')
+  assert.match(session.getSnapshot().message, /unavailable/i)
 })
 
 test('Plan 035 requests permission before fetching the positioning credential', async () => {

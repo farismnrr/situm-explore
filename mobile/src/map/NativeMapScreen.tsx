@@ -126,10 +126,6 @@ function NativeMapRuntime({ workspaceId, cartography, paths, lifecycle: _lifecyc
   const instruction = route && indoorLocation ? nextRouteInstruction(route, indoorLocation, floorId => buildingFloors.find(floor => floor.id === floorId)?.name || `Floor ${floorId}`) : navigationMessage
 
   useEffect(() => {
-    positioning.installNativeListeners()
-  }, [positioning])
-
-  useEffect(() => {
     setPositionStale(false)
     if (!positioningSnapshot.receivedAt) return
     const remaining = Math.max(0, locationFreshnessWindowMs - (Date.now() - positioningSnapshot.receivedAt))

@@ -214,6 +214,8 @@ Acceptance sequence:
 
 The current environment did obtain a real indoor fix and real graph routes, so the bounded Locate/route path is a physical PASS. Movement-dependent arrival/off-route behavior remains unclaimed because it was not physically reproduced.
 
+Post-E2E bug hardening also moved `SitumPlugin.init()` out of session construction and into the explicit fail-closed start path, removed redundant map-screen listener registration, and updated stale Settings copy. The POS was relaunched through the existing debug shell/Metro loop after this change: Locate me received fresh real fixes again, Realtime still rendered the shared active device position, and no fatal/React JS exception appeared.
+
 ## Trial/error rules
 
 Physical screenshots are authoritative for visual acceptance. If the first custom candidate reveals inverted coordinates, wrong physical aspect, inaccessible floor images, POI touch capture, or overlay collision, fix source and repeat build/install/E2E until the tested flow is stable.

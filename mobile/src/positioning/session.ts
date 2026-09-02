@@ -37,10 +37,6 @@ export class ForegroundPositioningSession {
   constructor(native: NativePositioning = defaultNative(), requestPermissions: PermissionGate = defaultPermissionGate) {
     this.native = native
     this.requestPermissions = requestPermissions
-    // The headless positioning path no longer mounts SitumProvider/MapView, so it
-    // must explicitly initialize the native Situm SDK before configuration calls.
-    // Situm documents init as idempotent, so Fast Refresh can safely reconstruct it.
-    this.native.init()
     this.installNativeListeners()
   }
 
@@ -66,6 +62,10 @@ export class ForegroundPositioningSession {
       if (!permissionsGranted) { this.update({ state: 'error', location: null, receivedAt: null, workspaceId, buildingId, message: 'Location and nearby-device permissions are required for indoor positioning.' }); return }
       const credential = await getCredential()
       if (generation !== this.generation || this.lifecycle !== 'active' || this.workspaceId !== workspaceId) return
+      // The headless positioning path no longer mounts SitumProvider/MapView, so
+      // initialize the native SDK explicitly. Keep it inside this fail-closed
+      // start path so an initialization failure cannot crash the whole app shell.
+      this.native.init()
       this.installNativeListeners()
       await this.native.setApiKey(credential.apiKey)
       if (this.native.setUseRemoteConfig) await this.native.setUseRemoteConfig(true)
