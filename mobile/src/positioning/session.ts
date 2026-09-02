@@ -3,7 +3,7 @@ import { logDiagnostic } from '../diagnostics'
 
 export type PositioningState = 'stopped' | 'starting' | 'active' | 'error'
 export type PositioningSnapshot = { state: PositioningState, location: Location | null, receivedAt: number | null, workspaceId: string | null, buildingId: number | null, message: string }
-type NativePositioning = Pick<typeof SitumPlugin, 'setApiKey' | 'requestLocationUpdates' | 'removeLocationUpdates' | 'positioningIsRunning' | 'onLocationUpdate' | 'onLocationStatus' | 'onLocationError' | 'onLocationStopped'>
+type NativePositioning = Pick<typeof SitumPlugin, 'init' | 'setApiKey' | 'requestLocationUpdates' | 'removeLocationUpdates' | 'positioningIsRunning' | 'onLocationUpdate' | 'onLocationStatus' | 'onLocationError' | 'onLocationStopped'> & Partial<Pick<typeof SitumPlugin, 'setUseRemoteConfig'>>
 type PermissionGate = () => Promise<boolean>
 const nativeFixDiagnosticIntervalMs = 10_000
 const stoppedSnapshot = (): PositioningSnapshot => ({ state: 'stopped', location: null, receivedAt: null, workspaceId: null, buildingId: null, message: 'Location is off.' })
@@ -37,6 +37,10 @@ export class ForegroundPositioningSession {
   constructor(native: NativePositioning = defaultNative(), requestPermissions: PermissionGate = defaultPermissionGate) {
     this.native = native
     this.requestPermissions = requestPermissions
+    // The headless positioning path no longer mounts SitumProvider/MapView, so it
+    // must explicitly initialize the native Situm SDK before configuration calls.
+    // Situm documents init as idempotent, so Fast Refresh can safely reconstruct it.
+    this.native.init()
     this.installNativeListeners()
   }
 
@@ -64,6 +68,7 @@ export class ForegroundPositioningSession {
       if (generation !== this.generation || this.lifecycle !== 'active' || this.workspaceId !== workspaceId) return
       this.installNativeListeners()
       await this.native.setApiKey(credential.apiKey)
+      if (this.native.setUseRemoteConfig) await this.native.setUseRemoteConfig(true)
       if (generation !== this.generation || this.lifecycle !== 'active' || this.workspaceId !== workspaceId) return
       this.native.requestLocationUpdates({ buildingIdentifier: buildingId, realtimeUpdateInterval: 'REALTIME' })
       logDiagnostic('info', 'positioning.native_producer_requested', { buildingId, uploadInterval: 'REALTIME' })

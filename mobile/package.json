@@ -15,7 +15,8 @@
     "test:login-keyboard": "tsx scripts/login-keyboard-strategy.test.ts",
     "test:android-update": "tsx scripts/android-update.test.ts",
     "build:android": "cd android && ./gradlew assembleDebug",
-    "build:android:release": "node scripts/build-android-release.cjs"
+    "build:android:release": "node scripts/build-android-release.cjs",
+    "build:android:device": "node scripts/build-android-device.cjs"
   },
   "overrides": {
     "xcode": {

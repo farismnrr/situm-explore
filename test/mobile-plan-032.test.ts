@@ -121,13 +121,15 @@ test('Plan 032 applies sequential same-workspace Map links as distinct one-shot 
   assert.equal(request, null)
 })
 
-test('Plan 032 Android release artifacts use clean semver arm64 naming', () => {
+test('Plan 032 Android release artifacts and generated native config stay arm64-only', () => {
   const releaseScript = readFileSync(new URL('../mobile/scripts/build-android-release.cjs', import.meta.url), 'utf8')
+  const appConfig = readFileSync(new URL('../mobile/app.config.ts', import.meta.url), 'utf8')
   const distribution = readFileSync(new URL('../docs/mobile-distribution.md', import.meta.url), 'utf8')
   const staging = readFileSync(new URL('../deploy/staging.compose.yml', import.meta.url), 'utf8')
   assert.match(releaseScript, /situm-explore-v\$\{version\}-android-arm64/)
   assert.match(releaseScript, /expo.*prebuild/)
   assert.match(releaseScript, /reactNativeArchitectures=arm64-v8a/)
+  assert.match(appConfig, /buildArchs: \['arm64-v8a'\]/)
   assert.match(distribution, /situm-explore-v<semver>-android-arm64\.apk/)
   assert.match(distribution, /situm-explore-latest-android-arm64\.apk/)
   assert.match(staging, /situm-explore-latest-android-arm64\.apk/)

@@ -11,3 +11,6 @@ ios/
 .env
 .env.*
 !.env.example
+
+# Agent-local Gradle cache (MCP HOME/cache mounts are ephemeral)
+.gradle-agent-home/

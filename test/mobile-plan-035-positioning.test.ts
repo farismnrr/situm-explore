@@ -4,10 +4,11 @@ import test from 'node:test'
 import { ForegroundPositioningSession } from '../mobile/src/positioning/session'
 
 function fakeNative() {
-  let running = false; let startCount = 0; let stopCount = 0
+  let running = false; let initCount = 0; let startCount = 0; let stopCount = 0
   let update = (_location: unknown) => undefined; let status = (_value: { statusName: string }) => undefined; let error = (_value: unknown) => undefined; let stopped = () => undefined
   return {
-    get running() { return running }, get startCount() { return startCount }, get stopCount() { return stopCount },
+    get running() { return running }, get initCount() { return initCount }, get startCount() { return startCount }, get stopCount() { return stopCount },
+    init: () => { initCount++ },
     setApiKey: async (_key: string) => undefined,
     requestLocationUpdates: () => { running = true; startCount++ },
     removeLocationUpdates: () => { if (running) { running = false; stopCount++ } },
@@ -22,7 +23,7 @@ const permittedSession = (native: ReturnType<typeof fakeNative>) => new Foregrou
 test('Plan 035 does not start positioning without explicit user action', () => {
   const native = fakeNative(); const session = permittedSession(native)
   session.setWorkspace('workspace-a')
-  assert.equal(native.startCount, 0); assert.equal(session.getSnapshot().state, 'stopped')
+  assert.equal(native.initCount, 1); assert.equal(native.startCount, 0); assert.equal(session.getSnapshot().state, 'stopped')
 })
 
 
