@@ -60,6 +60,13 @@ For Situm behavior: **no evidence, no implementation**. Verify current official 
 - implementation/fixes for an explicitly active plan go to the configured `worker` subagent;
 - parent owns orchestration, review, state/plan persistence, commits, pushes, and transitions.
 
+## Testing policy
+
+- Persistent unit tests are prohibited in this repository. Do not add, restore, or commit unit-test files, unit-test scripts, unit-test fixtures, or a unit-test framework.
+- E2E, white-box, and black-box checks may be created only as temporary execution aids when needed. Keep them outside tracked source or under an ignored `.tmp-tests/` directory, and delete them before staging, committing, or closing the task.
+- Durable validation uses the checks appropriate to the change: lint, typecheck, build, migration/static inspection, runtime/browser/device acceptance, and bounded logs/screenshots. Never claim a check that was not actually executed.
+- Historical plans/evidence may mention tests that existed at the time; those references are historical evidence only and do not authorize restoring the deleted suites.
+
 ## Android build safety
 
 - The physical acceptance POS is `arm64-v8a`; ordinary agent Android builds must not compile x86/x86_64/armeabi-v7a unless a task explicitly requires another ABI.

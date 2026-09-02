@@ -29,6 +29,7 @@ Historical plans/sessions/branches are evidence only. Current state, durable dec
 - PR creation/review and merge are user-gated;
 - normal dependent plans start after prerequisite work is integrated into updated `main`;
 - stacked implementation requires explicit user authorization recorded in state.
+- persistent unit tests are prohibited; temporary E2E/white-box/black-box checks must be deleted before commit/closeout.
 
 ## Completed roadmap
 

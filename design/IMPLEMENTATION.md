@@ -123,7 +123,6 @@ Web/backend baseline:
 
 ```text
 git diff --check
-npm test
 npm run lint
 npm run typecheck
 npm run build
@@ -135,5 +134,7 @@ Mobile baseline:
 npm run lint
 npm run typecheck
 ```
+
+Persistent unit tests are prohibited by repository policy. Temporary E2E/white-box/black-box checks may be used during execution but must be deleted before commit/closeout.
 
 Use production preview/runtime checks for behavior claims and physical Android evidence for sensor-backed positioning claims.

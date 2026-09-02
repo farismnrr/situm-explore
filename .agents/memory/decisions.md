@@ -11,6 +11,17 @@ This file contains **currently active durable decisions**. Completed execution h
 
 Status: active.
 
+## Repository testing policy (2026-09-02)
+
+- Persistent unit tests are not allowed in the repository. Existing repo-authored unit/regression test suites and their package scripts were intentionally removed.
+- Do not add, restore, or commit unit-test files, fixtures, snapshots, coverage harnesses, or test frameworks. Renaming a unit regression check does not make it acceptable as a persistent artifact.
+- E2E, white-box, and black-box checks may be created when needed for a task, but only temporarily. Prefer `/tmp` or the ignored `.tmp-tests/` directory and delete every temporary test artifact before staging, commit, push, PR handoff, or closeout.
+- Durable validation should use lint, typecheck, build, migration/static inspection, production/runtime/browser/device acceptance, bounded logs/screenshots, and other evidence appropriate to the change.
+- Historical test results in plans/evidence remain truthful historical evidence only and do not authorize restoring those suites.
+
+Source: user-stated on 2026-09-02.
+Status: active durable repository policy.
+
 ## Situm two-key credential boundary
 
 - The current workspace credential model has exactly two user-managed Situm keys: **Only Read** and **Read & Write**.

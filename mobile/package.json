@@ -9,11 +9,8 @@
     "ios": "expo run:ios",
     "prebuild": "expo prebuild",
     "postinstall": "patch-package",
-    "security:test": "node scripts/security/mobile-dependency-regression.cjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:login-keyboard": "tsx scripts/login-keyboard-strategy.test.ts",
-    "test:android-update": "tsx scripts/android-update.test.ts",
     "build:android": "cd android && ./gradlew assembleDebug",
     "build:android:release": "node scripts/build-android-release.cjs",
     "build:android:device": "node scripts/build-android-device.cjs"

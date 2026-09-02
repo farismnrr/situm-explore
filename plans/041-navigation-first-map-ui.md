@@ -105,7 +105,7 @@ The floorplan image and SVG overlay share exactly the same fitted frame and tran
 | 01 — data/source contract | complete | existing cartography/path endpoints and positioning Cartesian fields verified |
 | 02 — custom map renderer | complete in source | floorplan + SVG POIs/bluedot/route render with no Situm visual SDK |
 | 03 — custom route/navigation | complete in source | graph route, floor segments, remaining distance, basic turn/floor guidance, arrival/off-route |
-| 04 — automated/build validation | complete | lint/typecheck/tests/diff green; final arm64 release package/checksum produced |
+| 04 — validation/build | complete | lint/typecheck/diff/build + runtime/device evidence green; final arm64 release package/checksum produced |
 | 05 — physical Android E2E | complete | installed debug shell + Metro hot reload exercised real positioning, POI, routing, floor, fullscreen/back, stop, and crash checks |
 | 06 — documentation/commit closeout | complete | physical evidence recorded and coherent work committed locally |
 | 07 — branded launch experience | complete | supported native splash config + same-logo app-owned animation validated on final release cold launch |
@@ -170,23 +170,17 @@ Required gates:
 
 - [x] `npm --prefix mobile run typecheck`
 - [x] `npm --prefix mobile run lint`
-- [x] focused Plan 041 tests
-- [x] full `npm test` — **92/92 pass**
 - [x] `git diff --check`
 - [x] arm64 debug shell build/install completes for physical E2E
 - [x] hot/incremental device rebuild proves cache reuse (`52s`, `6 executed / 241 up-to-date`)
 - [x] final release Android package rebuilt from the post-E2E source through `npm --prefix mobile run build:android:release` — **BUILD SUCCESSFUL in 1m 53s**, `411/422` tasks up-to-date
 - [x] final release artifact `mobile/dist/situm-explore-v1.0.2-android-arm64.apk` recorded at SHA-256 `60ed6a8b5a589364dc61497bf2c0c7c05926fa417586885aba9467d853d9b165`; checksum verification passes and APK native libraries contain only `arm64-v8a`
 
-Root ESLint note: a direct root `npm run lint` currently cannot start when `.nuxt/eslint.config.mjs` has not been generated in the checkout. This is an environment/preparation issue, not a lint finding. Mobile lint is the required lint gate for this mobile-only implementation; root test coverage still runs.
+Root ESLint note: a direct root `npm run lint` currently cannot start when `.nuxt/eslint.config.mjs` has not been generated in the checkout. This is an environment/preparation issue, not a lint finding. Mobile lint is the required lint gate for this mobile-only implementation. Persistent unit tests are prohibited by the current repository policy; temporary E2E/white-box/black-box checks, when needed, must be deleted before commit/closeout.
 
-### Automated regression coverage added
+### Historical automated regression evidence
 
-- Cartesian lower-left → screen upper-left projection.
-- Building aspect-fit behavior.
-- Same/cross-floor real graph routing.
-- Disconnected graph fails closed.
-- Source regression that `NativeMapScreen` contains `CustomIndoorMap` and contains no `MapView`, `SitumProvider`, or `navigateToPoi`.
+Before the repository testing policy changed on 2026-09-02, the branch had a 92/92 passing Node-based regression/unit suite covering the custom map and other prior work. Those authored test files and test scripts were intentionally removed under the new policy. The historical PASS remains evidence of what was checked at that time, but it is not a current or restorable repository gate.
 
 ## Phase 05 — physical Android E2E
 
@@ -242,7 +236,7 @@ Temporary screenshots/hierarchy/log files stay outside the repository or in igno
 
 The user explicitly requested automatic local commits.
 
-- Auto-commit coherent source/test changes after validation.
+- Auto-commit coherent source/validation changes after validation.
 - Auto-commit physical-E2E/documentation evidence after the final device pass.
 - Do **not** push, open a PR, merge, deploy, or publish OTA without separate explicit instruction.
 
@@ -261,9 +255,10 @@ Suggested boundaries:
 - [x] Route calculation is app-owned and fails closed on disconnected graph data.
 - [x] Existing foreground positioning/security boundaries remain intact.
 - [x] Existing fullscreen contract remains implemented in source.
-- [x] Mobile lint/typecheck and full automated tests pass.
+- [x] Mobile lint/typecheck plus build/runtime/device validation pass; no persistent unit-test suite is retained.
 - [x] Arm64 debug shell builds/installs on the connected target and supports Metro hot-reload E2E.
 - [x] Physical custom-renderer functional E2E passes for cartography, real positioning, POI selection, same/cross-floor routing, floor switching, fullscreen/back state preservation, recenter, stop, and crash checks.
+- [x] No repo-authored persistent unit-test or temporary test harness remains.
 - [x] Final post-E2E arm64 release package/checksum is produced and verified through the repository release script.
 - [ ] Pixel-level screenshot polish plus movement-dependent arrival/off-route remain separate visual/physical follow-ups.
 - [x] Worktree changes are auto-committed locally.
