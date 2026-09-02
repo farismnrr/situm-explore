@@ -245,6 +245,13 @@ Suggested boundaries:
 1. `feat(mobile): render indoor map without Situm MapView`
 2. `docs(plan): record custom renderer Android E2E`
 
+## Integration closeout
+
+- PR #39 (`feat(mobile): ship app-owned indoor navigation`) was squash-merged into `main` on 2026-09-02 at merge commit `99318a608af24f036e1744d9e7e929b859fbe15e`.
+- The previously separate Android 1.0.2 OTA evidence/session was selectively preserved in this integration without importing the stale release-branch `.agents/state.md`.
+- The user explicitly authorized PR/merge and stale-branch cleanup after integration.
+- Plan 041 is historical/closed after this merge; no implementation plan remains active.
+
 ## Final acceptance criteria
 
 - [x] React Native owns the indoor map renderer.

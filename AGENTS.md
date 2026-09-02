@@ -36,7 +36,7 @@ Completed implementation roadmap:
 Plan 021 -> Plan 022 -> Plan 023 -> Plan 024 -> Plan 025 [complete on stacked branch]
 ```
 
-Plans 026–035 are closed/integrated. Plans 028–034 delivered and closed the native companion roadmap, with Plan 034 retaining truthful documented limitations rather than fabricating full-E2E PASS. Plan 035 then remediated the Realtime/foreground-positioning lifecycle and was integrated with the Android release/distribution polish through PR #32 at merge commit `840c0f9`; the former Plan 035 branch was deleted. There is currently **no active implementation plan**. New product work must start from updated `main` on a new dedicated plan branch. Google OAuth runtime remains user-owned and deferred.
+Plans 026–041 are closed/integrated. Plans 028–035 delivered and closed the native companion roadmap, Plans 036–040 completed the follow-up reliability/workspace/fullscreen work, and Plan 041 shipped the app-owned indoor map/navigation experience through PR #39 at merge commit `99318a608af24f036e1744d9e7e929b859fbe15e`. There is currently **no active implementation plan**. New product work must start from updated `main` on a new dedicated plan branch. Google OAuth runtime remains user-owned and deferred.
 
 ## Backend-refactor direction
 
